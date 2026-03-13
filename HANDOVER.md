@@ -47,11 +47,11 @@ Next action: [exactly what to do next to resume]
 |------|-------------|--------|
 | 1 | Next.js init + TypeScript + App Router + .env.local | ✅ 2026-03-11 |
 | 2 | Steam URL parsing + SteamID resolution | ✅ 2026-03-13 |
-| 3 | Owned games + play history extraction (top 15) | ⬜ |
-| 4 | Candidate games (featuredcategories → appdetails + filter) | ⬜ |
-| 5 | Claude API integration | ⬜ |
-| 6 | Main page UI | ⬜ |
-| 7 | Result page UI (5 cards) | ⬜ |
+| 3 | Owned games + play history extraction (top 15) | ✅ 2026-03-13 |
+| 4 | Candidate games (featuredcategories → appdetails + filter) | ✅ 2026-03-13 |
+| 5 | Claude API integration | ✅ 2026-03-13 |
+| 6 | Main page UI | ✅ 2026-03-13 |
+| 7 | Result page UI (5 cards) | ✅ 2026-03-13 |
 | 8 | Supabase client + feedback route | ⬜ |
 | 9 | All error codes wired | ⬜ |
 | 10 | output: 'edge' + Cloudflare Pages build | ✅ 2026-03-13 |
@@ -67,25 +67,37 @@ Never mock or hardcode when a key is missing — stop and ask the user.
 
 ---
 
-## ── ACTIVE STEP: Step 3 ──────────────────────────────────
+## ── ACTIVE STEP: Step 8 ──────────────────────────────────
 
-**Files to modify:** `lib/steam.ts`, `app/api/steam/route.ts`
+**Files to create:** `lib/supabase.ts` (new), `app/api/feedback/route.ts` (new)
 
-**Goal:** Given SteamID64 → call GetOwnedGames → return top 15 games by playtime.
+**Goal:** POST `/api/feedback` → insert feedback row into Supabase.
 
-**GetOwnedGames:**
+**Supabase client (lib/supabase.ts):**
+- Use `@supabase/supabase-js` createClient with env vars
+- `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+**Feedback route (app/api/feedback/route.ts):**
+- `export const runtime = 'edge'`
+- Request body: `{ game_id, game_name, steam_id?, play_profile?, rating }`
+- Insert into `feedback` table → return 200 or 500
+- Table schema provided in SPEC.md — give SQL to user to run in Supabase dashboard
+
+**SQL to give the user (do NOT run yourself):**
+```sql
+CREATE TABLE feedback (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  game_id TEXT NOT NULL,
+  game_name TEXT NOT NULL,
+  steam_id TEXT,
+  play_profile JSONB,
+  rating TEXT CHECK (rating IN ('positive', 'neutral', 'negative')),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
 ```
-GET https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/
-params: key, steamid, include_appinfo=true, include_played_free_games=true
-```
-- `response.games` empty or undefined → `PRIVATE_PROFILE`
-- total games < 5 → `INSUFFICIENT_HISTORY`
-- Fields: `appid`, `name`, `playtime_forever` (minutes)
-- Return top 15 sorted by `playtime_forever` desc → convert to `PlayHistory[]` (÷60 for hours)
 
-**Scope boundary:** Step 3 does NOT implement featuredcategories or appdetails (Step 4).
-
-**After completing:** mark Step 3 ✅, move this section to Completed Steps, write Step 4 instructions here.
+**After completing:** mark Step 8 ✅, move to Completed Steps, write Step 9 instructions.
+**Note:** NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY not yet set — stop and ask user before implementing.
 
 ---
 
@@ -93,6 +105,7 @@ params: key, steamid, include_appinfo=true, include_played_free_games=true
 
 | Date | Change | Files |
 |------|--------|-------|
+| 2026-03-13 | Fixed incorrect '--host' flag to '--hostname' for Next.js dev server in IDX preview | `.idx/dev.nix`, `GEMINI.md` |
 | — | No minor changes yet | — |
 
 ---
@@ -106,6 +119,47 @@ params: key, steamid, include_appinfo=true, include_played_free_games=true
 - `pages:build` script: `npx @cloudflare/next-on-pages` → `.vercel/output/static`
 - CF Pages 설정: Build command `npm run pages:build`, Output `.vercel/output/static`, Compatibility flag `nodejs_compat`
 - Build: Edge Function Routes: `/api/steam` ✅
+
+### ✅ Step 7 — 2026-03-13 — Result page UI (5 cards)
+- Files: `app/result/page.tsx` (new), `app/result/page.module.css` (new)
+- sessionStorage → RecommendationCard[], missing/invalid → router.replace('/')
+- Cards: name, reason (label + text), meta row (price/score/korean), store link, feedback buttons
+- Price: Intl.NumberFormat('ko-KR'), metacritic optional, korean badge colored
+- Feedback: fire-and-forget POST /api/feedback, optimistic UI → 피드백 감사해요
+- No emojis per user preference
+- Build: /result ○ (Static), 4.8kB ✅
+
+### ✅ Step 6 — 2026-03-13 — Main page UI
+- Files: `app/page.tsx` (replaced placeholder), `app/page.module.css` (new)
+- Design: PLAY(lime) + FIT(white) logo, dot grid background with vignette, clean form
+- Flow: POST /api/steam → POST /api/recommend → sessionStorage → router.push('/result')
+- Error messages: all 6 error codes mapped to Korean UI strings
+- Accessibility: labels with htmlFor, aria-live polite on error, button disabled states
+- User preference: no emojis
+- Build: `next build` passes ✅
+
+### ✅ Step 5 — 2026-03-13 — Claude API integration
+- Files: `lib/claude.ts` (new), `app/api/recommend/route.ts` (new)
+- `getRecommendations(playHistory, candidates)`: calls claude-haiku-4-5, max_tokens 500, exact prompts from SPEC.md
+- try-catch + JSON.parse defense → AI_PARSE_FAILURE on failure
+- Route merges Claude output with GameCandidate details → RecommendationCard[] with store_url
+- Build: `/api/recommend` ƒ (Dynamic) ✅
+
+### ✅ Step 4 — 2026-03-13 — Candidate games (featuredcategories → appdetails + filter)
+- Files: `lib/steam.ts`, `app/api/steam/route.ts`
+- `getFeaturedAppIds()`: fetches featuredcategories → deduped appids from new_releases + top_sellers
+- `getGameDetails(appid)`: fetches appdetails → GameCandidate or null (skips if no price + not free)
+- `getCandidateGames(featuredIds, ownedAppIds, budget?)`: sequential fetch with 200ms delay, up to 30 → NO_GAMES_IN_BUDGET if 0
+- Route: featuredcategories fetch starts in parallel with vanity resolution (async-parallel pattern)
+- Route body now accepts `budget?: number`; response now includes `candidates: GameCandidate[]`
+- Build: `next build` passes ✅
+
+### ✅ Step 3 — 2026-03-13 — Owned games + play history extraction
+- Files: `lib/steam.ts`, `app/api/steam/route.ts`
+- `getOwnedGames(steamId)`: calls GetOwnedGames → PRIVATE_PROFILE / INSUFFICIENT_HISTORY / PlayHistory[]
+- Top 15 sorted by playtime_forever desc, converted to hours (÷60, rounded 1dp)
+- Route now returns `{ steamId, playHistory }` instead of just `{ steamId }`
+- Build: `next build` passes ✅
 
 ### ✅ Step 2 — 2026-03-13 — Steam URL parsing + SteamID resolution
 - Files: `lib/steam.ts`, `app/api/steam/route.ts`
