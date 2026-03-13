@@ -46,7 +46,7 @@ Next action: [exactly what to do next to resume]
 | Step | Description | Status |
 |------|-------------|--------|
 | 1 | Next.js init + TypeScript + App Router + .env.local | ✅ 2026-03-11 |
-| 2 | Steam URL parsing + SteamID resolution | ⏳ blocked |
+| 2 | Steam URL parsing + SteamID resolution | ✅ 2026-03-13 |
 | 3 | Owned games + play history extraction (top 15) | ⬜ |
 | 4 | Candidate games (featuredcategories → appdetails + filter) | ⬜ |
 | 5 | Claude API integration | ⬜ |
@@ -56,11 +56,9 @@ Next action: [exactly what to do next to resume]
 | 9 | All error codes wired | ⬜ |
 | 10 | output: 'edge' + Cloudflare Pages build | ⬜ |
 
-**Blocker:** `STEAM_API_KEY` not issued → user must get it at https://steamcommunity.com/dev/apikey and set it in `.env.local`.
-
 **Key readiness:**
 ```
-STEAM_API_KEY=           ← needed for Step 2
+STEAM_API_KEY=           ✅ set
 ANTHROPIC_API_KEY=       ← needed for Step 5
 NEXT_PUBLIC_SUPABASE_URL=      ← needed for Step 8
 NEXT_PUBLIC_SUPABASE_ANON_KEY= ← needed for Step 8
@@ -69,30 +67,25 @@ Never mock or hardcode when a key is missing — stop and ask the user.
 
 ---
 
-## ── ACTIVE STEP: Step 2 ──────────────────────────────────
+## ── ACTIVE STEP: Step 3 ──────────────────────────────────
 
-**Pre-flight:** confirm `STEAM_API_KEY` is set in `.env.local`. If empty, stop and tell the user:
-> "Steam API 키가 필요합니다. https://steamcommunity.com/dev/apikey 에서 발급 후 .env.local의 STEAM_API_KEY에 입력해주세요."
+**Files to modify:** `lib/steam.ts`, `app/api/steam/route.ts`
 
-**Files to create:** `lib/steam.ts`, `app/api/steam/route.ts`
+**Goal:** Given SteamID64 → call GetOwnedGames → return top 15 games by playtime.
 
-**URL parsing logic:**
+**GetOwnedGames:**
 ```
-/profiles/(\d+)  → SteamID64 direct, skip API call
-/id/(\w+)        → call ResolveVanityURL
-anything else    → return INVALID_URL
+GET https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/
+params: key, steamid, include_appinfo=true, include_played_free_games=true
 ```
+- `response.games` empty or undefined → `PRIVATE_PROFILE`
+- total games < 5 → `INSUFFICIENT_HISTORY`
+- Fields: `appid`, `name`, `playtime_forever` (minutes)
+- Return top 15 sorted by `playtime_forever` desc → convert to `PlayHistory[]` (÷60 for hours)
 
-**ResolveVanityURL:** `GET /ISteamUser/ResolveVanityURL/v1/?key=…&vanityurl=…` → `success !== 1` → `INVALID_URL`
+**Scope boundary:** Step 3 does NOT implement featuredcategories or appdetails (Step 4).
 
-**`sleep` utility** (add to `lib/steam.ts` — used in Step 4 for rate limiting):
-```typescript
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-```
-
-**Scope boundary:** Step 2 does NOT implement GetOwnedGames (Step 3) or appdetails loop (Step 4).
-
-**After completing:** mark Step 2 ✅, move this section to Completed Steps, write Step 3 instructions here.
+**After completing:** mark Step 3 ✅, move this section to Completed Steps, write Step 4 instructions here.
 
 ---
 
@@ -105,6 +98,13 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 ---
 
 ## ── COMPLETED STEPS ──────────────────────────────────────
+
+### ✅ Step 2 — 2026-03-13 — Steam URL parsing + SteamID resolution
+- Files: `lib/steam.ts`, `app/api/steam/route.ts`
+- `parseSteamUrl()`: `/profiles/{digits}` → direct SteamID64, `/id/{word}` → vanity, else `INVALID_URL`
+- `resolveVanityUrl()`: calls ResolveVanityURL API → null on `success !== 1`
+- `sleep()` utility added to `lib/steam.ts` (used in Step 4 for rate limiting)
+- Build: `next build` passes — Route `/api/steam` ƒ (Dynamic)
 
 ### ✅ Step 1 — 2026-03-11 — Next.js 15 App Router init
 - Files: `package.json`, `tsconfig.json`, `next.config.js`, `.env.local`, `.eslintrc.json`, `app/layout.tsx`, `app/globals.css`, `app/page.tsx` (placeholder), `types/index.ts`
