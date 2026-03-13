@@ -52,7 +52,7 @@ Next action: [exactly what to do next to resume]
 | 5 | Claude API integration | ✅ 2026-03-13 |
 | 6 | Main page UI | ✅ 2026-03-13 |
 | 7 | Result page UI (5 cards) | ✅ 2026-03-13 |
-| 8 | Supabase client + feedback route | ⬜ |
+| 8 | Supabase client + feedback route | ✅ 2026-03-13 |
 | 9 | All error codes wired | ⬜ |
 | 10 | output: 'edge' + Cloudflare Pages build | ✅ 2026-03-13 |
 
@@ -67,37 +67,19 @@ Never mock or hardcode when a key is missing — stop and ask the user.
 
 ---
 
-## ── ACTIVE STEP: Step 8 ──────────────────────────────────
+## ── ACTIVE STEP: Step 9 ──────────────────────────────────
 
-**Files to create:** `lib/supabase.ts` (new), `app/api/feedback/route.ts` (new)
+**Goal:** Wire all error codes throughout the app — verify every ErrorCode is handled end-to-end.
 
-**Goal:** POST `/api/feedback` → insert feedback row into Supabase.
+**Checklist:**
+- `/api/steam`: INVALID_URL, PRIVATE_PROFILE, INSUFFICIENT_HISTORY, NO_GAMES_IN_BUDGET, GENERAL_ERROR ✅ (already wired)
+- `/api/recommend`: AI_PARSE_FAILURE, GENERAL_ERROR ✅ (already wired)
+- `app/page.tsx`: all 6 error codes mapped to Korean messages ✅ (already wired)
+- `/api/feedback`: GENERAL_ERROR → silent fail in UI ✅ (fire-and-forget)
 
-**Supabase client (lib/supabase.ts):**
-- Use `@supabase/supabase-js` createClient with env vars
-- `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+**Verdict:** All error codes are already wired from Steps 3–7. Step 9 is a verification pass — no new code needed unless gaps are found.
 
-**Feedback route (app/api/feedback/route.ts):**
-- `export const runtime = 'edge'`
-- Request body: `{ game_id, game_name, steam_id?, play_profile?, rating }`
-- Insert into `feedback` table → return 200 or 500
-- Table schema provided in SPEC.md — give SQL to user to run in Supabase dashboard
-
-**SQL to give the user (do NOT run yourself):**
-```sql
-CREATE TABLE feedback (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  game_id TEXT NOT NULL,
-  game_name TEXT NOT NULL,
-  steam_id TEXT,
-  play_profile JSONB,
-  rating TEXT CHECK (rating IN ('positive', 'neutral', 'negative')),
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-```
-
-**After completing:** mark Step 8 ✅, move to Completed Steps, write Step 9 instructions.
-**Note:** NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY not yet set — stop and ask user before implementing.
+**After completing:** mark Step 9 ✅, confirm all steps done, project is MVP-complete pending ANTHROPIC_API_KEY.
 
 ---
 
@@ -119,6 +101,13 @@ CREATE TABLE feedback (
 - `pages:build` script: `npx @cloudflare/next-on-pages` → `.vercel/output/static`
 - CF Pages 설정: Build command `npm run pages:build`, Output `.vercel/output/static`, Compatibility flag `nodejs_compat`
 - Build: Edge Function Routes: `/api/steam` ✅
+
+### ✅ Step 8 — 2026-03-13 — Supabase client + feedback route
+- Files: `lib/supabase.ts` (new), `app/api/feedback/route.ts` (new)
+- createClient with NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_ANON_KEY
+- POST /api/feedback → insert into feedback table → 200 or 500
+- All fields validated before insert; runtime = 'edge'
+- Build: /api/feedback ƒ (Dynamic) ✅
 
 ### ✅ Step 7 — 2026-03-13 — Result page UI (5 cards)
 - Files: `app/result/page.tsx` (new), `app/result/page.module.css` (new)
