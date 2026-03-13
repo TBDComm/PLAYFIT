@@ -66,6 +66,10 @@ export default function Home() {
       }
 
       sessionStorage.setItem('playfit_recommendations', JSON.stringify(recommendData.recommendations))
+      sessionStorage.setItem('playfit_steam_id', steamData.steamId ?? '')
+      sessionStorage.setItem('playfit_play_profile', JSON.stringify(
+        (steamData.playHistory as { name: string; playtime_hours: number }[] ?? []).slice(0, 5)
+      ))
       router.push('/result')
     } catch {
       setError(ERROR_MESSAGES.GENERAL_ERROR)
@@ -113,7 +117,7 @@ export default function Home() {
               type="number"
               inputMode="numeric"
               className={styles.input}
-              placeholder="예산 입력 (예: 10000) — 비우면 전체 가격대"
+              placeholder="예산 입력 (예: 10000)"
               value={budget}
               onChange={e => setBudget(e.target.value)}
               autoComplete="off"

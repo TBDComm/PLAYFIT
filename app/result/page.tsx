@@ -26,12 +26,24 @@ export default function ResultPage() {
   function handleFeedback(card: RecommendationCard, rating: 'positive' | 'neutral' | 'negative') {
     setFeedbackSent(prev => ({ ...prev, [card.appid]: true }))
 
-    // Fire-and-forget — /api/feedback implemented in Step 8
+    const steamId = sessionStorage.getItem('playfit_steam_id') ?? undefined
+    const playProfile = (() => {
+      try { return JSON.parse(sessionStorage.getItem('playfit_play_profile') ?? '[]') }
+      catch { return [] }
+    })()
+
+    // Fire-and-forget
     fetch('/api/feedback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ game_id: String(card.appid), game_name: card.name, rating }),
-    }).catch(() => { /* silent until Step 8 */ })
+      body: JSON.stringify({
+        game_id: String(card.appid),
+        game_name: card.name,
+        steam_id: steamId,
+        play_profile: playProfile,
+        rating,
+      }),
+    }).catch(() => { /* silent fail */ })
   }
 
   if (!recommendations) return null
