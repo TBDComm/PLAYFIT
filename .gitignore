@@ -5,6 +5,9 @@ node_modules
 .next/
 out/
 
+# Cloudflare Pages 빌드 출력
+.vercel/
+
 # 환경 변수 (절대 커밋 금지)
 .env
 .env.local

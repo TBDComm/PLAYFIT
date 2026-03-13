@@ -54,7 +54,7 @@ Next action: [exactly what to do next to resume]
 | 7 | Result page UI (5 cards) | ⬜ |
 | 8 | Supabase client + feedback route | ⬜ |
 | 9 | All error codes wired | ⬜ |
-| 10 | output: 'edge' + Cloudflare Pages build | ⬜ |
+| 10 | output: 'edge' + Cloudflare Pages build | ✅ 2026-03-13 |
 
 **Key readiness:**
 ```
@@ -98,6 +98,14 @@ params: key, steamid, include_appinfo=true, include_played_free_games=true
 ---
 
 ## ── COMPLETED STEPS ──────────────────────────────────────
+
+### ✅ Step 10 — 2026-03-13 — Cloudflare Pages 배포 설정 (순서 앞당김)
+- Files: `package.json`, `next.config.js`, `app/api/steam/route.ts`, `wrangler.toml`
+- Installed: `@cloudflare/next-on-pages`, `wrangler`
+- Added `export const runtime = 'edge'` to `/api/steam` (이후 스텝의 모든 API route에도 추가 필요)
+- `pages:build` script: `npx @cloudflare/next-on-pages` → `.vercel/output/static`
+- CF Pages 설정: Build command `npm run pages:build`, Output `.vercel/output/static`, Compatibility flag `nodejs_compat`
+- Build: Edge Function Routes: `/api/steam` ✅
 
 ### ✅ Step 2 — 2026-03-13 — Steam URL parsing + SteamID resolution
 - Files: `lib/steam.ts`, `app/api/steam/route.ts`

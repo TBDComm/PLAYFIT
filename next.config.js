@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  // Step 10에서 Cloudflare Pages 배포 시 output: 'edge' 추가 예정
+const nextConfig = {}
+
+if (process.env.NODE_ENV === 'development') {
+  const { setupDevPlatform } = require('@cloudflare/next-on-pages/next-dev')
+  setupDevPlatform()
 }
 
 module.exports = nextConfig

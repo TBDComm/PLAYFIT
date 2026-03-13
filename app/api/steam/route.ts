@@ -1,3 +1,5 @@
+export const runtime = 'edge'
+
 import { NextRequest, NextResponse } from 'next/server'
 import { parseSteamUrl, resolveVanityUrl } from '@/lib/steam'
 import type { ErrorCode } from '@/types'
