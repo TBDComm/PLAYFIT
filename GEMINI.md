@@ -16,7 +16,7 @@ The AI operates within the Firebase Studio development environment, which provid
   * The AI should leverage `dev.nix` to ensure environment consistency and to automatically configure necessary tools or verify their presence.
 * **Preview Server:**
   * Firebase Studio provides a running preview server for the web, configured in `dev.nix`.
-  * The `web` preview is configured to run `npm run dev -- --port $PORT --host 0.0.0.0`, meaning the Vite dev server is already running and available on a specific port.
+  * The `web` preview is configured to run `npm run dev -- --port $PORT --hostname 0.0.0.0`, meaning the Next.js dev server is already running and available on a specific port.
   * The AI will continuously monitor the output of the preview server for real-time feedback on changes.
 * **Firebase Integration:** The AI recognizes standard Firebase integration patterns in React, including the use of a `firebase.js` or `firebase.ts` configuration file and interactions with various Firebase SDKs.
 

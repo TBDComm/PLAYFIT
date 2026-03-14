@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 118/200 lines — OK**
+📏 **File health: 126/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -22,12 +22,24 @@ Full writing rules and compression protocol → `rules/handover-rules.md`
 
 ---
 
+## ── ⚠️ WORKSPACE CRASH PREVENTION ────────────────────────
+
+**`npm run build` KILLS the Firebase Studio workspace (OOM). NEVER run it.**
+
+| Instead of | Use |
+|------------|-----|
+| `npm run build` | `npx tsc --noEmit` (type-check only) |
+| Build verification | `npm run dev` + browser test |
+| Production build check | Only on Cloudflare Pages CI — never locally |
+
+---
+
 ## ── 🔒 IN-PROGRESS LOCK ──────────────────────────────────
 
 **Check this first. If filled, a previous session was interrupted — resume from here.**
 
 ```
-STATUS: CLEAR — no work in progress
+STATUS: CLEAR
 ```
 
 _When starting work, replace above with:_
@@ -53,8 +65,18 @@ Next action: [exactly what to do next to resume]
 | 6 | Main page UI | ✅ 2026-03-13 |
 | 7 | Result page UI (5 cards) | ✅ 2026-03-13 |
 | 8 | Supabase client + feedback route | ✅ 2026-03-13 |
-| 9 | All error codes wired | ⬜ |
+| 9 | All error codes wired | ✅ 2026-03-13 (verified — no gaps found) |
 | 10 | output: 'edge' + Cloudflare Pages build | ✅ 2026-03-13 |
+| A1 | Supabase: games_cache + user_tag_weights + feedback.tag_snapshot | ✅ 2026-03-13 |
+| A2 | DB build script (scripts/build-games-db.ts) | ✅ 2026-03-14 |
+| A3 | Candidate selection: Supabase DB query (replace Steam real-time fetch) | ⬜ |
+| A4 | Claude prompt → tag-based matching | ⬜ |
+| A5 | Feedback → user_tag_weights weight update logic | ⬜ |
+| A6 | Manual input mode UI (main page toggle + form) | ⬜ |
+| A7 | /api/search autocomplete route | ⬜ |
+| A8 | /api/recommend: handle both Steam + manual input modes | ⬜ |
+| A9 | Test: Steam mode end-to-end | ⬜ |
+| A10 | Test: Manual mode end-to-end | ⬜ |
 
 **Key readiness:**
 ```
@@ -67,21 +89,33 @@ Never mock or hardcode when a key is missing — stop and ask the user.
 
 ---
 
-## ── ACTIVE STEP: Step 9 ──────────────────────────────────
+## ── ACTIVE STEP: 원본 MVP 검증 완료 → Addendum 대기 ────
 
-**Goal:** Wire all error codes throughout the app — verify every ErrorCode is handled end-to-end.
+**현재 상태:** 원본 Step 1–10 모두 구현 완료. API 키 세팅 후 end-to-end 검증 필요.
 
-**Checklist:**
-- `/api/steam`: INVALID_URL, PRIVATE_PROFILE, INSUFFICIENT_HISTORY, NO_GAMES_IN_BUDGET, GENERAL_ERROR ✅ (already wired)
-- `/api/recommend`: AI_PARSE_FAILURE, GENERAL_ERROR ✅ (already wired)
-- `app/page.tsx`: all 6 error codes mapped to Korean messages ✅ (already wired)
-- `/api/feedback`: GENERAL_ERROR → silent fail in UI ✅ (fire-and-forget)
+**Addendum 시작 조건:**
+1. ANTHROPIC_API_KEY, NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY 모두 세팅
+2. 원본 MVP 흐름 (Steam URL 입력 → 추천 5개 → 피드백) 정상 동작 확인
+3. 그 다음 A1부터 순서대로 진행
 
-**Verdict:** All error codes are already wired from Steps 3–7. Step 9 is a verification pass — no new code needed unless gaps are found.
-
-**After completing:** mark Step 9 ✅, confirm all steps done, project is MVP-complete pending ANTHROPIC_API_KEY.
+**Addendum 새 에러코드 (A3+ 단계에서 추가):**
+| Code | Trigger | Korean UI |
+|------|---------|-----------|
+| `DB_NOT_READY` | games_cache empty | DB가 아직 준비되지 않았어요 |
+| `GAME_NOT_FOUND` | manual game not in DB | 게임을 찾을 수 없어요 |
+| `TAG_EXTRACTION_FAILED` | no tags for played games | 플레이 기록에서 태그를 추출할 수 없어요 |
 
 ---
+
+### ✅ A2 — 2026-03-14 — DB build script
+- Files: `scripts/build-games-db.ts` (new)
+- Run: `npx tsx --env-file=.env.local scripts/build-games-db.ts`
+- Source: GetAppList/v2/ → full Steam app list (~100k apps)
+- Per app: Steam genres + SteamSpy tags fetched in parallel, 200ms delay
+- Skips entries updated within 30 days → resumable (safe to interrupt and re-run)
+- Logs every 100 games; on failure: log + skip, never crash
+- Upserts to games_cache: appid, name, genres TEXT[], tags JSONB {tag_name: vote_count}
+- First run takes several hours
 
 ## ── MINOR CHANGES LOG ────────────────────────────────────
 
