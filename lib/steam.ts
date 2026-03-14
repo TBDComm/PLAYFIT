@@ -79,7 +79,8 @@ export async function getCandidateGames(
   featuredIds: number[],
   ownedAppIds: Set<number>,
   budget?: number,
-  koreanOnly?: boolean
+  koreanOnly?: boolean,
+  freeOnly?: boolean
 ): Promise<GameCandidate[] | 'NO_GAMES_IN_BUDGET'> {
   const candidates: GameCandidate[] = []
 
@@ -91,7 +92,8 @@ export async function getCandidateGames(
     await sleep(200)
 
     if (!details) continue
-    if (budget !== undefined && !details.is_free && details.price_krw > budget) continue
+    if (freeOnly && !details.is_free) continue
+    if (!freeOnly && budget !== undefined && !details.is_free && details.price_krw > budget) continue
     if (koreanOnly && !details.supports_korean) continue
     candidates.push(details)
   }
