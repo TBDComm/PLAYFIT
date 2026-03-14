@@ -126,9 +126,10 @@ export default function Home() {
               min={0}
               disabled={loading || freeOnly}
             />
-            <label className={styles.toggleRow}>
+            <label className={`${styles.toggleRow}${loading ? ` ${styles.toggleRowDisabled}` : ''}`}>
               <input
                 type="checkbox"
+                name="free-only"
                 className={styles.toggleCheckbox}
                 checked={freeOnly}
                 onChange={e => {
@@ -141,9 +142,10 @@ export default function Home() {
             </label>
           </div>
 
-          <label className={styles.toggleRow}>
+          <label className={`${styles.toggleRow}${loading ? ` ${styles.toggleRowDisabled}` : ''}`}>
             <input
               type="checkbox"
+              name="korean-only"
               className={styles.toggleCheckbox}
               checked={koreanOnly}
               onChange={e => setKoreanOnly(e.target.checked)}

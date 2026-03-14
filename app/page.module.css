@@ -179,6 +179,11 @@
   cursor: not-allowed;
 }
 
+.toggleRowDisabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 /* ===== Submit button ===== */
 
 .button {
