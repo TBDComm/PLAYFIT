@@ -37,17 +37,15 @@ Response format:
       }),
     })
 
-    if (!res.ok) {
-      const errBody = await res.text()
-      throw new Error(`Claude API ${res.status}: ${errBody}`)
-    }
+    if (!res.ok) return 'AI_PARSE_FAILURE'
 
     const data = await res.json() as { content: { type: string; text: string }[] }
-    const text = data.content[0]?.type === 'text' ? data.content[0].text : ''
+    const raw = data.content[0]?.type === 'text' ? data.content[0].text : ''
+    const text = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
     const parsed = JSON.parse(text) as { recommendations: Recommendation[] }
     if (!Array.isArray(parsed.recommendations)) return 'AI_PARSE_FAILURE'
     return parsed.recommendations
-  } catch (e) {
-    return ('DEBUG:' + String(e)) as 'AI_PARSE_FAILURE'
+  } catch {
+    return 'AI_PARSE_FAILURE'
   }
 }

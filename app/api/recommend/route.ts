@@ -18,8 +18,8 @@ export async function POST(request: NextRequest) {
 
     const result = await getRecommendations(playHistory, candidates)
 
-    if (typeof result === 'string') {
-      return NextResponse.json({ error: result }, { status: 500 })
+    if (result === 'AI_PARSE_FAILURE') {
+      return NextResponse.json({ error: 'AI_PARSE_FAILURE' satisfies ErrorCode }, { status: 500 })
     }
 
     // Merge Claude recommendations with GameCandidate details
