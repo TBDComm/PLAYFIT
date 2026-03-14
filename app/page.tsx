@@ -41,10 +41,19 @@ export default function Home() {
         playHistory?: unknown
         candidates?: unknown
         error?: ErrorCode
+        filters?: { budget?: number; freeOnly?: boolean; koreanOnly?: boolean }
       }
 
       if (!steamRes.ok || steamData.error) {
-        setError(ERROR_MESSAGES[steamData.error ?? 'GENERAL_ERROR'])
+        if (steamData.error === 'NO_GAMES_IN_BUDGET') {
+          const f = steamData.filters
+          if (f?.freeOnly) setError('현재 무료 게임 중 추천 가능한 게임이 없어요')
+          else if (f?.koreanOnly && f.budget !== undefined) setError('예산과 한국어 필터 조건에 맞는 게임이 없어요. 조건을 조정해보세요')
+          else if (f?.koreanOnly) setError('한국어 지원 게임 중 추천 가능한 게임이 없어요. 필터를 해제해보세요')
+          else setError('예산 내 추천 가능한 게임이 없어요. 예산을 높여보세요')
+        } else {
+          setError(ERROR_MESSAGES[steamData.error ?? 'GENERAL_ERROR'])
+        }
         return
       }
 

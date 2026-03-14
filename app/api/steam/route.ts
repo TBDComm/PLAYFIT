@@ -42,10 +42,7 @@ export async function POST(request: NextRequest) {
     const candidates = await getCandidateGames(featuredIds, ownedAppIds, budget, koreanOnly, freeOnly)
 
     if (candidates === 'NO_GAMES_IN_BUDGET') {
-      return NextResponse.json({
-        error: 'NO_GAMES_IN_BUDGET',
-        _debug: { featuredIds: featuredIds.length, ownedGames: ownedAppIds.size, budget, freeOnly, koreanOnly },
-      }, { status: 400 })
+      return NextResponse.json({ error: 'NO_GAMES_IN_BUDGET' satisfies ErrorCode, filters: { budget, freeOnly, koreanOnly } }, { status: 400 })
     }
 
     return NextResponse.json({ steamId, playHistory: playHistoryResult, candidates })
