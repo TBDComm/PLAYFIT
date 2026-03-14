@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 
     const result = await getRecommendations(playHistory, candidates)
 
-    if (typeof result === 'string' && (result === 'AI_PARSE_FAILURE' || result.startsWith('DEBUG:'))) {
+    if (typeof result === 'string') {
       return NextResponse.json({ error: result }, { status: 500 })
     }
 
