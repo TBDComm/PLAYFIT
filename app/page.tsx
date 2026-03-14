@@ -18,6 +18,7 @@ export default function Home() {
   const router = useRouter()
   const [url, setUrl] = useState('')
   const [budget, setBudget] = useState('')
+  const [koreanOnly, setKoreanOnly] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -32,7 +33,7 @@ export default function Home() {
       const steamRes = await fetch('/api/steam', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: url.trim(), budget: budgetValue }),
+        body: JSON.stringify({ url: url.trim(), budget: budgetValue, korean_only: koreanOnly }),
       })
       const steamData = await steamRes.json() as {
         steamId?: string
@@ -125,6 +126,17 @@ export default function Home() {
               disabled={loading}
             />
           </div>
+
+          <label className={styles.toggleRow}>
+            <input
+              type="checkbox"
+              className={styles.toggleCheckbox}
+              checked={koreanOnly}
+              onChange={e => setKoreanOnly(e.target.checked)}
+              disabled={loading}
+            />
+            한국어 지원 게임만 보기
+          </label>
 
           <button
             type="submit"

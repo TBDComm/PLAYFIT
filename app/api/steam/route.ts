@@ -6,9 +6,10 @@ import type { ErrorCode } from '@/types'
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json() as { url?: unknown; budget?: unknown }
+    const body = await request.json() as { url?: unknown; budget?: unknown; korean_only?: unknown }
     const url = typeof body.url === 'string' ? body.url.trim() : ''
     const budget = typeof body.budget === 'number' ? body.budget : undefined
+    const koreanOnly = body.korean_only === true
 
     const parsed = parseSteamUrl(url)
     if (parsed.type === 'invalid') {
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest) {
     }
 
     const ownedAppIds = new Set(playHistoryResult.map(g => g.appid))
-    const candidates = await getCandidateGames(featuredIds, ownedAppIds, budget)
+    const candidates = await getCandidateGames(featuredIds, ownedAppIds, budget, koreanOnly)
 
     if (candidates === 'NO_GAMES_IN_BUDGET') {
       return NextResponse.json({ error: 'NO_GAMES_IN_BUDGET' satisfies ErrorCode }, { status: 400 })

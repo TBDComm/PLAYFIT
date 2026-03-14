@@ -78,7 +78,8 @@ async function getGameDetails(appid: number): Promise<GameCandidate | null> {
 export async function getCandidateGames(
   featuredIds: number[],
   ownedAppIds: Set<number>,
-  budget?: number
+  budget?: number,
+  koreanOnly?: boolean
 ): Promise<GameCandidate[] | 'NO_GAMES_IN_BUDGET'> {
   const candidates: GameCandidate[] = []
 
@@ -91,6 +92,7 @@ export async function getCandidateGames(
 
     if (!details) continue
     if (budget !== undefined && !details.is_free && details.price_krw > budget) continue
+    if (koreanOnly && !details.supports_korean) continue
     candidates.push(details)
   }
 
