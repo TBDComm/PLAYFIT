@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 126/200 lines — OK**
+📏 **File health: 141/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -31,6 +31,18 @@ Full writing rules and compression protocol → `rules/handover-rules.md`
 | `npm run build` | `npx tsc --noEmit` (type-check only) |
 | Build verification | `npm run dev` + browser test |
 | Production build check | Only on Cloudflare Pages CI — never locally |
+
+**VM spec:** 8GB RAM, no swap. `npm run build` needs ~1.5GB → instant OOM if available < 1GB.
+
+---
+
+## ── 🧹 MEMORY OPTIMIZATION ─────────────────────────────
+
+Normal idle: ~3.4GB. If `free -m` shows available < 1GB, run:
+```bash
+pkill -f workerd; pkill -f firebase; pkill -f nixd
+```
+Recovers ~4GB+. Safe to kill: `workerd` (Cloudflare Edge emulator, auto-spawned, not needed for dev), `firebase-tools`/firebase MCP (project uses Supabase, not Firebase), `nixd` (Nix language server, not editing .nix files).
 
 ---
 
@@ -65,7 +77,7 @@ Next action: [exactly what to do next to resume]
 | 6 | Main page UI | ✅ 2026-03-13 |
 | 7 | Result page UI (5 cards) | ✅ 2026-03-13 |
 | 8 | Supabase client + feedback route | ✅ 2026-03-13 |
-| 9 | All error codes wired | ✅ 2026-03-13 (verified — no gaps found) |
+| 9 | All error codes wired | ✅ 2026-03-13 |
 | 10 | output: 'edge' + Cloudflare Pages build | ✅ 2026-03-13 |
 | A1 | Supabase: games_cache + user_tag_weights + feedback.tag_snapshot | ✅ 2026-03-13 |
 | A2 | DB build script (scripts/build-games-db.ts) | ✅ 2026-03-14 |
@@ -80,10 +92,10 @@ Next action: [exactly what to do next to resume]
 
 **Key readiness:**
 ```
-STEAM_API_KEY=           ✅ set
-ANTHROPIC_API_KEY=       ← needed for Step 5
-NEXT_PUBLIC_SUPABASE_URL=      ← needed for Step 8
-NEXT_PUBLIC_SUPABASE_ANON_KEY= ← needed for Step 8
+STEAM_API_KEY=                 ✅ set (.env.local + CF Pages)
+ANTHROPIC_API_KEY=             ✅ set (.env.local + CF Pages)
+NEXT_PUBLIC_SUPABASE_URL=      ✅ set (.env.local + CF Pages)
+NEXT_PUBLIC_SUPABASE_ANON_KEY= ✅ set (.env.local + CF Pages)
 ```
 Never mock or hardcode when a key is missing — stop and ask the user.
 
@@ -110,91 +122,16 @@ Never mock or hardcode when a key is missing — stop and ask the user.
 ### ✅ A2 — 2026-03-14 — DB build script
 - Files: `scripts/build-games-db.ts` (new)
 - Run: `npx tsx --env-file=.env.local scripts/build-games-db.ts`
-- Source: GetAppList/v2/ → full Steam app list (~100k apps)
-- Per app: Steam genres + SteamSpy tags fetched in parallel, 200ms delay
-- Skips entries updated within 30 days → resumable (safe to interrupt and re-run)
-- Logs every 100 games; on failure: log + skip, never crash
-- Upserts to games_cache: appid, name, genres TEXT[], tags JSONB {tag_name: vote_count}
-- First run takes several hours
+- Source: GetAppList/v2/ → genres + SteamSpy tags per app in parallel, 200ms delay; resumable (skips if updated within 30 days); first run takes several hours
+- Upserts to `games_cache`: appid, name, genres TEXT[], tags JSONB {tag_name: vote_count}; logs every 100 games; on failure: log + skip
+- Steps 1–10 + A1 archived → see `HANDOVER-archive.md`
 
 ## ── MINOR CHANGES LOG ────────────────────────────────────
 
 | Date | Change | Files |
 |------|--------|-------|
-| 2026-03-13 | Fixed incorrect '--host' flag to '--hostname' for Next.js dev server in IDX preview | `.idx/dev.nix`, `GEMINI.md` |
-| — | No minor changes yet | — |
-
----
-
-## ── COMPLETED STEPS ──────────────────────────────────────
-
-### ✅ Step 10 — 2026-03-13 — Cloudflare Pages 배포 설정 (순서 앞당김)
-- Files: `package.json`, `next.config.js`, `app/api/steam/route.ts`, `wrangler.toml`
-- Installed: `@cloudflare/next-on-pages`, `wrangler`
-- Added `export const runtime = 'edge'` to `/api/steam` (이후 스텝의 모든 API route에도 추가 필요)
-- `pages:build` script: `npx @cloudflare/next-on-pages` → `.vercel/output/static`
-- CF Pages 설정: Build command `npm run pages:build`, Output `.vercel/output/static`, Compatibility flag `nodejs_compat`
-- Build: Edge Function Routes: `/api/steam` ✅
-
-### ✅ Step 8 — 2026-03-13 — Supabase client + feedback route
-- Files: `lib/supabase.ts` (new), `app/api/feedback/route.ts` (new)
-- createClient with NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_ANON_KEY
-- POST /api/feedback → insert into feedback table → 200 or 500
-- All fields validated before insert; runtime = 'edge'
-- Build: /api/feedback ƒ (Dynamic) ✅
-
-### ✅ Step 7 — 2026-03-13 — Result page UI (5 cards)
-- Files: `app/result/page.tsx` (new), `app/result/page.module.css` (new)
-- sessionStorage → RecommendationCard[], missing/invalid → router.replace('/')
-- Cards: name, reason (label + text), meta row (price/score/korean), store link, feedback buttons
-- Price: Intl.NumberFormat('ko-KR'), metacritic optional, korean badge colored
-- Feedback: fire-and-forget POST /api/feedback, optimistic UI → 피드백 감사해요
-- No emojis per user preference
-- Build: /result ○ (Static), 4.8kB ✅
-
-### ✅ Step 6 — 2026-03-13 — Main page UI
-- Files: `app/page.tsx` (replaced placeholder), `app/page.module.css` (new)
-- Design: PLAY(lime) + FIT(white) logo, dot grid background with vignette, clean form
-- Flow: POST /api/steam → POST /api/recommend → sessionStorage → router.push('/result')
-- Error messages: all 6 error codes mapped to Korean UI strings
-- Accessibility: labels with htmlFor, aria-live polite on error, button disabled states
-- User preference: no emojis
-- Build: `next build` passes ✅
-
-### ✅ Step 5 — 2026-03-13 — Claude API integration
-- Files: `lib/claude.ts` (new), `app/api/recommend/route.ts` (new)
-- `getRecommendations(playHistory, candidates)`: calls claude-haiku-4-5, max_tokens 500, exact prompts from SPEC.md
-- try-catch + JSON.parse defense → AI_PARSE_FAILURE on failure
-- Route merges Claude output with GameCandidate details → RecommendationCard[] with store_url
-- Build: `/api/recommend` ƒ (Dynamic) ✅
-
-### ✅ Step 4 — 2026-03-13 — Candidate games (featuredcategories → appdetails + filter)
-- Files: `lib/steam.ts`, `app/api/steam/route.ts`
-- `getFeaturedAppIds()`: fetches featuredcategories → deduped appids from new_releases + top_sellers
-- `getGameDetails(appid)`: fetches appdetails → GameCandidate or null (skips if no price + not free)
-- `getCandidateGames(featuredIds, ownedAppIds, budget?)`: sequential fetch with 200ms delay, up to 30 → NO_GAMES_IN_BUDGET if 0
-- Route: featuredcategories fetch starts in parallel with vanity resolution (async-parallel pattern)
-- Route body now accepts `budget?: number`; response now includes `candidates: GameCandidate[]`
-- Build: `next build` passes ✅
-
-### ✅ Step 3 — 2026-03-13 — Owned games + play history extraction
-- Files: `lib/steam.ts`, `app/api/steam/route.ts`
-- `getOwnedGames(steamId)`: calls GetOwnedGames → PRIVATE_PROFILE / INSUFFICIENT_HISTORY / PlayHistory[]
-- Top 15 sorted by playtime_forever desc, converted to hours (÷60, rounded 1dp)
-- Route now returns `{ steamId, playHistory }` instead of just `{ steamId }`
-- Build: `next build` passes ✅
-
-### ✅ Step 2 — 2026-03-13 — Steam URL parsing + SteamID resolution
-- Files: `lib/steam.ts`, `app/api/steam/route.ts`
-- `parseSteamUrl()`: `/profiles/{digits}` → direct SteamID64, `/id/{word}` → vanity, else `INVALID_URL`
-- `resolveVanityUrl()`: calls ResolveVanityURL API → null on `success !== 1`
-- `sleep()` utility added to `lib/steam.ts` (used in Step 4 for rate limiting)
-- Build: `next build` passes — Route `/api/steam` ƒ (Dynamic)
-
-### ✅ Step 1 — 2026-03-11 — Next.js 15 App Router init
-- Files: `package.json`, `tsconfig.json`, `next.config.js`, `.env.local`, `.eslintrc.json`, `app/layout.tsx`, `app/globals.css`, `app/page.tsx` (placeholder), `types/index.ts`
-- Decisions: Vite→Next.js (spec requirement) · Space Grotesk font (Inter/Arial banned by frontend-design rules) · accent `#c8f135` phosphor lime (purple banned) · bg `#09090b` · all shared types pre-defined in `types/index.ts`
-- Build: `next build` passes — Route `/` 120B / First Load 102kB
+| 2026-03-13 | Fixed '--host' → '--hostname' for Next.js dev server in IDX preview | `.idx/dev.nix`, `GEMINI.md` |
+| 2026-03-14 | Killed auto-spawned memory hogs (workerd 4GB, firebase MCP, nixd); documented in Crash Prevention + Memory Optimization sections | `HANDOVER.md` |
 
 ---
 
