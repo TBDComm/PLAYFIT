@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 141/200 lines — OK**
+📏 **File health: 155/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -69,16 +69,7 @@ Next action: [exactly what to do next to resume]
 
 | Step | Description | Status |
 |------|-------------|--------|
-| 1 | Next.js init + TypeScript + App Router + .env.local | ✅ 2026-03-11 |
-| 2 | Steam URL parsing + SteamID resolution | ✅ 2026-03-13 |
-| 3 | Owned games + play history extraction (top 15) | ✅ 2026-03-13 |
-| 4 | Candidate games (featuredcategories → appdetails + filter) | ✅ 2026-03-13 |
-| 5 | Claude API integration | ✅ 2026-03-13 |
-| 6 | Main page UI | ✅ 2026-03-13 |
-| 7 | Result page UI (5 cards) | ✅ 2026-03-13 |
-| 8 | Supabase client + feedback route | ✅ 2026-03-13 |
-| 9 | All error codes wired | ✅ 2026-03-13 |
-| 10 | output: 'edge' + Cloudflare Pages build | ✅ 2026-03-13 |
+| 1–10 | 원본 MVP | ✅ |
 | A1 | Supabase: games_cache + user_tag_weights + feedback.tag_snapshot | ✅ 2026-03-13 |
 | A2 | DB build script (scripts/build-games-db.ts) | ✅ 2026-03-14 |
 | A3 | Candidate selection: Supabase DB query (replace Steam real-time fetch) | ⬜ |
@@ -99,18 +90,30 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY= ✅ set (.env.local + CF Pages)
 ```
 Never mock or hardcode when a key is missing — stop and ask the user.
 
+**Supabase tables:** `feedback` ✅ · `games_cache` ✅ (empty — build script not yet run) · `user_tag_weights` ✅
+
 ---
 
-## ── ACTIVE STEP: 원본 MVP 검증 완료 → Addendum 대기 ────
+## ── ACTIVE STEP: A3 준비 완료 → DB 빌드 후 시작 ────────
 
-**현재 상태:** 원본 Step 1–10 모두 구현 완료. API 키 세팅 후 end-to-end 검증 필요.
+**현재 상태:** MVP end-to-end 검증 완료 (추천 5개 + 피드백). Addendum 시작 조건 모두 충족.
 
-**Addendum 시작 조건:**
-1. ANTHROPIC_API_KEY, NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY 모두 세팅
-2. 원본 MVP 흐름 (Steam URL 입력 → 추천 5개 → 피드백) 정상 동작 확인
-3. 그 다음 A1부터 순서대로 진행
+**A3 시작 전 필수:**
+- `games_cache` 테이블에 데이터가 있어야 함 (현재 empty)
+- 빌드 스크립트 실행: `npx tsx --env-file=.env.local scripts/build-games-db.ts`
+- 스크립트 첫 실행 수 시간 소요 → 완료 후 A3 구현
 
-**Addendum 새 에러코드 (A3+ 단계에서 추가):**
+**A3 구현 범위 (SPEC.md Candidate Selection Logic):**
+1. 플레이한 게임들의 tags를 `games_cache`에서 조회
+2. playtime 가중 태그 프로필 빌드
+3. `user_tag_weights` 조회 (없으면 기본값 1.0)
+4. `games_cache` 쿼리: 보유 게임 제외 + tag overlap 점수 → top 50
+5. top 50만 appdetails 실시간 조회 (200ms delay) → 예산 필터
+6. 최종 후보 Claude에게 전달
+- `DB_NOT_READY` 에러 추가 필요 (games_cache empty 시)
+- `TAG_EXTRACTION_FAILED` 에러 추가 필요
+
+**Addendum 새 에러코드:**
 | Code | Trigger | Korean UI |
 |------|---------|-----------|
 | `DB_NOT_READY` | games_cache empty | DB가 아직 준비되지 않았어요 |
@@ -131,7 +134,12 @@ Never mock or hardcode when a key is missing — stop and ask the user.
 | Date | Change | Files |
 |------|--------|-------|
 | 2026-03-13 | Fixed '--host' → '--hostname' for Next.js dev server in IDX preview | `.idx/dev.nix`, `GEMINI.md` |
-| 2026-03-14 | Killed auto-spawned memory hogs (workerd 4GB, firebase MCP, nixd); documented in Crash Prevention + Memory Optimization sections | `HANDOVER.md` |
+| 2026-03-14 | Memory optimization: killed workerd/firebase/nixd; documented | `HANDOVER.md` |
+| 2026-03-14 | Anthropic SDK → fetch: Edge runtime 호환성 수정 | `lib/claude.ts` |
+| 2026-03-14 | MVP 검증 중 발견: Claude 응답 markdown 코드블록 wrapping → JSON.parse 실패 → 코드블록 제거 로직 추가 | `lib/claude.ts` |
+| 2026-03-14 | 한국어 지원 게임만 / 무료 게임만 필터 토글 추가 | `app/page.tsx`, `app/page.module.css`, `lib/steam.ts`, `app/api/steam/route.ts` |
+| 2026-03-14 | NO_GAMES_IN_BUDGET 에러 메시지를 활성 필터 상태에 따라 다르게 표시 | `app/page.tsx`, `app/api/steam/route.ts` |
+| 2026-03-14 | 가이드라인 점검: checkbox name 속성 추가, label disabled cursor 수정 | `app/page.tsx`, `app/page.module.css` |
 
 ---
 
