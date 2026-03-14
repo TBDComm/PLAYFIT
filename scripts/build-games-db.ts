@@ -1,5 +1,5 @@
 // scripts/build-games-db.ts
-// Populates games_cache from Steam full app list + SteamSpy tags
+// Populates games_cache from SteamSpy paginated API (1000 games/page, includes tags)
 //
 // Run:    npx tsx --env-file=.env.local scripts/build-games-db.ts
 // Resume: safe to re-run — skips entries updated within 30 days
@@ -8,21 +8,27 @@ import { createClient } from '@supabase/supabase-js'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-const STEAM_API_KEY = process.env.STEAM_API_KEY
 
-if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !STEAM_API_KEY) {
-  console.error('Missing env vars: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, STEAM_API_KEY')
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  console.error('Missing env vars: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY')
   process.exit(1)
 }
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-const DELAY_MS = 200
+const DELAY_MS = 1000 // SteamSpy rate limit: 1 req/sec
 const SKIP_IF_UPDATED_WITHIN_DAYS = 30
-const LOG_EVERY = 100
+const LOG_EVERY = 10 // log every 10 pages = every ~10,000 games
 
 function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+interface SteamSpyEntry {
+  appid: number
+  name: string
+  genre: string // comma-separated genres
+  tags: Record<string, number>
 }
 
 // Load all appids already in DB with their updated_at timestamps
@@ -50,44 +56,17 @@ async function loadExistingEntries(): Promise<Map<string, Date>> {
   return map
 }
 
-// Fetch full Steam app list
-async function fetchAllAppIds(): Promise<Array<{ appid: number; name: string }>> {
-  const res = await fetch('https://api.steampowered.com/ISteamApps/GetAppList/v2/', {
+// Fetch one page from SteamSpy (1000 games per page)
+async function fetchSteamSpyPage(page: number): Promise<SteamSpyEntry[]> {
+  const res = await fetch(`https://steamspy.com/api.php?request=all&page=${page}`, {
     headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PlayFit/1.0)' },
   })
-  if (!res.ok) throw new Error(`GetAppList HTTP ${res.status}`)
-  const data = await res.json()
-  return data.applist?.apps ?? []
-}
-
-// Fetch Steam genres for one app
-async function fetchSteamGenres(appid: number): Promise<string[]> {
-  try {
-    const res = await fetch(
-      `https://store.steampowered.com/api/appdetails?appids=${appid}&filters=genres`
-    )
-    if (!res.ok) return []
-    const data = await res.json()
-    const entry = data[appid.toString()]
-    if (!entry?.success) return []
-    return (entry.data?.genres ?? []).map((g: { description: string }) => g.description)
-  } catch {
+  if (!res.ok) {
+    console.error(`  SteamSpy page ${page} HTTP ${res.status}`)
     return []
   }
-}
-
-// Fetch SteamSpy tags for one app
-async function fetchSteamSpyTags(appid: number): Promise<Record<string, number> | null> {
-  try {
-    const res = await fetch(`https://steamspy.com/api.php?request=appdetails&appid=${appid}`)
-    if (!res.ok) return null
-    const data = await res.json()
-    // SteamSpy returns { name: "error" } or no tags when app not found
-    if (!data.tags || data.name === 'error') return null
-    return data.tags as Record<string, number>
-  } catch {
-    return null
-  }
+  const data = await res.json() as Record<string, SteamSpyEntry>
+  return Object.values(data)
 }
 
 async function main() {
@@ -95,66 +74,75 @@ async function main() {
   const existing = await loadExistingEntries()
   console.log(`Found ${existing.size} entries already in DB`)
 
-  console.log('Fetching full Steam app list...')
-  const allApps = await fetchAllAppIds()
-  console.log(`Total apps from Steam: ${allApps.length}`)
-
   const cutoff = new Date(Date.now() - SKIP_IF_UPDATED_WITHIN_DAYS * 24 * 60 * 60 * 1000)
 
-  let processed = 0
-  let inserted = 0
-  let skipped = 0
-  let failed = 0
+  let page = 0
+  let totalProcessed = 0
+  let totalInserted = 0
+  let totalSkipped = 0
+  let totalFailed = 0
 
-  for (const app of allApps) {
-    const appidStr = app.appid.toString()
+  while (true) {
+    const entries = await fetchSteamSpyPage(page)
 
-    // Skip if updated recently
-    const lastUpdated = existing.get(appidStr)
-    if (lastUpdated && lastUpdated > cutoff) {
-      skipped++
-      processed++
-      continue
+    // Empty page = no more data
+    if (entries.length === 0) {
+      console.log(`\nNo more pages at page ${page}. Done fetching.`)
+      break
     }
 
-    // Fetch Steam genres and SteamSpy tags in parallel
-    const [genres, tags] = await Promise.all([
-      fetchSteamGenres(app.appid),
-      fetchSteamSpyTags(app.appid),
-    ])
+    for (const entry of entries) {
+      const appidStr = entry.appid.toString()
 
-    // Skip if SteamSpy has no data (likely not a real game)
-    if (!tags) {
-      failed++
-    } else {
+      // Skip if updated recently
+      const lastUpdated = existing.get(appidStr)
+      if (lastUpdated && lastUpdated > cutoff) {
+        totalSkipped++
+        totalProcessed++
+        continue
+      }
+
+      // Skip if no tags (not a real game)
+      if (!entry.tags || Object.keys(entry.tags).length === 0) {
+        totalFailed++
+        totalProcessed++
+        continue
+      }
+
+      // genres: SteamSpy returns comma-separated string
+      const genres = entry.genre
+        ? entry.genre.split(',').map(g => g.trim()).filter(Boolean)
+        : []
+
       const { error } = await supabase.from('games_cache').upsert({
         appid: appidStr,
-        name: app.name,
+        name: entry.name,
         genres,
-        tags,
+        tags: entry.tags,
         updated_at: new Date().toISOString(),
       })
 
       if (error) {
-        console.error(`  [error] appid=${app.appid} "${app.name}": ${error.message}`)
-        failed++
+        console.error(`  [error] appid=${entry.appid} "${entry.name}": ${error.message}`)
+        totalFailed++
       } else {
-        inserted++
+        totalInserted++
       }
+
+      totalProcessed++
     }
 
-    processed++
-
-    if (processed % LOG_EVERY === 0) {
+    if (page % LOG_EVERY === 0) {
       console.log(
-        `  ${processed}/${allApps.length} — inserted: ${inserted} skipped: ${skipped} failed: ${failed}`
+        `  Page ${page} done — processed: ${totalProcessed} inserted: ${totalInserted} skipped: ${totalSkipped} failed: ${totalFailed}`
       )
     }
 
+    page++
     await sleep(DELAY_MS)
   }
 
-  console.log(`\nDone. processed=${processed} inserted=${inserted} skipped=${skipped} failed=${failed}`)
+  console.log(`\nDone. pages=${page} processed=${totalProcessed} inserted=${totalInserted} skipped=${totalSkipped} failed=${totalFailed}`)
 }
 
 main().catch(err => {
