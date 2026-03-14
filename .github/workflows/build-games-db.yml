@@ -1,0 +1,29 @@
+name: Build Games DB
+
+on:
+  workflow_dispatch: # 수동 실행 전용
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350 # 5시간 50분 — GitHub Actions 최대 6시간
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run build script
+        env:
+          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: npx tsx scripts/build-games-db.ts
