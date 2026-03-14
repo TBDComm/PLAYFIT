@@ -91,9 +91,9 @@ export default function ResultPage() {
                 스팀에서 보기
               </a>
 
-              <div className={styles.feedback}>
+              <div className={styles.feedback} aria-live="polite">
                 {feedbackSent[card.appid] ? (
-                  <p className={styles.feedbackThanks} aria-live="polite">피드백 감사해요</p>
+                  <p className={styles.feedbackThanks}>피드백 감사해요</p>
                 ) : (
                   <>
                     <button
