@@ -58,21 +58,40 @@ async function loadExistingEntries(): Promise<Map<string, Date>> {
   return map
 }
 
-// Phase 1: Collect all appids from SteamSpy pages
+// Phase 1: Collect all appids from SteamSpy pages (with retry on failure)
 async function collectAllAppIds(): Promise<SteamSpyListEntry[]> {
   const all: SteamSpyListEntry[] = []
   let page = 0
+  const MAX_RETRIES = 3
 
   while (true) {
-    const res = await fetch(`https://steamspy.com/api.php?request=all&page=${page}`, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PlayFit/1.0)' },
-    })
-    if (!res.ok) {
-      console.error(`  SteamSpy page ${page} HTTP ${res.status} — stopping`)
+    let entries: SteamSpyListEntry[] = []
+    let success = false
+
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        const res = await fetch(`https://steamspy.com/api.php?request=all&page=${page}`, {
+          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PlayFit/1.0)' },
+        })
+        if (!res.ok) {
+          console.error(`  Page ${page} HTTP ${res.status} (attempt ${attempt}) — retrying...`)
+          await sleep(DELAY_MS * attempt * 3)
+          continue
+        }
+        const data = await res.json() as Record<string, SteamSpyListEntry>
+        entries = Object.values(data)
+        success = true
+        break
+      } catch (e) {
+        console.error(`  Page ${page} parse error (attempt ${attempt}): ${e} — retrying...`)
+        await sleep(DELAY_MS * attempt * 3)
+      }
+    }
+
+    if (!success) {
+      console.error(`  Page ${page} failed after ${MAX_RETRIES} attempts — stopping`)
       break
     }
-    const data = await res.json() as Record<string, SteamSpyListEntry>
-    const entries = Object.values(data)
     if (entries.length === 0) break
 
     all.push(...entries)
