@@ -52,7 +52,7 @@ async function loadExistingEntries(): Promise<Map<string, Date>> {
 
 // Fetch full Steam app list
 async function fetchAllAppIds(): Promise<Array<{ appid: number; name: string }>> {
-  const res = await fetch(`https://api.steampowered.com/ISteamApps/GetAppList/v2/?key=${STEAM_API_KEY}`)
+  const res = await fetch('https://api.steampowered.com/ISteamApps/GetAppList/v2/')
   if (!res.ok) throw new Error(`GetAppList HTTP ${res.status}`)
   const data = await res.json()
   return data.applist?.apps ?? []
