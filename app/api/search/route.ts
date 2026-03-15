@@ -4,9 +4,8 @@ import { supabase } from '@/lib/supabase'
 export const runtime = 'edge'
 
 export async function GET(req: NextRequest) {
-  const url = new URL(req.url)
-  const q = url.searchParams.get('q')?.trim()
-  if (!q) return NextResponse.json({ debug: 'q is empty', received: url.searchParams.get('q') })
+  const q = new URL(req.url).searchParams.get('q')?.trim()
+  if (!q) return NextResponse.json([])
 
   const { data, error } = await supabase
     .from('games_cache')
@@ -14,7 +13,9 @@ export async function GET(req: NextRequest) {
     .ilike('name', `%${q}%`)
     .limit(10)
 
-  if (error) return NextResponse.json({ debug: 'supabase_error', error: error.message, code: error.code, q }, { status: 500 })
+  if (error) return NextResponse.json([], { status: 500 })
 
-  return NextResponse.json({ debug: 'ok', q, count: data?.length ?? 0, data: data ?? [] })
+  return NextResponse.json(
+    (data ?? []).map(row => ({ appid: Number(row.appid), name: row.name as string }))
+  )
 }
