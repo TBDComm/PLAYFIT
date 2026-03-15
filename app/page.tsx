@@ -1,9 +1,11 @@
 'use client'
 
-import { useState, type FormEvent } from 'react'
+import { useState, useRef, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import type { RecommendationCard, ErrorCode } from '@/types'
 import styles from './page.module.css'
+
+type SearchResult = { appid: number; name: string }
 
 const ERROR_MESSAGES: Record<ErrorCode, string> = {
   PRIVATE_PROFILE:        '스팀 프로필을 공개로 설정해주세요',
@@ -34,14 +36,59 @@ export default function Home() {
   const [freeOnly, setFreeOnly] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [dropdowns, setDropdowns] = useState<Array<SearchResult[] | null>>(Array(5).fill(null))
+  const [rowErrors, setRowErrors] = useState<Array<string | null>>(Array(5).fill(null))
+  const debounceRefs = useRef<Array<ReturnType<typeof setTimeout> | null>>(Array(5).fill(null))
 
-  function updateManualGame(idx: number, field: 'name' | 'playtime', value: string) {
+  function updateManualGame(idx: number, field: 'playtime', value: string) {
     setManualGames(prev => prev.map((g, i) => i === idx ? { ...g, [field]: value } : g))
+  }
+
+  function handleNameChange(idx: number, value: string) {
+    setManualGames(prev => prev.map((g, i) => i === idx ? { ...g, name: value, appid: null } : g))
+    setRowErrors(prev => prev.map((e, i) => i === idx ? null : e))
+    if (!value.trim()) {
+      setDropdowns(prev => prev.map((d, i) => i === idx ? null : d))
+      if (debounceRefs.current[idx]) clearTimeout(debounceRefs.current[idx]!)
+      debounceRefs.current[idx] = null
+      return
+    }
+    if (debounceRefs.current[idx]) clearTimeout(debounceRefs.current[idx]!)
+    debounceRefs.current[idx] = setTimeout(() => { void fetchSearch(idx, value) }, 300)
+  }
+
+  async function fetchSearch(idx: number, query: string) {
+    try {
+      const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`)
+      const data = await res.json() as SearchResult[]
+      setDropdowns(prev => prev.map((d, i) => i === idx ? data : d))
+    } catch {
+      // silently fail — autocomplete is non-critical
+    }
+  }
+
+  function selectGame(idx: number, appid: number, name: string) {
+    setManualGames(prev => prev.map((g, i) => i === idx ? { ...g, appid, name } : g))
+    setDropdowns(prev => prev.map((d, i) => i === idx ? null : d))
+    setRowErrors(prev => prev.map((e, i) => i === idx ? null : e))
+  }
+
+  function handleNameBlur(idx: number) {
+    // Delay close so onMouseDown on dropdown items fires before blur removes them
+    setTimeout(() => {
+      setDropdowns(prev => prev.map((d, i) => i === idx ? null : d))
+    }, 150)
+    const game = manualGames[idx]
+    if (game.name.trim() && game.appid === null) {
+      setRowErrors(prev => prev.map((e, i) => i === idx ? '드롭다운에서 게임을 선택해주세요' : e))
+    }
   }
 
   function switchMode(next: 'steam' | 'manual') {
     setMode(next)
     setError(null)
+    setDropdowns(Array(5).fill(null))
+    setRowErrors(Array(5).fill(null))
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -105,7 +152,23 @@ export default function Home() {
         ))
         router.push('/result')
       } else {
-        const filledGames = manualGames.filter(g => g.name.trim() && g.playtime.trim())
+        // Block submit if any filled row has no appid (text typed but not selected from dropdown)
+        const newRowErrors: Array<string | null> = Array(5).fill(null)
+        let hasRowError = false
+        for (let i = 0; i < manualGames.length; i++) {
+          const g = manualGames[i]
+          if (g.name.trim() && g.appid === null) {
+            newRowErrors[i] = '드롭다운에서 게임을 선택해주세요'
+            hasRowError = true
+          }
+        }
+        if (hasRowError) {
+          setRowErrors(newRowErrors)
+          setLoading(false)
+          return
+        }
+
+        const filledGames = manualGames.filter(g => g.name.trim() && g.appid !== null && g.playtime.trim())
         if (filledGames.length === 0) {
           setError('게임을 최소 1개 이상 입력해주세요')
           return
@@ -159,7 +222,7 @@ export default function Home() {
 
   const canSubmit = mode === 'steam'
     ? !!url.trim()
-    : manualGames.some(g => g.name.trim() && g.playtime.trim())
+    : manualGames.some(g => g.name.trim() && g.appid !== null && g.playtime.trim())
 
   return (
     <main className={styles.page}>
@@ -205,33 +268,61 @@ export default function Home() {
               </span>
               <div className={styles.manualRows} role="group" aria-label="게임 목록">
                 {manualGames.map((g, i) => (
-                  <div key={i} className={styles.manualRow}>
-                    <span className={styles.manualRowNum} aria-hidden="true">{i + 1}</span>
-                    <input
-                      type="text"
-                      name={`game-name-${i}`}
-                      className={styles.input}
-                      placeholder="게임 이름 검색…"
-                      value={g.name}
-                      onChange={e => updateManualGame(i, 'name', e.target.value)}
-                      autoComplete="off"
-                      spellCheck={false}
-                      disabled={loading}
-                      aria-label={`게임 ${i + 1} 이름`}
-                    />
-                    <input
-                      type="number"
-                      name={`game-playtime-${i}`}
-                      className={`${styles.input} ${styles.inputNarrow}`}
-                      placeholder="시간…"
-                      value={g.playtime}
-                      onChange={e => updateManualGame(i, 'playtime', e.target.value)}
-                      autoComplete="off"
-                      inputMode="decimal"
-                      min={0}
-                      disabled={loading}
-                      aria-label={`게임 ${i + 1} 플레이 시간 (시간)`}
-                    />
+                  <div key={i}>
+                    <div className={styles.manualRow}>
+                      <span className={styles.manualRowNum} aria-hidden="true">{i + 1}</span>
+                      <div className={styles.dropdownWrapper}>
+                        <input
+                          type="text"
+                          name={`game-name-${i}`}
+                          className={styles.input}
+                          placeholder="게임 이름 검색…"
+                          value={g.name}
+                          onChange={e => handleNameChange(i, e.target.value)}
+                          onBlur={() => handleNameBlur(i)}
+                          autoComplete="off"
+                          spellCheck={false}
+                          disabled={loading}
+                          aria-label={`게임 ${i + 1} 이름`}
+                          aria-autocomplete="list"
+                          aria-expanded={!!dropdowns[i]?.length}
+                        />
+                        {!!dropdowns[i]?.length && (
+                          <div className={styles.dropdown} role="listbox" aria-label={`게임 ${i + 1} 검색 결과`}>
+                            {dropdowns[i]!.map(item => (
+                              <button
+                                key={item.appid}
+                                type="button"
+                                className={styles.dropdownItem}
+                                role="option"
+                                aria-selected={false}
+                                onMouseDown={() => selectGame(i, item.appid, item.name)}
+                              >
+                                {item.name}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <input
+                        type="number"
+                        name={`game-playtime-${i}`}
+                        className={`${styles.input} ${styles.inputNarrow}`}
+                        placeholder="시간…"
+                        value={g.playtime}
+                        onChange={e => updateManualGame(i, 'playtime', e.target.value)}
+                        autoComplete="off"
+                        inputMode="decimal"
+                        min={0}
+                        disabled={loading}
+                        aria-label={`게임 ${i + 1} 플레이 시간 (시간)`}
+                      />
+                    </div>
+                    {rowErrors[i] && (
+                      <p className={styles.rowError} role="alert" aria-live="polite">
+                        {rowErrors[i]}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>
@@ -287,7 +378,7 @@ export default function Home() {
             className={styles.button}
             disabled={loading || !canSubmit}
           >
-            {loading ? '분석 중…' : '내 게임 찾기'}
+            {loading ? (mode === 'manual' ? '취향 분석 중…' : '플레이 기록 분석 중…') : '내 게임 찾기'}
           </button>
         </form>
 

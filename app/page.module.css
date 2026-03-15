@@ -297,6 +297,61 @@
   }
 }
 
+/* ===== Autocomplete dropdown ===== */
+
+.dropdownWrapper {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  z-index: 10;
+  max-height: 11rem;
+  overflow-y: auto;
+}
+
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: 0.625rem 1rem;
+  background: none;
+  border: none;
+  text-align: left;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background-color 0.1s ease;
+}
+
+.dropdownItem:hover {
+  background-color: var(--bg-elevated);
+}
+
+.dropdownItem:focus-visible {
+  outline: none;
+  background-color: var(--bg-elevated);
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.rowError {
+  margin-top: 0.125rem;
+  font-size: 0.75rem;
+  color: var(--error);
+}
+
 /* ===== Error ===== */
 
 .error {

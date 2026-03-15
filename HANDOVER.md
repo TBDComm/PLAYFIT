@@ -64,7 +64,7 @@ Next action: [exactly what to do next to resume]
 | A4 | Claude prompt → tag-based matching | ✅ 2026-03-14 |
 | A5 | Feedback → user_tag_weights weight update logic | ✅ 2026-03-14 |
 | A6 | Manual input mode UI (main page toggle + form) | ✅ 2026-03-15 |
-| A7 | /api/search autocomplete route | ⬜ |
+| A7 | /api/search autocomplete route | ✅ 2026-03-15 |
 | A8 | /api/recommend: handle both Steam + manual input modes | ⬜ |
 | A9 | Test: Steam mode end-to-end | ✅ 2026-03-15 |
 | A10 | Test: Manual mode end-to-end | ⬜ |
@@ -76,15 +76,14 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: A7 — /api/search autocomplete route ──────────────────────
+## ── ACTIVE STEP: A8 — /api/recommend: handle both Steam + manual modes ──────
 
-A6 ✅ complete (2026-03-15). Read `SPEC.md §A7` before starting.
+A7 ✅ complete (2026-03-15). Read `SPEC.md §A8` before starting.
 
-**Key design decisions recorded in SPEC.md §A7:**
-- Dropdown selection is mandatory — text without appid = invalid
-- Inline error on blur/submit: "드롭다운에서 게임을 선택해주세요"
-- Empty rows skipped, no error
-- Manual mode disclaimer already in place (A6)
+**A7 implementation summary:**
+- `app/api/search/route.ts` — GET /api/search?q={query}, ILIKE search on games_cache, limit 10
+- `app/page.tsx` — debounced autocomplete (300ms), dropdown select, blur/submit validation, rowErrors
+- `app/page.module.css` — dropdown, dropdownItem, rowError styles
 
 ---
 
@@ -103,6 +102,7 @@ _2026-03-14 entries → HANDOVER-archive.md_
 | 2026-03-15 | Pre-A6: 2-button feedback (remove neutral), playtime sqrt+normalize scoring | `types/index.ts`, `app/result/page.tsx`, `app/api/feedback/route.ts`, `app/api/recommend/route.ts`, Supabase score_candidates RPC |
 | 2026-03-15 | A6: manual mode toggle + 5-row form + manual mode disclaimer notice | `app/page.tsx`, `app/page.module.css` |
 | 2026-03-15 | Fix 3 guideline violations: label→span, flex min-width, prefers-reduced-motion | `app/page.tsx`, `app/page.module.css` |
+| 2026-03-15 | A7: /api/search route + autocomplete UI + blur/submit validation | `app/api/search/route.ts`, `app/page.tsx`, `app/page.module.css` |
 
 ---
 
