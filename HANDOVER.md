@@ -84,6 +84,13 @@ A7 ✅ complete (2026-03-15). Read `SPEC.md §A8` before starting.
 - `app/api/search/route.ts` — GET /api/search?q={query}, ILIKE search on games_cache, limit 10
 - `app/page.tsx` — debounced autocomplete (300ms), dropdown select, blur/submit validation, rowErrors
 - `app/page.module.css` — dropdown, dropdownItem, rowError styles
+- **Bug fixed:** `req.nextUrl.searchParams` → `new URL(req.url).searchParams` (CF edge compat)
+
+**A7-1 — 한국어 게임 이름 검색 (pending):**
+- 현재 ILIKE는 영문 이름만 검색 가능
+- 목표: "카스", "카운터 스트라이크" 같은 한국어 입력으로도 매칭
+- 구현 방향: `games_cache`에 `name_ko TEXT` 컬럼 추가 → 인기 게임 한국어 별칭 등록 → `name ILIKE OR name_ko ILIKE`
+- 우선순위: A8, A10 이후 구현
 
 ---
 
@@ -103,6 +110,7 @@ _2026-03-14 entries → HANDOVER-archive.md_
 | 2026-03-15 | A6: manual mode toggle + 5-row form + manual mode disclaimer notice | `app/page.tsx`, `app/page.module.css` |
 | 2026-03-15 | Fix 3 guideline violations: label→span, flex min-width, prefers-reduced-motion | `app/page.tsx`, `app/page.module.css` |
 | 2026-03-15 | A7: /api/search route + autocomplete UI + blur/submit validation | `app/api/search/route.ts`, `app/page.tsx`, `app/page.module.css` |
+| 2026-03-15 | Fix: req.nextUrl → new URL(req.url) for CF edge runtime compat | `app/api/search/route.ts` |
 
 ---
 

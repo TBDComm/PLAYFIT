@@ -39,6 +39,7 @@ export default function Home() {
   const [dropdowns, setDropdowns] = useState<Array<SearchResult[] | null>>(Array(5).fill(null))
   const [rowErrors, setRowErrors] = useState<Array<string | null>>(Array(5).fill(null))
   const debounceRefs = useRef<Array<ReturnType<typeof setTimeout> | null>>(Array(5).fill(null))
+  const nameInputRefs = useRef<Array<HTMLInputElement | null>>(Array(5).fill(null))
 
   function updateManualGame(idx: number, field: 'playtime', value: string) {
     setManualGames(prev => prev.map((g, i) => i === idx ? { ...g, [field]: value } : g))
@@ -165,6 +166,8 @@ export default function Home() {
         if (hasRowError) {
           setRowErrors(newRowErrors)
           setLoading(false)
+          const firstErrorIdx = newRowErrors.findIndex(e => e !== null)
+          if (firstErrorIdx >= 0) nameInputRefs.current[firstErrorIdx]?.focus()
           return
         }
 
@@ -273,6 +276,7 @@ export default function Home() {
                       <span className={styles.manualRowNum} aria-hidden="true">{i + 1}</span>
                       <div className={styles.dropdownWrapper}>
                         <input
+                          ref={el => { nameInputRefs.current[i] = el }}
                           type="text"
                           name={`game-name-${i}`}
                           className={styles.input}
@@ -319,7 +323,7 @@ export default function Home() {
                       />
                     </div>
                     {rowErrors[i] && (
-                      <p className={styles.rowError} role="alert" aria-live="polite">
+                      <p className={styles.rowError} role="alert">
                         {rowErrors[i]}
                       </p>
                     )}
@@ -383,7 +387,7 @@ export default function Home() {
         </form>
 
         {error && (
-          <p className={styles.error} role="alert" aria-live="polite">
+          <p className={styles.error} role="alert">
             {error}
           </p>
         )}
