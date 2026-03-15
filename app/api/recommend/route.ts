@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 
     // Score candidates from DB (exclude all owned games)
     const excludeAppIds = (ownedAppIds.length > 0 ? ownedAppIds : playedAppIds).map(String)
-    const scored = await scoreCandidates(tagProfile, userTagWeights, excludeAppIds, 50)
+    const scored = await scoreCandidates(tagProfile, userTagWeights, excludeAppIds, 40)
 
     // Fetch real-time prices for top candidates, apply filters (200ms delay per rate limit)
     interface FilteredCandidate {
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     const candidates: FilteredCandidate[] = []
 
     for (const s of scored) {
-      if (candidates.length >= 30) break
+      if (candidates.length >= 20) break
 
       const details = await getGameDetails(Number(s.appid))
       await sleep(200)
