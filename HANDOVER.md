@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 120/200 lines — OK**
+📏 **File health: 126/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -65,6 +65,7 @@ Next action: [exactly what to do next to resume]
 | A5 | Feedback → user_tag_weights weight update logic | ✅ 2026-03-14 |
 | A6 | Manual input mode UI (main page toggle + form) | ✅ 2026-03-15 |
 | A7 | /api/search autocomplete route | ✅ 2026-03-15 |
+| A7-1 | Korean game name search (name_ko column + alias mapping) | ⬜ after A10 |
 | A8 | /api/recommend: handle both Steam + manual input modes | ✅ 2026-03-15 |
 | A9 | Test: Steam mode end-to-end | ✅ 2026-03-15 |
 | A10 | Test: Manual mode end-to-end | ⬜ |
@@ -78,19 +79,22 @@ Next action: [exactly what to do next to resume]
 
 ## ── ACTIVE STEP: A10 — Test: Manual mode end-to-end ──────────────────────
 
-A8 ✅ complete (2026-03-15). A7+A8 구현 완료, 수동 모드 E2E 테스트 진행 중.
+**Prerequisites:** A6 ✅ · A7 ✅ · A8 ✅ — 모두 배포 완료. 테스트 = CF Pages 브라우저에서 직접.
 
-**A7 implementation summary:**
-- `app/api/search/route.ts` — GET /api/search?q={query}, ILIKE search on games_cache, limit 10
-- `app/page.tsx` — debounced autocomplete (300ms), dropdown select, blur/submit validation, rowErrors
-- `app/page.module.css` — dropdown, dropdownItem, rowError styles
-- **Bug fixed:** `req.nextUrl.searchParams` → `new URL(req.url).searchParams` (CF edge compat)
+**Test checklist (user runs in browser):**
+1. 수동 모드 토글 클릭 → 5행 입력 폼 표시 확인
+2. 게임 이름 입력 → 300ms 후 드롭다운 표시 확인
+3. 드롭다운 선택 없이 blur → 인라인 에러 "드롭다운에서 게임을 선택해주세요" 확인
+4. 유효한 게임 1개 이상 (이름+appid+플레이시간) 입력 후 제출
+5. 추천 결과 5개 카드 표시 확인 (게임명, 이유, 가격, 스팀 링크)
+6. 피드백 버튼 클릭 → "피드백 감사해요" 표시 확인
+7. Supabase `feedback` 테이블에 행 삽입 확인 (steam_id = null, tag_weights 업데이트 없음)
 
-**A7-1 — 한국어 게임 이름 검색 (pending):**
-- 현재 ILIKE는 영문 이름만 검색 가능
-- 목표: "카스", "카운터 스트라이크" 같은 한국어 입력으로도 매칭
-- 구현 방향: `games_cache`에 `name_ko TEXT` 컬럼 추가 → 인기 게임 한국어 별칭 등록 → `name ILIKE OR name_ko ILIKE`
-- 우선순위: A8, A10 이후 구현
+**Files to fix if bugs found:** `app/page.tsx`, `app/api/recommend/route.ts`, `app/api/search/route.ts`
+
+**Scope:** 구현 없음 — 버그 발견 시 수정만. 새 기능 추가 금지.
+
+**After completing:** A10 ✅ 마크 → SPEC.md §B1 읽고 Active Step에 인라인 복사 → B1 시작.
 
 ---
 
