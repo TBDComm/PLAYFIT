@@ -23,7 +23,7 @@ export default function ResultPage() {
     }
   }, [router])
 
-  function handleFeedback(card: RecommendationCard, rating: 'positive' | 'neutral' | 'negative') {
+  function handleFeedback(card: RecommendationCard, rating: 'positive' | 'negative') {
     setFeedbackSent(prev => ({ ...prev, [card.appid]: true }))
 
     const steamId = sessionStorage.getItem('playfit_steam_id') ?? undefined
@@ -99,12 +99,6 @@ export default function ResultPage() {
                       onClick={() => handleFeedback(card, 'positive')}
                     >
                       잘 맞아요
-                    </button>
-                    <button
-                      className={styles.feedbackBtn}
-                      onClick={() => handleFeedback(card, 'neutral')}
-                    >
-                      한번 해볼게요
                     </button>
                     <button
                       className={`${styles.feedbackBtn} ${styles.feedbackBtnNeg}`}

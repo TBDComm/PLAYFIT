@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     const game_name = typeof body.game_name === 'string' ? body.game_name : ''
     const steam_id = typeof body.steam_id === 'string' ? body.steam_id : ''
     const play_profile = Array.isArray(body.play_profile) ? body.play_profile : []
-    const rating = (body.rating === 'positive' || body.rating === 'negative' || body.rating === 'neutral')
+    const rating = (body.rating === 'positive' || body.rating === 'negative')
       ? body.rating as FeedbackRating
       : null
     const tag_snapshot = Array.isArray(body.tag_snapshot)
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'INVALID_INPUT' }, { status: 400 })
     }
 
-    const weightFetchNeeded = rating !== 'neutral' && !!steam_id && tag_snapshot.length > 0
+    const weightFetchNeeded = !!rating && !!steam_id && tag_snapshot.length > 0
 
     // Insert feedback and fetch current weights in parallel
     const [insertResult, existingWeights] = await Promise.all([

@@ -42,7 +42,14 @@ export async function POST(request: NextRequest) {
       const tags = tagsMap.get(game.appid)
       if (!tags) continue
       for (const [tag, voteCount] of Object.entries(tags)) {
-        tagProfile[tag] = (tagProfile[tag] ?? 0) + voteCount * game.playtime_hours
+        tagProfile[tag] = (tagProfile[tag] ?? 0) + voteCount * Math.sqrt(game.playtime_hours)
+      }
+    }
+
+    const maxProfileVal = Math.max(...Object.values(tagProfile))
+    if (maxProfileVal > 0) {
+      for (const tag of Object.keys(tagProfile)) {
+        tagProfile[tag] = tagProfile[tag] / maxProfileVal
       }
     }
 

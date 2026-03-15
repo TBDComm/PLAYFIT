@@ -76,7 +76,7 @@ export type ErrorCode =
 
 // ===== Feedback types =====
 
-export type FeedbackRating = 'positive' | 'neutral' | 'negative'
+export type FeedbackRating = 'positive' | 'negative'
 
 export interface FeedbackPayload {
   game_id: string
