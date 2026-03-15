@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 113/200 lines — OK**
+📏 **File health: 120/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -65,7 +65,7 @@ Next action: [exactly what to do next to resume]
 | A5 | Feedback → user_tag_weights weight update logic | ✅ 2026-03-14 |
 | A6 | Manual input mode UI (main page toggle + form) | ✅ 2026-03-15 |
 | A7 | /api/search autocomplete route | ✅ 2026-03-15 |
-| A8 | /api/recommend: handle both Steam + manual input modes | ⬜ |
+| A8 | /api/recommend: handle both Steam + manual input modes | ✅ 2026-03-15 |
 | A9 | Test: Steam mode end-to-end | ✅ 2026-03-15 |
 | A10 | Test: Manual mode end-to-end | ⬜ |
 | B1–B10 | Authentication (email/Google/Steam login, user_profiles, session) | ⬜ pending A10 |
@@ -76,9 +76,9 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: A8 — /api/recommend: handle both Steam + manual modes ──────
+## ── ACTIVE STEP: A10 — Test: Manual mode end-to-end ──────────────────────
 
-A7 ✅ complete (2026-03-15). Read `SPEC.md §A8` before starting.
+A8 ✅ complete (2026-03-15). A7+A8 구현 완료, 수동 모드 E2E 테스트 진행 중.
 
 **A7 implementation summary:**
 - `app/api/search/route.ts` — GET /api/search?q={query}, ILIKE search on games_cache, limit 10
@@ -111,6 +111,8 @@ _2026-03-14 entries → HANDOVER-archive.md_
 | 2026-03-15 | Fix 3 guideline violations: label→span, flex min-width, prefers-reduced-motion | `app/page.tsx`, `app/page.module.css` |
 | 2026-03-15 | A7: /api/search route + autocomplete UI + blur/submit validation | `app/api/search/route.ts`, `app/page.tsx`, `app/page.module.css` |
 | 2026-03-15 | Fix: req.nextUrl → new URL(req.url) for CF edge runtime compat | `app/api/search/route.ts` |
+| 2026-03-15 | A8: /api/recommend handles manualGames body shape (manual mode) | `app/api/recommend/route.ts` |
+| 2026-03-15 | Fix 4 guideline violations: themeColor, alert/aria-live, focus-first-error, dead CSS | `app/layout.tsx`, `app/page.tsx`, `app/result/page.module.css` |
 
 ---
 

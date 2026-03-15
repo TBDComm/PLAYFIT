@@ -12,15 +12,28 @@ export async function POST(request: NextRequest) {
       steamId?: unknown
       playHistory?: unknown
       ownedAppIds?: unknown
+      manualGames?: unknown
       budget?: unknown
       freeOnly?: unknown
     }
 
-    const steamId = typeof body.steamId === 'string' ? body.steamId : ''
-    const playHistory = Array.isArray(body.playHistory) ? body.playHistory as PlayHistory[] : []
-    const ownedAppIds = Array.isArray(body.ownedAppIds) ? body.ownedAppIds as number[] : []
     const freeOnly = body.freeOnly === true
     const budget = !freeOnly && typeof body.budget === 'number' ? body.budget : undefined
+
+    let steamId = ''
+    let playHistory: PlayHistory[] = []
+    let ownedAppIds: number[] = []
+
+    if (Array.isArray(body.manualGames)) {
+      // Manual mode: use provided games directly as play history
+      playHistory = (body.manualGames as { appid: number; name: string; playtime_hours: number }[])
+        .map(g => ({ name: g.name, playtime_hours: g.playtime_hours, appid: g.appid }))
+    } else {
+      // Steam mode
+      steamId = typeof body.steamId === 'string' ? body.steamId : ''
+      playHistory = Array.isArray(body.playHistory) ? body.playHistory as PlayHistory[] : []
+      ownedAppIds = Array.isArray(body.ownedAppIds) ? body.ownedAppIds as number[] : []
+    }
 
     // Check DB is ready
     const dbReady = await isDbReady()
