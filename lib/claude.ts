@@ -27,7 +27,7 @@ ${JSON.stringify(candidates)}
 
 Rules:
 - Select exactly 5 games with highest tag overlap to user history
-- Write recommendation reason in 1-2 Korean sentences
+- Write recommendation reason in 1 short Korean sentence
 - Reference specific games from user history in the reason
 - Never mention popularity or trending
 - Never recommend games the user already owns
@@ -45,7 +45,7 @@ Response format:
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 1024,
+        max_tokens: 500,
         system: SYSTEM_PROMPT,
         messages: [{ role: 'user', content: userPrompt }],
       }),
