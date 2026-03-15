@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
     .ilike('name', `%${q}%`)
     .limit(10)
 
-  if (error) return NextResponse.json([], { status: 500 })
+  if (error) return NextResponse.json({ error: error.message, code: error.code }, { status: 500 })
 
   return NextResponse.json(data ?? [])
 }
