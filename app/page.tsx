@@ -200,9 +200,9 @@ export default function Home() {
             </div>
           ) : (
             <div className={styles.inputWrapper}>
-              <label className={styles.label}>
+              <span className={styles.label}>
                 플레이한 게임 입력 (최대 5개)
-              </label>
+              </span>
               <div className={styles.manualRows} role="group" aria-label="게임 목록">
                 {manualGames.map((g, i) => (
                   <div key={i} className={styles.manualRow}>

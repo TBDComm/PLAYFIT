@@ -228,6 +228,11 @@
   gap: 0.5rem;
 }
 
+.manualRow .input:not(.inputNarrow) {
+  flex: 1;
+  min-width: 0;
+}
+
 .manualRowNum {
   font-size: 0.6875rem;
   font-weight: 700;
@@ -277,6 +282,12 @@
 .button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button:active:not(:disabled) {
+    transform: none;
+  }
 }
 
 /* ===== Error ===== */
