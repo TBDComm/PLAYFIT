@@ -1,24 +1,18 @@
 export const runtime = 'edge'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { parseSteamUrl, resolveVanityUrl, getOwnedGames, getFeaturedAppIds, getCandidateGames } from '@/lib/steam'
+import { parseSteamUrl, resolveVanityUrl, getOwnedGames } from '@/lib/steam'
 import type { ErrorCode } from '@/types'
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json() as { url?: unknown; budget?: unknown; korean_only?: unknown; free_only?: unknown }
+    const body = await request.json() as { url?: unknown }
     const url = typeof body.url === 'string' ? body.url.trim() : ''
-    const freeOnly = body.free_only === true
-    const budget = !freeOnly && typeof body.budget === 'number' ? body.budget : undefined
-    const koreanOnly = body.korean_only === true
 
     const parsed = parseSteamUrl(url)
     if (parsed.type === 'invalid') {
       return NextResponse.json({ error: 'INVALID_URL' satisfies ErrorCode }, { status: 400 })
     }
-
-    // Start featured categories fetch immediately — independent of steamId
-    const featuredPromise = getFeaturedAppIds()
 
     const steamId = parsed.type === 'steamid'
       ? parsed.steamId
@@ -28,24 +22,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'INVALID_URL' satisfies ErrorCode }, { status: 400 })
     }
 
-    // Owned games + featured categories in parallel
-    const [playHistoryResult, featuredIds] = await Promise.all([
-      getOwnedGames(steamId),
-      featuredPromise,
-    ])
+    const ownedGamesResult = await getOwnedGames(steamId)
 
-    if (playHistoryResult === 'PRIVATE_PROFILE' || playHistoryResult === 'INSUFFICIENT_HISTORY') {
-      return NextResponse.json({ error: playHistoryResult satisfies ErrorCode }, { status: 400 })
+    if (ownedGamesResult === 'PRIVATE_PROFILE' || ownedGamesResult === 'INSUFFICIENT_HISTORY') {
+      return NextResponse.json({ error: ownedGamesResult satisfies ErrorCode }, { status: 400 })
     }
 
-    const ownedAppIds = new Set(playHistoryResult.map(g => g.appid))
-    const candidates = await getCandidateGames(featuredIds, ownedAppIds, budget, koreanOnly, freeOnly)
-
-    if (candidates === 'NO_GAMES_IN_BUDGET') {
-      return NextResponse.json({ error: 'NO_GAMES_IN_BUDGET' satisfies ErrorCode, filters: { budget, freeOnly, koreanOnly } }, { status: 400 })
-    }
-
-    return NextResponse.json({ steamId, playHistory: playHistoryResult, candidates })
+    return NextResponse.json({ steamId, playHistory: ownedGamesResult.playHistory, ownedAppIds: ownedGamesResult.ownedAppIds })
   } catch {
     return NextResponse.json({ error: 'GENERAL_ERROR' satisfies ErrorCode }, { status: 500 })
   }

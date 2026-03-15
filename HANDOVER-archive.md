@@ -1,11 +1,30 @@
 # HANDOVER Archive
 
+## A5 — 2026-03-14 — Feedback tag weight update
+- Files: `types/index.ts`, `app/api/recommend/route.ts`, `app/api/feedback/route.ts`, `app/result/page.tsx`
+- `tag_snapshot: string[]` added to `RecommendationCard` + `FeedbackPayload`
+- `/api/feedback`: insert + weight fetch in parallel; positive → +0.2 (cap 3.0, insert 1.2); negative → -0.3 (floor 0.1, insert 0.7); neutral → no change
+- `result/page.tsx`: sends `tag_snapshot` in feedback payload
+
+## A3+A4 — 2026-03-14 — DB-based candidate selection + tag-based Claude prompt
+- Files: `types/index.ts`, `lib/supabase.ts`, `lib/steam.ts`, `lib/claude.ts`, `app/api/steam/route.ts`, `app/api/recommend/route.ts`, `app/page.tsx`
+- `/api/steam` simplified: URL resolve + getOwnedGames only → `{ steamId, playHistory }`
+- `/api/recommend` pipeline: isDbReady → getTagsForGames + getUserTagWeights (parallel) → tagProfile → scoreCandidates (RPC) → getGameDetails top50 → filter → Claude (top_tags) → cards
+- Claude prompt: tag-based, top_tags instead of genres; budget/freeOnly/koreanOnly moved to recommend call
+- Requires `score_candidates` RPC + GIN index in Supabase
+
+## A2 — 2026-03-14 — DB build script
+- Files: `scripts/build-games-db.ts` (new)
+- Run: `npx tsx --env-file=.env.local scripts/build-games-db.ts`
+- SteamSpy paginated API → individual appdetails per game; 300ms delay; resumable (skips if updated within 30 days)
+- Upserts to `games_cache`: appid, name, genres TEXT[], tags JSONB; logs every 1000 games; on failure: log + skip
+
 ## A1 — 2026-03-13 — Supabase schema
 - Files: Supabase SQL migration (manual)
 - Tables: `games_cache` (appid, name, genres TEXT[], tags JSONB), `user_tag_weights` (steam_id, tag, weight), `feedback` (+ tag_snapshot column)
 - All tables created in Supabase dashboard; no local migration file
 
-## Step 10 — 2026-03-13 — Cloudflare Pages 배포 설정
+## Step 10 — 2026-03-13 — Cloudflare Pages deploy setup
 - Files: `package.json`, `next.config.js`, `app/api/steam/route.ts`, `wrangler.toml`
 - Installed: `@cloudflare/next-on-pages`, `wrangler`
 - Added `export const runtime = 'edge'` to `/api/steam` (all subsequent API routes also need this)

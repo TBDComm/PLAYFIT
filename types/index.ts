@@ -14,15 +14,24 @@ export interface PlayHistory {
   appid: number
 }
 
-/** Candidate game after appdetails filtering */
-export interface GameCandidate {
+/** Real-time game details fetched from Steam appdetails */
+export interface GameDetails {
   appid: number
   name: string
   price_krw: number
   is_free: boolean
-  genres: string[]
   metacritic_score?: number
   supports_korean: boolean
+}
+
+// ===== Supabase types =====
+
+/** Candidate game scored by tag overlap from games_cache RPC */
+export interface ScoredCandidate {
+  appid: string
+  name: string
+  tags: Record<string, number>
+  score: number
 }
 
 // ===== Claude API types =====
@@ -50,6 +59,7 @@ export interface RecommendationCard {
   metacritic_score?: number
   supports_korean: boolean
   store_url: string
+  tag_snapshot: string[]
 }
 
 // ===== Error types =====
@@ -62,6 +72,9 @@ export type ErrorCode =
   | 'AI_PARSE_FAILURE'
   | 'INVALID_URL'
   | 'GENERAL_ERROR'
+  | 'DB_NOT_READY'
+  | 'GAME_NOT_FOUND'
+  | 'TAG_EXTRACTION_FAILED'
 
 // ===== Feedback types =====
 
@@ -73,4 +86,5 @@ export interface FeedbackPayload {
   steam_id: string
   play_profile: { name: string; playtime_hours: number }[]
   rating: FeedbackRating
+  tag_snapshot: string[]
 }

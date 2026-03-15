@@ -42,6 +42,7 @@ export default function ResultPage() {
         steam_id: steamId,
         play_profile: playProfile,
         rating,
+        tag_snapshot: card.tag_snapshot,
       }),
     }).catch(() => { /* silent fail */ })
   }
@@ -52,9 +53,9 @@ export default function ResultPage() {
     <main className={styles.page}>
       <div className={styles.inner}>
         <Link href="/" className={styles.logoLink} aria-label="PLAYFIT 홈으로">
-          <span className={styles.logo}>
+          <h1 className={styles.logo}>
             <span className={styles.logoAccent}>PLAY</span>FIT
-          </span>
+          </h1>
         </Link>
 
         <ul className={styles.cards} aria-label="추천 게임 목록">

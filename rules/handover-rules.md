@@ -40,13 +40,14 @@ If at or above 180 lines → compress before doing any other work (see Section 5
 | Section | Budget |
 |---------|--------|
 | Header + health check | 5 lines |
-| Maintenance Protocol | 20 lines |
+| Maintenance Protocol | 12 lines |
+| Workspace Crash Prevention | 4 lines (fixed, never grows) |
 | In-Progress Lock | 10 lines |
-| Current Status | 15 lines |
-| Active Step | 25 lines |
+| Current Status | 30 lines |
+| Active Step | 25 lines + SQL/code blocks exempt |
 | Minor Changes Log | 12 lines |
 | Completed Steps (all) | 5 lines × number of steps |
-| Project Reference | 65 lines (fixed, never grows) |
+| Project Reference | 5 lines (fixed, never grows) |
 
 When a section exceeds its budget, compress it immediately.
 
@@ -60,15 +61,18 @@ The file must always follow this exact order, top to bottom:
 1. Header (title + one-line instruction)
 2. 📏 File health check
 3. Maintenance Protocol
-4. 🔒 In-Progress Lock        ← always visible without scrolling
-5. Current Status              ← always visible without scrolling
-6. Active Step
-7. Minor Changes Log
-8. Completed Steps
-9. Project Reference           ← stable, never grows
+4. Workspace Crash Prevention  ← permanent, never remove, never archive
+5. 🔒 In-Progress Lock        ← always visible without scrolling
+6. Current Status              ← always visible without scrolling
+7. Active Step
+8. Minor Changes Log
+9. Completed Steps
+10. Project Reference          ← stable, never grows
 ```
 
-Sections 4 and 5 (Lock + Current Status) must always be reachable within the first 50 lines so any Claude session sees them immediately without scrolling.
+Sections 5 and 6 (Lock + Current Status) must always be reachable within the first 55 lines so any Claude session sees them immediately without scrolling.
+
+**Workspace Crash Prevention** is a permanent section — it must never be removed, compressed, or moved to archive. Firebase Studio crashes cause total context loss. Keep it compact (≤ 3 lines) but always present.
 
 ---
 
@@ -83,12 +87,13 @@ Sections 4 and 5 (Lock + Current Status) must always be reachable within the fir
 - Build: [build status one-liner]
 ```
 
-**Active Step — max 25 lines:**
+**Active Step — max 25 lines (exception: SQL/code blocks required for the step are exempt):**
 - Pre-flight check first (required keys, blockers)
 - Files to create
 - Logic spec (exact, no vague language)
 - What this step does NOT include (scope boundary)
 - "After completing" instruction
+- **If this step is out of numbered order** (e.g. doing A9 before A6–A8): state the reason explicitly. Example: "A9 is done before A6–A8 because A9 tests already-implemented code and does not depend on A6–A8. A6–A8 add new features and follow after A9 passes."
 
 **Minor Changes Log — one line per entry:**
 ```
@@ -119,6 +124,7 @@ Trigger: file reaches 180 lines, OR a completed step entry is more than 3 steps 
 4. Repeat until file is under 160 lines
 
 **Never compress:**
+- Workspace Crash Prevention
 - In-Progress Lock
 - Current Status
 - Active Step
@@ -126,7 +132,24 @@ Trigger: file reaches 180 lines, OR a completed step entry is more than 3 steps 
 
 ---
 
-## 6. Archive Protocol
+## 6. Active Step Transition Protocol
+
+When moving to a new step (after completing the previous one):
+
+1. Read the relevant section from `SPEC.md`
+2. Copy the **full spec** for that step into the ACTIVE STEP section of `HANDOVER.md`
+3. Future sessions will have the spec inline — no need to open `SPEC.md`
+
+**Active Step must always contain:**
+- Prerequisites / blockers
+- Exact files to create or modify
+- Logic spec (precise, no vague language)
+- Scope boundary (what this step does NOT include)
+- "After completing" instruction
+
+---
+
+## 7. Archive Protocol
 
 `HANDOVER-archive.md` stores compressed entries evicted from HANDOVER.md.
 

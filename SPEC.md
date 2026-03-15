@@ -1,7 +1,8 @@
 # PLAYFIT — Project Specification
 
-> Read this file before implementing any step.
+> Read only the relevant section before implementing a step — do not read the full file.
 > Addendum sections override the original spec where they conflict.
+> Completed standalone specs (SteamSpy API, DB build script, Feedback weight logic) → `SPEC_archive.md`
 
 ---
 
@@ -32,11 +33,16 @@ playfit/
 │   ├── page.tsx               # Main page (Steam mode + manual input toggle)
 │   ├── result/page.tsx        # Result page
 │   ├── globals.css
+│   ├── components/
+│   │   └── Header.tsx         # Auth header — login/logout [Addendum B7]
 │   └── api/
 │       ├── steam/route.ts     # Steam API wrapper
 │       ├── recommend/route.ts # Claude API call (Steam + manual mode)
 │       ├── feedback/route.ts  # Supabase write + tag weight update
-│       └── search/route.ts    # Autocomplete from games_cache [Addendum A7]
+│       ├── search/route.ts    # Autocomplete from games_cache [Addendum A7]
+│       └── auth/
+│           ├── steam/route.ts          # Steam OpenID redirect [Addendum B4]
+│           └── steam/callback/route.ts # Steam OpenID callback [Addendum B4]
 ├── lib/
 │   ├── steam.ts               # Steam utils + sleep
 │   ├── claude.ts              # Claude utils
@@ -105,42 +111,6 @@ GET https://store.steampowered.com/api/appdetails?appids={appid}&cc=kr&l=korean
 - Fields: `price_overview.final` (÷100 = KRW), `is_free`, `metacritic.score`, `supported_languages`
 - Store URL: `https://store.steampowered.com/app/{appid}`
 - 200ms delay between calls
-
----
-
-## SteamSpy API Specification
-
-**Tag data — DB build only**
-```
-GET https://steamspy.com/api.php?request=appdetails&appid={appid}
-```
-- Response field: `tags` → `{ tag_name: vote_count }` object (e.g. `{"Souls-like": 1200, "Difficult": 980}`)
-- Used **only** in `scripts/build-games-db.ts` — never called on user requests
-- 200ms delay between calls in build script
-
----
-
-## DB Build Script Specification [Addendum A2]
-
-**File:** `scripts/build-games-db.ts`
-**Run:** `npx tsx --env-file=.env.local scripts/build-games-db.ts`
-**Trigger:** Manual only — never runs automatically. Show script to user and wait before running.
-
-**Logic:**
-1. `GET https://api.steampowered.com/ISteamApps/GetAppList/v2/` → full Steam app list (all appids + names)
-2. For each appid:
-   - a. `GET` Steam appdetails (name, genres) — 200ms delay between calls
-   - b. `GET` SteamSpy appdetails (tags) — 200ms delay between calls
-   - c. Upsert into `games_cache`
-3. Skip appids already in DB with `updated_at` within 30 days → **script is resumable**
-4. Log progress every 100 games
-5. On any single failure: log error and skip — do not crash
-
-**Notes:**
-- First run takes several hours (Steam has ~100k apps)
-- Monthly re-runs only process new or outdated entries
-- `tags` column stores SteamSpy data as-is: `{ "tag_name": vote_count }`
-- `genres` column stores Steam appdetails genres as `string[]`
 
 ---
 
@@ -242,31 +212,29 @@ ALTER TABLE feedback ADD COLUMN tag_snapshot JSONB;
 -- e.g. ["Souls-like", "Difficult", "Atmospheric"]
 ```
 
+**Addendum B tables (authentication — see Addendum B section):**
+```sql
+-- Links Supabase auth user to their Steam account
+CREATE TABLE user_profiles (
+  id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
+  steam_id TEXT UNIQUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Replace steam_id with user_id in user_tag_weights
+ALTER TABLE user_tag_weights DROP COLUMN steam_id;
+ALTER TABLE user_tag_weights ADD COLUMN user_id UUID REFERENCES auth.users ON DELETE CASCADE;
+ALTER TABLE user_tag_weights ADD CONSTRAINT user_tag_weights_user_tag_unique UNIQUE(user_id, tag);
+
+-- Add nullable user_id to feedback (non-authenticated feedback remains valid)
+ALTER TABLE feedback ADD COLUMN user_id UUID REFERENCES auth.users;
+```
+
 **Feedback route:** POST `{game_id, game_name, steam_id, play_profile, rating, tag_snapshot}` → insert → 200 or 500
 
 ---
 
-## Feedback → Tag Weight Update Logic [Addendum A6]
-
-Runs inside `/api/feedback/route.ts` after every feedback submission.
-Uses `tag_snapshot` (top 3 tags of the game) from the feedback payload.
-
-**positive (잘 맞아요):**
-- For each tag in `tag_snapshot`:
-  `INSERT weight=1.2 ON CONFLICT UPDATE weight = LEAST(weight + 0.2, 3.0)`
-- Maximum cap: `3.0`
-
-**negative (아니에요):**
-- For each tag in `tag_snapshot`:
-  `INSERT weight=0.7 ON CONFLICT UPDATE weight = GREATEST(weight - 0.3, 0.1)`
-- Minimum floor: `0.1`
-
-**neutral (한번 해볼게요):**
-- No weight change
-
----
-
-## Manual Input Mode [Addendum A6–A9]
+## Manual Input Mode [Addendum A6–A8]
 
 Add after Steam mode is fully tested (A9).
 
@@ -292,6 +260,131 @@ No owned games to filter. Same tag extraction + scoring + Claude logic applies.
 
 ---
 
+## Authentication [Addendum B]
+
+### Core principle
+
+Login is never required. All three user states coexist and the service functions fully in each.
+
+| State | Tag weights | Steam URL |
+|-------|-------------|-----------|
+| Non-authenticated | Calculated in memory only, never saved | Enter manually every time |
+| Email or Google authenticated | Persisted by `user_id` across sessions | Enter manually on first use — saved to `user_profiles` after that |
+| Steam authenticated | Persisted by `user_id` across sessions | Not required — fetched automatically from `user_profiles` |
+
+---
+
+### Supabase Auth configuration
+
+- **Email login:** enable email + password provider in Supabase Auth dashboard
+- **Google login:** enable Google OAuth provider in Supabase Auth dashboard — requires Google Cloud OAuth 2.0 credentials; ask user before implementing
+- **Steam login:** not natively supported by Supabase Auth — custom Steam OpenID 2.0 implementation required (see routes below)
+
+---
+
+### Steam OpenID 2.0 routes
+
+**`/api/auth/steam/route.ts`** — constructs and redirects to Steam OpenID login URL
+
+Required parameters:
+```
+openid.ns:         http://specs.openid.net/auth/2.0
+openid.mode:       checkid_setup
+openid.return_to:  {NEXT_PUBLIC_BASE_URL}/api/auth/steam/callback
+openid.realm:      {NEXT_PUBLIC_BASE_URL}
+openid.identity:   http://specs.openid.net/auth/2.0/identifier_select
+openid.claimed_id: http://specs.openid.net/auth/2.0/identifier_select
+```
+Redirect destination: `https://steamcommunity.com/openid/login`
+
+**`/api/auth/steam/callback/route.ts`** — handles return from Steam after authentication
+
+1. Receive all `openid.*` query parameters from Steam redirect
+2. Validate: POST to `https://steamcommunity.com/openid/login` with `openid.mode=check_authentication` and all received parameters
+3. If `is_valid:false` → return `STEAM_AUTH_INVALID`
+4. Extract `steamid64` from `openid.claimed_id` (format: `https://steamcommunity.com/openid/id/{steamid64}`)
+5. Query `user_profiles` for existing row with this `steam_id`
+6. If found: retrieve linked `auth.users` entry, create Supabase session via admin client
+7. If not found: create new `auth.users` entry via admin client (synthetic email: `{steamid64}@steam.playfit`), then insert `user_profiles` row
+8. Set session cookie → redirect to main page
+
+`SUPABASE_SERVICE_ROLE_KEY` required for server-side user creation — never expose to frontend.
+
+---
+
+### Updated recommendation logic (B5)
+
+`/api/recommend` handles three cases:
+
+**Case 1 — Steam authenticated:**
+- Read `user_id` from session → look up `steam_id` from `user_profiles`
+- Fetch play history via Steam API using stored `steam_id` (no URL input)
+- Load `user_tag_weights` by `user_id` → run full recommendation flow
+
+**Case 2 — Email or Google authenticated:**
+- Read `user_id` from session
+- User provides Steam URL manually
+- If `steam_id` not yet in `user_profiles`: save it after successful play history fetch
+- Load `user_tag_weights` by `user_id` → run full recommendation flow
+
+**Case 3 — Non-authenticated:**
+- No session present
+- User provides Steam URL or manual game input
+- All tag weights default to `1.0`
+- Run full recommendation flow — do not save any tag weights
+
+---
+
+### Updated feedback logic (B6)
+
+`/api/feedback`:
+- Valid session exists → update `user_tag_weights` by `user_id` (persistent)
+- No session → skip tag weight update entirely, save feedback row with `null user_id`
+
+---
+
+### Frontend changes (B7)
+
+**Header component** (all pages):
+- Non-authenticated: show `로그인` button → modal with three options: `이메일로 로그인` / `Google로 로그인` / `Steam으로 로그인`
+- Authenticated: show user identifier + `로그아웃` button
+
+**Main page — Steam authenticated:**
+- Hide Steam URL input field
+- Show `내 게임 추천받기` button in its place
+- Budget input remains visible and functional
+
+**Main page — email or Google authenticated:**
+- Steam URL input remains
+- If `steam_id` exists in `user_profiles`: pre-fill the input
+- Budget input unchanged
+
+**Main page — non-authenticated:**
+- No changes from original spec
+
+---
+
+### Implementation order
+
+Complete each step fully before starting the next.
+Provide SQL to user and wait for confirmation before any DB changes.
+Ask for Google OAuth credentials before implementing Google login.
+
+| Step | Description |
+|------|-------------|
+| B1 | Create `user_profiles` table |
+| B2 | Alter `user_tag_weights` and `feedback` tables |
+| B3 | Email and Google auth — login modal, session handling, logout |
+| B4 | `/api/auth/steam` and `/api/auth/steam/callback` |
+| B5 | Update `/api/recommend` for all three auth cases |
+| B6 | Update `/api/feedback` — conditional weight persistence by `user_id` |
+| B7 | Main page + header UI for all auth states |
+| B8 | End-to-end test: email login → recommendation → feedback → return visit |
+| B9 | End-to-end test: Steam login → one-click recommendation → feedback persistence |
+| B10 | End-to-end test: non-authenticated → full flow → confirm no weight persistence |
+
+---
+
 ## Error Codes
 
 | Code | Trigger | Korean UI message |
@@ -305,6 +398,8 @@ No owned games to filter. Same tag extraction + scoring + Claude logic applies.
 | `DB_NOT_READY` | games_cache is empty | DB가 아직 준비되지 않았어요 |
 | `GAME_NOT_FOUND` | manual game not found in games_cache | 게임을 찾을 수 없어요 |
 | `TAG_EXTRACTION_FAILED` | no tags found for played/entered games | 플레이 기록에서 태그를 추출할 수 없어요 |
+| `STEAM_AUTH_INVALID` | Steam OpenID `is_valid:false` | Steam 로그인에 실패했어요. 다시 시도해주세요 |
+| `STEAM_ID_NOT_LINKED` | authenticated user has no `steam_id` in `user_profiles` | Steam 계정이 연결되어 있지 않아요 |
 
 ---
 
@@ -320,12 +415,21 @@ No owned games to filter. Same tag extraction + scoring + Claude logic applies.
 **Addendum (A1–A10):**
 - Supabase games_cache + user_tag_weights (A1)
 - DB build script from full Steam app list + SteamSpy tags (A2)
-- Tag-based candidate selection from DB, not real-time Steam (A3–A5)
-- Feedback → tag weight update (A6)
-- Manual input mode + autocomplete (A7–A9)
-- End-to-end tests (A10)
+- Tag-based candidate selection from DB, not real-time Steam (A3–A4)
+- Feedback → tag weight update (A5)
+- Manual input mode UI (A6)
+- /api/search autocomplete route (A7)
+- /api/recommend: handle both Steam + manual modes (A8)
+- End-to-end tests: Steam mode (A9), manual mode (A10)
 
-**Out of scope (do not add):** accounts, saved history, social features, sorting, filtering results
+**Addendum (B1–B10):**
+- user_profiles table + table migrations (B1–B2)
+- Email, Google, Steam login — session handling (B3–B4)
+- Recommendation + feedback logic updated for all three auth states (B5–B6)
+- Header UI + main page UI per auth state (B7)
+- End-to-end tests for all three auth paths (B8–B10)
+
+**Out of scope (do not add):** saved history, social features, sorting, filtering results
 
 ---
 
@@ -370,6 +474,8 @@ STEAM_API_KEY=                 ← Step 2
 ANTHROPIC_API_KEY=             ← Step 5
 NEXT_PUBLIC_SUPABASE_URL=      ← Step 8
 NEXT_PUBLIC_SUPABASE_ANON_KEY= ← Step 8
+SUPABASE_SERVICE_ROLE_KEY=     ← Addendum B4 — server-side only, never expose to frontend
+NEXT_PUBLIC_BASE_URL=          ← Addendum B4 — e.g. http://localhost:3000 in dev, production URL after deploy
 ```
 
 ---
@@ -386,3 +492,6 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY= ← Step 8
 | Private profile | `game_count === 0` in GetOwnedGames → `PRIVATE_PROFILE` |
 | games_cache empty | Check row count before candidate query → `DB_NOT_READY` |
 | Tag not found for played game | Skip that game's tags silently; if all fail → `TAG_EXTRACTION_FAILED` |
+| Steam OpenID forgery | Validate assertion by re-posting to Steam — never trust claimed_id without verification |
+| Service role key exposure | Used only in server-side API routes — never passed to frontend or logged |
+| Non-authenticated feedback | Save feedback row with `null user_id` — tag weights skipped entirely, not defaulted |

@@ -6,12 +6,15 @@ import type { RecommendationCard, ErrorCode } from '@/types'
 import styles from './page.module.css'
 
 const ERROR_MESSAGES: Record<ErrorCode, string> = {
-  PRIVATE_PROFILE:      '스팀 프로필을 공개로 설정해주세요',
-  INSUFFICIENT_HISTORY: '플레이 기록이 5개 이상 필요해요',
-  NO_GAMES_IN_BUDGET:   '예산 내 추천 가능한 게임이 없어요. 예산을 높여보세요',
-  AI_PARSE_FAILURE:     '분석 중 오류가 발생했어요. 잠시 후 다시 시도해주세요',
-  INVALID_URL:          '올바른 스팀 프로필 URL을 입력해주세요',
-  GENERAL_ERROR:        '잠시 후 다시 시도해주세요',
+  PRIVATE_PROFILE:        '스팀 프로필을 공개로 설정해주세요',
+  INSUFFICIENT_HISTORY:   '플레이 기록이 5개 이상 필요해요',
+  NO_GAMES_IN_BUDGET:     '예산 내 추천 가능한 게임이 없어요. 예산을 높여보세요',
+  AI_PARSE_FAILURE:       '분석 중 오류가 발생했어요. 잠시 후 다시 시도해주세요',
+  INVALID_URL:            '올바른 스팀 프로필 URL을 입력해주세요',
+  GENERAL_ERROR:          '잠시 후 다시 시도해주세요',
+  DB_NOT_READY:           'DB가 아직 준비되지 않았어요',
+  GAME_NOT_FOUND:         '게임을 찾을 수 없어요',
+  TAG_EXTRACTION_FAILED:  '플레이 기록에서 태그를 추출할 수 없어요',
 }
 
 export default function Home() {
@@ -34,26 +37,17 @@ export default function Home() {
       const steamRes = await fetch('/api/steam', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: url.trim(), budget: budgetValue, korean_only: koreanOnly, free_only: freeOnly }),
+        body: JSON.stringify({ url: url.trim() }),
       })
       const steamData = await steamRes.json() as {
         steamId?: string
         playHistory?: unknown
-        candidates?: unknown
+        ownedAppIds?: number[]
         error?: ErrorCode
-        filters?: { budget?: number; freeOnly?: boolean; koreanOnly?: boolean }
       }
 
       if (!steamRes.ok || steamData.error) {
-        if (steamData.error === 'NO_GAMES_IN_BUDGET') {
-          const f = steamData.filters
-          if (f?.freeOnly) setError('현재 무료 게임 중 추천 가능한 게임이 없어요')
-          else if (f?.koreanOnly && f.budget !== undefined) setError('예산과 한국어 필터 조건에 맞는 게임이 없어요. 조건을 조정해보세요')
-          else if (f?.koreanOnly) setError('한국어 지원 게임 중 추천 가능한 게임이 없어요. 필터를 해제해보세요')
-          else setError('예산 내 추천 가능한 게임이 없어요. 예산을 높여보세요')
-        } else {
-          setError(ERROR_MESSAGES[steamData.error ?? 'GENERAL_ERROR'])
-        }
+        setError(ERROR_MESSAGES[steamData.error ?? 'GENERAL_ERROR'])
         return
       }
 
@@ -63,16 +57,28 @@ export default function Home() {
         body: JSON.stringify({
           steamId: steamData.steamId,
           playHistory: steamData.playHistory,
-          candidates: steamData.candidates,
+          ownedAppIds: steamData.ownedAppIds,
+          budget: budgetValue,
+          freeOnly,
+          koreanOnly,
         }),
       })
       const recommendData = await recommendRes.json() as {
         recommendations?: RecommendationCard[]
         error?: ErrorCode
+        filters?: { budget?: number; freeOnly?: boolean; koreanOnly?: boolean }
       }
 
       if (!recommendRes.ok || recommendData.error) {
-        setError(ERROR_MESSAGES[recommendData.error ?? 'GENERAL_ERROR'])
+        if (recommendData.error === 'NO_GAMES_IN_BUDGET') {
+          const f = recommendData.filters
+          if (f?.freeOnly) setError('현재 무료 게임 중 추천 가능한 게임이 없어요')
+          else if (f?.koreanOnly && f.budget !== undefined) setError('예산과 한국어 필터 조건에 맞는 게임이 없어요. 조건을 조정해보세요')
+          else if (f?.koreanOnly) setError('한국어 지원 게임 중 추천 가능한 게임이 없어요. 필터를 해제해보세요')
+          else setError('예산 내 추천 가능한 게임이 없어요. 예산을 높여보세요')
+        } else {
+          setError(ERROR_MESSAGES[recommendData.error ?? 'GENERAL_ERROR'])
+        }
         return
       }
 
@@ -128,7 +134,7 @@ export default function Home() {
               type="number"
               inputMode="numeric"
               className={styles.input}
-              placeholder="예산 입력 (예: 10000)"
+              placeholder="예산 입력 (예: 10000)…"
               value={budget}
               onChange={e => setBudget(e.target.value)}
               autoComplete="off"

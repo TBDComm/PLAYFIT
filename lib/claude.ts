@@ -1,22 +1,36 @@
-import type { PlayHistory, GameCandidate, Recommendation } from '@/types'
+import type { Recommendation } from '@/types'
+
+export interface PlayHistoryForClaude {
+  name: string
+  playtime_hours: number
+  top_tags: string[]
+}
+
+export interface CandidateForClaude {
+  appid: number
+  name: string
+  top_tags: string[]
+}
 
 const SYSTEM_PROMPT =
-  'You are a Steam game recommendation engine. Analyze the user\'s play history to identify their taste pattern and select 5 matching games from the candidates. Respond ONLY in valid JSON with no explanation outside the JSON.'
+  'You are a Steam game recommendation engine. Match games to the user\'s taste based on tag overlap with their play history. Respond ONLY in valid JSON.'
 
 export async function getRecommendations(
-  playHistory: PlayHistory[],
-  candidates: GameCandidate[]
+  playHistory: PlayHistoryForClaude[],
+  candidates: CandidateForClaude[]
 ): Promise<Recommendation[] | 'AI_PARSE_FAILURE'> {
   const userPrompt = `Play history (top 15 by playtime):
-${JSON.stringify(playHistory.map(g => ({ name: g.name, playtime_hours: g.playtime_hours, appid: g.appid })))}
+${JSON.stringify(playHistory)}
 
-Candidate games (not owned, within budget):
-${JSON.stringify(candidates.map(g => ({ appid: g.appid, name: g.name, price_krw: g.price_krw, genres: g.genres })))}
+Candidate games:
+${JSON.stringify(candidates)}
 
 Rules:
-- Select exactly 5 games
-- Reason: reference the user's actual play history, 20 Korean characters max
-- Never use popularity or trending as criteria
+- Select exactly 5 games with highest tag overlap to user history
+- Write recommendation reason in 1-2 Korean sentences
+- Reference specific games from user history in the reason
+- Never mention popularity or trending
+- Never recommend games the user already owns
 
 Response format:
 {"recommendations": [{"appid": "", "reason": ""}]}`
