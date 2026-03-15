@@ -14,7 +14,6 @@ export async function POST(request: NextRequest) {
       ownedAppIds?: unknown
       budget?: unknown
       freeOnly?: unknown
-      koreanOnly?: unknown
     }
 
     const steamId = typeof body.steamId === 'string' ? body.steamId : ''
@@ -22,7 +21,6 @@ export async function POST(request: NextRequest) {
     const ownedAppIds = Array.isArray(body.ownedAppIds) ? body.ownedAppIds as number[] : []
     const freeOnly = body.freeOnly === true
     const budget = !freeOnly && typeof body.budget === 'number' ? body.budget : undefined
-    const koreanOnly = body.koreanOnly === true
 
     // Check DB is ready
     const dbReady = await isDbReady()
@@ -63,7 +61,6 @@ export async function POST(request: NextRequest) {
       price_krw: number
       is_free: boolean
       metacritic_score?: number
-      supports_korean: boolean
       top_tags: string[]
     }
     const candidates: FilteredCandidate[] = []
@@ -77,7 +74,6 @@ export async function POST(request: NextRequest) {
       if (!details) continue
       if (freeOnly && !details.is_free) continue
       if (!freeOnly && budget !== undefined && !details.is_free && details.price_krw > budget) continue
-      if (koreanOnly && !details.supports_korean) continue
 
       const top_tags = Object.entries(s.tags ?? {})
         .sort(([, a], [, b]) => b - a)
@@ -90,7 +86,7 @@ export async function POST(request: NextRequest) {
     if (candidates.length === 0) {
       return NextResponse.json({
         error: 'NO_GAMES_IN_BUDGET' satisfies ErrorCode,
-        filters: { budget, freeOnly, koreanOnly },
+        filters: { budget, freeOnly },
       }, { status: 400 })
     }
 
@@ -123,7 +119,6 @@ export async function POST(request: NextRequest) {
           price_krw: game.price_krw,
           is_free: game.is_free,
           metacritic_score: game.metacritic_score,
-          supports_korean: game.supports_korean,
           store_url: `https://store.steampowered.com/app/${game.appid}`,
           tag_snapshot: game.top_tags,
         }

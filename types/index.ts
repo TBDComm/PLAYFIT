@@ -21,7 +21,6 @@ export interface GameDetails {
   price_krw: number
   is_free: boolean
   metacritic_score?: number
-  supports_korean: boolean
 }
 
 // ===== Supabase types =====
@@ -57,7 +56,6 @@ export interface RecommendationCard {
   price_krw: number
   is_free: boolean
   metacritic_score?: number
-  supports_korean: boolean
   store_url: string
   tag_snapshot: string[]
 }

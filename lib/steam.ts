@@ -60,7 +60,6 @@ export async function getGameDetails(appid: number): Promise<GameDetails | null>
     price_krw: is_free ? 0 : Math.round(d.price_overview!.final / 100),
     is_free,
     metacritic_score: d.metacritic?.score,
-    supports_korean: d.supported_languages?.includes('Korean') ?? false,
   }
 }
 

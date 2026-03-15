@@ -22,7 +22,6 @@ export default function Home() {
   const [url, setUrl] = useState('')
   const [budget, setBudget] = useState('')
   const [freeOnly, setFreeOnly] = useState(false)
-  const [koreanOnly, setKoreanOnly] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -60,21 +59,18 @@ export default function Home() {
           ownedAppIds: steamData.ownedAppIds,
           budget: budgetValue,
           freeOnly,
-          koreanOnly,
         }),
       })
       const recommendData = await recommendRes.json() as {
         recommendations?: RecommendationCard[]
         error?: ErrorCode
-        filters?: { budget?: number; freeOnly?: boolean; koreanOnly?: boolean }
+        filters?: { budget?: number; freeOnly?: boolean }
       }
 
       if (!recommendRes.ok || recommendData.error) {
         if (recommendData.error === 'NO_GAMES_IN_BUDGET') {
           const f = recommendData.filters
           if (f?.freeOnly) setError('현재 무료 게임 중 추천 가능한 게임이 없어요')
-          else if (f?.koreanOnly && f.budget !== undefined) setError('예산과 한국어 필터 조건에 맞는 게임이 없어요. 조건을 조정해보세요')
-          else if (f?.koreanOnly) setError('한국어 지원 게임 중 추천 가능한 게임이 없어요. 필터를 해제해보세요')
           else setError('예산 내 추천 가능한 게임이 없어요. 예산을 높여보세요')
         } else {
           setError(ERROR_MESSAGES[recommendData.error ?? 'GENERAL_ERROR'])
@@ -156,18 +152,6 @@ export default function Home() {
               무료 게임만 보기
             </label>
           </div>
-
-          <label className={`${styles.toggleRow}${loading ? ` ${styles.toggleRowDisabled}` : ''}`}>
-            <input
-              type="checkbox"
-              name="korean-only"
-              className={styles.toggleCheckbox}
-              checked={koreanOnly}
-              onChange={e => setKoreanOnly(e.target.checked)}
-              disabled={loading}
-            />
-            한국어 지원 게임만 보기
-          </label>
 
           <button
             type="submit"

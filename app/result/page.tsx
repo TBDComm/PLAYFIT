@@ -78,9 +78,6 @@ export default function ResultPage() {
                 {card.metacritic_score !== undefined && (
                   <span className={styles.score}>{card.metacritic_score}점</span>
                 )}
-                <span className={card.supports_korean ? styles.korean : styles.noKorean}>
-                  {card.supports_korean ? '한국어 지원' : '한국어 미지원'}
-                </span>
               </div>
 
               <a
