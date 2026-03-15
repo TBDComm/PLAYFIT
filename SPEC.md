@@ -350,6 +350,18 @@ GET /api/search?q={query}
 → Return [{appid, name}]
 ```
 
+**Autocomplete UI behavior (A7 — implement alongside the route in `app/page.tsx`):**
+
+Row state shape: `{ appid: number | null, name: string, playtime: string }` (already in place from A6)
+
+- On name input change: debounce 300ms → call GET /api/search?q={value} → show dropdown of [{appid, name}] results below the input
+- Dropdown item click: set row to `{ appid: selected.appid, name: selected.name }` → close dropdown
+- User edits name text after a game was selected (appid already set): reset `appid` to null (selection invalidated, re-search required)
+- Input blur with name filled but `appid` still null: mark row as invalid → show inline error below the row: "드롭다운에서 게임을 선택해주세요"
+- On submit: check all rows where `name.trim() !== ''` — if any have `appid === null`, block submit and show inline error on those rows
+- Empty rows (name is empty): skip entirely — no error, no submission
+- Minimum 1 valid row (name + appid + playtime all filled) required to enable submit button
+
 **`/api/recommend` accepts two shapes (A8):**
 ```typescript
 { steamUrl: string, budget?: number }                          // Steam mode (existing)

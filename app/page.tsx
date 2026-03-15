@@ -243,6 +243,9 @@ export default function Home() {
               >
                 ← 스팀 계정으로 추천받기
               </button>
+              <p className={styles.manualNotice}>
+                스팀 계정 없이는 피드백이 저장되지 않아요. 같은 계정으로 여러 번 추천받을수록 정확해지는 방식이라, 첫 추천은 다소 부정확할 수 있어요.
+              </p>
             </div>
           )}
 

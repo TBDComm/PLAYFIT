@@ -284,6 +284,13 @@
   cursor: not-allowed;
 }
 
+.manualNotice {
+  margin-top: 0.625rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .button:active:not(:disabled) {
     transform: none;
