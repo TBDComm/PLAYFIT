@@ -7,9 +7,10 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export async function isDbReady(): Promise<boolean> {
-  const { count } = await supabase
+  const { count, error } = await supabase
     .from('games_cache')
     .select('*', { count: 'exact', head: true })
+  if (error) console.error('[supabase] isDbReady error:', error)
   return (count ?? 0) > 0
 }
 
@@ -52,11 +53,12 @@ export async function scoreCandidates(
   ownedAppIds: string[],
   limit: number = 50
 ): Promise<ScoredCandidate[]> {
-  const { data } = await supabase.rpc('score_candidates', {
+  const { data, error } = await supabase.rpc('score_candidates', {
     p_tag_profile: tagProfile,
     p_user_tag_weights: userTagWeights,
     p_owned_appids: ownedAppIds,
     p_limit: limit,
   })
+  if (error) console.error('[supabase] scoreCandidates error:', error)
   return (data as ScoredCandidate[]) ?? []
 }

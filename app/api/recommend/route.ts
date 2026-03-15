@@ -130,7 +130,8 @@ export async function POST(request: NextRequest) {
       })
 
     return NextResponse.json({ steamId, recommendations })
-  } catch {
+  } catch (e) {
+    console.error('[recommend] GENERAL_ERROR:', e)
     return NextResponse.json({ error: 'GENERAL_ERROR' satisfies ErrorCode }, { status: 500 })
   }
 }

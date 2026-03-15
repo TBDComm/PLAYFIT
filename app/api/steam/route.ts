@@ -29,7 +29,8 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ steamId, playHistory: ownedGamesResult.playHistory, ownedAppIds: ownedGamesResult.ownedAppIds })
-  } catch {
+  } catch (e) {
+    console.error('[steam] GENERAL_ERROR:', e)
     return NextResponse.json({ error: 'GENERAL_ERROR' satisfies ErrorCode }, { status: 500 })
   }
 }
