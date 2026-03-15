@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 144/200 lines — OK**
+📏 **File health: 117/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -66,77 +66,48 @@ Next action: [exactly what to do next to resume]
 | A6 | Manual input mode UI (main page toggle + form) | ⬜ |
 | A7 | /api/search autocomplete route | ⬜ |
 | A8 | /api/recommend: handle both Steam + manual input modes | ⬜ |
-| A9 | Test: Steam mode end-to-end | ⬜ |
+| A9 | Test: Steam mode end-to-end | ✅ 2026-03-15 |
 | A10 | Test: Manual mode end-to-end | ⬜ |
 | B1–B10 | Authentication (email/Google/Steam login, user_profiles, session) | ⬜ pending A10 |
 
-**Key readiness:**
-```
-STEAM_API_KEY=                 ✅ set (.env.local + CF Pages)
-ANTHROPIC_API_KEY=             ✅ set (.env.local + CF Pages)
-NEXT_PUBLIC_SUPABASE_URL=      ✅ set (.env.local + CF Pages)
-NEXT_PUBLIC_SUPABASE_ANON_KEY= ✅ set (.env.local + CF Pages)
-```
-Never mock or hardcode when a key is missing — stop and ask the user.
+**Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ (모두 .env.local + CF Pages 설정 완료) — 없으면 추정 말고 유저에게 물어볼 것.
 
 **Supabase tables:** `feedback` ✅ · `games_cache` ⏳ (build in progress, 66,000/86,543 rows as of 2026-03-15) · `user_tag_weights` ✅
 
+**Pending after games_cache build completes:** korean_review_count 빌드 (deferred, koreanOnly 필터 제거됐으나 보류 중) — 상세 플랜 → `/home/user/.claude/plans/memoized-swimming-gem.md`
+
 ---
 
-## ── ACTIVE STEP: A9 → Steam mode end-to-end test ──────────
+## ── ACTIVE STEP: Pre-A6 scoring fixes ──────────────────────
 
-**Prerequisites before A9:**
-- `games_cache` DB build must complete (currently 63,048/86,543 rows as of 2026-03-15, still running via GitHub Actions — safe to re-trigger when cut off by 6h limit)
-- Fix `ownedAppIds` bug in `recommend/route.ts` + `steam/route.ts`:
-  - **Bug:** `ownedAppIds` excludes only top 15 played games — user's other owned games can appear in recommendations
-  - **Fix:** `getOwnedGames()` in `lib/steam.ts` returns full appid list separately; `/api/steam` adds `ownedAppIds: number[]` to response; `/api/recommend` uses that for exclusion instead of `playedAppIds`
-- Run SQL in Supabase (score_candidates RPC + GIN index):
-```sql
-CREATE OR REPLACE FUNCTION score_candidates(
-  p_tag_profile JSONB,
-  p_user_tag_weights JSONB,
-  p_owned_appids TEXT[],
-  p_limit INT DEFAULT 50
-)
-RETURNS TABLE(appid TEXT, name TEXT, tags JSONB, score FLOAT8)
-LANGUAGE sql STABLE
-AS $$
-  SELECT
-    g.appid,
-    g.name,
-    g.tags,
-    (
-      SELECT COALESCE(SUM(
-        (t.value)::float8 * COALESCE((p_user_tag_weights->>t.key)::float8, 1.0)
-      ), 0.0)
-      FROM jsonb_each_text(g.tags) AS t(key, value)
-      WHERE p_tag_profile ? t.key
-    ) AS score
-  FROM games_cache g
-  WHERE NOT (g.appid = ANY(p_owned_appids))
-    AND g.tags IS NOT NULL
-    AND g.tags != '{}'::jsonb
-  ORDER BY score DESC
-  LIMIT p_limit;
-$$;
-CREATE INDEX IF NOT EXISTS games_cache_tags_gin ON games_cache USING GIN (tags);
-```
+A9 ✅ 완료. 테스트 중 발견한 2가지 스코어링 문제 수정 후 A6 진행.
+**전체 스펙 → `SPEC.md §Pre-A6`**
 
-**Why A9 before A6–A8:** A9 tests the already-implemented Steam pipeline (A1–A5) and has no dependency on A6–A8. A6–A8 add a new feature (manual input mode) and are done after A9 passes. SPEC.md §Manual Input Mode explicitly states "Add after Steam mode is fully tested (A9)."
-**A9 scope:** Steam URL input → full pipeline → 5 recommendation cards → feedback → verify user_tag_weights updated in Supabase
-**After A9 passes:** proceed to A6 (manual input UI) → A7 → A8 → A10
+**Fix 1: 2-button feedback**
+- neutral 버튼 제거. 모든 피드백이 user_tag_weights에 반영.
+- Files: `types/index.ts`, `app/result/page.tsx`, `app/api/feedback/route.ts`
+
+**Fix 2: Playtime-proportional scoring**
+- 플레이타임 비례 스코어링 (sqrt 감쇠 + 정규화)
+- 순서: Supabase SQL 먼저 → 코드 → git push
+- Files: `app/api/recommend/route.ts` + Supabase score_candidates RPC
+
+**After both fixes:** A6 (manual input UI) → A7 → A8 → A10
 
 ---
 
 ## ── MINOR CHANGES LOG ────────────────────────────────────
 
+_2026-03-14 entries → HANDOVER-archive.md_
+
 | Date | Change | Files |
 |------|--------|-------|
-| 2026-03-14 | Anthropic SDK → fetch: fixed Edge runtime incompatibility | `lib/claude.ts` |
-| 2026-03-14 | Added Korean-only / free-only filter toggles | `app/page.tsx`, `app/page.module.css` |
-| 2026-03-14 | Contextual NO_GAMES_IN_BUDGET error messages | `app/page.tsx`, `app/api/steam/route.ts` |
-| 2026-03-14 | A5 fix: feedback insert error check; h1 hierarchy on result page; placeholder `…` | multiple |
-| 2026-03-15 | ownedAppIds bug fix: getOwnedGames() returns full appid list; /api/steam passes ownedAppIds; /api/recommend uses all owned games for exclusion | `lib/steam.ts`, `app/api/steam/route.ts`, `app/api/recommend/route.ts`, `app/page.tsx` |
+| 2026-03-15 | ownedAppIds bug fix: full owned game list for exclusion | `lib/steam.ts`, `app/api/steam/route.ts`, `app/api/recommend/route.ts`, `app/page.tsx` |
+| 2026-03-15 | npm run dev banned; testing = git push → CF Pages deploy | `HANDOVER.md` |
+| 2026-03-15 | Fix CF Workers subrequest limit: scored pool 50→40, candidates cap 30→20 | `app/api/recommend/route.ts` |
+| 2026-03-15 | Debug logging added to catch blocks + supabase error fields | `app/api/recommend/route.ts`, `app/api/steam/route.ts`, `lib/supabase.ts` |
+| 2026-03-15 | Remove koreanOnly filter entirely — global targeting, language-agnostic | `app/page.tsx`, `app/api/recommend/route.ts`, `app/result/page.tsx`, `types/index.ts`, `lib/steam.ts` |
+| 2026-03-15 | Fix AI_PARSE_FAILURE: robust JSON extraction ({} match), reason 1 sentence | `lib/claude.ts` |
 
 ---
 

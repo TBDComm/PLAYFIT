@@ -1,5 +1,13 @@
 # HANDOVER Archive
 
+## Minor Changes — 2026-03-14
+| Change | Files |
+|--------|-------|
+| Anthropic SDK → fetch: fixed Edge runtime incompatibility | `lib/claude.ts` |
+| Added Korean-only / free-only filter toggles | `app/page.tsx`, `app/page.module.css` |
+| Contextual NO_GAMES_IN_BUDGET error messages | `app/page.tsx`, `app/api/steam/route.ts` |
+| A5 fix: feedback insert error check; h1 hierarchy on result page; placeholder `…` | multiple |
+
 ## A5 — 2026-03-14 — Feedback tag weight update
 - Files: `types/index.ts`, `app/api/recommend/route.ts`, `app/api/feedback/route.ts`, `app/result/page.tsx`
 - `tag_snapshot: string[]` added to `RecommendationCard` + `FeedbackPayload`

@@ -6,6 +6,106 @@
 
 ---
 
+## §Pre-A6 — Scoring Fixes (implement before A6)
+
+### Fix 1: 2-button feedback
+
+**Intent:** neutral 버튼 제거. 모든 피드백 버튼이 user_tag_weights에 영향. 버튼 안 누름 = 변화 없음.
+
+`types/index.ts`:
+```typescript
+// Before
+export type FeedbackRating = 'positive' | 'neutral' | 'negative'
+// After
+export type FeedbackRating = 'positive' | 'negative'
+```
+
+`app/result/page.tsx`: "한번 해볼게요" 버튼 제거. "잘 맞아요"(positive) · "아니에요"(negative) 만 유지.
+
+`app/api/feedback/route.ts`:
+```typescript
+// line 23 — Before
+const rating = (body.rating === 'positive' || body.rating === 'negative' || body.rating === 'neutral')
+  ? body.rating as FeedbackRating : null
+// After
+const rating = (body.rating === 'positive' || body.rating === 'negative')
+  ? body.rating as FeedbackRating : null
+
+// line 33 — Before
+const weightFetchNeeded = rating !== 'neutral' && !!steam_id && tag_snapshot.length > 0
+// After
+const weightFetchNeeded = !!rating && !!steam_id && tag_snapshot.length > 0
+```
+
+Weight deltas 변경 없음: positive null→1.2 / +0.2 (max 3.0), negative null→0.7 / -0.3 (min 0.1)
+
+---
+
+### Fix 2: Playtime-proportional scoring
+
+**Intent:** 더 많이 플레이한 게임의 태그가 스코어에 비례 반영. sqrt 감쇠로 장르 특성상 긴 게임(RPG/MMO)이 과도하게 지배하는 문제 상쇄.
+
+**수식:** `score = SUM(candidate_tag_votes × user_weight × normalized_profile_value)`
+- `profile_value(tag)` = SUM(tag_vote_count × sqrt(playtime_hours)) across played games
+- normalized = profile_value / max(all profile_values) → [0, 1]
+- sqrt 효과: 500h vs 50h = raw 10배 → 3.2배로 완화
+
+**Step 1 — Supabase SQL Editor에서 실행 (먼저):**
+```sql
+CREATE OR REPLACE FUNCTION score_candidates(
+  p_tag_profile JSONB,
+  p_user_tag_weights JSONB,
+  p_owned_appids TEXT[],
+  p_limit INT DEFAULT 50
+)
+RETURNS TABLE(appid TEXT, name TEXT, tags JSONB, score FLOAT8)
+LANGUAGE sql STABLE
+AS $$
+  SELECT
+    g.appid,
+    g.name,
+    g.tags,
+    (
+      SELECT COALESCE(SUM(
+        (t.value)::float8
+        * COALESCE((p_user_tag_weights->>t.key)::float8, 1.0)
+        * COALESCE((p_tag_profile->>t.key)::float8, 0.0)
+      ), 0.0)
+      FROM jsonb_each_text(g.tags) AS t(key, value)
+      WHERE p_tag_profile ? t.key
+    ) AS score
+  FROM games_cache g
+  WHERE NOT (g.appid = ANY(p_owned_appids))
+    AND g.tags IS NOT NULL
+    AND g.tags != '{}'::jsonb
+  ORDER BY score DESC
+  LIMIT p_limit;
+$$;
+```
+
+**Step 2 — `app/api/recommend/route.ts` tagProfile 빌드 부분:**
+```typescript
+// Before (line ~47)
+tagProfile[tag] = (tagProfile[tag] ?? 0) + voteCount * game.playtime_hours
+
+// After
+tagProfile[tag] = (tagProfile[tag] ?? 0) + voteCount * Math.sqrt(game.playtime_hours)
+```
+
+**Step 3 — 정규화 추가 (tagProfile 루프 직후):**
+```typescript
+const maxProfileVal = Math.max(...Object.values(tagProfile))
+if (maxProfileVal > 0) {
+  for (const tag of Object.keys(tagProfile)) {
+    tagProfile[tag] = tagProfile[tag] / maxProfileVal
+  }
+}
+```
+
+**Step 4 — git push → 테스트**
+
+---
+
 ## Service Definition
 
 A web service that recommends Steam games based on the user's own play history and budget.
@@ -495,3 +595,4 @@ NEXT_PUBLIC_BASE_URL=          ← Addendum B4 — e.g. http://localhost:3000 in
 | Steam OpenID forgery | Validate assertion by re-posting to Steam — never trust claimed_id without verification |
 | Service role key exposure | Used only in server-side API routes — never passed to frontend or logged |
 | Non-authenticated feedback | Save feedback row with `null user_id` — tag weights skipped entirely, not defaulted |
+
