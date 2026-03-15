@@ -71,7 +71,7 @@ Next action: [exactly what to do next to resume]
 | A10 | Test: Manual mode end-to-end | ⬜ |
 | B1–B10 | Authentication (email/Google/Steam login, user_profiles, session) | ⬜ pending A10 |
 
-**Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ (모두 .env.local + CF Pages 설정 완료) — 없으면 추정 말고 유저에게 물어볼 것.
+**Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ (all set in .env.local + CF Pages) — if missing, ask the user; never assume.
 
 **Supabase tables:** `feedback` ✅ · `games_cache` ✅ (82,816 rows, 2026-03-15) · `user_tag_weights` ✅
 
@@ -79,22 +79,22 @@ Next action: [exactly what to do next to resume]
 
 ## ── ACTIVE STEP: A10 — Test: Manual mode end-to-end ──────────────────────
 
-**Prerequisites:** A6 ✅ · A7 ✅ · A8 ✅ — 모두 배포 완료. 테스트 = CF Pages 브라우저에서 직접.
+**Prerequisites:** A6 ✅ · A7 ✅ · A8 ✅ — all deployed. Testing = browser on CF Pages.
 
 **Test checklist (user runs in browser):**
-1. 수동 모드 토글 클릭 → 5행 입력 폼 표시 확인
-2. 게임 이름 입력 → 300ms 후 드롭다운 표시 확인
-3. 드롭다운 선택 없이 blur → 인라인 에러 "드롭다운에서 게임을 선택해주세요" 확인
-4. 유효한 게임 1개 이상 (이름+appid+플레이시간) 입력 후 제출
-5. 추천 결과 5개 카드 표시 확인 (게임명, 이유, 가격, 스팀 링크)
-6. 피드백 버튼 클릭 → "피드백 감사해요" 표시 확인
-7. Supabase `feedback` 테이블에 행 삽입 확인 (steam_id = null, tag_weights 업데이트 없음)
+1. Click manual mode toggle → verify 5-row input form appears
+2. Type game name → verify dropdown appears after 300ms debounce
+3. Blur input without dropdown selection → verify inline error "드롭다운에서 게임을 선택해주세요"
+4. Enter 1+ valid games (name + appid via dropdown + playtime) → submit
+5. Verify 5 recommendation cards appear (name, reason, price, store link)
+6. Click feedback button → verify "피드백 감사해요" appears
+7. Verify `feedback` table row inserted in Supabase (steam_id = null, tag_weights not updated)
 
 **Files to fix if bugs found:** `app/page.tsx`, `app/api/recommend/route.ts`, `app/api/search/route.ts`
 
-**Scope:** 구현 없음 — 버그 발견 시 수정만. 새 기능 추가 금지.
+**Scope:** No new implementation — fix bugs only. No new features.
 
-**After completing:** A10 ✅ 마크 → SPEC.md §B1 읽고 Active Step에 인라인 복사 → B1 시작.
+**After completing:** Mark A10 ✅ → read SPEC.md §B1, copy spec inline into Active Step → start B1.
 
 ---
 
