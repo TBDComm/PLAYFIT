@@ -45,7 +45,7 @@ Response format:
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 500,
+        max_tokens: 1024,
         system: SYSTEM_PROMPT,
         messages: [{ role: 'user', content: userPrompt }],
       }),
@@ -55,11 +55,13 @@ Response format:
 
     const data = await res.json() as { content: { type: string; text: string }[] }
     const raw = data.content[0]?.type === 'text' ? data.content[0].text : ''
-    const text = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
-    const parsed = JSON.parse(text) as { recommendations: Recommendation[] }
+    const jsonMatch = raw.match(/\{[\s\S]*\}/)
+    if (!jsonMatch) return 'AI_PARSE_FAILURE'
+    const parsed = JSON.parse(jsonMatch[0]) as { recommendations: Recommendation[] }
     if (!Array.isArray(parsed.recommendations)) return 'AI_PARSE_FAILURE'
     return parsed.recommendations
-  } catch {
+  } catch (e) {
+    console.error('[claude] AI_PARSE_FAILURE:', e)
     return 'AI_PARSE_FAILURE'
   }
 }
