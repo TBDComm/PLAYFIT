@@ -117,6 +117,7 @@ _2026-03-14 entries → HANDOVER-archive.md_
 | 2026-03-15 | Fix: req.nextUrl → new URL(req.url) for CF edge runtime compat | `app/api/search/route.ts` |
 | 2026-03-15 | A8: /api/recommend handles manualGames body shape (manual mode) | `app/api/recommend/route.ts` |
 | 2026-03-15 | Fix 4 guideline violations: themeColor, alert/aria-live, focus-first-error, dead CSS | `app/layout.tsx`, `app/page.tsx`, `app/result/page.module.css` |
+| 2026-03-16 | Search debounce 300ms → 0ms + add missing debounceRefs declaration (lost in crash) | `app/page.tsx` |
 
 ---
 

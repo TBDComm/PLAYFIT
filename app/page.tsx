@@ -38,8 +38,8 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null)
   const [dropdowns, setDropdowns] = useState<Array<SearchResult[] | null>>(Array(5).fill(null))
   const [rowErrors, setRowErrors] = useState<Array<string | null>>(Array(5).fill(null))
-  const debounceRefs = useRef<Array<ReturnType<typeof setTimeout> | null>>(Array(5).fill(null))
   const nameInputRefs = useRef<Array<HTMLInputElement | null>>(Array(5).fill(null))
+  const debounceRefs = useRef<Array<ReturnType<typeof setTimeout> | null>>(Array(5).fill(null))
 
   function updateManualGame(idx: number, field: 'playtime', value: string) {
     setManualGames(prev => prev.map((g, i) => i === idx ? { ...g, [field]: value } : g))
@@ -55,7 +55,7 @@ export default function Home() {
       return
     }
     if (debounceRefs.current[idx]) clearTimeout(debounceRefs.current[idx]!)
-    debounceRefs.current[idx] = setTimeout(() => { void fetchSearch(idx, value) }, 300)
+    debounceRefs.current[idx] = setTimeout(() => { void fetchSearch(idx, value) }, 0)
   }
 
   async function fetchSearch(idx: number, query: string) {
