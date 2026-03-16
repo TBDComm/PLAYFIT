@@ -1,19 +1,43 @@
 export const runtime = 'edge'
 
+import { createServerClient } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import type { FeedbackRating } from '@/types'
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json() as {
+    const response = NextResponse.json({})
+
+    const supabaseAuth = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll: () => request.cookies.getAll(),
+          setAll: (cookies) => {
+            cookies.forEach(({ name, value, options }) => {
+              response.cookies.set(name, value, options)
+            })
+          },
+        },
+      }
+    )
+
+    // Start session and body parse in parallel
+    const sessionPromise = supabaseAuth.auth.getSession()
+    const bodyPromise = request.json() as Promise<{
       game_id?: unknown
       game_name?: unknown
       steam_id?: unknown
       play_profile?: unknown
       rating?: unknown
       tag_snapshot?: unknown
-    }
+    }>
+
+    const [{ data: { session } }, body] = await Promise.all([sessionPromise, bodyPromise])
+
+    const userId = session?.user?.id ?? null
 
     const game_id = typeof body.game_id === 'string' ? body.game_id : ''
     const game_name = typeof body.game_name === 'string' ? body.game_name : ''
@@ -30,24 +54,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'INVALID_INPUT' }, { status: 400 })
     }
 
-    const weightFetchNeeded = !!rating && !!steam_id && tag_snapshot.length > 0
+    // Weights update requires a rating, at least one identifier, and tags to act on
+    const weightFetchNeeded = !!rating && (userId !== null || !!steam_id) && tag_snapshot.length > 0
 
     // Insert feedback and fetch current weights in parallel
     const [insertResult, existingWeights] = await Promise.all([
       supabase.from('feedback').insert({
         game_id,
         game_name,
+        user_id: userId,
         steam_id: steam_id || null,
         play_profile,
         rating,
         tag_snapshot,
       }),
       weightFetchNeeded
-        ? supabase
-            .from('user_tag_weights')
-            .select('tag, weight')
-            .eq('steam_id', steam_id)
-            .in('tag', tag_snapshot)
+        ? userId !== null
+          ? supabase.from('user_tag_weights').select('tag, weight').eq('user_id', userId).in('tag', tag_snapshot)
+          : supabase.from('user_tag_weights').select('tag, weight').eq('steam_id', steam_id).in('tag', tag_snapshot)
         : Promise.resolve({ data: null }),
     ])
 
@@ -60,17 +84,27 @@ export async function POST(request: NextRequest) {
         (existingWeights.data ?? []).map((r: { tag: string; weight: number }) => [r.tag, r.weight])
       )
 
-      const rows = tag_snapshot.map(tag => {
-        const current: number | null = existingMap.has(tag) ? existingMap.get(tag)! : null
-        const weight = rating === 'positive'
-          ? current === null ? 1.2 : Math.min(current + 0.2, 3.0)
-          : current === null ? 0.7 : Math.max(current - 0.3, 0.1)
-        return { steam_id, tag, weight, updated_at: new Date().toISOString() }
-      })
-
-      await supabase
-        .from('user_tag_weights')
-        .upsert(rows, { onConflict: 'steam_id,tag' })
+      if (userId !== null) {
+        // Logged in: upsert by user_id
+        const rows = tag_snapshot.map(tag => {
+          const current: number | null = existingMap.has(tag) ? existingMap.get(tag)! : null
+          const weight = rating === 'positive'
+            ? current === null ? 1.2 : Math.min(current + 0.2, 3.0)
+            : current === null ? 0.7 : Math.max(current - 0.3, 0.1)
+          return { user_id: userId, tag, weight, updated_at: new Date().toISOString() }
+        })
+        await supabase.from('user_tag_weights').upsert(rows, { onConflict: 'user_id,tag' })
+      } else {
+        // No session: upsert by steam_id
+        const rows = tag_snapshot.map(tag => {
+          const current: number | null = existingMap.has(tag) ? existingMap.get(tag)! : null
+          const weight = rating === 'positive'
+            ? current === null ? 1.2 : Math.min(current + 0.2, 3.0)
+            : current === null ? 0.7 : Math.max(current - 0.3, 0.1)
+          return { steam_id, tag, weight, updated_at: new Date().toISOString() }
+        })
+        await supabase.from('user_tag_weights').upsert(rows, { onConflict: 'steam_id,tag' })
+      }
     }
 
     return NextResponse.json({ ok: true })

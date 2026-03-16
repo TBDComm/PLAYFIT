@@ -507,7 +507,8 @@ Steps:
 
 **Login modal:**
 - Three buttons: `이메일로 로그인` / `Google로 로그인` / `Steam으로 로그인`
-- On successful login → modal closes → **Steam link popup opens automatically**
+- Email login: OTP flow — enter email → receive 6-digit code → verify (`supabase.auth.signInWithOtp` + `verifyOtp`)
+- On successful login → modal closes → **Steam link popup opens automatically** (except Steam login — already linked)
 
 **Steam link popup** (shown after login AND when [Steam 연동] button clicked):
 - Title: "기존 Steam 데이터를 연동하세요"

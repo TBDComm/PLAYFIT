@@ -1,5 +1,6 @@
 export const runtime = 'edge'
 
+import { createServerClient } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
 import { getGameDetails, sleep } from '@/lib/steam'
 import { getRecommendations } from '@/lib/claude'
@@ -8,15 +9,46 @@ import type { ErrorCode, PlayHistory, RecommendationCard } from '@/types'
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json() as {
+    const response = NextResponse.json({})
+
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll: () => request.cookies.getAll(),
+          setAll: (cookies) => {
+            cookies.forEach(({ name, value, options }) => {
+              response.cookies.set(name, value, options)
+            })
+          },
+        },
+      }
+    )
+
+    // Start all independent operations immediately
+    const sessionPromise = supabase.auth.getSession()
+    const bodyPromise = request.json() as Promise<{
       steamId?: unknown
       playHistory?: unknown
       ownedAppIds?: unknown
       manualGames?: unknown
       budget?: unknown
       freeOnly?: unknown
+    }>
+    const dbReadyPromise = isDbReady()
+
+    const [{ data: { session } }, dbReady, body] = await Promise.all([
+      sessionPromise,
+      dbReadyPromise,
+      bodyPromise,
+    ])
+
+    if (!dbReady) {
+      return NextResponse.json({ error: 'DB_NOT_READY' satisfies ErrorCode }, { status: 503 })
     }
 
+    const userId = session?.user?.id ?? null
     const freeOnly = body.freeOnly === true
     const budget = !freeOnly && typeof body.budget === 'number' ? body.budget : undefined
 
@@ -35,18 +67,15 @@ export async function POST(request: NextRequest) {
       ownedAppIds = Array.isArray(body.ownedAppIds) ? body.ownedAppIds as number[] : []
     }
 
-    // Check DB is ready
-    const dbReady = await isDbReady()
-    if (!dbReady) {
-      return NextResponse.json({ error: 'DB_NOT_READY' satisfies ErrorCode }, { status: 503 })
-    }
-
     const playedAppIds = playHistory.map(g => g.appid)
 
     // Fetch tags for played games and user tag weights in parallel
+    // Cases 1–3 (logged in): weights by user_id; Case 4 (no session): weights by steam_id
     const [tagsMap, userTagWeights] = await Promise.all([
       getTagsForGames(playedAppIds),
-      getUserTagWeights(steamId),
+      userId
+        ? getUserTagWeights(userId, 'user_id')
+        : getUserTagWeights(steamId, 'steam_id'),
     ])
 
     // Build user tag profile: aggregate tag vote counts weighted by playtime

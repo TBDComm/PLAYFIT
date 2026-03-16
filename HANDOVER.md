@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 124/200 lines — OK**
+📏 **File health: 126/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -61,9 +61,9 @@ Next action: [exactly what to do next to resume]
 | B3 | Google auth — Header, login modal, auth callback, logout | ✅ 2026-03-16 |
 | B4 | Steam OpenID — `/api/auth/steam` + callback | ✅ 2026-03-16 |
 | B4-link | `/api/auth/link-steam` — Steam URL → migrate weights to user_id | ✅ 2026-03-16 |
-| B5 | Update `/api/recommend` — all four auth cases | ⬜ |
-| B6 | Update `/api/feedback` — user_id if session, steam_id if not | ⬜ |
-| B7 | Update Header (Steam link button) + main page layout per auth state | ⬜ |
+| B5 | Update `/api/recommend` — all four auth cases | ✅ 2026-03-16 |
+| B6 | Update `/api/feedback` — user_id if session, steam_id if not | ✅ 2026-03-16 |
+| B7 | Update Header (Steam link button) + main page layout per auth state | ✅ 2026-03-16 |
 | B8–B10 | E2E tests (email, Steam, non-auth) | ⬜ |
 
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅
@@ -72,48 +72,50 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: B5 — Update `/api/recommend` (four auth cases) ────────
+## ── ACTIVE STEP: B8–B10 — E2E tests ────────
 
-Read `SPEC.md §B5` before implementing.
+Read `SPEC.md §B8–B10` before implementing.
 
 ---
 
 ## ── MINOR CHANGES LOG ────────────────────────────────────
 
-_2026-03-14 + 2026-03-15 entries → HANDOVER-archive.md_
+_Pre-B5 entries → HANDOVER-archive.md_
 
 | Date | Change | Files |
 |------|--------|-------|
-| 2026-03-16 | Search debounce 300ms→0ms + missing debounceRefs (lost in crash) | `app/page.tsx` |
-| 2026-03-16 | A7-1 Korean search: add + remove (Steam Suggest API returns empty server-side) | `app/api/search/route.ts`, `app/page.tsx` |
-| 2026-03-16 | Fix: .dropdownItem missing from prefers-reduced-motion block | `app/page.module.css` |
-| 2026-03-16 | Dead code cleanup: unused types + remove @anthropic-ai/sdk from package.json | `types/index.ts`, `lib/claude.ts`, `lib/steam.ts`, `package.json` |
-| 2026-03-16 | Revised B-series spec: steam_id kept, B4-link step added, four auth cases | `SPEC.md`, `HANDOVER.md` |
-| 2026-03-16 | B2: ADD user_id UUID to user_tag_weights (+ unique constraint) + feedback | Supabase SQL |
-| 2026-03-16 | Install @supabase/auth-helpers-nextjs + @supabase/ssr (B3 auth deps) | `package.json` |
-| 2026-03-16 | B3: Header + Google OAuth modal + auth callback route + layout | `app/components/Header.tsx`, `Header.module.css`, `app/api/auth/callback/route.ts`, `app/layout.tsx` |
-| 2026-03-16 | Guidelines updated from vercel-labs/agent-skills react-best-practices | `rules/async-parallel.md`, `rules/bundle-barrel-imports.md`, `rules/rerender-optimization.md` (new), `CLAUDE.md` |
-| 2026-03-16 | Fix: supabase useMemo([]) in Header + :focus-visible on all 5 buttons | `app/components/Header.tsx`, `app/components/Header.module.css` |
+| 2026-03-16 | B5: /api/recommend — session read + weights by user_id (logged-in) or steam_id (anon) | `app/api/recommend/route.ts`, `lib/supabase.ts` |
+| 2026-03-16 | B6: /api/feedback — session read + feedback user_id + weights upsert by user_id or steam_id | `app/api/feedback/route.ts` |
+| 2026-03-16 | B7: Header email OTP + Steam link popup + page.tsx auth-aware URL/button | `Header.tsx`, `Header.module.css`, `page.tsx`, `page.module.css` |
+| 2026-03-16 | Fix: useEffect Escape handlers — inline setters instead of closeModal/closePopup refs | `Header.tsx` |
 
 ---
 
 ## ── COMPLETED STEPS ──────────────────────────────────────
+
+### ✅ B7 — 2026-03-16 — Header + login modal + Steam link popup + page auth UI
+- Files: `Header.tsx`, `Header.module.css`, `page.tsx`, `page.module.css`
+- Header: 3 auth states; email OTP (`signInWithOtp`/`verifyOtp`); Steam link popup (auto-open after Google/email login)
+- page.tsx: `authState` from user_profiles; Steam auth → hides URL input, button "내 게임 추천받기"; linked → pre-fills URL
+- Build: `tsc --noEmit` passed ✅
+
+### ✅ B6 — 2026-03-16 — /api/feedback session-aware
+- Files: `app/api/feedback/route.ts`
+- Changes: `createServerClient` reads session; feedback insert includes `user_id`; weights upsert on `user_id,tag` (logged-in) or `steam_id,tag` (anon)
+- Build: `tsc --noEmit` passed ✅
+
+### ✅ B5 — 2026-03-16 — /api/recommend four auth cases
+- Files: `app/api/recommend/route.ts`, `lib/supabase.ts`
+- Changes: `createServerClient` reads session; weights by `user_id` (Cases 1–3, logged in) or `steam_id` (Case 4, anon); `getUserTagWeights` gains `by` param
+- Build: `tsc --noEmit` passed ✅
 
 ### ✅ B4 + B4-link — 2026-03-16 — Steam OpenID auth
 - Files: `app/api/auth/steam/route.ts`, `app/api/auth/steam/callback/route.ts`, `app/api/auth/link-steam/route.ts`
 - Decisions: `generateLink({ type: 'magiclink' })` → redirect to action_link → session set via existing `/api/auth/callback`
 - Build: `tsc --noEmit` passed ✅
 
-### ✅ B3 — 2026-03-16 — Header + Google OAuth modal + auth callback
-- Files: `app/components/Header.tsx`, `app/components/Header.module.css`, `app/api/auth/callback/route.ts`, `app/layout.tsx`
-- Decisions: `createBrowserClient` used (not `createClientComponentClient` — not exported in v0.15); `@supabase/ssr` v0.9 uses `getAll`/`setAll` not `get`/`set`; `NextRequest` needed in callback to access `cookies.getAll()`
-- Watch out: Steam button in modal redirects to `/api/auth/steam` (B4); email login deferred to post-MVP
-- Build: `tsc --noEmit` passed ✅
-
-### ✅ B1 + B2 — 2026-03-16 — Supabase schema additions
-- SQL only: `user_profiles` table created; `user_id UUID` added to `user_tag_weights` (+ unique constraint on user_id+tag) + `feedback`
-- Decisions: `steam_id` kept in `user_tag_weights` — pre-login weights migrate on B4-link (`UPDATE ... WHERE user_id IS NULL`)
-- Build: no code changes; SQL run in Supabase dashboard ✅
+- B3 archived → see HANDOVER-archive.md
+- B1+B2 archived → see HANDOVER-archive.md
 
 ---
 

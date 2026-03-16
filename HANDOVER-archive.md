@@ -1,5 +1,16 @@
 # HANDOVER Archive
 
+## B3 — 2026-03-16 — Header + Google OAuth modal + auth callback
+- Files: `app/components/Header.tsx`, `app/components/Header.module.css`, `app/api/auth/callback/route.ts`, `app/layout.tsx`
+- Decisions: `createBrowserClient` used (not `createClientComponentClient` — not exported in v0.15); `@supabase/ssr` v0.9 uses `getAll`/`setAll`; `NextRequest` needed in callback to access `cookies.getAll()`
+- Watch out: Steam button redirects to `/api/auth/steam` (B4); email OTP added in B7 (was not post-MVP)
+- Build: `tsc --noEmit` passed ✅
+
+## B1 + B2 — 2026-03-16 — Supabase schema additions
+- SQL only: `user_profiles` table created; `user_id UUID` added to `user_tag_weights` (+ unique constraint on user_id+tag) + `feedback`
+- Decisions: `steam_id` kept — pre-login weights migrate on B4-link (`UPDATE ... WHERE user_id IS NULL`)
+- Build: no code changes; SQL run in Supabase dashboard ✅
+
 ## B4 + B4-link — Spec (completed 2026-03-16)
 - Steam OpenID redirect → `https://steamcommunity.com/openid/login` with checkid_setup params
 - Callback: POST `check_authentication` → extract steamid64 → find/create user_profiles + auth.users → `generateLink({ type: 'magiclink' })` → redirect to action_link → Supabase sets session via `/api/auth/callback`

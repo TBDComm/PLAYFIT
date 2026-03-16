@@ -31,12 +31,15 @@ export async function getTagsForGames(appids: number[]): Promise<Map<number, Rec
   return map
 }
 
-export async function getUserTagWeights(steamId: string): Promise<Record<string, number>> {
-  if (!steamId) return {}
+export async function getUserTagWeights(
+  id: string,
+  by: 'user_id' | 'steam_id' = 'steam_id'
+): Promise<Record<string, number>> {
+  if (!id) return {}
   const { data } = await supabase
     .from('user_tag_weights')
     .select('tag, weight')
-    .eq('steam_id', steamId)
+    .eq(by, id)
 
   const weights: Record<string, number> = {}
   if (data) {

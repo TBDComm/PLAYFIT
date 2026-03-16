@@ -17,8 +17,15 @@
   color: var(--accent);
 }
 
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .loginBtn,
-.logoutBtn {
+.logoutBtn,
+.steamLinkBtn {
   padding: 6px 16px;
   border-radius: var(--radius);
   font-size: 0.875rem;
@@ -46,6 +53,17 @@
 .logoutBtn:hover,
 .logoutBtn:focus-visible {
   background: rgba(248, 113, 113, 0.1);
+}
+
+.steamLinkBtn {
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.steamLinkBtn:hover,
+.steamLinkBtn:focus-visible {
+  background: rgba(190, 242, 100, 0.1);
 }
 
 /* ── Modal ── */
@@ -103,6 +121,7 @@
   gap: 10px;
 }
 
+.emailBtn,
 .googleBtn,
 .steamBtn {
   width: 100%;
@@ -112,6 +131,17 @@
   font-weight: 600;
   border: 1px solid var(--border);
   transition: background-color 150ms, border-color 150ms;
+}
+
+.emailBtn {
+  background: var(--accent);
+  color: #09090b;
+  border-color: transparent;
+}
+
+.emailBtn:hover,
+.emailBtn:focus-visible {
+  background: #d4f54a;
 }
 
 .googleBtn {
@@ -136,12 +166,86 @@
   background: #213347;
 }
 
+/* ── Email OTP + Link popup shared elements ── */
+
+.modalInput {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+  transition: border-color 150ms;
+  box-sizing: border-box;
+}
+
+.modalInput:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.primaryBtn {
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  background: var(--accent);
+  color: #09090b;
+  border: none;
+  transition: background-color 150ms;
+}
+
+.primaryBtn:hover:not(:disabled),
+.primaryBtn:focus-visible:not(:disabled) {
+  background: #d4f54a;
+}
+
+.primaryBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.backBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  padding: 4px 0;
+  text-align: left;
+  transition: color 150ms;
+}
+
+.backBtn:hover,
+.backBtn:focus-visible {
+  color: var(--text-primary);
+}
+
+.modalError {
+  font-size: 0.8125rem;
+  color: var(--error);
+  margin: 0;
+}
+
+.modalDesc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+  word-break: break-all;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .loginBtn,
   .logoutBtn,
+  .steamLinkBtn,
   .closeBtn,
+  .emailBtn,
   .googleBtn,
-  .steamBtn {
+  .steamBtn,
+  .modalInput,
+  .primaryBtn,
+  .backBtn {
     transition: none;
   }
 }

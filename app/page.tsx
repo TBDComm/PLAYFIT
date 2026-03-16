@@ -1,9 +1,12 @@
 'use client'
 
-import { useState, useRef, type FormEvent } from 'react'
+import { useEffect, useState, useRef, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
+import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import type { RecommendationCard, ErrorCode } from '@/types'
 import styles from './page.module.css'
+
+type AuthState = 'loading' | 'steam' | 'linked' | 'unlinked_auth' | 'anon'
 
 type SearchResult = { appid: number; name: string }
 
@@ -29,6 +32,7 @@ const EMPTY_MANUAL_GAMES: ManualGame[] = Array.from({ length: 5 }, () => ({
 
 export default function Home() {
   const router = useRouter()
+  const [authState, setAuthState] = useState<AuthState>('loading')
   const [mode, setMode] = useState<'steam' | 'manual'>('steam')
   const [url, setUrl] = useState('')
   const [manualGames, setManualGames] = useState<ManualGame[]>(EMPTY_MANUAL_GAMES)
@@ -40,6 +44,29 @@ export default function Home() {
   const [rowErrors, setRowErrors] = useState<Array<string | null>>(Array(5).fill(null))
   const nameInputRefs = useRef<Array<HTMLInputElement | null>>(Array(5).fill(null))
   const debounceRefs = useRef<Array<ReturnType<typeof setTimeout> | null>>(Array(5).fill(null))
+
+  useEffect(() => {
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session) { setAuthState('anon'); return }
+      const { data } = await supabase
+        .from('user_profiles').select('steam_id').eq('id', session.user.id).maybeSingle()
+      const sid: string | null = data?.steam_id ?? null
+      const isSteam = session.user.email?.endsWith('@steam.playfit') ?? false
+      if (isSteam && sid) {
+        setUrl(`https://steamcommunity.com/profiles/${sid}`)
+        setAuthState('steam')
+      } else if (!isSteam && sid) {
+        setUrl(`https://steamcommunity.com/profiles/${sid}`)
+        setAuthState('linked')
+      } else {
+        setAuthState('unlinked_auth')
+      }
+    })
+  }, [])
 
   function updateManualGame(idx: number, field: 'playtime', value: string) {
     setManualGames(prev => prev.map((g, i) => i === idx ? { ...g, [field]: value } : g))
@@ -238,7 +265,11 @@ export default function Home() {
         </header>
 
         <form className={styles.form} onSubmit={handleSubmit} noValidate>
-          {mode === 'steam' ? (
+          {mode === 'steam' && authState === 'steam' ? (
+            <div className={styles.inputWrapper}>
+              <p className={styles.steamAuthNotice}>Steam 계정이 연동되어 있어요</p>
+            </div>
+          ) : mode === 'steam' ? (
             <div className={styles.inputWrapper}>
               <label className={styles.label} htmlFor="steam-url">
                 Steam 프로필 URL
@@ -385,7 +416,10 @@ export default function Home() {
             className={styles.button}
             disabled={loading || !canSubmit}
           >
-            {loading ? (mode === 'manual' ? '취향 분석 중…' : '플레이 기록 분석 중…') : '내 게임 찾기'}
+            {loading
+              ? (mode === 'manual' ? '취향 분석 중…' : '플레이 기록 분석 중…')
+              : authState === 'steam' ? '내 게임 추천받기' : '내 게임 찾기'
+            }
           </button>
         </form>
 

@@ -284,6 +284,12 @@
   cursor: not-allowed;
 }
 
+.steamAuthNotice {
+  font-size: 0.875rem;
+  color: var(--accent);
+  padding: 10px 0;
+}
+
 .manualNotice {
   margin-top: 0.625rem;
   font-size: 0.75rem;
