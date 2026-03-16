@@ -61,6 +61,17 @@ const [user, config, profile] = await Promise.all([
 ])
 ```
 
+Alternative with `better-all` (auto-maximizes parallelism based on declared dependencies):
+```typescript
+import { all } from 'better-all'
+
+const { user, config, profile } = await all({
+  async user() { return fetchUser() },
+  async config() { return fetchConfig() },
+  async profile() { return fetchProfile((await this.$.user).id) }
+})
+```
+
 ---
 
 ## 1.3 Prevent Waterfall Chains in API Routes

@@ -44,7 +44,8 @@ Read the relevant rule file before writing code in that area.
 | File | Priority | Covers |
 |------|----------|--------|
 | `rules/async-parallel.md` | CRITICAL | `Promise.all()`, no sequential await |
-| `rules/bundle-barrel-imports.md` | CRITICAL | No barrel imports, direct paths |
+| `rules/bundle-barrel-imports.md` | CRITICAL | No barrel imports, dynamic imports, conditional loading |
+| `rules/rerender-optimization.md` | HIGH | No inline components, derived state, functional setState, useRef |
 | `rules/web-design-guidelines.md` | HIGH | Accessibility, focus, forms, animation |
 | `rules/frontend-design.md` | HIGH | Aesthetics, no AI-slop |
 | `rules/handover-rules.md` | CRITICAL | How to maintain `HANDOVER.md` |
