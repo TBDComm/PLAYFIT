@@ -32,7 +32,8 @@
   color: #09090b;
 }
 
-.loginBtn:hover {
+.loginBtn:hover,
+.loginBtn:focus-visible {
   background: #d4f54a;
 }
 
@@ -42,7 +43,8 @@
   border-color: var(--error);
 }
 
-.logoutBtn:hover {
+.logoutBtn:hover,
+.logoutBtn:focus-visible {
   background: rgba(248, 113, 113, 0.1);
 }
 
@@ -89,7 +91,8 @@
   transition: color 150ms, background-color 150ms;
 }
 
-.closeBtn:hover {
+.closeBtn:hover,
+.closeBtn:focus-visible {
   color: var(--text-primary);
   background: var(--bg-hover);
 }
@@ -116,7 +119,8 @@
   color: var(--text-primary);
 }
 
-.googleBtn:hover {
+.googleBtn:hover,
+.googleBtn:focus-visible {
   background: #2a2a32;
   border-color: #2e2e38;
 }
@@ -127,7 +131,8 @@
   border-color: #2a475e;
 }
 
-.steamBtn:hover {
+.steamBtn:hover,
+.steamBtn:focus-visible {
   background: #213347;
 }
 
