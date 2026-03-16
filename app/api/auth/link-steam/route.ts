@@ -24,13 +24,17 @@ export async function POST(request: NextRequest) {
     }
   )
 
-  const { data: { session } } = await supabase.auth.getSession()
+  // Start both independently — auth check and body parse have no dependency
+  const sessionPromise = supabase.auth.getSession()
+  const bodyPromise = request.json() as Promise<{ steamUrl?: unknown }>
+
+  const { data: { session } } = await sessionPromise
   if (!session) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 })
   }
 
   // 2. Parse steamUrl → resolve to steam_id
-  const body = await request.json() as { steamUrl?: unknown }
+  const body = await bodyPromise
   const steamUrl = typeof body.steamUrl === 'string' ? body.steamUrl.trim() : ''
 
   const parsed = parseSteamUrl(steamUrl)
