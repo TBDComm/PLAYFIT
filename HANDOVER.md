@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 122/200 lines — OK**
+📏 **File health: 124/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -92,6 +92,8 @@ _2026-03-14 + 2026-03-15 entries → HANDOVER-archive.md_
 | 2026-03-16 | B2: ADD user_id UUID to user_tag_weights (+ unique constraint) + feedback | Supabase SQL |
 | 2026-03-16 | Install @supabase/auth-helpers-nextjs + @supabase/ssr (B3 auth deps) | `package.json` |
 | 2026-03-16 | B3: Header + Google OAuth modal + auth callback route + layout | `app/components/Header.tsx`, `Header.module.css`, `app/api/auth/callback/route.ts`, `app/layout.tsx` |
+| 2026-03-16 | Guidelines updated from vercel-labs/agent-skills react-best-practices | `rules/async-parallel.md`, `rules/bundle-barrel-imports.md`, `rules/rerender-optimization.md` (new), `CLAUDE.md` |
+| 2026-03-16 | Fix: supabase useMemo([]) in Header + :focus-visible on all 5 buttons | `app/components/Header.tsx`, `app/components/Header.module.css` |
 
 ---
 
