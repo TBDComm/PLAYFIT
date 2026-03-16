@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import type { RecommendationCard, ErrorCode } from '@/types'
 import styles from './page.module.css'
 
-type SearchResult = { appid: number; name: string; displayName?: string }
+type SearchResult = { appid: number; name: string }
 
 const ERROR_MESSAGES: Record<ErrorCode, string> = {
   PRIVATE_PROFILE:        '스팀 프로필을 공개로 설정해주세요',
@@ -269,6 +269,9 @@ export default function Home() {
               <span className={styles.label}>
                 플레이한 게임 입력 (최대 5개)
               </span>
+              <p className={styles.manualNotice}>
+                게임 이름은 영문으로 정확히 입력해야 분석이 가능해요 (예: Elden Ring, Stardew Valley)
+              </p>
               <div className={styles.manualRows} role="group" aria-label="게임 목록">
                 {manualGames.map((g, i) => (
                   <div key={i}>
@@ -302,7 +305,7 @@ export default function Home() {
                                 aria-selected={false}
                                 onMouseDown={() => selectGame(i, item.appid, item.name)}
                               >
-                                {item.displayName ?? item.name}
+                                {item.name}
                               </button>
                             ))}
                           </div>

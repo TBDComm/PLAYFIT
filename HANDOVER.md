@@ -65,7 +65,7 @@ Next action: [exactly what to do next to resume]
 | A5 | Feedback → user_tag_weights weight update logic | ✅ 2026-03-14 |
 | A6 | Manual input mode UI (main page toggle + form) | ✅ 2026-03-15 |
 | A7 | /api/search autocomplete route | ✅ 2026-03-15 |
-| A7-1 | Korean game name search (name_ko column + alias mapping) | ✅ 2026-03-16 |
+| A7-1 | Korean game name search — removed (Steam API doesn't support Korean server-side) | ❌ 2026-03-16 |
 | A8 | /api/recommend: handle both Steam + manual input modes | ✅ 2026-03-15 |
 | A9 | Test: Steam mode end-to-end | ✅ 2026-03-15 |
 | A10 | Test: Manual mode end-to-end | ✅ 2026-03-16 |
@@ -77,26 +77,9 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: A7-1 — Korean game name search (testing only) ─────────
-
-**Status:** Implementation complete. Deploy and verify only — no new code expected.
-
-**What was implemented:**
-- `app/api/search/route.ts` — detects Korean input (`/[\uAC00-\uD7A3]/`), calls Steam Suggest API (`/search/suggest?term=...&l=koreana`), looks up returned appids in `games_cache`, returns `{ appid, name (English), displayName (Korean) }`
-- `app/page.tsx` — `SearchResult` type extended with `displayName?: string`; dropdown renders `displayName ?? name`; on select, input fills with English name (DB match)
-
-**To test:** `git push` → CF Pages deploy → open Manual mode → type Korean game name (e.g. "엘든 링", "발로란트") → confirm Korean names appear in dropdown → confirm selecting fills input with English name
-
-**If broken — check these first:**
-1. CF edge runtime blocked outbound fetch to Steam (`store.steampowered.com`)
-2. Steam Suggest returned HTML instead of JSON array
-3. appid type mismatch (string vs number) in `.in('appid', appids)` query
-
-**After passing:** Mark A7-1 ✅ → move to B1 (spec below)
+## ── ACTIVE STEP: B1 — Create `user_profiles` table ──────────────────────
 
 ---
-
-## ── NEXT STEP: B1 — Create `user_profiles` table ──────────────────────
 
 **Goal:** Run the `user_profiles` table migration in Supabase (SQL editor).
 
@@ -139,6 +122,8 @@ _2026-03-14 entries → HANDOVER-archive.md_
 | 2026-03-16 | Search debounce 300ms → 0ms + add missing debounceRefs declaration (lost in crash) | `app/page.tsx` |
 | 2026-03-16 | A7-1: Korean search via Steam Suggest API → appid → games_cache English name lookup | `app/api/search/route.ts`, `app/page.tsx` |
 | 2026-03-16 | Fix: add .dropdownItem to prefers-reduced-motion block (transition: none) | `app/page.module.css` |
+| 2026-03-16 | Remove A7-1 Korean search (Steam API returns empty server-side); add exact English name notice to manual mode | `app/api/search/route.ts`, `app/page.tsx` |
+| 2026-03-16 | Dead code cleanup: remove unused types (ClaudeRecommendationResponse, FeedbackPayload), unexport internal interfaces, remove @anthropic-ai/sdk from package.json (unused, direct fetch used) | `types/index.ts`, `lib/claude.ts`, `lib/steam.ts`, `package.json`, `package-lock.json` |
 
 ---
 

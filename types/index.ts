@@ -41,11 +41,6 @@ export interface Recommendation {
   reason: string
 }
 
-/** Full Claude response */
-export interface ClaudeRecommendationResponse {
-  recommendations: Recommendation[]
-}
-
 // ===== UI display types =====
 
 /** Complete recommendation card shown on the result page */
@@ -78,11 +73,3 @@ export type ErrorCode =
 
 export type FeedbackRating = 'positive' | 'negative'
 
-export interface FeedbackPayload {
-  game_id: string
-  game_name: string
-  steam_id: string
-  play_profile: { name: string; playtime_hours: number }[]
-  rating: FeedbackRating
-  tag_snapshot: string[]
-}

@@ -1,12 +1,12 @@
 import type { Recommendation } from '@/types'
 
-export interface PlayHistoryForClaude {
+interface PlayHistoryForClaude {
   name: string
   playtime_hours: number
   top_tags: string[]
 }
 
-export interface CandidateForClaude {
+interface CandidateForClaude {
   appid: number
   name: string
   top_tags: string[]
