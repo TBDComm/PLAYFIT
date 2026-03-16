@@ -26,11 +26,11 @@ Full writing rules → `rules/handover-rules.md`
 
 **NEVER `npm run build` or `npm run dev` — instant OOM crash / banned.** Use `npx tsc --noEmit` for type-check only. Testing = `git push` → Cloudflare Pages deploy → user tests in browser.
 
-**Session start — run immediately (no exceptions):**
+**Session start — if firebase/nixd still running, kill manually:**
 ```bash
-pkill -f workerd; pkill -f firebase; pkill -f nixd
+kill $(pgrep -f firebase) $(pgrep -f nixd) 2>/dev/null; echo done
 ```
-Recovers ~4GB. Safe to kill: all three are unused in dev.
+`next dev` auto-start disabled via `.idx/dev.nix` (previews.enable = false). If VM still crashes → RESTART workspace.
 
 ---
 
