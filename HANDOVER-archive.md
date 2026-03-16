@@ -1,5 +1,11 @@
 # HANDOVER Archive
 
+## B4 + B4-link — Spec (completed 2026-03-16)
+- Steam OpenID redirect → `https://steamcommunity.com/openid/login` with checkid_setup params
+- Callback: POST `check_authentication` → extract steamid64 → find/create user_profiles + auth.users → `generateLink({ type: 'magiclink' })` → redirect to action_link → Supabase sets session via `/api/auth/callback`
+- link-steam POST: session check → parseSteamUrl/resolveVanityUrl → 409 if different user has steam_id → UPDATE user_profiles + UPDATE user_tag_weights WHERE user_id IS NULL
+- Key decision: `shouldCreateUser` not in generateLink type — removed; user already exists by that point
+
 ## Minor Changes — 2026-03-15
 | Change | Files |
 |--------|-------|
