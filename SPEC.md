@@ -314,21 +314,28 @@ ALTER TABLE feedback ADD COLUMN tag_snapshot JSONB;
 
 **Addendum B tables (authentication — see Addendum B section):**
 ```sql
--- Links Supabase auth user to their Steam account
+-- B1: Links Supabase auth user to their Steam account (✅ done)
 CREATE TABLE user_profiles (
   id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
   steam_id TEXT UNIQUE,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Replace steam_id with user_id in user_tag_weights
-ALTER TABLE user_tag_weights DROP COLUMN steam_id;
-ALTER TABLE user_tag_weights ADD COLUMN user_id UUID REFERENCES auth.users ON DELETE CASCADE;
-ALTER TABLE user_tag_weights ADD CONSTRAINT user_tag_weights_user_tag_unique UNIQUE(user_id, tag);
+-- B2: Add user_id to user_tag_weights (DO NOT drop steam_id — pre-login data uses it)
+ALTER TABLE user_tag_weights
+  ADD COLUMN user_id UUID REFERENCES auth.users ON DELETE CASCADE;
+ALTER TABLE user_tag_weights
+  ADD CONSTRAINT user_tag_weights_user_tag_unique UNIQUE(user_id, tag);
 
--- Add nullable user_id to feedback (non-authenticated feedback remains valid)
+-- B2: Add nullable user_id to feedback
 ALTER TABLE feedback ADD COLUMN user_id UUID REFERENCES auth.users;
 ```
+
+**Why steam_id is NOT dropped from user_tag_weights:**
+Non-authenticated users accumulate tag weights by steam_id across multiple visits.
+On login + Steam URL link (B4-link), those rows are migrated:
+`UPDATE user_tag_weights SET user_id = ? WHERE steam_id = ?`
+After migration, the row has both steam_id and user_id set. Future queries use user_id.
 
 **Feedback route:** POST `{game_id, game_name, steam_id, play_profile, rating, tag_snapshot}` → insert → 200 or 500
 
@@ -376,13 +383,23 @@ No owned games to filter. Same tag extraction + scoring + Claude logic applies.
 
 ### Core principle
 
-Login is never required. All three user states coexist and the service functions fully in each.
+Login is never required. All four user states coexist and the service functions fully in each.
 
-| State | Tag weights | Steam URL |
-|-------|-------------|-----------|
-| Non-authenticated | Calculated in memory only, never saved | Enter manually every time |
-| Email or Google authenticated | Persisted by `user_id` across sessions | Enter manually on first use — saved to `user_profiles` after that |
-| Steam authenticated | Persisted by `user_id` across sessions | Not required — fetched automatically from `user_profiles` |
+| State | Tag weights storage | Steam URL |
+|-------|---------------------|-----------|
+| Non-authenticated | `user_tag_weights.steam_id` — persists across visits by Steam URL | Enter every time |
+| Logged in, Steam not linked | `user_tag_weights.user_id` — starts fresh (no prior data) | Enter every time |
+| Logged in, Steam linked (migrated) | `user_tag_weights.user_id` — pre-login data migrated in | Steam URL saved in `user_profiles` |
+| Steam authenticated | `user_tag_weights.user_id` | Auto-fetched from `user_profiles` |
+
+**Migration flow (B4-link):**
+User logs in → popup asks for Steam URL → user enters URL → system:
+1. Resolves URL to `steam_id`
+2. Sets `user_profiles.steam_id = steam_id` for this user
+3. Runs `UPDATE user_tag_weights SET user_id = {user_id} WHERE steam_id = {steam_id}`
+4. Popup closes — data from all prior non-authenticated visits is now linked
+
+If user closes popup without linking: a **[Steam 연동]** button persists next to the logout button, re-opening the same popup at any time.
 
 ---
 
@@ -426,53 +443,94 @@ Redirect destination: `https://steamcommunity.com/openid/login`
 
 ### Updated recommendation logic (B5)
 
-`/api/recommend` handles three cases:
+`/api/recommend` — reads session server-side via Supabase `createServerClient`.
 
-**Case 1 — Steam authenticated:**
+**Case 1 — Steam authenticated (steam_id in user_profiles):**
 - Read `user_id` from session → look up `steam_id` from `user_profiles`
-- Fetch play history via Steam API using stored `steam_id` (no URL input)
-- Load `user_tag_weights` by `user_id` → run full recommendation flow
+- Fetch play history via Steam API (no URL input required)
+- Load `user_tag_weights` by `user_id` → run recommendation flow
 
-**Case 2 — Email or Google authenticated:**
+**Case 2 — Logged in, Steam linked (email/Google + steam_id set in user_profiles):**
 - Read `user_id` from session
-- User provides Steam URL manually
-- If `steam_id` not yet in `user_profiles`: save it after successful play history fetch
-- Load `user_tag_weights` by `user_id` → run full recommendation flow
+- `steam_id` already in `user_profiles` → pre-fill Steam URL on frontend, fetch play history
+- Load `user_tag_weights` by `user_id` → run recommendation flow
 
-**Case 3 — Non-authenticated:**
-- No session present
+**Case 3 — Logged in, Steam NOT linked:**
+- Read `user_id` from session
+- User provides Steam URL manually (no pre-fill)
+- Load `user_tag_weights` by `user_id` (may be empty → defaults to 1.0)
+- Run recommendation flow
+
+**Case 4 — Non-authenticated:**
+- No session
 - User provides Steam URL or manual game input
-- All tag weights default to `1.0`
-- Run full recommendation flow — do not save any tag weights
+- Load `user_tag_weights` by `steam_id` (if steam URL provided) — accumulated pre-login data
+- Run recommendation flow — weights never saved here (saving happens in /api/feedback)
 
 ---
 
 ### Updated feedback logic (B6)
 
-`/api/feedback`:
-- Valid session exists → update `user_tag_weights` by `user_id` (persistent)
-- No session → skip tag weight update entirely, save feedback row with `null user_id`
+`/api/feedback` — reads session server-side.
+
+- **Valid session:** insert feedback row with `user_id`, update `user_tag_weights` by `user_id` (upsert on `user_id, tag`)
+- **No session:** insert feedback row with `user_id: null`, `steam_id` (if provided), update `user_tag_weights` by `steam_id` (upsert on `steam_id, tag`)
+
+---
+
+### Steam link route (B4-link)
+
+**`POST /api/auth/link-steam`** — links an existing steam_id to the logged-in user and migrates pre-login tag weights.
+
+Request body: `{ steamUrl: string }`
+
+Steps:
+1. Verify session exists — return 401 if not
+2. Parse `steamUrl` → resolve to `steam_id` (same logic as `/api/steam`)
+3. Check `user_profiles` — if `steam_id` already linked to a different `user_id` → return 409
+4. Update `user_profiles` SET `steam_id = steam_id` WHERE `id = user_id`
+5. `UPDATE user_tag_weights SET user_id = {user_id} WHERE steam_id = {steam_id} AND user_id IS NULL`
+   — only migrates rows not yet owned by any user
+6. Return `{ ok: true, steam_id }`
+
+`SUPABASE_SERVICE_ROLE_KEY` required (bypasses RLS for admin update).
 
 ---
 
 ### Frontend changes (B7)
 
-**Header component** (all pages):
-- Non-authenticated: show `로그인` button → modal with three options: `이메일로 로그인` / `Google로 로그인` / `Steam으로 로그인`
-- Authenticated: show user identifier + `로그아웃` button
+**Header component** (`app/components/Header.tsx`, rendered in `app/layout.tsx`):
 
-**Main page — Steam authenticated:**
-- Hide Steam URL input field
+- **Non-authenticated:** `[로그인]` button → login modal (three options: 이메일 / Google / Steam)
+- **Authenticated, Steam NOT linked:** `[로그아웃]` + `[Steam 연동]` button
+- **Authenticated, Steam linked:** `[로그아웃]` (no link button — already linked)
+
+**Login modal:**
+- Three buttons: `이메일로 로그인` / `Google로 로그인` / `Steam으로 로그인`
+- On successful login → modal closes → **Steam link popup opens automatically**
+
+**Steam link popup** (shown after login AND when [Steam 연동] button clicked):
+- Title: "기존 Steam 데이터를 연동하세요"
+- Input: Steam 프로필 URL
+- Button: `연동하기` → calls `/api/auth/link-steam` → success closes popup
+- `[닫기]` or outside-click closes popup without linking
+- After closing without linking: `[Steam 연동]` button remains in header
+
+**Main page — Steam authenticated (steam_id in user_profiles):**
+- Hide Steam URL input
 - Show `내 게임 추천받기` button in its place
-- Budget input remains visible and functional
-
-**Main page — email or Google authenticated:**
-- Steam URL input remains
-- If `steam_id` exists in `user_profiles`: pre-fill the input
 - Budget input unchanged
 
-**Main page — non-authenticated:**
-- No changes from original spec
+**Main page — Email/Google authenticated, Steam linked:**
+- Steam URL input pre-filled with linked steam_id's profile URL
+- Budget input unchanged
+
+**Main page — Email/Google authenticated, Steam NOT linked:**
+- Steam URL input empty (user enters manually)
+- Budget input unchanged
+
+**Main page — Non-authenticated:**
+- No changes from current behavior
 
 ---
 
@@ -484,16 +542,17 @@ Ask for Google OAuth credentials before implementing Google login.
 
 | Step | Description |
 |------|-------------|
-| B1 | Create `user_profiles` table |
-| B2 | Alter `user_tag_weights` and `feedback` tables |
-| B3 | Email and Google auth — login modal, session handling, logout |
-| B4 | `/api/auth/steam` and `/api/auth/steam/callback` |
-| B5 | Update `/api/recommend` for all three auth cases |
-| B6 | Update `/api/feedback` — conditional weight persistence by `user_id` |
-| B7 | Main page + header UI for all auth states |
-| B8 | End-to-end test: email login → recommendation → feedback → return visit |
-| B9 | End-to-end test: Steam login → one-click recommendation → feedback persistence |
-| B10 | End-to-end test: non-authenticated → full flow → confirm no weight persistence |
+| B1 | Create `user_profiles` table | ✅ done |
+| B2 | Alter `user_tag_weights` + `feedback` (add user_id, keep steam_id) |
+| B3 | Email + Google auth — login modal, Supabase session, logout |
+| B4 | `/api/auth/steam` + `/api/auth/steam/callback` — Steam OpenID |
+| B4-link | `/api/auth/link-steam` — Steam URL → migrate weights to user_id |
+| B5 | Update `/api/recommend` — all four cases |
+| B6 | Update `/api/feedback` — user_id if session, steam_id if not |
+| B7 | Header component + login modal + Steam link popup + main page per auth state |
+| B8 | E2E test: email login → link Steam → recommend → feedback → return visit |
+| B9 | E2E test: Steam login → auto recommend → feedback persistence |
+| B10 | E2E test: non-authenticated → full flow → weights persist by steam_id |
 
 ---
 

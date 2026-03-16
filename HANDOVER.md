@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 148/200 lines — OK**
+📏 **File health: 142/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -69,7 +69,15 @@ Next action: [exactly what to do next to resume]
 | A8 | /api/recommend: handle both Steam + manual input modes | ✅ 2026-03-15 |
 | A9 | Test: Steam mode end-to-end | ✅ 2026-03-15 |
 | A10 | Test: Manual mode end-to-end | ✅ 2026-03-16 |
-| B1–B10 | Authentication (email/Google/Steam login, user_profiles, session) | ⬜ pending A10 |
+| B1 | Create `user_profiles` table | ✅ 2026-03-16 |
+| B2 | Alter `user_tag_weights` + `feedback` (add user_id, keep steam_id) | ⬜ |
+| B3 | Email + Google auth — login modal, Supabase session, logout | ⬜ |
+| B4 | Steam OpenID — `/api/auth/steam` + callback | ⬜ |
+| B4-link | `/api/auth/link-steam` — Steam URL → migrate weights to user_id | ⬜ |
+| B5 | Update `/api/recommend` — all four auth cases | ⬜ |
+| B6 | Update `/api/feedback` — user_id if session, steam_id if not | ⬜ |
+| B7 | Header + login modal + Steam link popup + main page per auth state | ⬜ |
+| B8–B10 | E2E tests (email, Steam, non-auth) | ⬜ |
 
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ (all set in .env.local + CF Pages) — if missing, ask the user; never assume.
 
@@ -77,26 +85,26 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: B1 — Create `user_profiles` table ──────────────────────
-
----
-
-**Goal:** Run the `user_profiles` table migration in Supabase (SQL editor).
-
-**SQL to run:**
-```sql
-CREATE TABLE user_profiles (
-  id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
-  steam_id TEXT UNIQUE,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-```
+## ── ACTIVE STEP: B2 — Alter `user_tag_weights` + `feedback` ─────────────
 
 **Scope:** Supabase SQL editor only — no code changes.
 
-**Verify:** Table appears in Supabase Table Editor with columns `id`, `steam_id`, `created_at`.
+**SQL to run:**
+```sql
+ALTER TABLE user_tag_weights
+  ADD COLUMN user_id UUID REFERENCES auth.users ON DELETE CASCADE;
+ALTER TABLE user_tag_weights
+  ADD CONSTRAINT user_tag_weights_user_tag_unique UNIQUE(user_id, tag);
 
-**After completing:** Mark B1 ✅ → read SPEC.md §B2, copy spec inline → start B2.
+ALTER TABLE feedback ADD COLUMN user_id UUID REFERENCES auth.users;
+```
+
+**Why steam_id is NOT dropped:** Non-authenticated users accumulate weights by steam_id across visits. On login + Steam URL link (B4-link), those rows are migrated:
+`UPDATE user_tag_weights SET user_id = ? WHERE steam_id = ? AND user_id IS NULL`
+
+**Verify:** `user_tag_weights` has columns: `steam_id`, `tag`, `weight`, `updated_at`, `user_id`. `feedback` has `user_id` column.
+
+**After completing:** Mark B2 ✅ → start B3 (read SPEC.md §Authentication [Addendum B] first).
 
 ---
 
@@ -124,6 +132,7 @@ _2026-03-14 entries → HANDOVER-archive.md_
 | 2026-03-16 | Fix: add .dropdownItem to prefers-reduced-motion block (transition: none) | `app/page.module.css` |
 | 2026-03-16 | Remove A7-1 Korean search (Steam API returns empty server-side); add exact English name notice to manual mode | `app/api/search/route.ts`, `app/page.tsx` |
 | 2026-03-16 | Dead code cleanup: remove unused types (ClaudeRecommendationResponse, FeedbackPayload), unexport internal interfaces, remove @anthropic-ai/sdk from package.json (unused, direct fetch used) | `types/index.ts`, `lib/claude.ts`, `lib/steam.ts`, `package.json`, `package-lock.json` |
+| 2026-03-16 | Revised B-series spec: steam_id NOT dropped (pre-login data), new B4-link step, Steam link popup UX, four auth cases for B5/B6 | `SPEC.md`, `HANDOVER.md` |
 
 ---
 
