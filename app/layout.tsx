@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Space_Grotesk } from 'next/font/google'
+import Header from './components/Header'
 import './globals.css'
 
 // Space Grotesk: technical, characterful font (rules/frontend-design.md — Inter/Arial banned)
@@ -24,7 +25,10 @@ export default function RootLayout({
   return (
     // color-scheme: dark is declared in globals.css
     <html lang="ko" className={spaceGrotesk.variable}>
-      <body>{children}</body>
+      <body>
+        <Header />
+        {children}
+      </body>
     </html>
   )
 }
