@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import type { RecommendationCard, ErrorCode } from '@/types'
 import styles from './page.module.css'
 
-type SearchResult = { appid: number; name: string }
+type SearchResult = { appid: number; name: string; displayName?: string }
 
 const ERROR_MESSAGES: Record<ErrorCode, string> = {
   PRIVATE_PROFILE:        '스팀 프로필을 공개로 설정해주세요',
@@ -302,7 +302,7 @@ export default function Home() {
                                 aria-selected={false}
                                 onMouseDown={() => selectGame(i, item.appid, item.name)}
                               >
-                                {item.name}
+                                {item.displayName ?? item.name}
                               </button>
                             ))}
                           </div>

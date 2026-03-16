@@ -295,6 +295,9 @@
   .button:active:not(:disabled) {
     transform: none;
   }
+  .dropdownItem {
+    transition: none;
+  }
 }
 
 /* ===== Autocomplete dropdown ===== */
