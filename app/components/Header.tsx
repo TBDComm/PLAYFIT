@@ -511,11 +511,11 @@ export default function Header() {
                 <div className={styles.orDivider}><span>또는</span></div>
                 <button onClick={handleGoogleLogin} className={styles.googleBtn}>
                   <GoogleIcon />
-                  Google로 계속하기
+                  Google로 로그인하기
                 </button>
                 <button onClick={handleSteamLogin} className={styles.steamBtn}>
                   <SteamIcon />
-                  Steam으로 계속하기
+                  Steam으로 로그인하기
                 </button>
               </div>
             )}
