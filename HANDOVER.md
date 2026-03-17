@@ -90,6 +90,7 @@ _Pre-B5 entries → HANDOVER-archive.md_
 | 2026-03-17 | Style: login modal GitHub-style redesign — centered logo+title, email-first, "또는" divider, icon buttons | `Header.tsx`, `Header.module.css` |
 | 2026-03-17 | Auth: email+password login/signup; OTP verification on signup; forgot password flow; /reset-password page | `Header.tsx`, `Header.module.css`, `app/reset-password/page.tsx`, `app/reset-password/page.module.css` |
 | 2026-03-17 | Fix: login modal Escape handler — inline setters instead of closeLoginModal() ref (reverted pattern fix) | `Header.tsx` |
+| 2026-03-17 | Fix: logout broken for all auth methods — server-side /api/auth/signout route + window.location.href reload | `Header.tsx`, `app/api/auth/signout/route.ts` |
 | 2026-03-16 | Fix: useEffect Escape handlers — inline setters instead of closeModal/closePopup refs | `Header.tsx` |
 
 ---

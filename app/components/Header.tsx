@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
 import styles from './Header.module.css'
@@ -51,7 +50,6 @@ export default function Header() {
   const [linkLoading, setLinkLoading] = useState(false)
   const [linkError, setLinkError] = useState<string | null>(null)
 
-  const router = useRouter()
   const supabase = useMemo(() => createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -158,10 +156,9 @@ export default function Header() {
   }
 
   const handleLogout = async () => {
-    await supabase.auth.signOut()
-    setSession(null)
-    setSteamId(null)
-    router.push('/')
+    // Server-side signout: same @supabase/ssr package that set the cookie clears it
+    await fetch('/api/auth/signout', { method: 'POST' })
+    window.location.href = '/'
   }
 
   const handleGoogleLogin = async () => {
