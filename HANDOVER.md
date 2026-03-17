@@ -88,6 +88,7 @@ _Pre-B5 entries → HANDOVER-archive.md_
 | 2026-03-16 | B6: /api/feedback — session read + feedback user_id + weights upsert by user_id or steam_id | `app/api/feedback/route.ts` |
 | 2026-03-16 | B7: Header email OTP + Steam link popup + page.tsx auth-aware URL/button | `Header.tsx`, `Header.module.css`, `page.tsx`, `page.module.css` |
 | 2026-03-17 | Style: login modal GitHub-style redesign — centered logo+title, email-first, "또는" divider, icon buttons | `Header.tsx`, `Header.module.css` |
+| 2026-03-17 | Auth: email+password login/signup; OTP verification on signup; forgot password flow; /reset-password page | `Header.tsx`, `Header.module.css`, `app/reset-password/page.tsx`, `app/reset-password/page.module.css` |
 | 2026-03-16 | Fix: useEffect Escape handlers — inline setters instead of closeModal/closePopup refs | `Header.tsx` |
 
 ---

@@ -25,15 +25,27 @@ function SteamIcon() {
   )
 }
 
+type LoginView = 'login' | 'signup' | 'verify' | 'forgot' | 'forgot-sent'
+
+const modalTitles: Record<LoginView, string> = {
+  login: 'PlayFit 로그인',
+  signup: 'PlayFit 회원가입',
+  verify: '이메일 인증',
+  forgot: '비밀번호 재설정',
+  'forgot-sent': '이메일을 확인하세요',
+}
+
 export default function Header() {
   const [session, setSession] = useState<Session | null>(null)
   const [steamId, setSteamId] = useState<string | null>(null)
   const [showLoginModal, setShowLoginModal] = useState(false)
-  const [emailStep, setEmailStep] = useState<'verify' | null>(null)
+  const [loginView, setLoginView] = useState<LoginView>('login')
   const [emailInput, setEmailInput] = useState('')
+  const [passwordInput, setPasswordInput] = useState('')
+  const [passwordConfirm, setPasswordConfirm] = useState('')
   const [otpInput, setOtpInput] = useState('')
-  const [otpLoading, setOtpLoading] = useState(false)
-  const [otpError, setOtpError] = useState<string | null>(null)
+  const [authLoading, setAuthLoading] = useState(false)
+  const [authError, setAuthError] = useState<string | null>(null)
   const [showLinkPopup, setShowLinkPopup] = useState(false)
   const [linkUrl, setLinkUrl] = useState('')
   const [linkLoading, setLinkLoading] = useState(false)
@@ -66,10 +78,12 @@ export default function Header() {
         setSession(session)
         if (event === 'SIGNED_IN' && session) {
           setShowLoginModal(false)
-          setEmailStep(null)
+          setLoginView('login')
           setEmailInput('')
+          setPasswordInput('')
+          setPasswordConfirm('')
           setOtpInput('')
-          setOtpError(null)
+          setAuthError(null)
           const { data } = await supabase
             .from('user_profiles').select('steam_id').eq('id', session.user.id).maybeSingle()
           const sid = data?.steam_id ?? null
@@ -90,13 +104,7 @@ export default function Header() {
   useEffect(() => {
     if (!showLoginModal) return
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setShowLoginModal(false)
-        setEmailStep(null)
-        setEmailInput('')
-        setOtpInput('')
-        setOtpError(null)
-      }
+      if (e.key === 'Escape') closeLoginModal()
     }
     document.addEventListener('keydown', handleKeyDown)
     loginModalRef.current?.querySelector<HTMLInputElement>('input')?.focus()
@@ -120,16 +128,24 @@ export default function Header() {
 
   function closeLoginModal() {
     setShowLoginModal(false)
-    setEmailStep(null)
+    setLoginView('login')
     setEmailInput('')
+    setPasswordInput('')
+    setPasswordConfirm('')
     setOtpInput('')
-    setOtpError(null)
+    setAuthError(null)
+    setAuthLoading(false)
   }
 
   function closeLinkPopup() {
     setShowLinkPopup(false)
     setLinkUrl('')
     setLinkError(null)
+  }
+
+  function switchView(view: LoginView) {
+    setLoginView(view)
+    setAuthError(null)
   }
 
   const handleLogout = async () => {
@@ -150,29 +166,70 @@ export default function Header() {
     window.location.href = '/api/auth/steam'
   }
 
-  const handleSendOtp = async () => {
-    setOtpLoading(true)
-    setOtpError(null)
-    const { error } = await supabase.auth.signInWithOtp({ email: emailInput.trim() })
-    setOtpLoading(false)
+  const handleSignIn = async () => {
+    setAuthLoading(true)
+    setAuthError(null)
+    const { error } = await supabase.auth.signInWithPassword({
+      email: emailInput.trim(),
+      password: passwordInput,
+    })
+    setAuthLoading(false)
+    if (error) setAuthError('이메일 또는 비밀번호가 올바르지 않아요')
+    // On success, SIGNED_IN fires via onAuthStateChange
+  }
+
+  const handleSignUp = async () => {
+    if (passwordInput !== passwordConfirm) {
+      setAuthError('비밀번호가 일치하지 않아요')
+      return
+    }
+    if (passwordInput.length < 6) {
+      setAuthError('비밀번호는 6자 이상이어야 해요')
+      return
+    }
+    setAuthLoading(true)
+    setAuthError(null)
+    const { error } = await supabase.auth.signUp({
+      email: emailInput.trim(),
+      password: passwordInput,
+    })
+    setAuthLoading(false)
     if (error) {
-      setOtpError('이메일 발송에 실패했어요. 다시 시도해주세요')
+      setAuthError(
+        error.message.toLowerCase().includes('already registered')
+          ? '이미 가입된 이메일이에요'
+          : '회원가입에 실패했어요. 다시 시도해주세요'
+      )
     } else {
-      setEmailStep('verify')
+      setLoginView('verify')
     }
   }
 
   const handleVerifyOtp = async () => {
-    setOtpLoading(true)
-    setOtpError(null)
+    setAuthLoading(true)
+    setAuthError(null)
     const { error } = await supabase.auth.verifyOtp({
       email: emailInput.trim(),
       token: otpInput.trim(),
-      type: 'email',
+      type: 'signup',
     })
-    setOtpLoading(false)
-    if (error) setOtpError('인증 코드가 올바르지 않아요')
-    // On success, SIGNED_IN fires automatically via onAuthStateChange
+    setAuthLoading(false)
+    if (error) setAuthError('인증 코드가 올바르지 않아요')
+    // On success, SIGNED_IN fires via onAuthStateChange
+  }
+
+  const handleForgotPassword = async () => {
+    setAuthLoading(true)
+    setAuthError(null)
+    const { error } = await supabase.auth.resetPasswordForEmail(emailInput.trim(), {
+      redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password`,
+    })
+    setAuthLoading(false)
+    if (error) {
+      setAuthError('이메일 발송에 실패했어요. 다시 시도해주세요')
+    } else {
+      setLoginView('forgot-sent')
+    }
   }
 
   const handleLinkSteam = async () => {
@@ -196,6 +253,8 @@ export default function Header() {
       )
     }
   }
+
+  const showOAuth = loginView === 'login' || loginView === 'signup'
 
   return (
     <>
@@ -230,16 +289,20 @@ export default function Header() {
           aria-labelledby="login-modal-title"
           onClick={(e) => { if (e.target === e.currentTarget) closeLoginModal() }}
         >
-          <div className={styles.modal} ref={loginModalRef}>
+          <div className={styles.modalWrap} ref={loginModalRef}>
             <button onClick={closeLoginModal} className={styles.closeBtn} aria-label="모달 닫기">✕</button>
+
+            {/* Logo + title — outside card */}
             <div className={styles.modalLogoArea}>
               <div className={styles.modalLogo} aria-hidden="true">P</div>
               <h2 id="login-modal-title" className={styles.modalTitle}>
-                {emailStep === 'verify' ? '인증 코드 입력' : 'PlayFit 로그인'}
+                {modalTitles[loginView]}
               </h2>
             </div>
-            <div className={styles.modalBody}>
-              {emailStep === null && (
+
+            {/* Bordered card */}
+            <div className={styles.card}>
+              {loginView === 'login' && (
                 <>
                   <div className={styles.fieldGroup}>
                     <label htmlFor="modal-email" className={styles.fieldLabel}>이메일 주소</label>
@@ -253,31 +316,108 @@ export default function Header() {
                       value={emailInput}
                       onChange={e => setEmailInput(e.target.value)}
                       spellCheck={false}
-                      onKeyDown={e => { if (e.key === 'Enter' && emailInput.trim()) void handleSendOtp() }}
                     />
                   </div>
-                  {otpError && <p className={styles.modalError} role="alert">{otpError}</p>}
+                  <div className={styles.fieldGroup}>
+                    <div className={styles.fieldHeader}>
+                      <label htmlFor="modal-password" className={styles.fieldLabel}>비밀번호</label>
+                      <button
+                        onClick={() => switchView('forgot')}
+                        className={styles.inlineLink}
+                        type="button"
+                      >
+                        비밀번호 찾기
+                      </button>
+                    </div>
+                    <input
+                      id="modal-password"
+                      type="password"
+                      name="password"
+                      autoComplete="current-password"
+                      className={styles.modalInput}
+                      value={passwordInput}
+                      onChange={e => setPasswordInput(e.target.value)}
+                      spellCheck={false}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' && emailInput.trim() && passwordInput)
+                          void handleSignIn()
+                      }}
+                    />
+                  </div>
+                  {authError && <p className={styles.modalError} role="alert">{authError}</p>}
                   <button
-                    onClick={handleSendOtp}
+                    onClick={handleSignIn}
                     className={styles.primaryBtn}
-                    disabled={otpLoading || !emailInput.trim()}
+                    disabled={authLoading || !emailInput.trim() || !passwordInput}
                   >
-                    {otpLoading ? '발송 중…' : '인증 코드 발송'}
-                  </button>
-                  <div className={styles.orDivider}><span>또는</span></div>
-                  <button onClick={handleGoogleLogin} className={styles.googleBtn}>
-                    <GoogleIcon />
-                    Google로 계속하기
-                  </button>
-                  <button onClick={handleSteamLogin} className={styles.steamBtn}>
-                    <SteamIcon />
-                    Steam으로 계속하기
+                    {authLoading ? '로그인 중…' : '로그인'}
                   </button>
                 </>
               )}
-              {emailStep === 'verify' && (
+
+              {loginView === 'signup' && (
                 <>
-                  <p className={styles.modalDesc}>{emailInput}으로 발송된 6자리 코드를 입력해주세요</p>
+                  <div className={styles.fieldGroup}>
+                    <label htmlFor="signup-email" className={styles.fieldLabel}>이메일 주소</label>
+                    <input
+                      id="signup-email"
+                      type="email"
+                      name="email"
+                      autoComplete="email"
+                      className={styles.modalInput}
+                      placeholder="you@example.com"
+                      value={emailInput}
+                      onChange={e => setEmailInput(e.target.value)}
+                      spellCheck={false}
+                    />
+                  </div>
+                  <div className={styles.fieldGroup}>
+                    <label htmlFor="signup-password" className={styles.fieldLabel}>비밀번호</label>
+                    <input
+                      id="signup-password"
+                      type="password"
+                      name="new-password"
+                      autoComplete="new-password"
+                      className={styles.modalInput}
+                      placeholder="6자 이상"
+                      value={passwordInput}
+                      onChange={e => setPasswordInput(e.target.value)}
+                      spellCheck={false}
+                    />
+                  </div>
+                  <div className={styles.fieldGroup}>
+                    <label htmlFor="signup-confirm" className={styles.fieldLabel}>비밀번호 확인</label>
+                    <input
+                      id="signup-confirm"
+                      type="password"
+                      name="confirm-password"
+                      autoComplete="new-password"
+                      className={styles.modalInput}
+                      value={passwordConfirm}
+                      onChange={e => setPasswordConfirm(e.target.value)}
+                      spellCheck={false}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' && emailInput.trim() && passwordInput && passwordConfirm)
+                          void handleSignUp()
+                      }}
+                    />
+                  </div>
+                  {authError && <p className={styles.modalError} role="alert">{authError}</p>}
+                  <button
+                    onClick={handleSignUp}
+                    className={styles.primaryBtn}
+                    disabled={authLoading || !emailInput.trim() || !passwordInput || !passwordConfirm}
+                  >
+                    {authLoading ? '처리 중…' : '회원가입'}
+                  </button>
+                </>
+              )}
+
+              {loginView === 'verify' && (
+                <>
+                  <p className={styles.modalDesc}>
+                    <strong>{emailInput}</strong>으로 발송된 6자리 인증 코드를 입력해주세요
+                  </p>
                   <div className={styles.fieldGroup}>
                     <label htmlFor="modal-otp" className={styles.fieldLabel}>인증 코드</label>
                     <input
@@ -291,24 +431,99 @@ export default function Header() {
                       value={otpInput}
                       onChange={e => setOtpInput(e.target.value.replace(/\D/g, '').slice(0, 6))}
                       spellCheck={false}
-                      onKeyDown={e => { if (e.key === 'Enter' && otpInput.length === 6) void handleVerifyOtp() }}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' && otpInput.length === 6) void handleVerifyOtp()
+                      }}
                     />
                   </div>
-                  {otpError && <p className={styles.modalError} role="alert">{otpError}</p>}
+                  {authError && <p className={styles.modalError} role="alert">{authError}</p>}
                   <button
                     onClick={handleVerifyOtp}
                     className={styles.primaryBtn}
-                    disabled={otpLoading || otpInput.length !== 6}
+                    disabled={authLoading || otpInput.length !== 6}
                   >
-                    {otpLoading ? '확인 중…' : '확인'}
-                  </button>
-                  <button
-                    onClick={() => { setEmailStep(null); setOtpError(null); setOtpInput('') }}
-                    className={styles.backLink}
-                  >
-                    ← 이메일 재입력
+                    {authLoading ? '확인 중…' : '인증 완료'}
                   </button>
                 </>
+              )}
+
+              {loginView === 'forgot' && (
+                <>
+                  <p className={styles.modalDesc}>
+                    가입한 이메일 주소를 입력하면 비밀번호 재설정 링크를 보내드려요
+                  </p>
+                  <div className={styles.fieldGroup}>
+                    <label htmlFor="forgot-email" className={styles.fieldLabel}>이메일 주소</label>
+                    <input
+                      id="forgot-email"
+                      type="email"
+                      name="email"
+                      autoComplete="email"
+                      className={styles.modalInput}
+                      placeholder="you@example.com"
+                      value={emailInput}
+                      onChange={e => setEmailInput(e.target.value)}
+                      spellCheck={false}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' && emailInput.trim()) void handleForgotPassword()
+                      }}
+                    />
+                  </div>
+                  {authError && <p className={styles.modalError} role="alert">{authError}</p>}
+                  <button
+                    onClick={handleForgotPassword}
+                    className={styles.primaryBtn}
+                    disabled={authLoading || !emailInput.trim()}
+                  >
+                    {authLoading ? '발송 중…' : '재설정 링크 발송'}
+                  </button>
+                </>
+              )}
+
+              {loginView === 'forgot-sent' && (
+                <p className={styles.modalDesc}>
+                  <strong>{emailInput}</strong>으로 비밀번호 재설정 링크를 발송했어요. 이메일을 확인해주세요.
+                </p>
+              )}
+            </div>
+
+            {/* OAuth buttons — outside card, only on login/signup */}
+            {showOAuth && (
+              <div className={styles.oauthSection}>
+                <div className={styles.orDivider}><span>또는</span></div>
+                <button onClick={handleGoogleLogin} className={styles.googleBtn}>
+                  <GoogleIcon />
+                  Google로 계속하기
+                </button>
+                <button onClick={handleSteamLogin} className={styles.steamBtn}>
+                  <SteamIcon />
+                  Steam으로 계속하기
+                </button>
+              </div>
+            )}
+
+            {/* Footer link — outside card */}
+            <div className={styles.authFooter}>
+              {loginView === 'login' && (
+                <span>
+                  처음이신가요?{' '}
+                  <button onClick={() => switchView('signup')} className={styles.footerLink}>
+                    회원가입
+                  </button>
+                </span>
+              )}
+              {loginView === 'signup' && (
+                <span>
+                  이미 계정이 있으신가요?{' '}
+                  <button onClick={() => switchView('login')} className={styles.footerLink}>
+                    로그인
+                  </button>
+                </span>
+              )}
+              {(loginView === 'verify' || loginView === 'forgot' || loginView === 'forgot-sent') && (
+                <button onClick={() => switchView('login')} className={styles.footerLink}>
+                  ← 로그인으로
+                </button>
               )}
             </div>
           </div>
@@ -324,13 +539,13 @@ export default function Header() {
           aria-labelledby="link-popup-title"
           onClick={(e) => { if (e.target === e.currentTarget) closeLinkPopup() }}
         >
-          <div className={styles.modal} ref={linkPopupRef}>
+          <div className={styles.modalWrap} ref={linkPopupRef}>
             <button onClick={closeLinkPopup} className={styles.closeBtn} aria-label="팝업 닫기">✕</button>
             <div className={styles.modalLogoArea}>
               <div className={styles.modalLogo} aria-hidden="true">P</div>
               <h2 id="link-popup-title" className={styles.modalTitle}>Steam 계정 연동</h2>
             </div>
-            <div className={styles.modalBody}>
+            <div className={styles.card}>
               <div className={styles.fieldGroup}>
                 <label htmlFor="steam-url-input" className={styles.fieldLabel}>Steam 프로필 URL</label>
                 <input
@@ -354,7 +569,9 @@ export default function Header() {
               >
                 {linkLoading ? '연동 중…' : '연동하기'}
               </button>
-              <button onClick={closeLinkPopup} className={styles.backLink}>닫기</button>
+            </div>
+            <div className={styles.authFooter}>
+              <button onClick={closeLinkPopup} className={styles.footerLink}>닫기</button>
             </div>
           </div>
         </div>
