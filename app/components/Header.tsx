@@ -44,6 +44,7 @@ export default function Header() {
   const [passwordConfirm, setPasswordConfirm] = useState('')
   const [otpInput, setOtpInput] = useState('')
   const [authLoading, setAuthLoading] = useState(false)
+  const [logoutLoading, setLogoutLoading] = useState(false)
   const [authError, setAuthError] = useState<string | null>(null)
   const [showLinkPopup, setShowLinkPopup] = useState(false)
   const [linkUrl, setLinkUrl] = useState('')
@@ -156,6 +157,7 @@ export default function Header() {
   }
 
   const handleLogout = async () => {
+    setLogoutLoading(true)
     // Server-side signout: same @supabase/ssr package that set the cookie clears it
     await fetch('/api/auth/signout', { method: 'POST' })
     window.location.href = '/'
@@ -274,8 +276,8 @@ export default function Header() {
                   Steam 연동
                 </button>
               )}
-              <button onClick={handleLogout} className={styles.logoutBtn}>
-                로그아웃
+              <button onClick={handleLogout} className={styles.logoutBtn} disabled={logoutLoading}>
+                {logoutLoading ? '로그아웃 중…' : '로그아웃'}
               </button>
             </>
           ) : (
