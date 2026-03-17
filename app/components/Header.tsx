@@ -104,7 +104,16 @@ export default function Header() {
   useEffect(() => {
     if (!showLoginModal) return
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeLoginModal()
+      if (e.key === 'Escape') {
+        setShowLoginModal(false)
+        setLoginView('login')
+        setEmailInput('')
+        setPasswordInput('')
+        setPasswordConfirm('')
+        setOtpInput('')
+        setAuthError(null)
+        setAuthLoading(false)
+      }
     }
     document.addEventListener('keydown', handleKeyDown)
     loginModalRef.current?.querySelector<HTMLInputElement>('input')?.focus()
