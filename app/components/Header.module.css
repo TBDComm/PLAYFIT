@@ -71,7 +71,7 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.75);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -82,30 +82,52 @@
 .modal {
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  width: 320px;
+  border-radius: 12px;
+  padding: 32px;
+  width: 380px;
   max-width: calc(100vw - 32px);
+  position: relative;
 }
 
-.modalHeader {
-  display: flex;
+/* ── Logo + title area ── */
+
+.modalLogoArea {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.modalLogo {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #09090b;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin-bottom: 12px;
+  user-select: none;
 }
 
 .modalTitle {
   font-size: 1.125rem;
+  font-weight: 700;
+  text-wrap: balance;
 }
 
 .closeBtn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
   background: transparent;
   border: none;
   color: var(--text-secondary);
   font-size: 1rem;
-  padding: 4px 8px;
+  padding: 6px 8px;
   border-radius: var(--radius);
+  line-height: 1;
   transition: color 150ms, background-color 150ms;
 }
 
@@ -121,32 +143,59 @@
   gap: 10px;
 }
 
-.emailBtn,
+/* ── Field group (label + input) ── */
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldLabel {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ── "또는" divider ── */
+
+.orDivider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  margin: 2px 0;
+}
+
+.orDivider::before,
+.orDivider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── OAuth buttons ── */
+
 .googleBtn,
 .steamBtn {
   width: 100%;
   padding: 10px 16px;
   border-radius: var(--radius);
   font-size: 0.9375rem;
-  font-weight: 600;
-  border: 1px solid var(--border);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   transition: background-color 150ms, border-color 150ms;
-}
-
-.emailBtn {
-  background: var(--accent);
-  color: #09090b;
-  border-color: transparent;
-}
-
-.emailBtn:hover,
-.emailBtn:focus-visible {
-  background: #d4f54a;
 }
 
 .googleBtn {
   background: var(--bg-hover);
   color: var(--text-primary);
+  border: 1px solid var(--border);
 }
 
 .googleBtn:hover,
@@ -158,7 +207,7 @@
 .steamBtn {
   background: #1b2838;
   color: var(--text-primary);
-  border-color: #2a475e;
+  border: 1px solid #2a475e;
 }
 
 .steamBtn:hover,
@@ -166,7 +215,7 @@
   background: #213347;
 }
 
-/* ── Email OTP + Link popup shared elements ── */
+/* ── Shared form elements ── */
 
 .modalInput {
   width: 100%;
@@ -207,19 +256,20 @@
   cursor: not-allowed;
 }
 
-.backBtn {
+.backLink {
   background: transparent;
   border: none;
-  color: var(--text-secondary);
+  color: var(--accent);
   font-size: 0.875rem;
   padding: 4px 0;
-  text-align: left;
-  transition: color 150ms;
+  text-align: center;
+  cursor: pointer;
+  transition: opacity 150ms;
 }
 
-.backBtn:hover,
-.backBtn:focus-visible {
-  color: var(--text-primary);
+.backLink:hover,
+.backLink:focus-visible {
+  opacity: 0.75;
 }
 
 .modalError {
@@ -240,12 +290,11 @@
   .logoutBtn,
   .steamLinkBtn,
   .closeBtn,
-  .emailBtn,
   .googleBtn,
   .steamBtn,
   .modalInput,
   .primaryBtn,
-  .backBtn {
+  .backLink {
     transition: none;
   }
 }
