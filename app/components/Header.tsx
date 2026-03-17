@@ -5,6 +5,27 @@ import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
 import styles from './Header.module.css'
 
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (config: {
+            client_id: string
+            callback: (response: { credential: string }) => void
+            ux_mode?: string
+          }) => void
+          prompt: (momentListener?: (notification: {
+            isNotDisplayed: () => boolean
+            isSkippedMoment: () => boolean
+          }) => void) => void
+          cancel: () => void
+        }
+      }
+    }
+  }
+}
+
 function GoogleIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
@@ -163,10 +184,26 @@ export default function Header() {
     window.location.href = '/'
   }
 
-  const handleGoogleLogin = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/callback` },
+  const handleGoogleLogin = () => {
+    if (!window.google?.accounts?.id) {
+      setAuthError('Google 로그인을 불러오는 중이에요. 잠시 후 다시 시도해주세요')
+      return
+    }
+    setAuthError(null)
+    window.google.accounts.id.initialize({
+      client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+      callback: async ({ credential }: { credential: string }) => {
+        const { error } = await supabase.auth.signInWithIdToken({
+          provider: 'google',
+          token: credential,
+        })
+        if (error) setAuthError('Google 로그인에 실패했어요. 다시 시도해주세요')
+      },
+    })
+    window.google.accounts.id.prompt((notification) => {
+      if (notification.isNotDisplayed()) {
+        setAuthError('Google 로그인 팝업이 차단됐어요. 브라우저에서 팝업을 허용해 주세요')
+      }
     })
   }
 

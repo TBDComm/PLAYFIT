@@ -66,7 +66,7 @@ Next action: [exactly what to do next to resume]
 | B7 | Update Header (Steam link button) + main page layout per auth state | ✅ 2026-03-16 |
 | B8–B10 | E2E tests (email, Steam, non-auth) | ⬜ |
 
-**Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅
+**Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ⬜ (CF Pages에 추가 필요 — GIS Google 로그인)
 
 **Supabase tables:** `feedback` ✅ · `games_cache` ✅ (82,816 rows) · `user_tag_weights` ✅ · `user_profiles` ✅
 
@@ -91,7 +91,10 @@ _Pre-B5 entries → HANDOVER-archive.md_
 | 2026-03-17 | Auth: email+password login/signup; OTP verification on signup; forgot password flow; /reset-password page | `Header.tsx`, `Header.module.css`, `app/reset-password/page.tsx`, `app/reset-password/page.module.css` |
 | 2026-03-17 | Fix: login modal Escape handler — inline setters instead of closeLoginModal() ref (reverted pattern fix) | `Header.tsx` |
 | 2026-03-17 | Fix: logout broken for all auth methods — server-side /api/auth/signout route + window.location.href reload | `Header.tsx`, `app/api/auth/signout/route.ts` |
+| 2026-03-17 | UX: logout button loading state — logoutLoading flag, "로그아웃 중…" text, button disabled during request | `Header.tsx` |
+| 2026-03-17 | UX: OAuth button text "계속하기" → "로그인하기" | `Header.tsx` |
 | 2026-03-16 | Fix: useEffect Escape handlers — inline setters instead of closeModal/closePopup refs | `Header.tsx` |
+| 2026-03-17 | Fix: Google login signInWithOAuth → GIS + signInWithIdToken (removes Supabase domain from consent screen); NEXT_PUBLIC_GOOGLE_CLIENT_ID env var required | `app/layout.tsx`, `Header.tsx` |
 
 ---
 

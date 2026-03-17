@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Space_Grotesk } from 'next/font/google'
+import Script from 'next/script'
 import Header from './components/Header'
 import './globals.css'
 
@@ -26,6 +27,7 @@ export default function RootLayout({
     // color-scheme: dark is declared in globals.css
     <html lang="ko" className={spaceGrotesk.variable}>
       <body>
+        <Script src="https://accounts.google.com/gsi/client" strategy="lazyOnload" />
         <Header />
         {children}
       </body>
