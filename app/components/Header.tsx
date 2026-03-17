@@ -353,7 +353,17 @@ export default function Header() {
                       }}
                     />
                   </div>
-                  {authError && <p className={styles.modalError} role="alert">{authError}</p>}
+                  {authError && (
+                    <>
+                      <p className={styles.modalError} role="alert">{authError}</p>
+                      <p className={styles.modalDesc}>
+                        처음이신가요?{' '}
+                        <button onClick={() => switchView('signup')} className={styles.inlineLink}>
+                          회원가입하기
+                        </button>
+                      </p>
+                    </>
+                  )}
                   <button
                     onClick={handleSignIn}
                     className={styles.primaryBtn}
