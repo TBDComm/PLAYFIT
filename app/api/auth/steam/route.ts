@@ -1,6 +1,6 @@
 export const runtime = 'edge'
 
-export async function GET(request: Request) {
+export async function GET() {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL!
 
   const params = new URLSearchParams({

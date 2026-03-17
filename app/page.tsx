@@ -324,9 +324,12 @@ export default function Home() {
                           aria-label={`게임 ${i + 1} 이름`}
                           aria-autocomplete="list"
                           aria-expanded={!!dropdowns[i]?.length}
+                          aria-haspopup="listbox"
+                          aria-controls={`game-dropdown-${i}`}
+                          role="combobox"
                         />
                         {!!dropdowns[i]?.length && (
-                          <div className={styles.dropdown} role="listbox" aria-label={`게임 ${i + 1} 검색 결과`}>
+                          <div id={`game-dropdown-${i}`} className={styles.dropdown} role="listbox" aria-label={`게임 ${i + 1} 검색 결과`}>
                             {dropdowns[i]!.map(item => (
                               <button
                                 key={item.appid}
