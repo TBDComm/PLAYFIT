@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import type { AuthChangeEvent } from '@supabase/supabase-js'
@@ -104,7 +105,7 @@ export default function ResetPasswordPage() {
           )}
         </div>
         <div className={styles.footer}>
-          <a href="/" className={styles.footerLink}>← 홈으로</a>
+          <Link href="/" className={styles.footerLink}>← 홈으로</Link>
         </div>
       </div>
     </main>
