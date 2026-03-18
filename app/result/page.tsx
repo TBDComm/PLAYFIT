@@ -87,7 +87,13 @@ export default function ResultPage() {
                     : `₩${new Intl.NumberFormat('ko-KR').format(card.price_krw)}`}
                 </span>
                 {card.metacritic_score !== undefined && (
-                  <span className={styles.score}>{card.metacritic_score}점</span>
+                  <span className={`${styles.score} ${
+                    card.metacritic_score >= 75 ? styles.scoreHigh
+                    : card.metacritic_score >= 50 ? styles.scoreMid
+                    : styles.scoreLow
+                  }`}>
+                    메타크리틱&nbsp;{card.metacritic_score}점
+                  </span>
                 )}
               </div>
 
