@@ -110,6 +110,10 @@ _2026-03-16~17 entries → HANDOVER-archive.md_
 | 2026-03-18 | UI: remove header banner — login/logout/Steam-link buttons moved to fixed top-right floating | `Header.tsx`, `Header.module.css` |
 | 2026-03-18 | UI: add logo + home link to top of /privacy and /terms pages | `privacy/page.tsx`, `terms/page.tsx`, `legal.module.css` |
 | 2026-03-18 | UI: add Steam CDN game thumbnails to recommendation cards (left on desktop, top on mobile) | `result/page.tsx`, `result/page.module.css` |
+| 2026-03-18 | Fix: PLAYFIT wordmark logo (replaces circle P) on /privacy and /terms — backLogoAccent style | `privacy/page.tsx`, `terms/page.tsx`, `legal.module.css` |
+| 2026-03-18 | Fix: thumbnail layout — left-side row, full aspect ratio visible (no crop), compact; Steam CDN preconnect | `result/page.module.css`, `layout.tsx` |
+| 2026-03-18 | Feat: Metacritic label + score color coding (≥75 green, 50–74 amber, <50 red) | `result/page.tsx`, `result/page.module.css` |
+| 2026-03-18 | Fix: thumbnail restyle — top banner → left row, aspect-ratio natural, 200px desktop / 130px mobile | `result/page.module.css` |
 
 ---
 
