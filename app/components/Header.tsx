@@ -221,7 +221,7 @@ export default function Header() {
     }
     setAuthLoading(true)
     setAuthError(null)
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: emailInput.trim(),
       password: passwordInput,
     })
@@ -232,6 +232,8 @@ export default function Header() {
           ? '이미 가입된 이메일이에요'
           : '회원가입에 실패했어요. 다시 시도해주세요'
       )
+    } else if (data.user?.identities?.length === 0) {
+      setAuthError('이미 Google로 가입된 이메일이에요. Google로 로그인해주세요')
     } else {
       setLoginView('verify')
     }
