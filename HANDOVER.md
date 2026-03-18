@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 145/200 lines — OK**
+📏 **File health: 137/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -84,17 +84,7 @@ _Pre-B5 entries → HANDOVER-archive.md_
 
 | Date | Change | Files |
 |------|--------|-------|
-| 2026-03-16 | B5: /api/recommend — session read + weights by user_id (logged-in) or steam_id (anon) | `app/api/recommend/route.ts`, `lib/supabase.ts` |
-| 2026-03-16 | B6: /api/feedback — session read + feedback user_id + weights upsert by user_id or steam_id | `app/api/feedback/route.ts` |
-| 2026-03-16 | B7: Header email OTP + Steam link popup + page.tsx auth-aware URL/button | `Header.tsx`, `Header.module.css`, `page.tsx`, `page.module.css` |
-| 2026-03-17 | Style: login modal GitHub-style redesign — centered logo+title, email-first, "또는" divider, icon buttons | `Header.tsx`, `Header.module.css` |
-| 2026-03-17 | Auth: email+password login/signup; OTP verification on signup; forgot password flow; /reset-password page | `Header.tsx`, `Header.module.css`, `app/reset-password/page.tsx`, `app/reset-password/page.module.css` |
-| 2026-03-17 | Fix: login modal Escape handler — inline setters instead of closeLoginModal() ref (reverted pattern fix) | `Header.tsx` |
-| 2026-03-17 | Fix: logout broken for all auth methods — server-side /api/auth/signout route + window.location.href reload | `Header.tsx`, `app/api/auth/signout/route.ts` |
-| 2026-03-17 | UX: logout button loading state — logoutLoading flag, "로그아웃 중…" text, button disabled during request | `Header.tsx` |
-| 2026-03-17 | UX: OAuth button text "계속하기" → "로그인하기" | `Header.tsx` |
-| 2026-03-16 | Fix: useEffect Escape handlers — inline setters instead of closeModal/closePopup refs | `Header.tsx` |
-| 2026-03-17 | Fix: Google login signInWithOAuth → GIS + signInWithIdToken (removes Supabase domain from consent screen); NEXT_PUBLIC_GOOGLE_CLIENT_ID env var required | `app/layout.tsx`, `Header.tsx` |
+_2026-03-16~17 entries → HANDOVER-archive.md_
 | 2026-03-18 | B8–B10: E2E manual test checklists — email/Steam/non-auth paths | `TEST_B8_B10.md` |
 | 2026-03-18 | Fix: placeholder `…` 누락 — 비밀번호 필드 2곳 | `Header.tsx`, `reset-password/page.tsx` |
 | 2026-03-18 | Fix: Google login FedCM 버그 — `prompt()` 제거, `renderButton()` 방식으로 교체; GoogleIcon 제거 | `Header.tsx`, `Header.module.css` |
@@ -112,10 +102,12 @@ _Pre-B5 entries → HANDOVER-archive.md_
 - B10: non-auth → full flow → weights by steam_id (+ optional migration step)
 - Build: `tsc --noEmit` passed ✅
 
-### ✅ B7 — 2026-03-16 — Header + login modal + Steam link popup + page auth UI
-- Files: `Header.tsx`, `Header.module.css`, `page.tsx`, `page.module.css`
-- Header: 3 auth states; email OTP (`signInWithOtp`/`verifyOtp`); Steam link popup (auto-open after Google/email login)
-- page.tsx: `authState` from user_profiles; Steam auth → hides URL input, button "내 게임 추천받기"; linked → pre-fills URL
+### ✅ B7 — 2026-03-16~17 — Header + login modal + auth system
+- Files: `Header.tsx`, `Header.module.css`, `page.tsx`, `page.module.css`, `reset-password/page.tsx`
+- Auth: email+**password** login/signup; OTP for signup verification only (`verifyOtp({ type: 'signup' })`); forgot password → /reset-password
+- Google: GIS + `signInWithIdToken` + `renderButton()` (FedCM-free); Steam: OpenID popup
+- Header: 3 auth states; Steam link popup (auto-open after non-Steam login)
+- page.tsx: Steam auth → hides URL input; linked → pre-fills URL
 - Build: `tsc --noEmit` passed ✅
 
 ### ✅ B6 — 2026-03-16 — /api/feedback session-aware
