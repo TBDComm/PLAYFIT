@@ -66,6 +66,12 @@ Read the relevant rule file before writing code in that area.
 
 ---
 
+## Language Rule — ALL Files
+
+**Every `.md` file written or edited must be in English.** No exceptions for HANDOVER.md, MEMORY.md, SPEC.md, memory/ files, or any other project markdown. Korean is allowed only for user-facing UI copy inside `.tsx`/`.css` files (button labels, page text, etc.). This rule has been violated every session — treat it as a hard constraint, not a style preference.
+
+---
+
 ## Coding Rules
 
 - Comments in English
