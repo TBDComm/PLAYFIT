@@ -106,6 +106,7 @@ _2026-03-16~17 entries → HANDOVER-archive.md_
 | 2026-03-18 | marketing-skills/ pruned — 33 → 22 skills; removed 12 (7 permanent, 5 deferred to B2B ad sales phase) | `marketing-skills/REMOVED.md` |
 | 2026-03-18 | C1: robots.ts (dynamic, reads NEXT_PUBLIC_BASE_URL), sitemap.ts (static routes + genre slugs from DB), layout.tsx (metadataBase, canonical, OG/Twitter tags) | `app/robots.ts`, `app/sitemap.ts`, `app/layout.tsx` |
 | 2026-03-18 | C2: /privacy + /terms (Korean legal pages), Footer component (privacy · terms · © 2026), Footer added to layout.tsx | `app/privacy/page.tsx`, `app/terms/page.tsx`, `app/components/Footer.tsx`, `app/components/Footer.module.css`, `app/legal.module.css`, `app/layout.tsx` |
+| 2026-03-18 | Fix: ESLint react/no-unescaped-entities in terms/page.tsx ("서비스", "as-is") — build was failing | `app/terms/page.tsx` |
 | 2026-03-18 | UI: remove header banner — login/logout/Steam-link buttons moved to fixed top-right floating | `Header.tsx`, `Header.module.css` |
 
 ---
