@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Space_Grotesk } from 'next/font/google'
 import Script from 'next/script'
 import Header from './components/Header'
+import Footer from './components/Footer'
 import './globals.css'
 
 // Space Grotesk: technical, characterful font (rules/frontend-design.md — Inter/Arial banned)
@@ -48,6 +49,7 @@ export default function RootLayout({
         <Script src="https://accounts.google.com/gsi/client" strategy="lazyOnload" />
         <Header />
         {children}
+        <Footer />
       </body>
     </html>
   )

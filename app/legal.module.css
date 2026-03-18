@@ -1,0 +1,81 @@
+/* Shared styles for /privacy and /terms */
+
+.page {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 64px 24px 80px;
+}
+
+.page h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.updated {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 48px;
+}
+
+.page h2 {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-top: 40px;
+  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+
+.page p {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin-bottom: 12px;
+}
+
+.page ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.page ul li {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  padding-left: 16px;
+  position: relative;
+}
+
+.page ul li::before {
+  content: '–';
+  position: absolute;
+  left: 0;
+  color: var(--text-muted);
+}
+
+.page a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.page a:hover,
+.page a:focus-visible {
+  color: var(--text-primary);
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 48px 20px 64px;
+  }
+
+  .page h1 {
+    font-size: 1.5rem;
+  }
+}

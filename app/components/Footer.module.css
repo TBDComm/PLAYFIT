@@ -1,0 +1,53 @@
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.links a {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 150ms;
+}
+
+.links a:hover,
+.links a:focus-visible {
+  color: var(--text-primary);
+}
+
+.links a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.sep {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  user-select: none;
+}
+
+.copy {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .links a {
+    transition: none;
+  }
+}
