@@ -43,6 +43,7 @@ export default function Home() {
   const [rowErrors, setRowErrors] = useState<Array<string | null>>(Array(5).fill(null))
   const nameInputRefs = useRef<Array<HTMLInputElement | null>>(Array(5).fill(null))
   const debounceRefs = useRef<Array<ReturnType<typeof setTimeout> | null>>(Array(5).fill(null))
+  const searchGenRef = useRef<number[]>(Array(5).fill(0))
 
   useEffect(() => {
     const supabase = createBrowserClient(
@@ -81,13 +82,16 @@ export default function Home() {
       return
     }
     if (debounceRefs.current[idx]) clearTimeout(debounceRefs.current[idx]!)
-    debounceRefs.current[idx] = setTimeout(() => { void fetchSearch(idx, value) }, 300)
+    const gen = ++searchGenRef.current[idx]
+    debounceRefs.current[idx] = setTimeout(() => { void fetchSearch(idx, value, gen) }, 150)
   }
 
-  async function fetchSearch(idx: number, query: string) {
+  async function fetchSearch(idx: number, query: string, gen: number) {
     try {
       const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`)
       const data = await res.json() as SearchResult[]
+      // Discard stale responses — a newer request has already been issued
+      if (gen !== searchGenRef.current[idx]) return
       setDropdowns(prev => prev.map((d, i) => i === idx ? data : d))
     } catch {
       // silently fail — autocomplete is non-critical
