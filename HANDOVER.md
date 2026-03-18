@@ -100,12 +100,12 @@ _2026-03-16~17 entries → HANDOVER-archive.md_
 | 2026-03-18 | Fix: debounce delay 0ms → 300ms (was firing search on every keystroke, race condition) | `page.tsx` |
 | 2026-03-18 | Fix: --bg-base (undefined variable) → --bg in reset-password | `reset-password/page.module.css` |
 | 2026-03-18 | Responsive: mobile media queries + 100dvh + iOS zoom fix (font-size 16px) across all pages | `globals.css`, `Header.module.css`, `page.module.css`, `result/page.module.css`, `reset-password/page.module.css` |
-| 2026-03-18 | C-series spec 작성 — C1–C13 (AdSense 수익화) SPEC.md에 추가; marketing-skills/ 레포 복사 | `SPEC.md`, `marketing-skills/` |
-| 2026-03-18 | C4 /users/[userId] 커뮤니티 URL 예약; C5/C6 programmatic-seo 가이드라인 반영 (thin content guard, 커뮤니티 플레이스홀더) | `SPEC.md` |
+| 2026-03-18 | C-series spec defined — C1–C13 (AdSense monetization) added to SPEC.md; marketing-skills/ repo copied | `SPEC.md`, `marketing-skills/` |
+| 2026-03-18 | C4 /users/[userId] community URL reserved; C5/C6 programmatic-SEO guidelines reflected (thin content guard, community placeholder) | `SPEC.md` |
 | 2026-03-18 | marketing-skills/ pruned — 33 → 22 skills; removed 12 (7 permanent, 5 deferred to B2B ad sales phase) | `marketing-skills/REMOVED.md` |
 | 2026-03-18 | C1: robots.ts (dynamic, reads NEXT_PUBLIC_BASE_URL), sitemap.ts (static routes + genre slugs from DB), layout.tsx (metadataBase, canonical, OG/Twitter tags) | `app/robots.ts`, `app/sitemap.ts`, `app/layout.tsx` |
-| 2026-03-18 | C2: /privacy + /terms (한국어 법적 페이지), Footer 컴포넌트 (개인정보처리방침·이용약관·© 2026), layout.tsx에 Footer 추가 | `app/privacy/page.tsx`, `app/terms/page.tsx`, `app/components/Footer.tsx`, `app/components/Footer.module.css`, `app/legal.module.css`, `app/layout.tsx` |
-| 2026-03-18 | UI: header 배너 제거 — 로그인/로그아웃/Steam연동 버튼을 우상단 fixed floating으로 변경 | `Header.tsx`, `Header.module.css` |
+| 2026-03-18 | C2: /privacy + /terms (Korean legal pages), Footer component (privacy · terms · © 2026), Footer added to layout.tsx | `app/privacy/page.tsx`, `app/terms/page.tsx`, `app/components/Footer.tsx`, `app/components/Footer.module.css`, `app/legal.module.css`, `app/layout.tsx` |
+| 2026-03-18 | UI: remove header banner — login/logout/Steam-link buttons moved to fixed top-right floating | `Header.tsx`, `Header.module.css` |
 
 ---
 
