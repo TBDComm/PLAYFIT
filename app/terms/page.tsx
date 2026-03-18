@@ -15,7 +15,7 @@ export default function TermsPage() {
 
       <h2>1. 서비스 소개</h2>
       <p>
-        PlayFit(이하 "서비스")은 Steam 플레이 기록과 예산을 바탕으로 AI가 게임을 추천해 주는
+        PlayFit(이하 &ldquo;서비스&rdquo;)은 Steam 플레이 기록과 예산을 바탕으로 AI가 게임을 추천해 주는
         서비스입니다. PlayFit은 Valve Corporation 및 Steam과 무관한 독립 서비스입니다.
       </p>
 
@@ -50,7 +50,7 @@ export default function TermsPage() {
 
       <h2>6. 면책 조항</h2>
       <p>
-        서비스는 현재 상태("as-is")로 제공됩니다. PlayFit은 서비스의 중단 없는 운영,
+        서비스는 현재 상태(&ldquo;as-is&rdquo;)로 제공됩니다. PlayFit은 서비스의 중단 없는 운영,
         오류 없는 제공, 특정 목적에 대한 적합성을 보증하지 않습니다.
         법률이 허용하는 최대 범위 내에서 일체의 명시적·묵시적 보증을 배제합니다.
       </p>
