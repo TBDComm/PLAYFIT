@@ -11,9 +11,8 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <main className={styles.page}>
-      <Link href="/" className={styles.backLogo} aria-label="PlayFit 홈으로">
-        <span className={styles.logoMark} aria-hidden="true">P</span>
-        <span className={styles.logoName}>PlayFit</span>
+      <Link href="/" className={styles.backLogo} aria-label="PLAYFIT 홈으로">
+        <span className={styles.backLogoAccent}>PLAY</span>FIT
       </Link>
       <h1>개인정보처리방침</h1>
       <p className={styles.updated}>최종 업데이트: 2026년 3월 18일</p>
