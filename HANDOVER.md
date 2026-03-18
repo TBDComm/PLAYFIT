@@ -17,7 +17,7 @@ _Update this count on every edit. If ≥180 lines, compress before any other wor
 | Completing a step | Clear lock → add Completed Step entry → update Active Step |
 | Non-step change (bug, config, style) | Clear lock → add Minor Changes Log entry |
 | Session interrupted | Leave lock filled — next session resumes from it |
-| Writing ANY text to this file | **English only** — no Korean prose, ever. UI copy in .tsx is the only exception. |
+| Writing ANY text to this file | **English by default** — Korean only when genuinely necessary (Korean-specific context, UI label references). Do not default to Korean out of habit. |
 
 Full writing rules → `rules/handover-rules.md`
 

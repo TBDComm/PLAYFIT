@@ -68,7 +68,7 @@ Read the relevant rule file before writing code in that area.
 
 ## Language Rule — ALL Files
 
-**Every `.md` file written or edited must be in English.** No exceptions for HANDOVER.md, MEMORY.md, SPEC.md, memory/ files, or any other project markdown. Korean is allowed only for user-facing UI copy inside `.tsx`/`.css` files (button labels, page text, etc.). This rule has been violated every session — treat it as a hard constraint, not a style preference.
+**Default language for all `.md` files is English.** Korean is allowed only when genuinely necessary — e.g. Korean UI label text, Korean-specific cultural context, or terms that lose meaning when translated. Do not default to Korean out of habit. This rule has been violated every session — check before writing.
 
 ---
 
