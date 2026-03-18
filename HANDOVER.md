@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 142/200 lines — OK**
+📏 **File health: 145/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -96,7 +96,10 @@ _Pre-B5 entries → HANDOVER-archive.md_
 | 2026-03-16 | Fix: useEffect Escape handlers — inline setters instead of closeModal/closePopup refs | `Header.tsx` |
 | 2026-03-17 | Fix: Google login signInWithOAuth → GIS + signInWithIdToken (removes Supabase domain from consent screen); NEXT_PUBLIC_GOOGLE_CLIENT_ID env var required | `app/layout.tsx`, `Header.tsx` |
 | 2026-03-18 | B8–B10: E2E manual test checklists — email/Steam/non-auth paths | `TEST_B8_B10.md` |
+| 2026-03-18 | Fix: placeholder `…` 누락 — 비밀번호 필드 2곳 | `Header.tsx`, `reset-password/page.tsx` |
 | 2026-03-18 | Fix: Google login FedCM 버그 — `prompt()` 제거, `renderButton()` 방식으로 교체; GoogleIcon 제거 | `Header.tsx`, `Header.module.css` |
+| 2026-03-18 | Fix: dead code — steamBtn CSS 중복 병합, showOAuth useEffect deps 추가 + 선언 위치 이동 | `Header.tsx`, `Header.module.css` |
+| 2026-03-18 | Fix: 중복 이메일 가입 감지 — identities.length===0 체크, Google 계정 안내 메시지 | `Header.tsx` |
 
 ---
 
