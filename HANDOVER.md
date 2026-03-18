@@ -86,10 +86,10 @@ _Pre-B5 entries → HANDOVER-archive.md_
 |------|--------|-------|
 _2026-03-16~17 entries → HANDOVER-archive.md_
 | 2026-03-18 | B8–B10: E2E manual test checklists — email/Steam/non-auth paths | `TEST_B8_B10.md` |
-| 2026-03-18 | Fix: placeholder `…` 누락 — 비밀번호 필드 2곳 | `Header.tsx`, `reset-password/page.tsx` |
-| 2026-03-18 | Fix: Google login FedCM 버그 — `prompt()` 제거, `renderButton()` 방식으로 교체; GoogleIcon 제거 | `Header.tsx`, `Header.module.css` |
-| 2026-03-18 | Fix: dead code — steamBtn CSS 중복 병합, showOAuth useEffect deps 추가 + 선언 위치 이동 | `Header.tsx`, `Header.module.css` |
-| 2026-03-18 | Fix: 중복 이메일 가입 감지 — identities.length===0 체크, Google 계정 안내 메시지 | `Header.tsx` |
+| 2026-03-18 | Fix: missing `…` on password field placeholders (2 fields) | `Header.tsx`, `reset-password/page.tsx` |
+| 2026-03-18 | Fix: Google login FedCM error — remove `prompt()`, replace with `renderButton()`; remove GoogleIcon | `Header.tsx`, `Header.module.css` |
+| 2026-03-18 | Fix: dead code — merge duplicate steamBtn CSS, add showOAuth to useEffect deps, move declaration above effects | `Header.tsx`, `Header.module.css` |
+| 2026-03-18 | Fix: detect duplicate email signup — identities.length===0 check, show Google account error message | `Header.tsx` |
 
 ---
 
