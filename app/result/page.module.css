@@ -49,6 +49,9 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
   transition: border-color 0.15s ease;
 }
 
@@ -57,14 +60,18 @@
 }
 
 .thumbnail {
-  width: 100%;
-  aspect-ratio: 460 / 215;
-  object-fit: cover;
+  width: 200px;
+  height: auto;
+  flex-shrink: 0;
   display: block;
+  align-self: stretch;
+  object-fit: cover;
 }
 
 .cardBody {
-  padding: 1.5rem;
+  flex: 1;
+  min-width: 0;
+  padding: 1.25rem;
 }
 
 .cardName {
@@ -217,12 +224,16 @@
     margin-bottom: 1.5rem;
   }
 
+  .thumbnail {
+    width: 130px;
+  }
+
   .cardBody {
-    padding: 1.125rem;
+    padding: 0.875rem;
   }
 
   .cardName {
-    font-size: 1.0625rem;
+    font-size: 1rem;
   }
 
   /* Larger tap targets for feedback buttons on touch */
