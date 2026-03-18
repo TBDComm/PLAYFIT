@@ -469,7 +469,7 @@ export default function Header() {
                       autoComplete="one-time-code"
                       inputMode="numeric"
                       className={styles.modalInput}
-                      placeholder="000000…"
+                      placeholder="XXXXXX"
                       value={otpInput}
                       onChange={e => setOtpInput(e.target.value.replace(/\D/g, '').slice(0, 6))}
                       spellCheck={false}
