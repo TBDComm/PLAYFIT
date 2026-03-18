@@ -216,7 +216,12 @@
   background: var(--border);
 }
 
-.googleBtn,
+.googleBtnContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .steamBtn {
   width: 100%;
   padding: 10px 16px;
@@ -228,18 +233,6 @@
   justify-content: center;
   gap: 10px;
   transition: background-color 150ms, border-color 150ms;
-}
-
-.googleBtn {
-  background: var(--bg-elevated);
-  color: var(--text-primary);
-  border: 1px solid var(--border);
-}
-
-.googleBtn:hover,
-.googleBtn:focus-visible {
-  background: var(--bg-hover);
-  border-color: #6e7681;
 }
 
 .steamBtn {
@@ -342,7 +335,6 @@
   .logoutBtn,
   .steamLinkBtn,
   .closeBtn,
-  .googleBtn,
   .steamBtn,
   .modalInput,
   .primaryBtn,

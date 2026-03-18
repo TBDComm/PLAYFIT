@@ -96,7 +96,7 @@ _Pre-B5 entries → HANDOVER-archive.md_
 | 2026-03-16 | Fix: useEffect Escape handlers — inline setters instead of closeModal/closePopup refs | `Header.tsx` |
 | 2026-03-17 | Fix: Google login signInWithOAuth → GIS + signInWithIdToken (removes Supabase domain from consent screen); NEXT_PUBLIC_GOOGLE_CLIENT_ID env var required | `app/layout.tsx`, `Header.tsx` |
 | 2026-03-18 | B8–B10: E2E manual test checklists — email/Steam/non-auth paths | `TEST_B8_B10.md` |
-| 2026-03-18 | Bug: Google login FedCM 차단 시 완전 실패 — `prompt()` → FedCM 의존 문제, 미수정 (fix options: renderButton A/B) | `Header.tsx` |
+| 2026-03-18 | Fix: Google login FedCM 버그 — `prompt()` 제거, `renderButton()` 방식으로 교체; GoogleIcon 제거 | `Header.tsx`, `Header.module.css` |
 
 ---
 
