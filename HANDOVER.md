@@ -64,7 +64,7 @@ Next action: [exactly what to do next to resume]
 | B5 | Update `/api/recommend` — all four auth cases | ✅ 2026-03-16 |
 | B6 | Update `/api/feedback` — user_id if session, steam_id if not | ✅ 2026-03-16 |
 | B7 | Update Header (Steam link button) + main page layout per auth state | ✅ 2026-03-16 |
-| B8–B10 | E2E tests (email, Steam, non-auth) | ⬜ |
+| B8–B10 | E2E tests (email, Steam, non-auth) | ✅ |
 
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ⬜ (CF Pages에 추가 필요 — GIS Google 로그인)
 
@@ -72,9 +72,9 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: B8–B10 — E2E tests ────────
+## ── ACTIVE STEP: none — B-series complete ────────
 
-Read `SPEC.md §B8–B10` before implementing.
+All B1–B10 steps complete. B-series MVP done.
 
 ---
 
@@ -95,10 +95,18 @@ _Pre-B5 entries → HANDOVER-archive.md_
 | 2026-03-17 | UX: OAuth button text "계속하기" → "로그인하기" | `Header.tsx` |
 | 2026-03-16 | Fix: useEffect Escape handlers — inline setters instead of closeModal/closePopup refs | `Header.tsx` |
 | 2026-03-17 | Fix: Google login signInWithOAuth → GIS + signInWithIdToken (removes Supabase domain from consent screen); NEXT_PUBLIC_GOOGLE_CLIENT_ID env var required | `app/layout.tsx`, `Header.tsx` |
+| 2026-03-18 | B8–B10: E2E manual test checklists — email/Steam/non-auth paths | `TEST_B8_B10.md` |
 
 ---
 
 ## ── COMPLETED STEPS ──────────────────────────────────────
+
+### ✅ B8–B10 — 2026-03-18 — E2E manual test checklists
+- File: `TEST_B8_B10.md`
+- B8: email login → link Steam → recommend → feedback → return visit
+- B9: Steam login → auto recommend → feedback persistence
+- B10: non-auth → full flow → weights by steam_id (+ optional migration step)
+- Build: `tsc --noEmit` passed ✅
 
 ### ✅ B7 — 2026-03-16 — Header + login modal + Steam link popup + page auth UI
 - Files: `Header.tsx`, `Header.module.css`, `page.tsx`, `page.module.css`
