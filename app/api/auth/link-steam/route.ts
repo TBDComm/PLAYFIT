@@ -55,12 +55,21 @@ export async function POST(request: NextRequest) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 
-  // 3. Check if steam_id already linked to a different user
-  const { data: existing } = await supabaseAdmin
+  // Start step 3 and step 5 independently — both only need steamId
+  const existingProfilePromise = supabaseAdmin
     .from('user_profiles')
     .select('id')
     .eq('steam_id', steamId)
     .maybeSingle()
+
+  const anonWeightsPromise = supabaseAdmin
+    .from('user_tag_weights')
+    .select('tag, weight')
+    .eq('steam_id', steamId)
+    .is('user_id', null)
+
+  // 3. Check if steam_id already linked to a different user
+  const { data: existing } = await existingProfilePromise
 
   if (existing && existing.id !== session.user.id) {
     return NextResponse.json({ error: 'STEAM_ALREADY_LINKED' }, { status: 409 })
@@ -77,11 +86,7 @@ export async function POST(request: NextRequest) {
   }
 
   // 5. Migrate pre-login weights to user_id — merge if tag already exists under user_id
-  const { data: anonWeights } = await supabaseAdmin
-    .from('user_tag_weights')
-    .select('tag, weight')
-    .eq('steam_id', steamId)
-    .is('user_id', null)
+  const { data: anonWeights } = await anonWeightsPromise
 
   if (anonWeights && anonWeights.length > 0) {
     const anonTags = anonWeights.map((r: { tag: string; weight: number }) => r.tag)

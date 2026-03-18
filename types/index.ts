@@ -66,7 +66,6 @@ export type ErrorCode =
   | 'INVALID_URL'
   | 'GENERAL_ERROR'
   | 'DB_NOT_READY'
-  | 'GAME_NOT_FOUND'
   | 'TAG_EXTRACTION_FAILED'
 
 // ===== Feedback types =====

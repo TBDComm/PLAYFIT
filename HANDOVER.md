@@ -91,6 +91,8 @@ _2026-03-16~17 entries → HANDOVER-archive.md_
 | 2026-03-18 | Fix: dead code — merge duplicate steamBtn CSS, add showOAuth to useEffect deps, move declaration above effects | `Header.tsx`, `Header.module.css` |
 | 2026-03-18 | Fix: detect duplicate email signup — identities.length===0 check, show Google account error message | `Header.tsx` |
 | 2026-03-18 | Fix: link-steam migration silent fail — replace update() with fetch→merge(avg)→upsert→delete to handle duplicate tag conflicts | `link-steam/route.ts` |
+| 2026-03-18 | Perf: link-steam step 3 + step 5 DB queries now run in parallel (both only need steamId) | `link-steam/route.ts` |
+| 2026-03-18 | Dead code: remove GAME_NOT_FOUND (never returned by any API route) | `types/index.ts`, `page.tsx` |
 
 ---
 

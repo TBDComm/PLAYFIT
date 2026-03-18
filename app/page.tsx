@@ -18,7 +18,6 @@ const ERROR_MESSAGES: Record<ErrorCode, string> = {
   INVALID_URL:            '올바른 스팀 프로필 URL을 입력해주세요',
   GENERAL_ERROR:          '잠시 후 다시 시도해주세요',
   DB_NOT_READY:           'DB가 아직 준비되지 않았어요',
-  GAME_NOT_FOUND:         '게임을 찾을 수 없어요',
   TAG_EXTRACTION_FAILED:  '플레이 기록에서 태그를 추출할 수 없어요',
 }
 
