@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 160/200 lines — OK**
+📏 **File health: 140/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -89,27 +89,7 @@ _Pre-B5 entries → HANDOVER-archive.md_
 
 | Date | Change | Files |
 |------|--------|-------|
-_2026-03-16~17 entries → HANDOVER-archive.md_
-| 2026-03-18 | B8–B10: E2E manual test checklists — email/Steam/non-auth paths | `TEST_B8_B10.md` |
-| 2026-03-18 | Fix: missing `…` on password field placeholders (2 fields) | `Header.tsx`, `reset-password/page.tsx` |
-| 2026-03-18 | Fix: Google login FedCM error — remove `prompt()`, replace with `renderButton()`; remove GoogleIcon | `Header.tsx`, `Header.module.css` |
-| 2026-03-18 | Fix: dead code — merge duplicate steamBtn CSS, add showOAuth to useEffect deps, move declaration above effects | `Header.tsx`, `Header.module.css` |
-| 2026-03-18 | Fix: detect duplicate email signup — identities.length===0 check, show Google account error message | `Header.tsx` |
-| 2026-03-18 | Fix: link-steam migration silent fail — replace update() with fetch→merge(avg)→upsert→delete to handle duplicate tag conflicts | `link-steam/route.ts` |
-| 2026-03-18 | Perf: link-steam step 3 + step 5 DB queries now run in parallel (both only need steamId) | `link-steam/route.ts` |
-| 2026-03-18 | Dead code: remove GAME_NOT_FOUND (never returned by any API route) | `types/index.ts`, `page.tsx` |
-| 2026-03-18 | Fix: Steam OpenID — `includes('is_valid:false')` → `!includes('is_valid:true')` (auth bypass on Steam outage) | `steam/callback/route.ts` |
-| 2026-03-18 | Fix: handleLinkSteam — add try-catch-finally so linkLoading clears on network error | `Header.tsx` |
-| 2026-03-18 | Fix: debounce delay 0ms → 300ms (was firing search on every keystroke, race condition) | `page.tsx` |
-| 2026-03-18 | Fix: --bg-base (undefined variable) → --bg in reset-password | `reset-password/page.module.css` |
-| 2026-03-18 | Responsive: mobile media queries + 100dvh + iOS zoom fix (font-size 16px) across all pages | `globals.css`, `Header.module.css`, `page.module.css`, `result/page.module.css`, `reset-password/page.module.css` |
-| 2026-03-18 | C-series spec defined — C1–C13 (AdSense monetization) added to SPEC.md; marketing-skills/ repo copied | `SPEC.md`, `marketing-skills/` |
-| 2026-03-18 | C4 /users/[userId] community URL reserved; C5/C6 programmatic-SEO guidelines reflected (thin content guard, community placeholder) | `SPEC.md` |
-| 2026-03-18 | marketing-skills/ pruned — 33 → 22 skills; removed 12 (7 permanent, 5 deferred to B2B ad sales phase) | `marketing-skills/REMOVED.md` |
-| 2026-03-18 | C1: robots.ts (dynamic, reads NEXT_PUBLIC_BASE_URL), sitemap.ts (static routes + genre slugs from DB), layout.tsx (metadataBase, canonical, OG/Twitter tags) | `app/robots.ts`, `app/sitemap.ts`, `app/layout.tsx` |
-| 2026-03-18 | C2: /privacy + /terms (Korean legal pages), Footer component (privacy · terms · © 2026), Footer added to layout.tsx | `app/privacy/page.tsx`, `app/terms/page.tsx`, `app/components/Footer.tsx`, `app/components/Footer.module.css`, `app/legal.module.css`, `app/layout.tsx` |
-| 2026-03-18 | Fix: ESLint react/no-unescaped-entities in terms/page.tsx ("서비스", "as-is") — build was failing | `app/terms/page.tsx` |
-| 2026-03-18 | UI: remove header banner — login/logout/Steam-link buttons moved to fixed top-right floating | `Header.tsx`, `Header.module.css` |
+_2026-03-16~18 B-series + C1/C2 entries → HANDOVER-archive.md_
 | 2026-03-18 | UI: PLAYFIT wordmark logo on /privacy and /terms — links to home | `privacy/page.tsx`, `terms/page.tsx`, `legal.module.css` |
 | 2026-03-18 | UI: Steam CDN thumbnails on result cards — left-side row, 200px desktop / 130px mobile, full image visible; preconnect added | `result/page.tsx`, `result/page.module.css`, `layout.tsx` |
 | 2026-03-18 | UI: Metacritic score label + color tiers (≥75 green, 50–74 amber, <50 red) | `result/page.tsx`, `result/page.module.css` |

@@ -1,5 +1,28 @@
 # HANDOVER Archive
 
+## Minor Changes — 2026-03-18 (B-series fixes + C1/C2)
+| Change | Files |
+|--------|-------|
+| B8–B10: E2E manual test checklists — email/Steam/non-auth paths | `TEST_B8_B10.md` |
+| Fix: missing `…` on password field placeholders (2 fields) | `Header.tsx`, `reset-password/page.tsx` |
+| Fix: Google login FedCM error — remove `prompt()`, replace with `renderButton()` | `Header.tsx`, `Header.module.css` |
+| Fix: dead code — merge duplicate steamBtn CSS, add showOAuth to useEffect deps | `Header.tsx`, `Header.module.css` |
+| Fix: detect duplicate email signup — identities.length===0 check | `Header.tsx` |
+| Fix: link-steam migration silent fail — fetch→merge(avg)→upsert→delete | `link-steam/route.ts` |
+| Perf: link-steam step 3+5 DB queries now run in parallel | `link-steam/route.ts` |
+| Dead code: remove GAME_NOT_FOUND (never returned by any API route) | `types/index.ts`, `page.tsx` |
+| Fix: Steam OpenID — `!includes('is_valid:true')` (auth bypass on outage) | `steam/callback/route.ts` |
+| Fix: handleLinkSteam — try-catch-finally so linkLoading clears on error | `Header.tsx` |
+| Fix: debounce delay 0ms → 300ms (race condition on every keystroke) | `page.tsx` |
+| Fix: --bg-base undefined variable → --bg in reset-password | `reset-password/page.module.css` |
+| Responsive: mobile media queries + 100dvh + iOS zoom fix across all pages | `globals.css`, `Header.module.css`, `page.module.css`, `result/page.module.css`, `reset-password/page.module.css` |
+| C-series spec defined — C1–C13 (AdSense monetization); marketing-skills/ copied | `SPEC.md`, `marketing-skills/` |
+| marketing-skills/ pruned — 33 → 22 skills | `marketing-skills/REMOVED.md` |
+| C1: robots.ts, sitemap.ts, layout.tsx OG/Twitter meta tags | `app/robots.ts`, `app/sitemap.ts`, `app/layout.tsx` |
+| C2: /privacy + /terms + Footer component | `app/privacy/page.tsx`, `app/terms/page.tsx`, `app/components/Footer.tsx`, `app/legal.module.css`, `app/layout.tsx` |
+| Fix: ESLint react/no-unescaped-entities in terms/page.tsx — build was failing | `app/terms/page.tsx` |
+| UI: remove header banner — buttons moved to fixed top-right floating | `Header.tsx`, `Header.module.css` |
+
 ## B3 — 2026-03-16 — Header + Google OAuth modal + auth callback
 - Files: `app/components/Header.tsx`, `app/components/Header.module.css`, `app/api/auth/callback/route.ts`, `app/layout.tsx`
 - Decisions: `createBrowserClient` used (not `createClientComponentClient` — not exported in v0.15); `@supabase/ssr` v0.9 uses `getAll`/`setAll`; `NextRequest` needed in callback to access `cookies.getAll()`
