@@ -76,12 +76,41 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'GENERAL_ERROR' }, { status: 500 })
   }
 
-  // 5. Migrate pre-login weights to user_id
-  await supabaseAdmin
+  // 5. Migrate pre-login weights to user_id — merge if tag already exists under user_id
+  const { data: anonWeights } = await supabaseAdmin
     .from('user_tag_weights')
-    .update({ user_id: session.user.id })
+    .select('tag, weight')
     .eq('steam_id', steamId)
     .is('user_id', null)
+
+  if (anonWeights && anonWeights.length > 0) {
+    const anonTags = anonWeights.map((r: { tag: string; weight: number }) => r.tag)
+    const { data: existingWeights } = await supabaseAdmin
+      .from('user_tag_weights')
+      .select('tag, weight')
+      .eq('user_id', session.user.id)
+      .in('tag', anonTags)
+
+    const existingMap = new Map(
+      (existingWeights ?? []).map((r: { tag: string; weight: number }) => [r.tag, r.weight])
+    )
+    const mergedRows = anonWeights.map(({ tag, weight }: { tag: string; weight: number }) => {
+      const existing = existingMap.get(tag)
+      const merged = existing !== undefined
+        ? Math.min(3.0, Math.max(0.1, (weight + existing) / 2))
+        : weight
+      return { user_id: session.user.id, tag, weight: merged, updated_at: new Date().toISOString() }
+    })
+
+    await supabaseAdmin
+      .from('user_tag_weights')
+      .upsert(mergedRows, { onConflict: 'user_id,tag' })
+    await supabaseAdmin
+      .from('user_tag_weights')
+      .delete()
+      .eq('steam_id', steamId)
+      .is('user_id', null)
+  }
 
   return NextResponse.json({ ok: true, steam_id: steamId })
 }

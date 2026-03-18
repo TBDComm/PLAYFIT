@@ -90,6 +90,7 @@ _2026-03-16~17 entries → HANDOVER-archive.md_
 | 2026-03-18 | Fix: Google login FedCM error — remove `prompt()`, replace with `renderButton()`; remove GoogleIcon | `Header.tsx`, `Header.module.css` |
 | 2026-03-18 | Fix: dead code — merge duplicate steamBtn CSS, add showOAuth to useEffect deps, move declaration above effects | `Header.tsx`, `Header.module.css` |
 | 2026-03-18 | Fix: detect duplicate email signup — identities.length===0 check, show Google account error message | `Header.tsx` |
+| 2026-03-18 | Fix: link-steam migration silent fail — replace update() with fetch→merge(avg)→upsert→delete to handle duplicate tag conflicts | `link-steam/route.ts` |
 
 ---
 
