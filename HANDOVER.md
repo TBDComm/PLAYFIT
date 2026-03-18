@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 149/200 lines — OK**
+📏 **File health: 151/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -72,11 +72,11 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: none — B-series complete ────────
+## ── ACTIVE STEP: none — C1 complete ────────
 
-All B1–B10 steps complete. B-series MVP done.
+**Next step: C2** — /privacy, /terms, Footer component. Read `SPEC.md §C2` before starting.
 
-**Next phase: C-series (upgrade stage)** — C1–C13 정의 완료. `SPEC.md §C-series` 참조.
+**Revenue model (confirmed 2026-03-18):** AdSense (C8–C9) + long-term B2B direct ad sales to game publishers/developers. marketing-skills/ selection reflects both directions.
 
 ---
 
@@ -102,6 +102,8 @@ _2026-03-16~17 entries → HANDOVER-archive.md_
 | 2026-03-18 | Responsive: mobile media queries + 100dvh + iOS zoom fix (font-size 16px) across all pages | `globals.css`, `Header.module.css`, `page.module.css`, `result/page.module.css`, `reset-password/page.module.css` |
 | 2026-03-18 | C-series spec 작성 — C1–C13 (AdSense 수익화) SPEC.md에 추가; marketing-skills/ 레포 복사 | `SPEC.md`, `marketing-skills/` |
 | 2026-03-18 | C4 /users/[userId] 커뮤니티 URL 예약; C5/C6 programmatic-seo 가이드라인 반영 (thin content guard, 커뮤니티 플레이스홀더) | `SPEC.md` |
+| 2026-03-18 | marketing-skills/ pruned — 33 → 22 skills; removed 12 (7 permanent, 5 deferred to B2B ad sales phase) | `marketing-skills/REMOVED.md` |
+| 2026-03-18 | C1: robots.ts (dynamic, reads NEXT_PUBLIC_BASE_URL), sitemap.ts (static routes + genre slugs from DB), layout.tsx (metadataBase, canonical, OG/Twitter tags) | `app/robots.ts`, `app/sitemap.ts`, `app/layout.tsx` |
 
 ---
 
