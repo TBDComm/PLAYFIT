@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 141/200 lines — OK**
+📏 **File health: 149/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -76,6 +76,8 @@ Next action: [exactly what to do next to resume]
 
 All B1–B10 steps complete. B-series MVP done.
 
+**Next phase: C-series (upgrade stage)** — C1–C13 정의 완료. `SPEC.md §C-series` 참조.
+
 ---
 
 ## ── MINOR CHANGES LOG ────────────────────────────────────
@@ -98,6 +100,8 @@ _2026-03-16~17 entries → HANDOVER-archive.md_
 | 2026-03-18 | Fix: debounce delay 0ms → 300ms (was firing search on every keystroke, race condition) | `page.tsx` |
 | 2026-03-18 | Fix: --bg-base (undefined variable) → --bg in reset-password | `reset-password/page.module.css` |
 | 2026-03-18 | Responsive: mobile media queries + 100dvh + iOS zoom fix (font-size 16px) across all pages | `globals.css`, `Header.module.css`, `page.module.css`, `result/page.module.css`, `reset-password/page.module.css` |
+| 2026-03-18 | C-series spec 작성 — C1–C13 (AdSense 수익화) SPEC.md에 추가; marketing-skills/ 레포 복사 | `SPEC.md`, `marketing-skills/` |
+| 2026-03-18 | C4 /users/[userId] 커뮤니티 URL 예약; C5/C6 programmatic-seo 가이드라인 반영 (thin content guard, 커뮤니티 플레이스홀더) | `SPEC.md` |
 
 ---
 

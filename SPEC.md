@@ -668,3 +668,327 @@ NEXT_PUBLIC_BASE_URL=          ← Addendum B4 — e.g. http://localhost:3000 in
 | Service role key exposure | Used only in server-side API routes — never passed to frontend or logged |
 | Non-authenticated feedback | Save feedback row with `null user_id` — tag weights skipped entirely, not defaulted |
 
+---
+
+## C-series — AdSense 광고 수익 극대화
+
+> Read only the relevant C-step section before implementing. Each step is self-contained.
+> Marketing skill references → `marketing-skills/` directory (seo-audit, analytics-tracking, schema-markup, programmatic-seo, page-cro, ai-seo, content-strategy, site-architecture)
+> If `marketing-skills/` is missing (env reset): `git clone https://github.com/coreyhaines31/marketingskills /tmp/ms && cp -r /tmp/ms/skills ./marketing-skills`
+
+### Strategy
+
+PlayFit is currently a tool site. To maximize AdSense revenue it must expand into a content site.
+
+**Revenue formula:** `Revenue = Traffic × RPM`
+- Traffic: driven by SEO (programmatic game pages + blog)
+- RPM: driven by ad placement quality + page content relevance
+
+**Key asset:** `games_cache` holds 82,816 games → each becomes an SEO landing page.
+
+**AdSense approval prerequisites:** Privacy Policy page, Terms of Service page, sufficient content, HTTPS (CF Pages handles this).
+
+---
+
+### Phase 1 — AdSense Foundation
+
+#### C1 — Technical SEO Foundation
+
+**Goal:** Make the site fully crawlable and indexable by Google and AI bots.
+
+- `public/robots.txt` — allow all crawlers; explicitly allow Google, AdSense (`Mediapartners-Google`), and AI bots (`GPTBot`, `ClaudeBot`, `PerplexityBot`, `Google-Extended`); reference sitemap URL
+- `app/sitemap.ts` — Next.js dynamic sitemap; include `/`, `/privacy`, `/terms`, `/blog`, all `/genre/[slug]` pages; defer `/games/[appid]` until C5 is done
+- Canonical `<link>` tags — add to `app/layout.tsx` via `generateMetadata`; self-referencing canonical on every page
+- Open Graph + Twitter meta tags — `og:title`, `og:description`, `og:url`, `og:type`; apply to layout (default) and override per page
+- Verify no `noindex` on any live page
+
+**Files:** `public/robots.txt` (new), `app/sitemap.ts` (new), `app/layout.tsx`
+
+---
+
+#### C2 — Legal Pages (AdSense Requirement)
+
+**Goal:** Create Privacy Policy and Terms of Service pages — required for AdSense approval.
+
+- `/privacy` (`app/privacy/page.tsx`) — Privacy Policy: data collected (GA4 analytics, Supabase auth), cookies, third-party services (Steam API, Google AdSense), contact info
+- `/terms` (`app/terms/page.tsx`) — Terms of Service: service description, usage rules, disclaimer, no warranty
+- Footer component (`app/components/Footer.tsx`) — rendered in `app/layout.tsx`; links: Privacy Policy · Terms · © 2026 PlayFit
+- Both pages: plain prose, dark theme consistent with existing design, no fancy layout needed
+
+**Files:** `app/privacy/page.tsx` (new), `app/terms/page.tsx` (new), `app/components/Footer.tsx` (new), `app/layout.tsx`
+
+---
+
+#### C3 — GA4 Analytics Setup
+
+**Goal:** Instrument the site for traffic and conversion measurement before AdSense launch.
+
+- Install `gtag.js` via Next.js `<Script>` in `app/layout.tsx` — measurement ID from env var `NEXT_PUBLIC_GA_MEASUREMENT_ID`
+- Event tracking (client-side, via `gtag('event', ...)` helper in `lib/analytics.ts`):
+
+| Event | Trigger |
+|-------|---------|
+| `recommendation_generated` | Successful result from `/api/recommend` |
+| `feedback_submitted` | User clicks 잘 맞아요 / 아니에요 |
+| `search_used` | User selects a game from autocomplete dropdown |
+| `steam_login_started` | User clicks Steam 로그인 |
+| `google_login_started` | User clicks Google 로그인 |
+
+- Mark `recommendation_generated` as a conversion in GA4 Admin (user action after deploy)
+- GA4 + AdSense link: done in GA4 Admin console (user action)
+
+**Files:** `app/layout.tsx`, `lib/analytics.ts` (new)
+**Env var:** `NEXT_PUBLIC_GA_MEASUREMENT_ID` — user provides after creating GA4 property
+
+---
+
+### Phase 2 — Content Expansion
+
+#### C4 — Site Architecture
+
+**Goal:** Define URL structure and navigation for all new content pages before building them. URLs are designed with the long-term community vision in mind — reserve community routes now so structure never needs to break.
+
+**URL structure:**
+```
+/ (main tool — unchanged)
+/games/[appid]        ← C5: individual game pages → D-series: community hub per game
+/genre/[slug]         ← C6: genre hub pages → D-series: community hub per genre
+/blog                 ← C7: blog index
+/blog/[slug]          ← C7: blog posts
+/users/[userId]       ← RESERVED for D-series: public taste profile page (do not build yet — just reserve the URL pattern, ensure no conflict)
+/privacy              ← C2: done
+/terms                ← C2: done
+```
+
+**Community URL rationale:** `/users/[userId]` will become the public-facing taste profile page — showing a user's top tags, genres, and favorite games, visible to others for community matching. Reserved now so C5/C6 internal links can reference it in the future without a URL migration.
+
+- Header update: add navigation links (Blog, 장르별 탐색) — mobile-responsive
+- Footer update (from C2): confirm links include Blog + Genre index
+- Breadcrumb component (`app/components/Breadcrumb.tsx`) — renders `Home > Genre > Game` etc.; used on C5/C6/C7 pages
+- Genre index page (`app/genre/page.tsx`) — lists all genres from `games_cache` as links to `/genre/[slug]`
+
+**Files:** `app/components/Header.tsx`, `app/components/Footer.tsx`, `app/components/Breadcrumb.tsx` (new), `app/genre/page.tsx` (new)
+
+---
+
+#### C5 — Game Detail Pages (Programmatic SEO)
+
+**Goal:** Generate one SEO-optimized page per game in `games_cache` — the primary traffic driver.
+
+**Programmatic SEO playbook:** `Profiles` pattern (one page per entity with unique data) + `Directory` support from C6. Proprietary data from `games_cache` (tag vote counts, genre lists) is the differentiator — public data anyone can use; our tag-weighted similarity scoring is ours alone. Per the programmatic-seo skill: each page must provide unique value beyond variable substitution — the "similar games" list (computed from our scoring algorithm) is the unique value per page.
+
+**Route:** `app/games/[appid]/page.tsx`
+
+**Page content (server-rendered):**
+- H1: `{game name} — 비슷한 게임 추천`
+- Game tags (top 10 from `games_cache`)
+- Game genres
+- "이 게임과 비슷한 게임 TOP 10" — run the existing tag-scoring logic server-side against `games_cache`, return top 10 similar games (no Steam API call, no Claude — pure DB query)
+- Link to main tool: "내 플레이 기록으로 추천받기 →"
+- Breadcrumb: Home > 게임 > {game name}
+
+**Community placeholder (D-series hook):** render a static section "이 게임을 좋아하는 PlayFit 유저" with placeholder copy — no data yet, just the UI slot so the page structure is ready when D-series adds real user data.
+
+**SEO:**
+- `generateMetadata`: title = `{game name} 비슷한 게임 추천 | PlayFit`, description = `{game name}을 좋아한다면 이런 게임도 좋아할 거예요. PlayFit이 태그 기반으로 추천합니다.`
+- Canonical: `/games/{appid}`
+- Schema: `SoftwareApplication` JSON-LD (name, applicationCategory: Game, offers if free)
+- Internal links: each similar game links to its own `/games/[appid]` + genre links to `/genre/[slug]`
+
+**Data fetching:** `generateStaticParams` — NOT used (82k pages would time out build). Use `dynamicParams = true` + ISR (`revalidate = 86400`). Fetch game from `games_cache` by appid on request, cache for 24h.
+
+**Thin content guard (per programmatic-seo skill):** if a game has no tags in `games_cache` (tags is null or `{}`), render a minimal page with `noindex` — do not pollute the index with empty pages.
+
+**Sitemap update (C1 follow-up):** Add `/games/[appid]` entries — generate from top 5,000 games by tag count (most data-rich pages first); remaining pages indexed via crawl.
+
+**Files:** `app/games/[appid]/page.tsx` (new), `app/sitemap.ts` (update)
+
+---
+
+#### C6 — Genre Hub Pages
+
+**Goal:** One page per genre — targets "best {genre} games Steam" searches.
+
+**Programmatic SEO playbook:** `Directory` pattern (curated list of entities in a category). Unique value: tag-weighted ranking within each genre, not just alphabetical or arbitrary lists — our scoring data differentiates this from generic "top games" lists.
+
+**Route:** `app/genre/[slug]/page.tsx`
+
+**Page content (server-rendered, ISR revalidate 86400):**
+- H1: `최고의 {genre} 게임 추천 | PlayFit`
+- Top 20 games in this genre from `games_cache` (by tag vote count sum)
+- Each game: name, top 3 tags, link to `/games/[appid]`
+- "내 취향에 맞는 {genre} 게임 찾기 →" CTA to main tool
+- Breadcrumb: Home > 장르 > {genre}
+- Community placeholder (D-series hook): "{genre} 게임을 좋아하는 유저들" — static copy, no data yet
+
+**SEO:**
+- `generateMetadata`: title = `최고의 {genre} 게임 20선 | PlayFit`, description = dynamic per genre
+- Schema: `ItemList` JSON-LD listing the 20 games
+
+**Slug format:** genre name lowercased, spaces → hyphens (e.g., `role-playing-games`)
+**Genre source:** distinct `genres` array values from `games_cache`
+
+**Files:** `app/genre/[slug]/page.tsx` (new), `app/genre/page.tsx` (update with genre list)
+
+---
+
+#### C7 — Blog Section
+
+**Goal:** Long-form content for longtail SEO and E-E-A-T signals.
+
+**Routes:** `app/blog/page.tsx` (index), `app/blog/[slug]/page.tsx` (post)
+
+**Content storage:** MDX files in `content/blog/[slug].mdx` — frontmatter: `title`, `description`, `publishedAt`, `tags`
+
+**First 3 posts (to be written during implementation):**
+1. `steam-game-recommendation-guide` — "내 취향에 맞는 스팀 게임 찾는 법"
+2. `best-rpg-games-steam-2026` — "2026년 스팀 RPG 게임 추천"
+3. `steam-playtime-and-taste` — "플레이 시간이 취향을 알려준다 — 스팀 데이터 분석"
+
+**Schema:** `BlogPosting` JSON-LD per post (headline, datePublished, author: PlayFit, url)
+**Breadcrumb:** Home > Blog > {post title}
+
+**Files:** `app/blog/page.tsx` (new), `app/blog/[slug]/page.tsx` (new), `content/blog/*.mdx` (new), `lib/blog.ts` (new — MDX loader)
+
+---
+
+### Phase 3 — AdSense Integration
+
+#### C8 — AdSense Technical Setup
+
+**Goal:** Wire up AdSense script and ads.txt so the site can serve ads.
+
+**Prerequisites (user actions before this step):**
+1. Apply for Google AdSense at adsense.google.com
+2. Submit PlayFit URL for review (requires C2 legal pages + sufficient content from C5–C7)
+3. Receive Publisher ID (`ca-pub-XXXXXXXXXXXXXXXX`)
+
+**Implementation:**
+- `public/ads.txt` — `google.com, ca-pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0`
+- AdSense auto-ads script in `app/layout.tsx` via `<Script>` with `strategy="afterInteractive"` — only when `NEXT_PUBLIC_ADSENSE_CLIENT_ID` env var is set
+- `app/components/AdUnit.tsx` — reusable component wrapping `<ins class="adsbygoogle">` — accepts `slot`, `format`, `responsive` props; renders nothing if env var not set (safe for dev)
+
+**Env var:** `NEXT_PUBLIC_ADSENSE_CLIENT_ID` (ca-pub-XXXXXXXXXXXXXXXX)
+**Files:** `public/ads.txt` (new), `app/layout.tsx`, `app/components/AdUnit.tsx` (new)
+
+---
+
+#### C9 — Ad Placement Strategy
+
+**Goal:** Place ads for maximum RPM without harming UX (which would hurt AdSense quality score).
+
+**Placement plan per page type:**
+
+| Page | Placement | Format |
+|------|-----------|--------|
+| Game detail (`/games/[appid]`) | After similar games list | In-content, responsive |
+| Genre hub (`/genre/[slug]`) | Between game list rows (after item 10) | In-list |
+| Blog post (`/blog/[slug]`) | After intro (¶2–3) + end of post | In-article |
+| Main tool result (`/result`) | Below 5 game cards | Display, responsive |
+| Blog index (`/blog`) | Sidebar or below fold | Display |
+
+**Rules:**
+- No ads above the fold on the main tool page (harms tool UX → user leaves → lower RPM)
+- No ads that shift layout on load (CLS penalty — AdSense quality score + Core Web Vitals)
+- All `<AdUnit>` components wrapped in a fixed-height container to prevent CLS
+- Mobile: max 1 ad per screen viewport
+
+**Files:** `app/games/[appid]/page.tsx`, `app/genre/[slug]/page.tsx`, `app/blog/[slug]/page.tsx`, `app/result/page.tsx`
+
+---
+
+### Phase 4 — SEO Enhancement
+
+#### C10 — Schema Markup
+
+**Goal:** Structured data across all page types for rich results and AI citation.
+
+| Page | Schema type |
+|------|-------------|
+| `/` (main) | `WebApplication` + `Organization` |
+| `/games/[appid]` | `SoftwareApplication` + `BreadcrumbList` |
+| `/genre/[slug]` | `ItemList` + `BreadcrumbList` |
+| `/blog/[slug]` | `BlogPosting` + `BreadcrumbList` |
+| All pages | `WebSite` (homepage only, with `SearchAction`) |
+
+Implementation: server-rendered JSON-LD `<script>` in each page's `generateMetadata` or inline in the page component. Use `@graph` to combine multiple types per page.
+
+**Files:** `app/components/JsonLd.tsx` (new — generic JSON-LD renderer), all page files updated
+
+---
+
+#### C11 — On-Page SEO Optimization
+
+**Goal:** Ensure every page type has optimized titles, descriptions, headings, and internal links.
+
+**Meta title templates:**
+- Game page: `{name} 비슷한 게임 추천 | PlayFit`
+- Genre page: `최고의 {genre} 게임 20선 | PlayFit`
+- Blog post: `{title} | PlayFit`
+- Main: `내 스팀 취향에 맞는 게임 추천 | PlayFit`
+
+**Internal linking:**
+- Game pages → link to their genre pages
+- Genre pages → link to top 20 game pages + main tool
+- Blog posts → link to relevant game/genre pages + main tool
+- Main page footer → Blog, 장르 탐색
+
+**H1/H2 audit:** ensure every page has exactly one H1; headings follow logical hierarchy.
+
+**Files:** all page files
+
+---
+
+#### C12 — AI SEO
+
+**Goal:** Make content citable by AI assistants (ChatGPT, Perplexity, Claude, Google AI Overviews).
+
+- `robots.txt` (C1 already covers AI bots — verify correct)
+- Game pages: add FAQ block — "Q: {game name}과 비슷한 게임은? A: 태그 기반으로 {top 3 similar games}을 추천합니다."
+- Genre pages: add definition block — "{genre}란 {genre description}입니다. PlayFit에서 추천하는 상위 게임은 {top 3}입니다."
+- Blog posts: structured with clear H2 questions, definition in first paragraph, statistics with sources
+- All pages: add `dateModified` to schema; blog posts show "마지막 업데이트" date visibly
+
+**Files:** `app/games/[appid]/page.tsx`, `app/genre/[slug]/page.tsx`, `app/blog/[slug]/page.tsx`
+
+---
+
+### Phase 5 — Performance
+
+#### C13 — Core Web Vitals Optimization
+
+**Goal:** Pass Core Web Vitals thresholds (LCP < 2.5s, CLS < 0.1, INP < 200ms) — affects both AdSense quality score and Google rankings.
+
+- All images → `next/image` with explicit `width`/`height` (prevents CLS)
+- Fonts → `next/font` (eliminates FOUT/CLS from font swap)
+- Ad containers → fixed height wrapper (prevents CLS from ad load)
+- Game/genre pages: check TTFB — ISR cache should serve sub-200ms after first request
+- Defer non-critical scripts (`analytics.ts` events) to `requestIdleCallback`
+- Run PageSpeed Insights after deploy; target score ≥ 90 mobile
+
+**Files:** all image-bearing pages, `app/layout.tsx`
+
+---
+
+### C-series Implementation Order
+
+| Step | Description | Phase |
+|------|-------------|-------|
+| C1 | robots.txt, sitemap.xml, canonical, OG tags | Foundation |
+| C2 | /privacy, /terms, Footer | Foundation |
+| C3 | GA4 + event tracking | Foundation |
+| C4 | Site architecture, nav update, breadcrumb, genre index | Content |
+| C5 | Game detail pages `/games/[appid]` (ISR) | Content |
+| C6 | Genre hub pages `/genre/[slug]` | Content |
+| C7 | Blog section + first 3 posts | Content |
+| C8 | AdSense script, ads.txt, AdUnit component | AdSense |
+| C9 | Ad placement on all page types | AdSense |
+| C10 | Schema markup sitewide | SEO |
+| C11 | Meta titles, internal linking, H1/H2 audit | SEO |
+| C12 | AI SEO — FAQ blocks, definition blocks, freshness | SEO |
+| C13 | Core Web Vitals — images, fonts, ad CLS | Performance |
+
+**User actions required:**
+- Before C3: create GA4 property → provide `NEXT_PUBLIC_GA_MEASUREMENT_ID`
+- Before C8: apply for AdSense → wait for approval → provide `NEXT_PUBLIC_ADSENSE_CLIENT_ID`
+
