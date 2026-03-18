@@ -109,6 +109,7 @@ _2026-03-16~17 entries → HANDOVER-archive.md_
 | 2026-03-18 | Fix: ESLint react/no-unescaped-entities in terms/page.tsx ("서비스", "as-is") — build was failing | `app/terms/page.tsx` |
 | 2026-03-18 | UI: remove header banner — login/logout/Steam-link buttons moved to fixed top-right floating | `Header.tsx`, `Header.module.css` |
 | 2026-03-18 | UI: add logo + home link to top of /privacy and /terms pages | `privacy/page.tsx`, `terms/page.tsx`, `legal.module.css` |
+| 2026-03-18 | UI: add Steam CDN game thumbnails to recommendation cards (left on desktop, top on mobile) | `result/page.tsx`, `result/page.module.css` |
 
 ---
 

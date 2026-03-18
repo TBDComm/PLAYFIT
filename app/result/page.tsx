@@ -61,6 +61,17 @@ export default function ResultPage() {
         <ul className={styles.cards} aria-label="추천 게임 목록">
           {recommendations.map(card => (
             <li key={card.appid} className={styles.card}>
+              <img
+                src={`https://cdn.akamai.steamstatic.com/steam/apps/${card.appid}/header.jpg`}
+                alt={card.name}
+                className={styles.thumbnail}
+                loading="lazy"
+                decoding="async"
+                width={460}
+                height={215}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+              />
+              <div className={styles.cardBody}>
               <h2 className={styles.cardName}>{card.name}</h2>
 
               <p className={styles.reason}>
@@ -108,6 +119,7 @@ export default function ResultPage() {
                     </button>
                   </>
                 )}
+              </div>
               </div>
             </li>
           ))}
