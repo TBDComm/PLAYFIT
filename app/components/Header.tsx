@@ -71,6 +71,7 @@ export default function Header() {
   // Derived — no state needed
   const isSteamUser = session?.user?.email?.endsWith('@steam.playfit') ?? false
   const showLinkBtn = session !== null && !isSteamUser && steamId === null
+  const showOAuth = loginView === 'login' || loginView === 'signup'
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -127,7 +128,7 @@ export default function Header() {
       size: 'large',
       locale: 'ko',
     })
-  }, [showLoginModal, supabase])
+  }, [showLoginModal, showOAuth, supabase])
 
   // Close login modal on Escape; focus first input on open
   useEffect(() => {
@@ -284,8 +285,6 @@ export default function Header() {
       )
     }
   }
-
-  const showOAuth = loginView === 'login' || loginView === 'signup'
 
   return (
     <>
