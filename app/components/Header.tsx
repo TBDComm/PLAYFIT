@@ -233,7 +233,7 @@ export default function Header() {
           : '회원가입에 실패했어요. 다시 시도해주세요'
       )
     } else if (data.user?.identities?.length === 0) {
-      setAuthError('이미 Google로 가입된 이메일이에요. Google로 로그인해주세요')
+      setAuthError('이미 Google계정으로 가입된 이메일이에요. Google로 로그인해주세요')
     } else {
       setLoginView('verify')
     }
