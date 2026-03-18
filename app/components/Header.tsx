@@ -295,27 +295,24 @@ export default function Header() {
 
   return (
     <>
-      <header className={styles.header}>
-        <span className={styles.logo}>PLAYFIT</span>
-        <div className={styles.headerActions}>
-          {session ? (
-            <>
-              {showLinkBtn && (
-                <button onClick={() => setShowLinkPopup(true)} className={styles.steamLinkBtn}>
-                  Steam 연동
-                </button>
-              )}
-              <button onClick={handleLogout} className={styles.logoutBtn} disabled={logoutLoading}>
-                {logoutLoading ? '로그아웃 중…' : '로그아웃'}
+      <div className={styles.floatingActions}>
+        {session ? (
+          <>
+            {showLinkBtn && (
+              <button onClick={() => setShowLinkPopup(true)} className={styles.steamLinkBtn}>
+                Steam 연동
               </button>
-            </>
-          ) : (
-            <button onClick={() => setShowLoginModal(true)} className={styles.loginBtn}>
-              로그인
+            )}
+            <button onClick={handleLogout} className={styles.logoutBtn} disabled={logoutLoading}>
+              {logoutLoading ? '로그아웃 중…' : '로그아웃'}
             </button>
-          )}
-        </div>
-      </header>
+          </>
+        ) : (
+          <button onClick={() => setShowLoginModal(true)} className={styles.loginBtn}>
+            로그인
+          </button>
+        )}
+      </div>
 
       {/* Login Modal */}
       {showLoginModal && (

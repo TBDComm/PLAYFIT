@@ -104,6 +104,7 @@ _2026-03-16~17 entries → HANDOVER-archive.md_
 | 2026-03-18 | C4 /users/[userId] 커뮤니티 URL 예약; C5/C6 programmatic-seo 가이드라인 반영 (thin content guard, 커뮤니티 플레이스홀더) | `SPEC.md` |
 | 2026-03-18 | marketing-skills/ pruned — 33 → 22 skills; removed 12 (7 permanent, 5 deferred to B2B ad sales phase) | `marketing-skills/REMOVED.md` |
 | 2026-03-18 | C1: robots.ts (dynamic, reads NEXT_PUBLIC_BASE_URL), sitemap.ts (static routes + genre slugs from DB), layout.tsx (metadataBase, canonical, OG/Twitter tags) | `app/robots.ts`, `app/sitemap.ts`, `app/layout.tsx` |
+| 2026-03-18 | UI: header 배너 제거 — 로그인/로그아웃/Steam연동 버튼을 우상단 fixed floating으로 변경 | `Header.tsx`, `Header.module.css` |
 
 ---
 
