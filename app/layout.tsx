@@ -45,6 +45,9 @@ export default function RootLayout({
   return (
     // color-scheme: dark is declared in globals.css
     <html lang="ko" className={spaceGrotesk.variable}>
+      <head>
+        <link rel="preconnect" href="https://cdn.akamai.steamstatic.com" />
+      </head>
       <body>
         <Script src="https://accounts.google.com/gsi/client" strategy="lazyOnload" />
         <Header />
