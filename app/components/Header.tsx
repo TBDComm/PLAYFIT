@@ -434,7 +434,7 @@ export default function Header() {
                       name="new-password"
                       autoComplete="new-password"
                       className={styles.modalInput}
-                      placeholder="6자 이상"
+                      placeholder="6자 이상…"
                       value={passwordInput}
                       onChange={e => setPasswordInput(e.target.value)}
                       spellCheck={false}

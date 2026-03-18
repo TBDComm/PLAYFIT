@@ -71,7 +71,7 @@ export default function ResetPasswordPage() {
                   name="new-password"
                   autoComplete="new-password"
                   className={styles.input}
-                  placeholder="6자 이상"
+                  placeholder="6자 이상…"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   spellCheck={false}
