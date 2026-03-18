@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 151/200 lines — OK**
+📏 **File health: 163/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -66,6 +66,8 @@ Next action: [exactly what to do next to resume]
 | B6 | Update `/api/feedback` — user_id if session, steam_id if not | ✅ 2026-03-16 |
 | B7 | Update Header (Steam link button) + main page layout per auth state | ✅ 2026-03-16 |
 | B8–B10 | E2E tests (email, Steam, non-auth) | ✅ |
+| C1 | SEO foundation — robots.ts, sitemap.ts, OG/Twitter meta tags | ✅ 2026-03-18 |
+| C2 | Legal pages — /privacy, /terms, Footer component | ✅ 2026-03-18 |
 
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅
 
