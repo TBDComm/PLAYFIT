@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 163/200 lines — OK**
+📏 **File health: 160/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -110,12 +110,9 @@ _2026-03-16~17 entries → HANDOVER-archive.md_
 | 2026-03-18 | C2: /privacy + /terms (Korean legal pages), Footer component (privacy · terms · © 2026), Footer added to layout.tsx | `app/privacy/page.tsx`, `app/terms/page.tsx`, `app/components/Footer.tsx`, `app/components/Footer.module.css`, `app/legal.module.css`, `app/layout.tsx` |
 | 2026-03-18 | Fix: ESLint react/no-unescaped-entities in terms/page.tsx ("서비스", "as-is") — build was failing | `app/terms/page.tsx` |
 | 2026-03-18 | UI: remove header banner — login/logout/Steam-link buttons moved to fixed top-right floating | `Header.tsx`, `Header.module.css` |
-| 2026-03-18 | UI: add logo + home link to top of /privacy and /terms pages | `privacy/page.tsx`, `terms/page.tsx`, `legal.module.css` |
-| 2026-03-18 | UI: add Steam CDN game thumbnails to recommendation cards (left on desktop, top on mobile) | `result/page.tsx`, `result/page.module.css` |
-| 2026-03-18 | Fix: PLAYFIT wordmark logo (replaces circle P) on /privacy and /terms — backLogoAccent style | `privacy/page.tsx`, `terms/page.tsx`, `legal.module.css` |
-| 2026-03-18 | Fix: thumbnail layout — left-side row, full aspect ratio visible (no crop), compact; Steam CDN preconnect | `result/page.module.css`, `layout.tsx` |
-| 2026-03-18 | Feat: Metacritic label + score color coding (≥75 green, 50–74 amber, <50 red) | `result/page.tsx`, `result/page.module.css` |
-| 2026-03-18 | Fix: thumbnail restyle — top banner → left row, aspect-ratio natural, 200px desktop / 130px mobile | `result/page.module.css` |
+| 2026-03-18 | UI: PLAYFIT wordmark logo on /privacy and /terms — links to home | `privacy/page.tsx`, `terms/page.tsx`, `legal.module.css` |
+| 2026-03-18 | UI: Steam CDN thumbnails on result cards — left-side row, 200px desktop / 130px mobile, full image visible; preconnect added | `result/page.tsx`, `result/page.module.css`, `layout.tsx` |
+| 2026-03-18 | UI: Metacritic score label + color tiers (≥75 green, 50–74 amber, <50 red) | `result/page.tsx`, `result/page.module.css` |
 
 ---
 
