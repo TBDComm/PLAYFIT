@@ -1,10 +1,11 @@
 .page {
   min-height: 100vh;
+  min-height: 100dvh; /* mobile: excludes collapsing browser chrome */
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 24px 16px;
-  background: var(--bg-base);
+  background: var(--bg); /* was --bg-base (undefined) */
 }
 
 .container {
@@ -140,5 +141,29 @@
   .primaryBtn,
   .footerLink {
     transition: none;
+  }
+}
+
+/* ── Mobile ── */
+
+@media (max-width: 480px) {
+  .page {
+    align-items: flex-start;
+    padding-top: 3rem;
+  }
+
+  .container {
+    width: 100%;
+  }
+
+  /* 16px minimum prevents iOS Safari auto-zoom on input focus */
+  .input {
+    font-size: 1rem;
+    padding: 10px 12px;
+  }
+
+  .primaryBtn {
+    padding: 12px 16px;
+    font-size: 1rem;
   }
 }

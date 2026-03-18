@@ -340,3 +340,50 @@
     transition: none;
   }
 }
+
+/* ── Mobile ── */
+
+@media (max-width: 480px) {
+  .header {
+    padding: 10px 16px;
+  }
+
+  /* Larger tap targets for header buttons */
+  .loginBtn,
+  .logoutBtn,
+  .steamLinkBtn {
+    padding: 8px 14px;
+  }
+
+  .card {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  /* 16px minimum prevents iOS Safari auto-zoom on input focus */
+  .modalInput {
+    font-size: 1rem;
+    padding: 10px 12px;
+  }
+
+  .primaryBtn {
+    padding: 12px 16px;
+  }
+
+  .steamBtn {
+    padding: 12px 16px;
+    font-size: 0.875rem;
+  }
+
+  .oauthSection {
+    margin-top: 12px;
+    gap: 8px;
+  }
+
+  /* Larger close button tap area */
+  .closeBtn {
+    padding: 8px 10px;
+    top: -2px;
+    right: -2px;
+  }
+}

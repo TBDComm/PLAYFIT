@@ -81,7 +81,7 @@ export default function Home() {
       return
     }
     if (debounceRefs.current[idx]) clearTimeout(debounceRefs.current[idx]!)
-    debounceRefs.current[idx] = setTimeout(() => { void fetchSearch(idx, value) }, 0)
+    debounceRefs.current[idx] = setTimeout(() => { void fetchSearch(idx, value) }, 300)
   }
 
   async function fetchSearch(idx: number, query: string) {

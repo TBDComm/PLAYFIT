@@ -20,7 +20,7 @@ export async function GET(request: Request) {
   })
   const verifyText = await verifyRes.text()
 
-  if (verifyText.includes('is_valid:false')) {
+  if (!verifyText.includes('is_valid:true')) {
     return Response.redirect(`${BASE_URL}/?auth_error=steam_invalid`)
   }
 

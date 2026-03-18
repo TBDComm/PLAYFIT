@@ -5,6 +5,7 @@
 
 .page {
   min-height: 100vh;
+  min-height: 100dvh; /* mobile: excludes collapsing browser chrome */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -303,6 +304,45 @@
   }
   .dropdownItem {
     transition: none;
+  }
+}
+
+/* ── Mobile ── */
+
+@media (max-width: 480px) {
+  .page {
+    padding: 2rem 1rem;
+    justify-content: flex-start; /* prevent vertical centering under open keyboard */
+    padding-top: 2.5rem;
+  }
+
+  .header {
+    margin-bottom: 2rem;
+  }
+
+  /* 16px minimum prevents iOS Safari auto-zoom on input focus */
+  .input {
+    font-size: 1rem;
+  }
+
+  /* Slightly narrower playtime column to give name input more room */
+  .inputNarrow {
+    width: 4.75rem;
+  }
+
+  /* Larger submit button tap area */
+  .button {
+    padding: 1.0625rem 1.5rem;
+  }
+
+  /* Notice text slightly larger for readability */
+  .manualNotice {
+    font-size: 0.8125rem;
+  }
+
+  /* Tighter dropdown on narrow screens */
+  .dropdown {
+    max-height: 8.5rem;
   }
 }
 

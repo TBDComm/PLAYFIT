@@ -269,22 +269,27 @@ export default function Header() {
   const handleLinkSteam = async () => {
     setLinkLoading(true)
     setLinkError(null)
-    const res = await fetch('/api/auth/link-steam', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ steamUrl: linkUrl.trim() }),
-    })
-    const data = await res.json() as { ok?: boolean; error?: string; steam_id?: string }
-    setLinkLoading(false)
-    if (data.ok) {
-      setSteamId(data.steam_id ?? null)
-      closeLinkPopup()
-    } else {
-      setLinkError(
-        data.error === 'INVALID_URL' ? '올바른 Steam URL을 입력해주세요' :
-        data.error === 'STEAM_ALREADY_LINKED' ? '이미 다른 계정에 연동된 Steam 계정이에요' :
-        '연동에 실패했어요. 다시 시도해주세요'
-      )
+    try {
+      const res = await fetch('/api/auth/link-steam', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ steamUrl: linkUrl.trim() }),
+      })
+      const data = await res.json() as { ok?: boolean; error?: string; steam_id?: string }
+      if (data.ok) {
+        setSteamId(data.steam_id ?? null)
+        closeLinkPopup()
+      } else {
+        setLinkError(
+          data.error === 'INVALID_URL' ? '올바른 Steam URL을 입력해주세요' :
+          data.error === 'STEAM_ALREADY_LINKED' ? '이미 다른 계정에 연동된 Steam 계정이에요' :
+          '연동에 실패했어요. 다시 시도해주세요'
+        )
+      }
+    } catch {
+      setLinkError('연동에 실패했어요. 다시 시도해주세요')
+    } finally {
+      setLinkLoading(false)
     }
   }
 
