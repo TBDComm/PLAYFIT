@@ -64,8 +64,6 @@
   height: auto;
   flex-shrink: 0;
   display: block;
-  align-self: stretch;
-  object-fit: cover;
 }
 
 .cardBody {

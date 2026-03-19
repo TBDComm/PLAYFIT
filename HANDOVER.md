@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 141/200 lines — OK**
+📏 **File health: 142/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -70,7 +70,7 @@ Next action: [exactly what to do next to resume]
 | C2 | Legal pages — /privacy, /terms, Footer component | ✅ 2026-03-18 |
 | C3 | GA4 Analytics — gtag.js + 5 events | ✅ 2026-03-19 |
 
-**Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ⚠️ (CF Pages에 추가 필요)
+**Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ✅
 
 **Supabase tables:** `feedback` ✅ · `games_cache` ✅ (82,816 rows) · `user_tag_weights` ✅ · `user_profiles` ✅
 
@@ -95,6 +95,8 @@ _2026-03-16~18 B-series + C1/C2 entries → HANDOVER-archive.md_
 | 2026-03-18 | UI: Steam CDN thumbnails on result cards — left-side row, 200px desktop / 130px mobile, full image visible; preconnect added | `result/page.tsx`, `result/page.module.css`, `layout.tsx` |
 | 2026-03-18 | UI: Metacritic score label + color tiers (≥75 green, 50–74 amber, <50 red) | `result/page.tsx`, `result/page.module.css` |
 | 2026-03-18 | Fix: search debounce 300ms → 150ms; race condition fixed via searchGenRef (stale responses discarded) | `page.tsx` |
+| 2026-03-19 | C3: GA4 gtag.js + 5 events (recommendation_generated, feedback_submitted, search_used, steam/google_login_started); NEXT_PUBLIC_GA_MEASUREMENT_ID=G-Y8Q9CTMJMF added to CF Pages ✅ | `layout.tsx`, `lib/analytics.ts`, `page.tsx`, `result/page.tsx`, `Header.tsx` |
+| 2026-03-19 | Fix: result thumbnail no longer cropped — removed align-self:stretch + object-fit:cover from .thumbnail | `result/page.module.css` |
 
 ---
 
