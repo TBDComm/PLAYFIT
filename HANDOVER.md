@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 144/200 lines — OK**
+📏 **File health: 145/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -99,6 +99,7 @@ _2026-03-16~18 B-series + C1/C2 entries → HANDOVER-archive.md_
 | 2026-03-19 | Fix: result thumbnail no longer cropped — removed align-self:stretch + object-fit:cover from .thumbnail | `result/page.module.css` |
 | 2026-03-19 | UI: result page layout — no max-width on inner; page padding clamp(1.5rem,8%,160px); thumbnail 40% align-self:stretch + object-fit:cover (fills card height); logo outside .inner | `result/page.tsx`, `result/page.module.css` |
 | 2026-03-19 | Fix: result page guideline violations — prefers-reduced-motion, touch-action:manipulation, text-wrap:balance | `result/page.module.css` |
+| 2026-03-19 | UI: result thumbnail no crop — height:auto, no object-fit; card max-height:calc(40cqw*215/460+2px); padding 14% for more margin | `result/page.module.css` |
 
 ---
 
