@@ -11,6 +11,7 @@
 
 .inner {
   width: 100%;
+  container-type: inline-size;
 }
 
 /* ===== Header ===== */
@@ -50,7 +51,7 @@
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  aspect-ratio: 460 / 86; /* thumbnail 40% × (215/460) = card height */
+  max-height: calc(40cqw * 215 / 460); /* = thumbnail height; clamps card to photo ratio */
   transition: border-color 0.15s ease;
 }
 
@@ -69,6 +70,7 @@
 .cardBody {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
   padding: 1.25rem;
 }
 
@@ -235,7 +237,7 @@
   }
 
   .card {
-    aspect-ratio: unset;
+    max-height: none;
     flex-direction: column;
   }
 
