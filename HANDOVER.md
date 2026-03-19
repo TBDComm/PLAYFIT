@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 140/200 lines — OK**
+📏 **File health: 141/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -68,16 +68,17 @@ Next action: [exactly what to do next to resume]
 | B8–B10 | E2E tests (email, Steam, non-auth) | ✅ |
 | C1 | SEO foundation — robots.ts, sitemap.ts, OG/Twitter meta tags | ✅ 2026-03-18 |
 | C2 | Legal pages — /privacy, /terms, Footer component | ✅ 2026-03-18 |
+| C3 | GA4 Analytics — gtag.js + 5 events | ✅ 2026-03-19 |
 
-**Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅
+**Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ⚠️ (CF Pages에 추가 필요)
 
 **Supabase tables:** `feedback` ✅ · `games_cache` ✅ (82,816 rows) · `user_tag_weights` ✅ · `user_profiles` ✅
 
 ---
 
-## ── ACTIVE STEP: none — C2 complete ────────
+## ── ACTIVE STEP: none — C3 complete ────────
 
-**Next step: C3** — GA4 Analytics Setup. Read `SPEC.md §C3` before starting.
+**Next step: C4** — Site Architecture. Read `SPEC.md §C4` before starting.
 
 **Revenue model (confirmed 2026-03-18):** AdSense (C8–C9) + long-term B2B direct ad sales to game publishers/developers. marketing-skills/ selection reflects both directions.
 
@@ -93,6 +94,7 @@ _2026-03-16~18 B-series + C1/C2 entries → HANDOVER-archive.md_
 | 2026-03-18 | UI: PLAYFIT wordmark logo on /privacy and /terms — links to home | `privacy/page.tsx`, `terms/page.tsx`, `legal.module.css` |
 | 2026-03-18 | UI: Steam CDN thumbnails on result cards — left-side row, 200px desktop / 130px mobile, full image visible; preconnect added | `result/page.tsx`, `result/page.module.css`, `layout.tsx` |
 | 2026-03-18 | UI: Metacritic score label + color tiers (≥75 green, 50–74 amber, <50 red) | `result/page.tsx`, `result/page.module.css` |
+| 2026-03-18 | Fix: search debounce 300ms → 150ms; race condition fixed via searchGenRef (stale responses discarded) | `page.tsx` |
 
 ---
 

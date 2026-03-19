@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
+import { trackEvent } from '@/lib/analytics'
 import styles from './Header.module.css'
 
 declare global {
@@ -116,6 +117,7 @@ export default function Header() {
     window.google.accounts.id.initialize({
       client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
       callback: async ({ credential }: { credential: string }) => {
+        trackEvent('google_login_started')
         const { error } = await supabase.auth.signInWithIdToken({
           provider: 'google',
           token: credential,
@@ -195,6 +197,7 @@ export default function Header() {
   }
 
   const handleSteamLogin = () => {
+    trackEvent('steam_login_started')
     window.location.href = '/api/auth/steam'
   }
 

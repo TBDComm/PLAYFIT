@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import type { RecommendationCard, ErrorCode } from '@/types'
+import { trackEvent } from '@/lib/analytics'
 import styles from './page.module.css'
 
 type AuthState = 'loading' | 'steam' | 'linked' | 'unlinked_auth' | 'anon'
@@ -99,6 +100,7 @@ export default function Home() {
   }
 
   function selectGame(idx: number, appid: number, name: string) {
+    trackEvent('search_used', { game_name: name })
     setManualGames(prev => prev.map((g, i) => i === idx ? { ...g, appid, name } : g))
     setDropdowns(prev => prev.map((d, i) => i === idx ? null : d))
     setRowErrors(prev => prev.map((e, i) => i === idx ? null : e))
@@ -181,6 +183,7 @@ export default function Home() {
         sessionStorage.setItem('playfit_play_profile', JSON.stringify(
           (steamData.playHistory as { name: string; playtime_hours: number }[] ?? []).slice(0, 5)
         ))
+        trackEvent('recommendation_generated', { mode: 'steam' })
         router.push('/result')
       } else {
         // Block submit if any filled row has no appid (text typed but not selected from dropdown)
@@ -244,6 +247,7 @@ export default function Home() {
             playtime_hours: parseFloat(g.playtime) || 0,
           }))
         ))
+        trackEvent('recommendation_generated', { mode: 'manual' })
         router.push('/result')
       }
     } catch {

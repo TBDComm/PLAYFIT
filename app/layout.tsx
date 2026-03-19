@@ -14,6 +14,7 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://playfit.pages.dev'
+const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -50,6 +51,17 @@ export default function RootLayout({
       </head>
       <body>
         <Script src="https://accounts.google.com/gsi/client" strategy="lazyOnload" />
+        {gaMeasurementId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${gaMeasurementId}');`}
+            </Script>
+          </>
+        )}
         <Header />
         {children}
         <Footer />

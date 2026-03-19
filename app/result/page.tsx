@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { RecommendationCard } from '@/types'
+import { trackEvent } from '@/lib/analytics'
 import styles from './page.module.css'
 
 export default function ResultPage() {
@@ -24,6 +25,7 @@ export default function ResultPage() {
   }, [router])
 
   function handleFeedback(card: RecommendationCard, rating: 'positive' | 'negative') {
+    trackEvent('feedback_submitted', { rating, game_name: card.name })
     setFeedbackSent(prev => ({ ...prev, [card.appid]: true }))
 
     const steamId = sessionStorage.getItem('playfit_steam_id') ?? undefined
