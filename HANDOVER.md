@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 142/200 lines — OK**
+📏 **File health: 143/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -97,6 +97,7 @@ _2026-03-16~18 B-series + C1/C2 entries → HANDOVER-archive.md_
 | 2026-03-18 | Fix: search debounce 300ms → 150ms; race condition fixed via searchGenRef (stale responses discarded) | `page.tsx` |
 | 2026-03-19 | C3: GA4 gtag.js + 5 events (recommendation_generated, feedback_submitted, search_used, steam/google_login_started); NEXT_PUBLIC_GA_MEASUREMENT_ID=G-Y8Q9CTMJMF added to CF Pages ✅ | `layout.tsx`, `lib/analytics.ts`, `page.tsx`, `result/page.tsx`, `Header.tsx` |
 | 2026-03-19 | Fix: result thumbnail no longer cropped — removed align-self:stretch + object-fit:cover from .thumbnail | `result/page.module.css` |
+| 2026-03-19 | UI: result page full-width layout — removed max-width from .inner; thumbnail 40% (mobile 35%); logo moved outside .inner to true top-left | `result/page.tsx`, `result/page.module.css` |
 
 ---
 

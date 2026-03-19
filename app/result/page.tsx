@@ -53,13 +53,13 @@ export default function ResultPage() {
 
   return (
     <main className={styles.page}>
-      <div className={styles.inner}>
-        <Link href="/" className={styles.logoLink} aria-label="PLAYFIT 홈으로">
-          <h1 className={styles.logo}>
-            <span className={styles.logoAccent}>PLAY</span>FIT
-          </h1>
-        </Link>
+      <Link href="/" className={styles.logoLink} aria-label="PLAYFIT 홈으로">
+        <h1 className={styles.logo}>
+          <span className={styles.logoAccent}>PLAY</span>FIT
+        </h1>
+      </Link>
 
+      <div className={styles.inner}>
         <ul className={styles.cards} aria-label="추천 게임 목록">
           {recommendations.map(card => (
             <li key={card.appid} className={styles.card}>

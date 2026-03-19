@@ -11,8 +11,6 @@
 
 .inner {
   width: 100%;
-  max-width: var(--max-w);
-  margin: 0 auto;
 }
 
 /* ===== Header ===== */
@@ -60,7 +58,7 @@
 }
 
 .thumbnail {
-  width: 200px;
+  width: 40%;
   height: auto;
   flex-shrink: 0;
   display: block;
@@ -223,7 +221,7 @@
   }
 
   .thumbnail {
-    width: 130px;
+    width: 35%;
   }
 
   .cardBody {
