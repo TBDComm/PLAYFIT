@@ -49,7 +49,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: stretch;
+  aspect-ratio: 460 / 86; /* thumbnail 40% × (215/460) = card height */
   transition: border-color 0.15s ease;
 }
 
@@ -233,8 +234,15 @@
     margin-bottom: 1.5rem;
   }
 
+  .card {
+    aspect-ratio: unset;
+    flex-direction: column;
+  }
+
   .thumbnail {
-    width: 130px;
+    width: 100%;
+    aspect-ratio: 460 / 215;
+    align-self: auto;
   }
 
   .cardBody {
