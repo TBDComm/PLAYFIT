@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 145/200 lines — OK**
+📏 **File health: 138/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -91,33 +91,24 @@ _Pre-B5 entries → HANDOVER-archive.md_
 | Date | Change | Files |
 |------|--------|-------|
 _2026-03-16~18 B-series + C1/C2 entries → HANDOVER-archive.md_
-| 2026-03-18 | UI: PLAYFIT wordmark logo on /privacy and /terms — links to home | `privacy/page.tsx`, `terms/page.tsx`, `legal.module.css` |
-| 2026-03-18 | UI: Steam CDN thumbnails on result cards — left-side row, 200px desktop / 130px mobile, full image visible; preconnect added | `result/page.tsx`, `result/page.module.css`, `layout.tsx` |
-| 2026-03-18 | UI: Metacritic score label + color tiers (≥75 green, 50–74 amber, <50 red) | `result/page.tsx`, `result/page.module.css` |
-| 2026-03-18 | Fix: search debounce 300ms → 150ms; race condition fixed via searchGenRef (stale responses discarded) | `page.tsx` |
-| 2026-03-19 | C3: GA4 gtag.js + 5 events (recommendation_generated, feedback_submitted, search_used, steam/google_login_started); NEXT_PUBLIC_GA_MEASUREMENT_ID=G-Y8Q9CTMJMF added to CF Pages ✅ | `layout.tsx`, `lib/analytics.ts`, `page.tsx`, `result/page.tsx`, `Header.tsx` |
-| 2026-03-19 | Fix: result thumbnail no longer cropped — removed align-self:stretch + object-fit:cover from .thumbnail | `result/page.module.css` |
-| 2026-03-19 | UI: result page layout — no max-width on inner; page padding clamp(1.5rem,8%,160px); thumbnail 40% align-self:stretch + object-fit:cover (fills card height); logo outside .inner | `result/page.tsx`, `result/page.module.css` |
-| 2026-03-19 | Fix: result page guideline violations — prefers-reduced-motion, touch-action:manipulation, text-wrap:balance | `result/page.module.css` |
-| 2026-03-19 | UI: result thumbnail no crop — height:auto, no object-fit; card max-height:calc(40cqw*215/460+2px); padding 14% for more margin | `result/page.module.css` |
+| 2026-03-18 | UI: legal page logo, result card thumbnails + Metacritic score tiers | `privacy/page.tsx`, `terms/page.tsx`, `result/page.tsx`, `result/page.module.css`, `layout.tsx` |
+| 2026-03-18 | Fix: search debounce 300ms → 150ms; race condition via searchGenRef | `page.tsx` |
+| 2026-03-19 | C3: GA4 gtag.js + 5 events; NEXT_PUBLIC_GA_MEASUREMENT_ID added to CF Pages ✅ | `layout.tsx`, `lib/analytics.ts`, `page.tsx`, `result/page.tsx`, `Header.tsx` |
+| 2026-03-19 | UI: result page — thumbnail height:auto no-crop, card max-height via cqw, padding 14%, logo outside .inner, guideline fixes | `result/page.tsx`, `result/page.module.css` |
 
 ---
 
 ## ── COMPLETED STEPS ──────────────────────────────────────
 
 ### ✅ B8–B10 — 2026-03-18 — E2E manual test checklists
-- File: `TEST_B8_B10.md`
-- B8: email login → link Steam → recommend → feedback → return visit
-- B9: Steam login → auto recommend → feedback persistence
-- B10: non-auth → full flow → weights by steam_id (+ optional migration step)
+- Files: `TEST_B8_B10.md`
+- B8: email login → link Steam → recommend → feedback; B9: Steam login → auto recommend; B10: non-auth → weights by steam_id
 - Build: `tsc --noEmit` passed ✅
 
 ### ✅ B7 — 2026-03-16~17 — Header + login modal + auth system
 - Files: `Header.tsx`, `Header.module.css`, `page.tsx`, `page.module.css`, `reset-password/page.tsx`
-- Auth: email+**password** login/signup; OTP for signup verification only (`verifyOtp({ type: 'signup' })`); forgot password → /reset-password
-- Google: GIS + `signInWithIdToken` + `renderButton()` (FedCM-free); Steam: OpenID popup
-- Header: 3 auth states; Steam link popup (auto-open after non-Steam login)
-- page.tsx: Steam auth → hides URL input; linked → pre-fills URL
+- Auth: email+password login/signup; OTP signup-only; forgot password → /reset-password; Google GIS + signInWithIdToken; Steam OpenID popup
+- Header: 3 auth states; Steam link popup auto-opens after non-Steam login; page.tsx hides URL input when Steam-authed
 - Build: `tsc --noEmit` passed ✅
 
 ### ✅ B6 — 2026-03-16 — /api/feedback session-aware
