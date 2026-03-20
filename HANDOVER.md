@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 136/200 lines — OK**
+📏 **File health: 137/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -96,7 +96,7 @@ Next action: [exactly what to do next to resume]
 
 **Schema:** `BlogPosting` JSON-LD per post (headline, datePublished, author: PlayFit, url)
 **Breadcrumb:** Home > Blog > {post title}
-**Rendering:** `generateStaticParams` + `export const dynamic = 'force-static'`; index page no ISR needed (static MDX files)
+**Rendering:** `export const runtime = 'edge'` (required for all dynamic routes on CF Pages) + `generateStaticParams` + `export const dynamic = 'force-static'`; index page no ISR needed (static MDX files)
 
 **After completing:** clear lock → update Current Status → Active Step to C8 → update MEMORY.md current state → commit
 
@@ -118,6 +118,7 @@ _2026-03-16~18 B-series + C1/C2 entries → HANDOVER-archive.md_
 | 2026-03-20 | C4: Header → sticky nav bar (logo + nav links + auth + mobile hamburger); Footer + Blog/Genre links; Breadcrumb component; /genre index page; /users/[userId] reserved | `Header.tsx`, `Header.module.css`, `Footer.tsx`, `Breadcrumb.tsx` (new), `Breadcrumb.module.css` (new), `app/genre/page.tsx` (new), `app/genre/page.module.css` (new), `app/users/[userId]/page.tsx` (new) |
 | 2026-03-20 | C5: `/games/[appid]` — ISR 86400s, similar games TOP 10 via score_candidates RPC, SoftwareApplication JSON-LD, noindex thin content guard; sitemap updated with top 5000 games | `app/games/[appid]/page.tsx` (new), `app/games/[appid]/page.module.css` (new), `app/sitemap.ts` |
 | 2026-03-20 | C6: `/genre/[slug]` — ISR 86400s, top 20 by tag vote sum, rank numbers, ItemList JSON-LD, community placeholder, CTA | `app/genre/[slug]/page.tsx` (new), `app/genre/[slug]/page.module.css` (new) |
+| 2026-03-20 | Fix: CF Pages build failure — added `export const runtime = 'edge'` to all dynamic routes | `app/games/[appid]/page.tsx`, `app/genre/[slug]/page.tsx`, `app/users/[userId]/page.tsx` |
 
 ---
 
