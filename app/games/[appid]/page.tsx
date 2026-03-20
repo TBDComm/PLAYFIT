@@ -4,6 +4,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import Breadcrumb from '@/app/components/Breadcrumb'
 import AdUnit from '@/app/components/AdUnit'
+import JsonLd from '@/app/components/JsonLd'
 import styles from './page.module.css'
 
 export const runtime = 'edge'
@@ -148,21 +149,33 @@ export default async function GamePage({
   const topTags = getTopTags(tags, 10)
   const similarGames = await getSimilarGames(appid, tags)
   const storeUrl = `https://store.steampowered.com/app/${appid}`
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
 
-  // Safe JSON-LD: replace </ to prevent script injection
-  const jsonLd = JSON.stringify({
+  const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'SoftwareApplication',
-    name: game.name,
-    applicationCategory: 'Game',
-    url: storeUrl,
-    ...(game.genres?.length ? { genre: game.genres } : {}),
-  }).replace(/<\//g, '<\\/')
+    '@graph': [
+      {
+        '@type': 'SoftwareApplication',
+        name: game.name,
+        applicationCategory: 'Game',
+        url: storeUrl,
+        ...(game.genres?.length ? { genre: game.genres } : {}),
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: '홈', item: baseUrl },
+          { '@type': 'ListItem', position: 2, name: '게임', item: `${baseUrl}/genre` },
+          { '@type': 'ListItem', position: 3, name: game.name },
+        ],
+      },
+    ],
+  }
 
   return (
     <main className={styles.page}>
       <div className={styles.inner}>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+        <JsonLd data={jsonLd} />
 
         <Breadcrumb
           items={[

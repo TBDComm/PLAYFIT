@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Breadcrumb from '@/app/components/Breadcrumb'
 import AdUnit from '@/app/components/AdUnit'
+import JsonLd from '@/app/components/JsonLd'
 import { getPost } from '@/lib/blog'
 import styles from './page.module.css'
 
@@ -64,22 +65,34 @@ export default async function BlogPostPage({
   }
 
   const { meta, Content } = entry
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://playfit.app'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
 
-  const jsonLd = JSON.stringify({
+  const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    headline: meta.title,
-    description: meta.description,
-    datePublished: meta.publishedAt,
-    author: { '@type': 'Organization', name: 'Guildeline' },
-    url: `${baseUrl}/blog/${slug}`,
-  }).replace(/<\//g, '<\\/')
+    '@graph': [
+      {
+        '@type': 'BlogPosting',
+        headline: meta.title,
+        description: meta.description,
+        datePublished: meta.publishedAt,
+        author: { '@type': 'Organization', name: 'Guildeline' },
+        url: `${baseUrl}/blog/${slug}`,
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: '홈', item: baseUrl },
+          { '@type': 'ListItem', position: 2, name: '블로그', item: `${baseUrl}/blog` },
+          { '@type': 'ListItem', position: 3, name: meta.title },
+        ],
+      },
+    ],
+  }
 
   return (
     <main className={styles.page}>
       <div className={styles.inner}>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+        <JsonLd data={jsonLd} />
 
         <Breadcrumb
           items={[

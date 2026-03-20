@@ -4,6 +4,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import Breadcrumb from '@/app/components/Breadcrumb'
 import AdUnit from '@/app/components/AdUnit'
+import JsonLd from '@/app/components/JsonLd'
 import styles from './page.module.css'
 
 export const runtime = 'edge'
@@ -130,24 +131,35 @@ export default async function GenreSlugPage({
 
   const { genreName, games } = data
 
-  // Safe JSON-LD: replace </ to prevent script injection
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://playfit.app'
-  const jsonLd = JSON.stringify({
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
+  const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: `최고의 ${genreName} 게임 20선`,
-    itemListElement: games.map((game, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      name: game.name,
-      url: `${baseUrl}/games/${game.appid}`,
-    })),
-  }).replace(/<\//g, '<\\/')
+    '@graph': [
+      {
+        '@type': 'ItemList',
+        name: `최고의 ${genreName} 게임 20선`,
+        itemListElement: games.map((game, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: game.name,
+          url: `${baseUrl}/games/${game.appid}`,
+        })),
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: '홈', item: baseUrl },
+          { '@type': 'ListItem', position: 2, name: '장르', item: `${baseUrl}/genre` },
+          { '@type': 'ListItem', position: 3, name: genreName },
+        ],
+      },
+    ],
+  }
 
   return (
     <main className={styles.page}>
       <div className={styles.inner}>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+        <JsonLd data={jsonLd} />
 
         <Breadcrumb
           items={[

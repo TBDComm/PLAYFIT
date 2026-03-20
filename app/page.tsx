@@ -6,7 +6,42 @@ import Link from 'next/link'
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import type { RecommendationCard, ErrorCode } from '@/types'
 import { trackEvent } from '@/lib/analytics'
+import JsonLd from './components/JsonLd'
 import styles from './page.module.css'
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
+
+const homeJsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${BASE_URL}/#website`,
+      url: BASE_URL,
+      name: 'Guildeline',
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: `${BASE_URL}/?q={search_term_string}`,
+        'query-input': 'required name=search_term_string',
+      },
+    },
+    {
+      '@type': 'WebApplication',
+      '@id': `${BASE_URL}/#app`,
+      name: 'Guildeline',
+      description: '스팀 플레이 기록과 예산을 기반으로 내 취향에 맞는 게임을 추천해 드립니다.',
+      url: BASE_URL,
+      applicationCategory: 'GameApplication',
+      operatingSystem: 'Web',
+    },
+    {
+      '@type': 'Organization',
+      '@id': `${BASE_URL}/#org`,
+      name: 'Guildeline',
+      url: BASE_URL,
+    },
+  ],
+}
 
 type AuthState = 'loading' | 'steam' | 'linked' | 'unlinked_auth' | 'anon'
 
@@ -264,6 +299,7 @@ export default function Home() {
 
   return (
     <main className={styles.page}>
+      <JsonLd data={homeJsonLd} />
       <div className={styles.pageNav}>
         <Link href="/genre" className={styles.pageNavLink}>장르별 탐색</Link>
         <Link href="/blog" className={styles.pageNavLink}>블로그</Link>
