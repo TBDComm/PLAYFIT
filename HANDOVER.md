@@ -132,6 +132,7 @@ _Pre-2026-03-20 entries → HANDOVER-archive.md_
 | 2026-03-20 | feat(C13): `<img>` → `<Image unoptimized>` + failedImages state; analytics defer to requestIdleCallback (Safari fallback: setTimeout 0) | result/page.tsx, lib/analytics.ts |
 | 2026-03-20 | Domain: guildeline.com live — CF Pages, NEXT_PUBLIC_BASE_URL, Google Console JS Origins, Supabase Auth URL, Search Console, GA4 all updated | external services |
 | 2026-03-20 | feat(FT5): Intl.DateTimeFormat in blog/page.tsx; CSS comment PLAYFIT→GUILDELINE (3 files) | app/blog/page.tsx, app/globals.css, app/page.module.css, app/result/page.module.css |
+| 2026-03-20 | feat(FT3): Footer nav row added (홈 · 장르별 탐색 · 블로그) above legal links | app/components/Footer.tsx |
 
 ---
 
