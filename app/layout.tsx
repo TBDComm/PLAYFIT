@@ -14,7 +14,7 @@ const spaceGrotesk = Space_Grotesk({
   display: 'swap',
 })
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://playfit.pages.dev'
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
 const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
 const adClientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID
 
