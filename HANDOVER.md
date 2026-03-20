@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 142/200 lines — OK**
+📏 **File health: 132/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -78,11 +78,26 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: none — C5 complete ────────
+## ── ACTIVE STEP: C6 — Genre Hub Pages `/genre/[slug]` ────────
 
-**Next step: C6** — Genre hub pages (`/genre/[slug]`). Read `SPEC.md §C6` before starting.
+**Files:** `app/genre/[slug]/page.tsx` (new) · `app/genre/page.tsx` (update — add genre list to existing index)
 
-**Revenue model (confirmed 2026-03-18):** AdSense (C8–C9) + long-term B2B direct ad sales to game publishers/developers. marketing-skills/ selection reflects both directions.
+**Content (server-rendered, ISR revalidate 86400):**
+- H1: `최고의 {genre} 게임 추천 | PlayFit`
+- Top 20 games in this genre from `games_cache` by tag vote count sum
+- Each game: name + top 3 tags → link to `/games/[appid]`
+- Breadcrumb: Home > 장르 > {genre}; CTA "내 취향에 맞는 {genre} 게임 찾기 →" → `/`
+- Community placeholder: "{genre} 게임을 좋아하는 유저들" — static copy, no data
+
+**SEO:** title = `최고의 {genre} 게임 20선 | PlayFit`; description dynamic per genre; `ItemList` JSON-LD (20 games); canonical `/genre/{slug}`
+
+**Slug:** genre name lowercased, spaces → hyphens (e.g. `role-playing-games`) · **Genre source:** distinct `genres` from `games_cache`
+
+**Scope:** no auth, no filtering, no pagination
+
+**Revenue model:** AdSense (C8–C9) + B2B direct ad sales to publishers/developers (long-term)
+
+**After completing:** clear lock → update Current Status → Active Step to C7 → update MEMORY.md current state → commit
 
 ---
 
@@ -106,34 +121,7 @@ _2026-03-16~18 B-series + C1/C2 entries → HANDOVER-archive.md_
 
 ## ── COMPLETED STEPS ──────────────────────────────────────
 
-### ✅ B8–B10 — 2026-03-18 — E2E manual test checklists
-- Files: `TEST_B8_B10.md`
-- B8: email login → link Steam → recommend → feedback; B9: Steam login → auto recommend; B10: non-auth → weights by steam_id
-- Build: `tsc --noEmit` passed ✅
-
-### ✅ B7 — 2026-03-16~17 — Header + login modal + auth system
-- Files: `Header.tsx`, `Header.module.css`, `page.tsx`, `page.module.css`, `reset-password/page.tsx`
-- Auth: email+password login/signup; OTP signup-only; forgot password → /reset-password; Google GIS + signInWithIdToken; Steam OpenID popup
-- Header: 3 auth states; Steam link popup auto-opens after non-Steam login; page.tsx hides URL input when Steam-authed
-- Build: `tsc --noEmit` passed ✅
-
-### ✅ B6 — 2026-03-16 — /api/feedback session-aware
-- Files: `app/api/feedback/route.ts`
-- Changes: `createServerClient` reads session; feedback insert includes `user_id`; weights upsert on `user_id,tag` (logged-in) or `steam_id,tag` (anon)
-- Build: `tsc --noEmit` passed ✅
-
-### ✅ B5 — 2026-03-16 — /api/recommend four auth cases
-- Files: `app/api/recommend/route.ts`, `lib/supabase.ts`
-- Changes: `createServerClient` reads session; weights by `user_id` (Cases 1–3, logged in) or `steam_id` (Case 4, anon); `getUserTagWeights` gains `by` param
-- Build: `tsc --noEmit` passed ✅
-
-### ✅ B4 + B4-link — 2026-03-16 — Steam OpenID auth
-- Files: `app/api/auth/steam/route.ts`, `app/api/auth/steam/callback/route.ts`, `app/api/auth/link-steam/route.ts`
-- Decisions: `generateLink({ type: 'magiclink' })` → redirect to action_link → session set via existing `/api/auth/callback`
-- Build: `tsc --noEmit` passed ✅
-
-- B3 archived → see HANDOVER-archive.md
-- B1+B2 archived → see HANDOVER-archive.md
+- B1 through B10 archived → see HANDOVER-archive.md
 
 ---
 

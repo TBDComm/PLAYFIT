@@ -34,6 +34,27 @@
 - Decisions: `steam_id` kept — pre-login weights migrate on B4-link (`UPDATE ... WHERE user_id IS NULL`)
 - Build: no code changes; SQL run in Supabase dashboard ✅
 
+## B8–B10 — 2026-03-18 — E2E manual test checklists
+- Files: `TEST_B8_B10.md`
+- B8: email login → link Steam → recommend → feedback; B9: Steam login → auto recommend; B10: non-auth → weights by steam_id
+- Build: `tsc --noEmit` passed ✅
+
+## B7 — 2026-03-16~17 — Header + login modal + auth system
+- Files: `Header.tsx`, `Header.module.css`, `page.tsx`, `page.module.css`, `reset-password/page.tsx`
+- Auth: email+password login/signup; OTP signup-only; forgot password → /reset-password; Google GIS + signInWithIdToken; Steam OpenID popup
+- Header: 3 auth states; Steam link popup auto-opens after non-Steam login; page.tsx hides URL input when Steam-authed
+- Build: `tsc --noEmit` passed ✅
+
+## B6 — 2026-03-16 — /api/feedback session-aware
+- Files: `app/api/feedback/route.ts`
+- Changes: `createServerClient` reads session; feedback insert includes `user_id`; weights upsert on `user_id,tag` (logged-in) or `steam_id,tag` (anon)
+- Build: `tsc --noEmit` passed ✅
+
+## B5 — 2026-03-16 — /api/recommend four auth cases
+- Files: `app/api/recommend/route.ts`, `lib/supabase.ts`
+- Changes: `createServerClient` reads session; weights by `user_id` (Cases 1–3, logged in) or `steam_id` (Case 4, anon); `getUserTagWeights` gains `by` param
+- Build: `tsc --noEmit` passed ✅
+
 ## B4 + B4-link — Spec (completed 2026-03-16)
 - Steam OpenID redirect → `https://steamcommunity.com/openid/login` with checkid_setup params
 - Callback: POST `check_authentication` → extract steamid64 → find/create user_profiles + auth.users → `generateLink({ type: 'magiclink' })` → redirect to action_link → Supabase sets session via `/api/auth/callback`
