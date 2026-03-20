@@ -115,6 +115,7 @@ _Pre-2026-03-20 entries → HANDOVER-archive.md_
 | 2026-03-20 | Fix: `export const runtime = 'edge'` required on all dynamic `[param]` routes | `games/[appid]/page.tsx`, `genre/[slug]/page.tsx`, `users/[userId]/page.tsx` |
 | 2026-03-20 | Fix: blog/[slug] — remove generateStaticParams (incompatible with edge runtime) | `app/blog/[slug]/page.tsx` |
 | 2026-03-20 | Rename: PlayFit → Guildeline; `@steam.playfit` + sessionStorage keys unchanged (internal identifiers) | all tsx/ts/md |
+| 2026-03-20 | feat: LoadingOverlay (G logo pulse + bouncing dots) on main page; Toast notification on Steam link success | LoadingOverlay.tsx/.css, page.tsx, Header.tsx/.css |
 | 2026-03-20 | Domain: guildeline.com live — CF Pages, NEXT_PUBLIC_BASE_URL, Google Console JS Origins, Supabase Auth URL, Search Console, GA4 all updated | external services |
 
 ---

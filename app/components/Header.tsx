@@ -37,11 +37,20 @@ function SteamIcon() {
 type LoginView = 'login' | 'signup' | 'verify' | 'forgot' | 'forgot-sent'
 
 const modalTitles: Record<LoginView, string> = {
-  login: 'PlayFit 로그인',
-  signup: 'PlayFit 회원가입',
+  login: 'Guildeline 로그인',
+  signup: 'Guildeline 회원가입',
   verify: '이메일 인증',
   forgot: '비밀번호 재설정',
   'forgot-sent': '이메일을 확인하세요',
+}
+
+function Toast({ message }: { message: string }) {
+  return (
+    <div className={styles.toast} role="status" aria-live="polite">
+      <span className={styles.toastIcon} aria-hidden="true">✓</span>
+      {message}
+    </div>
+  )
 }
 
 export default function Header() {
@@ -60,6 +69,7 @@ export default function Header() {
   const [linkUrl, setLinkUrl] = useState('')
   const [linkLoading, setLinkLoading] = useState(false)
   const [linkError, setLinkError] = useState<string | null>(null)
+  const [toast, setToast] = useState<string | null>(null)
   const supabase = useMemo(() => createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -281,6 +291,8 @@ export default function Header() {
       if (data.ok) {
         setSteamId(data.steam_id ?? null)
         closeLinkPopup()
+        setToast('Steam 계정이 연동되었어요!')
+        setTimeout(() => setToast(null), 3500)
       } else {
         setLinkError(
           data.error === 'INVALID_URL' ? '올바른 Steam URL을 입력해주세요' :
@@ -297,6 +309,7 @@ export default function Header() {
 
   return (
     <>
+      {toast && <Toast message={toast} />}
       <div className={styles.authFloat}>
         {session ? (
           <>
@@ -330,7 +343,7 @@ export default function Header() {
 
             {/* Logo + title — outside card */}
             <div className={styles.modalLogoArea}>
-              <div className={styles.modalLogo} aria-hidden="true">P</div>
+              <div className={styles.modalLogo} aria-hidden="true">G</div>
               <h2 id="login-modal-title" className={styles.modalTitle}>
                 {modalTitles[loginView]}
               </h2>
@@ -585,7 +598,7 @@ export default function Header() {
           <div className={styles.modalWrap} ref={linkPopupRef}>
             <button onClick={closeLinkPopup} className={styles.closeBtn} aria-label="팝업 닫기">✕</button>
             <div className={styles.modalLogoArea}>
-              <div className={styles.modalLogo} aria-hidden="true">P</div>
+              <div className={styles.modalLogo} aria-hidden="true">G</div>
               <h2 id="link-popup-title" className={styles.modalTitle}>Steam 계정 연동</h2>
             </div>
             <div className={styles.card}>

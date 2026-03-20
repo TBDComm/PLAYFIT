@@ -7,6 +7,7 @@ import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import type { RecommendationCard, ErrorCode } from '@/types'
 import { trackEvent } from '@/lib/analytics'
 import JsonLd from './components/JsonLd'
+import LoadingOverlay from './components/LoadingOverlay'
 import styles from './page.module.css'
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
@@ -299,6 +300,11 @@ export default function Home() {
 
   return (
     <main className={styles.page}>
+      {loading && (
+        <LoadingOverlay
+          message={mode === 'manual' ? '취향 분석 중…' : '플레이 기록 분석 중…'}
+        />
+      )}
       <JsonLd data={homeJsonLd} />
       <div className={styles.pageNav}>
         <Link href="/genre" className={styles.pageNavLink}>장르별 탐색</Link>

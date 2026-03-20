@@ -319,6 +319,37 @@
   word-break: break-all;
 }
 
+/* ── Toast notification ── */
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 200;
+  background: var(--bg-elevated);
+  border: 1px solid var(--success);
+  color: var(--success);
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  animation: toastSlideIn 0.25s ease-out;
+}
+
+.toastIcon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+@keyframes toastSlideIn {
+  from { transform: translateX(calc(100% + 32px)); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .loginBtn,
   .logoutBtn,
@@ -331,11 +362,22 @@
   .footerLink {
     transition: none;
   }
+
+  .toast {
+    animation: none;
+  }
 }
 
 /* ── Mobile ── */
 
 @media (max-width: 639px) {
+  .toast {
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    justify-content: center;
+  }
+
   .authFloat {
     top: 12px;
     right: 16px;
