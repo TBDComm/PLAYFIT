@@ -1,12 +1,8 @@
 .bar {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  top: 16px;
+  left: 24px;
   z-index: 10;
-  padding: 0 24px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  background: var(--bg);
 }
 
 .wordmark {
@@ -25,7 +21,7 @@
 
 @media (max-width: 480px) {
   .bar {
-    padding: 0 16px;
-    height: 44px;
+    top: 12px;
+    left: 16px;
   }
 }

@@ -11,10 +11,10 @@ export default function NavLogo() {
   if (pathname === '/') return null
 
   return (
-    <header className={styles.bar}>
+    <div className={styles.bar}>
       <Link href="/" className={styles.wordmark} aria-label="PlayFit 홈">
         <span className={styles.play}>PLAY</span>FIT
       </Link>
-    </header>
+    </div>
   )
 }
