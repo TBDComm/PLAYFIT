@@ -509,6 +509,11 @@
   padding: 3rem 1.5rem;
 }
 
+/* Anchor target offset — compensates for fixed pageNav/NavLogo height */
+.form {
+  scroll-margin-top: 5rem;
+}
+
 /* ===== Preview section ===== */
 
 .previewSection {
