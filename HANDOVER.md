@@ -1,10 +1,10 @@
-# PLAYFIT Handover
+# GUILDELINE Handover
 
 > Every Claude Code session: read this file fully before doing anything.
 
 ---
 
-📏 **File health: 122/200 lines — OK**
+📏 **File health: 114/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -69,18 +69,20 @@ Next action: [exactly what to do next to resume]
 | C1 | SEO foundation — robots.ts, sitemap.ts, OG/Twitter meta tags | ✅ 2026-03-18 |
 | C2 | Legal pages — /privacy, /terms, Footer component | ✅ 2026-03-18 |
 | C3 | GA4 Analytics — gtag.js + 5 events | ✅ 2026-03-19 |
-| C4 | Site Architecture — sticky nav bar, Breadcrumb, /genre index, /users/[userId] reserved | ✅ 2026-03-20 |
+| C4 | Site Architecture — Breadcrumb, /genre index, /users/[userId] reserved (nav bar subsequently removed — no sticky bar anywhere; auth buttons float top-right in Header.tsx) | ✅ 2026-03-20 |
 | C5 | Game detail pages `/games/[appid]` — ISR 86400s, similar games TOP 10, SEO, noindex guard | ✅ 2026-03-20 |
 | C6 | Genre hub pages `/genre/[slug]` — ISR 86400s, top 20 by tag sum, ItemList JSON-LD, community placeholder | ✅ 2026-03-20 |
 | C7 | Blog section `/blog` + `/blog/[slug]` — TSX content components, BlogPosting JSON-LD, sitemap updated | ✅ 2026-03-20 |
+| C8 | AdSense script (`layout.tsx`), `AdUnit.tsx` component, `ads.txt` placeholder — Publisher ID pending AdSense approval | ✅ 2026-03-20 |
+| C9 | Ad placement — game detail (after similar games), genre hub (after item 10), blog post (end of post), result (below cards), blog index (below fold) | ✅ 2026-03-20 |
 
-**Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ✅
+**Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ✅ · NEXT_PUBLIC_ADSENSE_CLIENT_ID ⏳ (pending AdSense approval — add to CF Pages when Publisher ID received)
 
 **Supabase tables:** `feedback` ✅ · `games_cache` ✅ (82,816 rows) · `user_tag_weights` ✅ · `user_profiles` ✅
 
 ---
 
-## ── ACTIVE STEP: C8 — AdSense Integration ──────────────────
+## ── ACTIVE STEP: C10 — Schema Markup ──────────────────
 
 Read relevant section of `SPEC.md` before implementing.
 
@@ -88,27 +90,14 @@ Read relevant section of `SPEC.md` before implementing.
 
 ## ── MINOR CHANGES LOG ────────────────────────────────────
 
-_Pre-B5 entries → HANDOVER-archive.md_
+_Pre-2026-03-20 entries → HANDOVER-archive.md_
 
 | Date | Change | Files |
 |------|--------|-------|
-_2026-03-16~18 B-series + C1/C2 entries → HANDOVER-archive.md_
-| 2026-03-18 | UI: legal page logo, result card thumbnails + Metacritic score tiers | `privacy/page.tsx`, `terms/page.tsx`, `result/page.tsx`, `result/page.module.css`, `layout.tsx` |
-| 2026-03-18 | Fix: search debounce 300ms → 150ms; race condition via searchGenRef | `page.tsx` |
-| 2026-03-19 | C3: GA4 gtag.js + 5 events; NEXT_PUBLIC_GA_MEASUREMENT_ID added to CF Pages ✅ | `layout.tsx`, `lib/analytics.ts`, `page.tsx`, `result/page.tsx`, `Header.tsx` |
-| 2026-03-19 | UI: result page — thumbnail height:auto no-crop, card max-height via cqw, padding 14%, logo outside .inner, guideline fixes | `result/page.tsx`, `result/page.module.css` |
-| 2026-03-20 | UI: replace all button transparent backgrounds with var(--bg-elevated) — logoutBtn, steamLinkBtn, closeBtn, inlineLink, footerLink, toggleCheckbox | `Header.module.css`, `page.module.css` |
-| 2026-03-20 | UI: footerLink → full button (border, padding, hover); closeBtn → border added; authFooter → bg-elevated | `Header.module.css` |
-| 2026-03-20 | C4: Header → sticky nav bar (logo + nav links + auth + mobile hamburger); Footer + Blog/Genre links; Breadcrumb component; /genre index page; /users/[userId] reserved | `Header.tsx`, `Header.module.css`, `Footer.tsx`, `Breadcrumb.tsx` (new), `Breadcrumb.module.css` (new), `app/genre/page.tsx` (new), `app/genre/page.module.css` (new), `app/users/[userId]/page.tsx` (new) |
-| 2026-03-20 | C5: `/games/[appid]` — ISR 86400s, similar games TOP 10 via score_candidates RPC, SoftwareApplication JSON-LD, noindex thin content guard; sitemap updated with top 5000 games | `app/games/[appid]/page.tsx` (new), `app/games/[appid]/page.module.css` (new), `app/sitemap.ts` |
-| 2026-03-20 | C6: `/genre/[slug]` — ISR 86400s, top 20 by tag vote sum, rank numbers, ItemList JSON-LD, community placeholder, CTA | `app/genre/[slug]/page.tsx` (new), `app/genre/[slug]/page.module.css` (new) |
-| 2026-03-20 | Fix: CF Pages build failure — added `export const runtime = 'edge'` to all dynamic routes | `app/games/[appid]/page.tsx`, `app/genre/[slug]/page.tsx`, `app/users/[userId]/page.tsx` |
-| 2026-03-20 | C7: Blog section — TSX content approach (no fs/MDX, edge-safe); 3 posts; BlogPosting JSON-LD; sitemap updated | `lib/blog.ts` (new), `content/blog/*.tsx` (3 new), `app/blog/page.tsx` (new), `app/blog/[slug]/page.tsx` (new), `app/sitemap.ts` |
-| 2026-03-20 | Fix: blog/[slug] — remove generateStaticParams (Next.js rejects edge runtime + generateStaticParams together) | `app/blog/[slug]/page.tsx` |
-| 2026-03-20 | UI: remove nav bar; auth buttons → fixed top-right float; NavLogo → fixed top-left; home page: no logo | `app/layout.tsx`, `Header.tsx`, `Header.module.css`, `NavLogo.tsx`, `NavLogo.module.css` |
-| 2026-03-20 | UI: home page — genre + blog links fixed top-left (top:16px left:24px), same Y as authFloat; accent text | `app/page.tsx`, `app/page.module.css` |
-| 2026-03-20 | UI: footer — remove genre & blog links; keep privacy + terms only | `app/components/Footer.tsx` |
-| 2026-03-20 | UI: genre page — fixed card size via aspect-ratio 5/2 + font-size clamp(cqi) for auto text scaling | `app/genre/page.module.css` |
+| 2026-03-20 | Fix: `export const runtime = 'edge'` required on all dynamic `[param]` routes | `games/[appid]/page.tsx`, `genre/[slug]/page.tsx`, `users/[userId]/page.tsx` |
+| 2026-03-20 | Fix: blog/[slug] — remove generateStaticParams (incompatible with edge runtime) | `app/blog/[slug]/page.tsx` |
+| 2026-03-20 | Rename: PlayFit → Guildeline; `@steam.playfit` + sessionStorage keys unchanged (internal identifiers) | all tsx/ts/md |
+| 2026-03-20 | Domain: guildeline.com live — CF Pages, NEXT_PUBLIC_BASE_URL, Google Console JS Origins, Supabase Auth URL, Search Console, GA4 all updated | external services |
 
 ---
 

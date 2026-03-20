@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { RecommendationCard } from '@/types'
 import { trackEvent } from '@/lib/analytics'
+import AdUnit from '@/app/components/AdUnit'
 import styles from './page.module.css'
 
 export default function ResultPage() {
@@ -53,9 +54,9 @@ export default function ResultPage() {
 
   return (
     <main className={styles.page}>
-      <Link href="/" className={styles.logoLink} aria-label="PLAYFIT 홈으로">
+      <Link href="/" className={styles.logoLink} aria-label="GUILDELINE 홈으로">
         <h1 className={styles.logo}>
-          <span className={styles.logoAccent}>PLAY</span>FIT
+          <span className={styles.logoAccent}>GUILD</span>ELINE
         </h1>
       </Link>
 
@@ -132,6 +133,9 @@ export default function ResultPage() {
             </li>
           ))}
         </ul>
+
+        {/* Ad — below game cards, never above fold */}
+        <AdUnit slot="0000000000" format="auto" minHeight={250} className={styles.adUnit} />
       </div>
     </main>
   )

@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import Breadcrumb from '@/app/components/Breadcrumb'
+import AdUnit from '@/app/components/AdUnit'
 import styles from './page.module.css'
 
 export const runtime = 'edge'
@@ -96,12 +97,12 @@ export async function generateMetadata({
   const data = await getGenreData(slug)
 
   if (!data) {
-    return { title: '장르를 찾을 수 없습니다 | PlayFit', robots: { index: false } }
+    return { title: '장르를 찾을 수 없습니다 | Guildeline', robots: { index: false } }
   }
 
   return {
-    title: `최고의 ${data.genreName} 게임 20선 | PlayFit`,
-    description: `PlayFit이 추천하는 최고의 ${data.genreName} 게임 20선. 내 플레이 기록 기반으로 딱 맞는 게임을 찾아보세요.`,
+    title: `최고의 ${data.genreName} 게임 20선 | Guildeline`,
+    description: `Guildeline이 추천하는 최고의 ${data.genreName} 게임 20선. 내 플레이 기록 기반으로 딱 맞는 게임을 찾아보세요.`,
     alternates: { canonical: `/genre/${slug}` },
   }
 }
@@ -161,24 +162,52 @@ export default async function GenreSlugPage({
         {games.length === 0 ? (
           <p className={styles.emptyMsg}>이 장르에 해당하는 게임 데이터가 없습니다.</p>
         ) : (
-          <ol className={styles.gameGrid} aria-label={`${genreName} 게임 목록`}>
-            {games.map((game, i) => {
-              const topTags = game.tags ? getTopTags(game.tags, 3) : []
-              return (
-                <li key={game.appid}>
-                  <Link href={`/games/${game.appid}`} className={styles.gameCard}>
-                    <span className={styles.rank}>{i + 1}</span>
-                    <span className={styles.cardBody}>
-                      <span className={styles.gameName}>{game.name}</span>
-                      {topTags.length > 0 && (
-                        <span className={styles.gameTags}>{topTags.join(' · ')}</span>
-                      )}
-                    </span>
-                  </Link>
-                </li>
-              )
-            })}
-          </ol>
+          <>
+            <ol className={styles.gameGrid} aria-label={`${genreName} 게임 목록`}>
+              {games.slice(0, 10).map((game, i) => {
+                const topTags = game.tags ? getTopTags(game.tags, 3) : []
+                return (
+                  <li key={game.appid}>
+                    <Link href={`/games/${game.appid}`} className={styles.gameCard}>
+                      <span className={styles.rank}>{i + 1}</span>
+                      <span className={styles.cardBody}>
+                        <span className={styles.gameName}>{game.name}</span>
+                        {topTags.length > 0 && (
+                          <span className={styles.gameTags}>{topTags.join(' · ')}</span>
+                        )}
+                      </span>
+                    </Link>
+                  </li>
+                )
+              })}
+            </ol>
+
+            {/* Ad — between game list rows, after item 10 */}
+            {games.length > 10 && (
+              <AdUnit slot="0000000000" format="auto" minHeight={90} className={styles.adUnit} />
+            )}
+
+            {games.length > 10 && (
+              <ol className={styles.gameGrid} start={11} aria-label={`${genreName} 게임 목록 (계속)`}>
+                {games.slice(10).map((game, i) => {
+                  const topTags = game.tags ? getTopTags(game.tags, 3) : []
+                  return (
+                    <li key={game.appid}>
+                      <Link href={`/games/${game.appid}`} className={styles.gameCard}>
+                        <span className={styles.rank}>{i + 11}</span>
+                        <span className={styles.cardBody}>
+                          <span className={styles.gameName}>{game.name}</span>
+                          {topTags.length > 0 && (
+                            <span className={styles.gameTags}>{topTags.join(' · ')}</span>
+                          )}
+                        </span>
+                      </Link>
+                    </li>
+                  )
+                })}
+              </ol>
+            )}
+          </>
         )}
 
         {/* Community placeholder — D-series hook */}

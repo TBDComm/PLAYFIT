@@ -1,13 +1,14 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import Breadcrumb from '@/app/components/Breadcrumb'
+import AdUnit from '@/app/components/AdUnit'
 import { allPosts } from '@/lib/blog'
 import styles from './page.module.css'
 
 export const metadata: Metadata = {
-  title: '블로그 — PlayFit',
+  title: '블로그 — Guildeline',
   description:
-    '스팀 게임 추천, 취향 분석, 장르 가이드 — PlayFit 블로그에서 게임 선택에 도움이 되는 글을 읽어보세요.',
+    '스팀 게임 추천, 취향 분석, 장르 가이드 — Guildeline 블로그에서 게임 선택에 도움이 되는 글을 읽어보세요.',
   alternates: { canonical: '/blog' },
 }
 
@@ -23,7 +24,7 @@ export default function BlogPage() {
         <Breadcrumb items={[{ label: '홈', href: '/' }, { label: '블로그' }]} />
         <h1 className={styles.title}>블로그</h1>
         <p className={styles.desc}>
-          게임 취향 분석, 추천 가이드, 장르별 탐색 — PlayFit이 직접 씁니다.
+          게임 취향 분석, 추천 가이드, 장르별 탐색 — Guildeline이 직접 씁니다.
         </p>
         <ul className={styles.postList} aria-label="블로그 포스트 목록">
           {allPosts.map(post => (
@@ -41,6 +42,9 @@ export default function BlogPage() {
             </li>
           ))}
         </ul>
+
+        {/* Ad — below post list fold */}
+        <AdUnit slot="0000000000" format="auto" minHeight={90} className={styles.adUnit} />
       </div>
     </main>
   )

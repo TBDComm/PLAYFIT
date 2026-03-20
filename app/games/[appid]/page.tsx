@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import Breadcrumb from '@/app/components/Breadcrumb'
+import AdUnit from '@/app/components/AdUnit'
 import styles from './page.module.css'
 
 export const runtime = 'edge'
@@ -90,14 +91,14 @@ export async function generateMetadata({
   const game = await getGame(appid)
 
   if (!game) {
-    return { title: '게임을 찾을 수 없습니다 | PlayFit', robots: { index: false } }
+    return { title: '게임을 찾을 수 없습니다 | Guildeline', robots: { index: false } }
   }
 
   const hasTags = game.tags && Object.keys(game.tags).length > 0
 
   return {
-    title: `${game.name} 비슷한 게임 추천 | PlayFit`,
-    description: `${game.name}을 좋아한다면 이런 게임도 좋아할 거예요. PlayFit이 태그 기반으로 추천합니다.`,
+    title: `${game.name} 비슷한 게임 추천 | Guildeline`,
+    description: `${game.name}을 좋아한다면 이런 게임도 좋아할 거예요. Guildeline이 태그 기반으로 추천합니다.`,
     alternates: { canonical: `/games/${appid}` },
     ...(!hasTags ? { robots: { index: false } } : {}),
   }
@@ -218,9 +219,12 @@ export default async function GamePage({
           )}
         </section>
 
+        {/* Ad — after similar games list */}
+        <AdUnit slot="0000000000" format="auto" minHeight={250} className={styles.adUnit} />
+
         {/* Community placeholder — D-series hook */}
         <section className={styles.communitySection} aria-labelledby="community-heading">
-          <h2 id="community-heading" className={styles.sectionTitle}>이 게임을 좋아하는 PlayFit 유저</h2>
+          <h2 id="community-heading" className={styles.sectionTitle}>이 게임을 좋아하는 Guildeline 유저</h2>
           <p className={styles.communityPlaceholder}>
             커뮤니티 기능은 곧 출시됩니다. 비슷한 취향을 가진 유저들과 함께할 수 있어요.
           </p>

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Breadcrumb from '@/app/components/Breadcrumb'
+import AdUnit from '@/app/components/AdUnit'
 import { getPost } from '@/lib/blog'
 import styles from './page.module.css'
 
@@ -17,12 +18,12 @@ export async function generateMetadata({
   const entry = getPost(slug)
 
   if (!entry) {
-    return { title: '포스트를 찾을 수 없습니다 | PlayFit', robots: { index: false } }
+    return { title: '포스트를 찾을 수 없습니다 | Guildeline', robots: { index: false } }
   }
 
   const { meta } = entry
   return {
-    title: `${meta.title} | PlayFit 블로그`,
+    title: `${meta.title} | Guildeline 블로그`,
     description: meta.description,
     alternates: { canonical: `/blog/${slug}` },
     openGraph: {
@@ -71,7 +72,7 @@ export default async function BlogPostPage({
     headline: meta.title,
     description: meta.description,
     datePublished: meta.publishedAt,
-    author: { '@type': 'Organization', name: 'PlayFit' },
+    author: { '@type': 'Organization', name: 'Guildeline' },
     url: `${baseUrl}/blog/${slug}`,
   }).replace(/<\//g, '<\\/')
 
@@ -104,6 +105,9 @@ export default async function BlogPostPage({
         <article className={styles.prose}>
           <Content />
         </article>
+
+        {/* Ad — end of post, before footer */}
+        <AdUnit slot="0000000000" format="auto" minHeight={250} className={styles.adUnit} />
 
         <div className={styles.footer}>
           <Link href="/blog" className={styles.backLink}>← 블로그 목록으로</Link>
