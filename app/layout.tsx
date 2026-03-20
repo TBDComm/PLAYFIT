@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Space_Grotesk } from 'next/font/google'
 import Script from 'next/script'
 import Header from './components/Header'
@@ -18,11 +18,14 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
 const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
 const adClientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID
 
+export const viewport: Viewport = {
+  themeColor: '#09090b',
+}
+
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: '내 스팀 취향에 맞는 게임 추천 | Guildeline',
   description: '스팀 플레이 기록과 예산을 기반으로 내 취향에 맞는 게임을 추천해 드립니다.',
-  themeColor: '#09090b',
   alternates: {
     canonical: '/',
   },
