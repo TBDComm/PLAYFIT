@@ -16,25 +16,26 @@ const spaceGrotesk = Space_Grotesk({
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://playfit.pages.dev'
 const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+const adClientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
-  title: 'PLAYFIT — 나한테 맞는 게임 추천',
+  title: '내 스팀 취향에 맞는 게임 추천 | Guildeline',
   description: '스팀 플레이 기록과 예산을 기반으로 내 취향에 맞는 게임을 추천해 드립니다.',
   themeColor: '#09090b',
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'PLAYFIT — 나한테 맞는 게임 추천',
+    title: '내 스팀 취향에 맞는 게임 추천 | Guildeline',
     description: '스팀 플레이 기록과 예산을 기반으로 내 취향에 맞는 게임을 추천해 드립니다.',
     url: '/',
-    siteName: 'PlayFit',
+    siteName: 'Guildeline',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PLAYFIT — 나한테 맞는 게임 추천',
+    title: '내 스팀 취향에 맞는 게임 추천 | Guildeline',
     description: '스팀 플레이 기록과 예산을 기반으로 내 취향에 맞는 게임을 추천해 드립니다.',
   },
 }
@@ -52,6 +53,13 @@ export default function RootLayout({
       </head>
       <body>
         <Script src="https://accounts.google.com/gsi/client" strategy="lazyOnload" />
+        {adClientId && (
+          <Script
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adClientId}`}
+            strategy="afterInteractive"
+            crossOrigin="anonymous"
+          />
+        )}
         {gaMeasurementId && (
           <>
             <Script

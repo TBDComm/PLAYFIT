@@ -24,7 +24,7 @@ export async function generateMetadata({
 
   const { meta } = entry
   return {
-    title: `${meta.title} | Guildeline 블로그`,
+    title: `${meta.title} | Guildeline`,
     description: meta.description,
     alternates: { canonical: `/blog/${slug}` },
     openGraph: {

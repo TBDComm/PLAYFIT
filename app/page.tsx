@@ -308,7 +308,7 @@ export default function Home() {
       <div className={styles.inner}>
         <header className={styles.header}>
           <h1 className={styles.logo}>
-            <span className={styles.logoAccent}>PLAY</span>FIT
+            <span className={styles.logoAccent}>GUILD</span>ELINE
           </h1>
           <p className={styles.tagline}>나한테 맞는 게임을 찾아드립니다</p>
         </header>

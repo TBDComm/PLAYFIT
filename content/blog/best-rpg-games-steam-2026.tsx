@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type { PostMeta } from '@/lib/blog'
 
 export const meta: PostMeta = {
@@ -101,9 +102,10 @@ export default function Content() {
 
       <h2>내 RPG 취향을 모르겠다면</h2>
       <p>
-        PlayFit에 스팀 ID를 입력하면 지금까지 가장 오래 플레이한 RPG들의 태그를 분석해
-        어떤 유형의 RPG를 선호하는지 파악할 수 있습니다. CRPG인지, 액션 RPG인지, 소울라이크인지
-        — 플레이 데이터는 스스로 인지하지 못한 취향 패턴을 보여줍니다.
+        <Link href="/">Guildeline</Link>에 스팀 ID를 입력하면 지금까지 가장 오래 플레이한
+        RPG들의 태그를 분석해 어떤 유형의 RPG를 선호하는지 파악할 수 있습니다. CRPG인지,
+        액션 RPG인지, 소울라이크인지 — 플레이 데이터는 스스로 인지하지 못한 취향 패턴을
+        보여줍니다. <Link href="/genre/rpg">RPG 장르 전체 목록 →</Link>
       </p>
     </>
   )
