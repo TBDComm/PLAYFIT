@@ -1,11 +1,87 @@
-.floatingActions {
-  position: fixed;
-  top: 16px;
-  right: 20px;
+/* ── Nav bar ── */
+
+.navBar {
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  z-index: 10;
+}
+
+.navInner {
   display: flex;
   align-items: center;
   gap: 8px;
-  z-index: 10;
+  padding: 0 24px;
+  height: 56px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── Logo ── */
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.logoMark {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #09090b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 900;
+  user-select: none;
+}
+
+.logoText {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+/* ── Nav links — desktop ── */
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  padding-left: 16px;
+}
+
+.navLink {
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 150ms, background-color 150ms;
+}
+
+.navLink:hover,
+.navLink:focus-visible {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+}
+
+/* ── Auth area ── */
+
+.authArea {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
 }
 
 .loginBtn,
@@ -49,6 +125,61 @@
 .steamLinkBtn:hover,
 .steamLinkBtn:focus-visible {
   background: rgba(190, 242, 100, 0.1);
+}
+
+/* ── Hamburger — mobile only ── */
+
+.mobileMenuBtn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  padding: 0;
+  transition: background-color 150ms;
+}
+
+.mobileMenuBtn:hover,
+.mobileMenuBtn:focus-visible {
+  background: var(--bg-hover);
+}
+
+.hamburgerLine {
+  display: block;
+  width: 16px;
+  height: 2px;
+  background: var(--text-secondary);
+  border-radius: 1px;
+}
+
+/* ── Mobile nav dropdown ── */
+
+.mobileMenu {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.mobileNavLink {
+  padding: 14px 24px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 150ms, background-color 150ms;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.mobileNavLink:hover,
+.mobileNavLink:focus-visible {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
 }
 
 /* ── Overlay ── */
@@ -320,6 +451,9 @@
   .loginBtn,
   .logoutBtn,
   .steamLinkBtn,
+  .navLink,
+  .mobileMenuBtn,
+  .mobileNavLink,
   .closeBtn,
   .steamBtn,
   .modalInput,
@@ -332,17 +466,28 @@
 
 /* ── Mobile ── */
 
-@media (max-width: 480px) {
-  .floatingActions {
-    top: 12px;
-    right: 14px;
+@media (max-width: 639px) {
+  .navInner {
+    padding: 0 16px;
+    height: 52px;
   }
 
-  /* Larger tap targets for header buttons */
+  /* Hide desktop nav links */
+  .navLinks {
+    display: none;
+  }
+
+  /* Show hamburger */
+  .mobileMenuBtn {
+    display: flex;
+  }
+
+  /* Larger tap targets for auth buttons */
   .loginBtn,
   .logoutBtn,
   .steamLinkBtn {
-    padding: 8px 14px;
+    padding: 8px 12px;
+    font-size: 0.8125rem;
   }
 
   .card {

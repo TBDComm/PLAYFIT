@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
@@ -60,6 +61,7 @@ export default function Header() {
   const [linkUrl, setLinkUrl] = useState('')
   const [linkLoading, setLinkLoading] = useState(false)
   const [linkError, setLinkError] = useState<string | null>(null)
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
 
   const supabase = useMemo(() => createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -166,6 +168,16 @@ export default function Header() {
     linkPopupRef.current?.querySelector<HTMLInputElement>('input')?.focus()
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [showLinkPopup])
+
+  // Close mobile menu on Escape
+  useEffect(() => {
+    if (!showMobileMenu) return
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowMobileMenu(false)
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [showMobileMenu])
 
   function closeLoginModal() {
     setShowLoginModal(false)
@@ -298,24 +310,65 @@ export default function Header() {
 
   return (
     <>
-      <div className={styles.floatingActions}>
-        {session ? (
-          <>
-            {showLinkBtn && (
-              <button onClick={() => setShowLinkPopup(true)} className={styles.steamLinkBtn}>
-                Steam 연동
+      <header className={styles.navBar}>
+        <div className={styles.navInner}>
+          {/* Logo */}
+          <Link href="/" className={styles.logo} aria-label="PlayFit 홈">
+            <span className={styles.logoMark} aria-hidden="true">P</span>
+            <span className={styles.logoText}>PlayFit</span>
+          </Link>
+
+          {/* Nav links — desktop */}
+          <nav className={styles.navLinks} aria-label="주요 메뉴">
+            <Link href="/genre" className={styles.navLink}>장르별 탐색</Link>
+            <Link href="/blog" className={styles.navLink}>블로그</Link>
+          </nav>
+
+          {/* Auth buttons + mobile hamburger */}
+          <div className={styles.authArea}>
+            {session ? (
+              <>
+                {showLinkBtn && (
+                  <button onClick={() => setShowLinkPopup(true)} className={styles.steamLinkBtn}>
+                    Steam 연동
+                  </button>
+                )}
+                <button onClick={handleLogout} className={styles.logoutBtn} disabled={logoutLoading}>
+                  {logoutLoading ? '로그아웃 중…' : '로그아웃'}
+                </button>
+              </>
+            ) : (
+              <button onClick={() => setShowLoginModal(true)} className={styles.loginBtn}>
+                로그인
               </button>
             )}
-            <button onClick={handleLogout} className={styles.logoutBtn} disabled={logoutLoading}>
-              {logoutLoading ? '로그아웃 중…' : '로그아웃'}
+
+            {/* Hamburger — mobile only */}
+            <button
+              className={styles.mobileMenuBtn}
+              onClick={() => setShowMobileMenu(v => !v)}
+              aria-label={showMobileMenu ? '메뉴 닫기' : '메뉴 열기'}
+              aria-expanded={showMobileMenu}
+            >
+              <span className={styles.hamburgerLine} aria-hidden="true" />
+              <span className={styles.hamburgerLine} aria-hidden="true" />
+              <span className={styles.hamburgerLine} aria-hidden="true" />
             </button>
-          </>
-        ) : (
-          <button onClick={() => setShowLoginModal(true)} className={styles.loginBtn}>
-            로그인
-          </button>
+          </div>
+        </div>
+
+        {/* Mobile nav dropdown */}
+        {showMobileMenu && (
+          <nav className={styles.mobileMenu} aria-label="모바일 메뉴">
+            <Link href="/genre" className={styles.mobileNavLink} onClick={() => setShowMobileMenu(false)}>
+              장르별 탐색
+            </Link>
+            <Link href="/blog" className={styles.mobileNavLink} onClick={() => setShowMobileMenu(false)}>
+              블로그
+            </Link>
+          </nav>
         )}
-      </div>
+      </header>
 
       {/* Login Modal */}
       {showLoginModal && (

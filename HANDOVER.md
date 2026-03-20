@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 138/200 lines — OK**
+📏 **File health: 141/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -76,9 +76,9 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: none — C3 complete ────────
+## ── ACTIVE STEP: none — C4 complete ────────
 
-**Next step: C4** — Site Architecture. Read `SPEC.md §C4` before starting.
+**Next step: C5** — Individual game pages (`/games/[appid]`). Read `SPEC.md §C5` before starting.
 
 **Revenue model (confirmed 2026-03-18):** AdSense (C8–C9) + long-term B2B direct ad sales to game publishers/developers. marketing-skills/ selection reflects both directions.
 
@@ -97,6 +97,7 @@ _2026-03-16~18 B-series + C1/C2 entries → HANDOVER-archive.md_
 | 2026-03-19 | UI: result page — thumbnail height:auto no-crop, card max-height via cqw, padding 14%, logo outside .inner, guideline fixes | `result/page.tsx`, `result/page.module.css` |
 | 2026-03-20 | UI: replace all button transparent backgrounds with var(--bg-elevated) — logoutBtn, steamLinkBtn, closeBtn, inlineLink, footerLink, toggleCheckbox | `Header.module.css`, `page.module.css` |
 | 2026-03-20 | UI: footerLink → full button (border, padding, hover); closeBtn → border added; authFooter → bg-elevated | `Header.module.css` |
+| 2026-03-20 | C4: Header → sticky nav bar (logo + nav links + auth + mobile hamburger); Footer + Blog/Genre links; Breadcrumb component; /genre index page; /users/[userId] reserved | `Header.tsx`, `Header.module.css`, `Footer.tsx`, `Breadcrumb.tsx` (new), `Breadcrumb.module.css` (new), `app/genre/page.tsx` (new), `app/genre/page.module.css` (new), `app/users/[userId]/page.tsx` (new) |
 
 ---
 

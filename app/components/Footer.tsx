@@ -5,6 +5,10 @@ export default function Footer() {
   return (
     <footer className={styles.footer}>
       <nav className={styles.links} aria-label="Footer navigation">
+        <Link href="/genre">장르별 탐색</Link>
+        <span className={styles.sep} aria-hidden="true">·</span>
+        <Link href="/blog">블로그</Link>
+        <span className={styles.sep} aria-hidden="true">·</span>
         <Link href="/privacy">개인정보처리방침</Link>
         <span className={styles.sep} aria-hidden="true">·</span>
         <Link href="/terms">이용약관</Link>
