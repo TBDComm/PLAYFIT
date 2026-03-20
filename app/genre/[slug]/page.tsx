@@ -132,12 +132,16 @@ export default async function GenreSlugPage({
   const { genreName, games } = data
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
+  const dateModified = new Date().toISOString()
+  const top3Names = games.slice(0, 3).map(g => g.name).join(', ')
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
       {
         '@type': 'ItemList',
         name: `최고의 ${genreName} 게임 20선`,
+        dateModified,
         itemListElement: games.map((game, i) => ({
           '@type': 'ListItem',
           position: i + 1,
@@ -170,6 +174,14 @@ export default async function GenreSlugPage({
         />
 
         <h1 className={styles.title}>최고의 {genreName} 게임 추천</h1>
+
+        {/* Definition block — AI SEO (C12) */}
+        {games.length > 0 && (
+          <p className={styles.definition}>
+            {genreName} 게임은 Steam에서 많은 유저가 즐기는 인기 장르입니다.
+            Guildeline에서 추천하는 상위 게임은 {top3Names}입니다.
+          </p>
+        )}
 
         {games.length === 0 ? (
           <p className={styles.emptyMsg}>이 장르에 해당하는 게임 데이터가 없습니다.</p>

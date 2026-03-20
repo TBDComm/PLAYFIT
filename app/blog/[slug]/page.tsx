@@ -67,6 +67,8 @@ export default async function BlogPostPage({
   const { meta, Content } = entry
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
 
+  const dateModified = meta.updatedAt ?? meta.publishedAt
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -75,6 +77,7 @@ export default async function BlogPostPage({
         headline: meta.title,
         description: meta.description,
         datePublished: meta.publishedAt,
+        dateModified,
         author: { '@type': 'Organization', name: 'Guildeline' },
         url: `${baseUrl}/blog/${slug}`,
       },
@@ -107,6 +110,11 @@ export default async function BlogPostPage({
             <time dateTime={meta.publishedAt} className={styles.date}>
               {formatDate(meta.publishedAt)}
             </time>
+            {meta.updatedAt && meta.updatedAt !== meta.publishedAt && (
+              <time dateTime={meta.updatedAt} className={styles.updatedDate}>
+                마지막 업데이트 {formatDate(meta.updatedAt)}
+              </time>
+            )}
             {meta.tags.map(tag => (
               <span key={tag} className={styles.tag}>{tag}</span>
             ))}

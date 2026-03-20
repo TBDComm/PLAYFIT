@@ -151,6 +151,8 @@ export default async function GamePage({
   const storeUrl = `https://store.steampowered.com/app/${appid}`
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
 
+  const dateModified = new Date().toISOString()
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -159,6 +161,7 @@ export default async function GamePage({
         name: game.name,
         applicationCategory: 'Game',
         url: storeUrl,
+        dateModified,
         ...(game.genres?.length ? { genre: game.genres } : {}),
       },
       {
@@ -231,6 +234,21 @@ export default async function GamePage({
             </ul>
           )}
         </section>
+
+        {/* FAQ block — AI SEO (C12) */}
+        {similarGames.length > 0 && (
+          <section className={styles.faqSection} aria-labelledby="faq-heading">
+            <h2 id="faq-heading" className={styles.sectionTitle}>자주 묻는 질문</h2>
+            <dl className={styles.faqList}>
+              <div className={styles.faqItem}>
+                <dt className={styles.faqQ}>{game.name}과 비슷한 게임은?</dt>
+                <dd className={styles.faqA}>
+                  태그 기반으로 {similarGames.slice(0, 3).map(g => g.name).join(', ')}을 추천합니다. 아래 목록에서 더 많은 추천을 확인하세요.
+                </dd>
+              </div>
+            </dl>
+          </section>
+        )}
 
         {/* Ad — after similar games list */}
         <AdUnit slot="0000000000" format="auto" minHeight={250} className={styles.adUnit} />

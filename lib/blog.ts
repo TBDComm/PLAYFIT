@@ -18,6 +18,7 @@ export interface PostMeta {
   title: string
   description: string
   publishedAt: string
+  updatedAt?: string
   tags: string[]
 }
 

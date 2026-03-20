@@ -74,6 +74,18 @@
   color: var(--text-muted);
 }
 
+/* Definition block — AI SEO */
+.definition {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: -16px 0 32px;
+  padding: 16px 20px;
+  background: var(--bg-surface);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
 /* Community placeholder */
 .communitySection {
   margin-bottom: 48px;

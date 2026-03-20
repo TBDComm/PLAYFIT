@@ -119,6 +119,37 @@
   color: var(--text-muted);
 }
 
+/* FAQ block — AI SEO */
+.faqSection {
+  margin-bottom: 48px;
+}
+
+.faqList {
+  margin: 0;
+  padding: 0;
+}
+
+.faqItem {
+  padding: 20px 22px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.faqQ {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.faqA {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
 /* Community placeholder */
 .communitySection {
   margin-bottom: 48px;
