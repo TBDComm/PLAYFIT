@@ -52,6 +52,13 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Smooth scroll for anchor links — on html (scroll container), reduced-motion safe */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--bg);
