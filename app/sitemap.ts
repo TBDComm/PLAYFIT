@@ -7,6 +7,26 @@ function toSlug(genre: string): string {
   return genre.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
 }
 
+async function getTopGameAppids(): Promise<string[]> {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+
+  const { data } = await supabase
+    .from('games_cache')
+    .select('appid, tags')
+    .not('tags', 'is', null)
+    .neq('tags', '{}')
+    .limit(5000)
+
+  if (!data) return []
+
+  return (data as { appid: string; tags: Record<string, number> }[])
+    .sort((a, b) => Object.keys(b.tags ?? {}).length - Object.keys(a.tags ?? {}).length)
+    .map(row => row.appid)
+}
+
 async function getGenreSlugs(): Promise<string[]> {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -43,9 +63,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/blog`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
   ]
 
-  // /games/[appid] deferred until C5
+  const [gameAppids, genreSlugs] = await Promise.all([
+    getTopGameAppids(),
+    getGenreSlugs(),
+  ])
+  const gameRoutes: MetadataRoute.Sitemap = gameAppids.map(appid => ({
+    url: `${baseUrl}/games/${appid}`,
+    lastModified: now,
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }))
 
-  const genreSlugs = await getGenreSlugs()
   const genreRoutes: MetadataRoute.Sitemap = genreSlugs.map(slug => ({
     url: `${baseUrl}/genre/${slug}`,
     lastModified: now,
@@ -53,5 +81,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
-  return [...staticRoutes, ...genreRoutes]
+  return [...staticRoutes, ...genreRoutes, ...gameRoutes]
 }

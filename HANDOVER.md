@@ -70,6 +70,7 @@ Next action: [exactly what to do next to resume]
 | C2 | Legal pages — /privacy, /terms, Footer component | ✅ 2026-03-18 |
 | C3 | GA4 Analytics — gtag.js + 5 events | ✅ 2026-03-19 |
 | C4 | Site Architecture — sticky nav bar, Breadcrumb, /genre index, /users/[userId] reserved | ✅ 2026-03-20 |
+| C5 | Game detail pages `/games/[appid]` — ISR 86400s, similar games TOP 10, SEO, noindex guard | ✅ 2026-03-20 |
 
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ✅
 
@@ -77,9 +78,9 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: none — C4 complete ────────
+## ── ACTIVE STEP: none — C5 complete ────────
 
-**Next step: C5** — Individual game pages (`/games/[appid]`). Read `SPEC.md §C5` before starting.
+**Next step: C6** — Genre hub pages (`/genre/[slug]`). Read `SPEC.md §C6` before starting.
 
 **Revenue model (confirmed 2026-03-18):** AdSense (C8–C9) + long-term B2B direct ad sales to game publishers/developers. marketing-skills/ selection reflects both directions.
 
@@ -99,6 +100,7 @@ _2026-03-16~18 B-series + C1/C2 entries → HANDOVER-archive.md_
 | 2026-03-20 | UI: replace all button transparent backgrounds with var(--bg-elevated) — logoutBtn, steamLinkBtn, closeBtn, inlineLink, footerLink, toggleCheckbox | `Header.module.css`, `page.module.css` |
 | 2026-03-20 | UI: footerLink → full button (border, padding, hover); closeBtn → border added; authFooter → bg-elevated | `Header.module.css` |
 | 2026-03-20 | C4: Header → sticky nav bar (logo + nav links + auth + mobile hamburger); Footer + Blog/Genre links; Breadcrumb component; /genre index page; /users/[userId] reserved | `Header.tsx`, `Header.module.css`, `Footer.tsx`, `Breadcrumb.tsx` (new), `Breadcrumb.module.css` (new), `app/genre/page.tsx` (new), `app/genre/page.module.css` (new), `app/users/[userId]/page.tsx` (new) |
+| 2026-03-20 | C5: `/games/[appid]` — ISR 86400s, similar games TOP 10 via score_candidates RPC, SoftwareApplication JSON-LD, noindex thin content guard; sitemap updated with top 5000 games | `app/games/[appid]/page.tsx` (new), `app/games/[appid]/page.module.css` (new), `app/sitemap.ts` |
 
 ---
 
