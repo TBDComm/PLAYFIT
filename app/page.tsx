@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import type { RecommendationCard, ErrorCode } from '@/types'
 import { trackEvent } from '@/lib/analytics'
@@ -438,6 +439,11 @@ export default function Home() {
             {error}
           </p>
         )}
+
+        <div className={styles.pageNav}>
+          <Link href="/genre" className={styles.pageNavLink}>장르별 탐색</Link>
+          <Link href="/blog" className={styles.pageNavLink}>블로그</Link>
+        </div>
       </div>
     </main>
   )
