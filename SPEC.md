@@ -1329,7 +1329,30 @@ interface SavedGame {
 
 **Step 7-3: Result page save button** (`app/result/page.tsx`)
 
-Check if `authState` state already exists in `result/page.tsx`. If not, add it using the same pattern as `page.tsx` (createBrowserClient + getSession in useEffect).
+`result/page.tsx` currently has **no supabase client and no authState**. Add both:
+```ts
+// Module level (outside component):
+const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
+// Inside component, add state:
+const [authState, setAuthState] = useState<'loading' | 'authed' | 'anon'>('loading')
+const [savedAppIds, setSavedAppIds] = useState<Set<string>>(new Set())
+
+// useEffect — auth + saved games fetch:
+useEffect(() => {
+  supabase.auth.getSession().then(async ({ data: { session } }) => {
+    if (!session) { setAuthState('anon'); return }
+    setAuthState('authed')
+    const token = session.access_token
+    const res = await fetch('/api/saved-games', { headers: { Authorization: `Bearer ${token}` } })
+    const data = await res.json() as { saved: SavedGame[] }
+    setSavedAppIds(new Set((data.saved ?? []).map(g => g.appid)))
+  })
+}, [])
+```
 
 - On mount: if `authState !== 'anon'`, call `GET /api/saved-games` with Bearer token → build `Set<string>` of saved appids → `savedAppIds` state
 - Each recommendation card: add save button inside the card
@@ -1376,7 +1399,11 @@ Auth state → display:
 ```
 authState === 'loading'    → show 3 placeholder cards (skeleton feel, no text)
 authState === 'anon'       → 3 placeholder cards + "로그인하면 저장한 게임이 여기에 표시돼요"
-                              + link button: "로그인하기 →" (opens login modal)
+                              + button: "로그인하기 →"
+                                onClick: window.dispatchEvent(new CustomEvent('guildeline:open-login'))
+                                Header.tsx must listen for this event → setShowLoginModal(true)
+                                Add to Header.tsx useEffect:
+                                  window.addEventListener('guildeline:open-login', () => setShowLoginModal(true))
 authState !== 'anon'
   savedGames.length === 0  → 3 placeholder cards + "추천받은 게임을 저장하면 여기에 표시돼요"
                               + anchor: "지금 추천받기 ↑" → href="#recommend-form"
@@ -1393,10 +1420,11 @@ Card style for saved games: identical to result page cards (same CSS classes if 
 ```
 app/api/saved-games/route.ts           ← GET + POST
 app/api/saved-games/[appid]/route.ts   ← DELETE
-app/result/page.tsx                    ← add save button
+app/result/page.tsx                    ← add supabase client + authState + savedAppIds + save button
 app/result/page.module.css             ← save button styles
-app/page.tsx                           ← activate saved section
+app/page.tsx                           ← module-level supabase + activate saved section
 app/page.module.css                    ← saved card styles (if new styles needed)
+app/components/Header.tsx              ← add 'guildeline:open-login' custom event listener
 ```
 
 ---
