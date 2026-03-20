@@ -1,17 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Breadcrumb from '@/app/components/Breadcrumb'
-import { getPost, getAllSlugs } from '@/lib/blog'
+import { getPost } from '@/lib/blog'
 import styles from './page.module.css'
 
 export const runtime = 'edge'
-export const dynamic = 'force-static'
-
-// ── Static params ─────────────────────────────────────────────────────────────
-
-export function generateStaticParams() {
-  return getAllSlugs().map(slug => ({ slug }))
-}
 
 // ── Metadata ──────────────────────────────────────────────────────────────────
 
