@@ -106,7 +106,8 @@ _2026-03-16~18 B-series + C1/C2 entries → HANDOVER-archive.md_
 | 2026-03-20 | C7: Blog section — TSX content approach (no fs/MDX, edge-safe); 3 posts; BlogPosting JSON-LD; sitemap updated | `lib/blog.ts` (new), `content/blog/*.tsx` (3 new), `app/blog/page.tsx` (new), `app/blog/[slug]/page.tsx` (new), `app/sitemap.ts` |
 | 2026-03-20 | Fix: blog/[slug] — remove generateStaticParams (Next.js rejects edge runtime + generateStaticParams together) | `app/blog/[slug]/page.tsx` |
 | 2026-03-20 | UI: remove nav bar; auth buttons → fixed top-right float; NavLogo → fixed top-left; home page: no logo | `app/layout.tsx`, `Header.tsx`, `Header.module.css`, `NavLogo.tsx`, `NavLogo.module.css` |
-| 2026-03-20 | UI: home page — add genre + blog text links below form (muted, accent on hover) | `app/page.tsx`, `app/page.module.css` |
+| 2026-03-20 | UI: home page — genre + blog links moved to top-left; accent colored text (opacity 0.6→1 on hover) | `app/page.tsx`, `app/page.module.css` |
+| 2026-03-20 | UI: genre page — fixed card size via aspect-ratio 5/2 + font-size clamp(cqi) for auto text scaling | `app/genre/page.module.css` |
 
 ---
 

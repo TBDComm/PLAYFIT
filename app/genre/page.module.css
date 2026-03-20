@@ -34,17 +34,22 @@
 }
 
 .genreCard {
-  display: block;
-  padding: 16px 20px;
+  container-type: inline-size;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 5 / 2;
+  padding: 0 12px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  font-size: 0.9375rem;
+  font-size: clamp(0.625rem, 9cqi, 0.9375rem);
   font-weight: 500;
   color: var(--text-primary);
   text-decoration: none;
-  transition: background-color 150ms, border-color 150ms, color 150ms;
   text-align: center;
+  overflow: hidden;
+  transition: background-color 150ms, border-color 150ms, color 150ms;
 }
 
 .genreCard:hover,
