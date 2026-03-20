@@ -107,6 +107,7 @@ _2026-03-16~18 B-series + C1/C2 entries → HANDOVER-archive.md_
 | 2026-03-20 | Fix: blog/[slug] — remove generateStaticParams (Next.js rejects edge runtime + generateStaticParams together) | `app/blog/[slug]/page.tsx` |
 | 2026-03-20 | UI: remove nav bar; auth buttons → fixed top-right float; NavLogo → fixed top-left; home page: no logo | `app/layout.tsx`, `Header.tsx`, `Header.module.css`, `NavLogo.tsx`, `NavLogo.module.css` |
 | 2026-03-20 | UI: home page — genre + blog links fixed top-left (top:16px left:24px), same Y as authFloat; accent text | `app/page.tsx`, `app/page.module.css` |
+| 2026-03-20 | UI: footer — remove genre & blog links; keep privacy + terms only | `app/components/Footer.tsx` |
 | 2026-03-20 | UI: genre page — fixed card size via aspect-ratio 5/2 + font-size clamp(cqi) for auto text scaling | `app/genre/page.module.css` |
 
 ---
