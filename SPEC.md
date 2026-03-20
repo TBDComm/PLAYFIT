@@ -1180,13 +1180,236 @@ Quick-win fixes, implement in one pass:
 
 ---
 
+#### FT6 — Home Preview Section Redesign
+
+**Context:** FT1 added a preview section with 2 hardcoded result cards ("이런 추천을 받았어요"). Two problems: (1) cards are being clipped/cut off due to layout constraints, (2) section feels thin — only 2 cards, no visual hook for new visitors. FT6 redesigns the preview section into two distinct sub-sections.
+
+**Design principle:** We are NOT a game cover gallery (Backloggd). We are an AI taste matcher. The thumbnail strip must feel like "AI surfaced these from your DNA" — not a browse grid. This is achieved by showing **tag chips on hover**, not just the game name. Tags = our signal.
+
+**Migration from FT1 preview:** Remove the existing `previewCardList` JSX block (the 2 horizontal Elden Ring + Hades cards with `previewCard` / `previewThumb` / `previewCardBody` classes). Replace with the two sub-sections below. Keep `previewLabel`, `previewTitle`, and `previewCta` ("내 추천 받기 ↑") — only the card list changes.
+
+**New preview section structure:**
+
+```
+[Preview section]  ← same .previewSection wrapper, same bg
+
+── Sub-section A: Thumbnail Strip ─────────────────────────
+Label: "미리보기"  (existing .previewLabel)
+Title: "이런 추천을 받았어요"  (existing .previewTitle)
+
+Horizontal scroll strip — 8 hardcoded games
+Each tile: fixed width 220px, aspect-ratio 460/215, border-radius lg, overflow hidden
+Hover/focus-visible:
+  • cover image: filter blur(4px) brightness(0.4) + scale(1.04)  [transition 300ms]
+  • overlay fades in (opacity 0 → 1)                             [transition 300ms]
+  • overlay content: game name (bold, lg) + 3–4 tag chips below
+Tag chips on hover: small pill chips, accent-dim bg, accent border, accent text
+  — same "Guildeline smell" as rest of site, NOT generic white text
+
+Links: each tile → /games/[appid]
+Scrollbar: hidden (scrollbar-width: none + ::-webkit-scrollbar display:none)
+Mobile: natural horizontal scroll
+
+── Visual divider between A and B ──────────────────────────
+margin-top: 3rem (no visible line — whitespace only)
+
+── Sub-section B: Saved Games ──────────────────────────────
+Label: small muted uppercase — "내 저장 목록"  (same .previewLabel style)
+Title: "내가 저장한 게임"  (same .previewTitle style)
+(FT6 ships this as a static shell — FT7 activates it with real data)
+
+In FT6, always show 3 placeholder cards with a single fixed notice:
+  "추천받은 게임을 저장하면 여기에 표시돼요"
+  (No auth check in FT6 — same text for everyone. FT7 replaces this entire section with auth-aware logic.)
+Placeholder card dimensions: same width as result cards — full width, ~120px height, centered text
+```
+
+**Hardcoded thumbnail strip games (8 total):**
+```
+Elden Ring      appid: 1245620  tags: Souls-like · Open World · Action RPG · Difficult
+Hades           appid: 1145360  tags: Roguelike · Action · Fast-Paced · Story Rich
+Stardew Valley  appid: 413150   tags: Farming Sim · Relaxing · Pixel Graphics · Indie
+Hollow Knight   appid: 367520   tags: Metroidvania · Souls-like · Atmospheric · Indie
+The Witcher 3   appid: 292030   tags: Open World · RPG · Story Rich · Dark Fantasy
+Terraria        appid: 105600   tags: Sandbox · Crafting · Building · Exploration
+Celeste         appid: 504230   tags: Platformer · Difficult · Pixel Art · Story Rich
+Dead Cells      appid: 588650   tags: Roguelike · Action · Metroidvania · Fast-Paced
+```
+Define as a `const PREVIEW_TILES` array outside the component (not inside — no inline components rule).
+
+**Files:** `app/page.tsx`, `app/page.module.css`
+
+**CSS rules:**
+- Tile image transition: `filter` + `transform` only (rules/frontend-design.md — no layout-triggering props)
+- `prefers-reduced-motion: reduce` → transition: none on tile
+- Overlay uses `position: absolute; inset: 0` — no JS, pure CSS `:hover`
+- Tag chips inside overlay: `display: flex; flex-wrap: wrap; gap: 4px; justify-content: center`
+
+---
+
+#### FT7 — Save Recommendations Feature
+
+**Context:** Users want to save individual game recommendations like a bookmark/cart. Logged-in only. Unlimited saves. No dedicated `/saved` page yet (planned for a later phase).
+
+**Design principle:** Save button = "this game matched me." It's a signal of taste alignment, not just bookmarking. Keep the UI minimal — a small bookmark icon or "저장" chip. No modal, no confirmation step.
+
+---
+
+**Step 7-1: Supabase table**
+
+User must run this SQL in Supabase dashboard:
+
+```sql
+create table saved_games (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users(id) on delete cascade not null,
+  appid text not null,
+  name text not null,
+  reason text,
+  price_krw integer,
+  metacritic_score integer,
+  saved_at timestamptz default now() not null,
+  unique(user_id, appid)
+);
+
+alter table saved_games enable row level security;
+
+create policy "users can manage their own saved games"
+  on saved_games for all
+  using (auth.uid() = user_id);
+```
+
+---
+
+**Step 7-2: API routes**
+
+Auth pattern (edge-runtime compatible):
+- Client reads `session.access_token` from `supabase.auth.getSession()`
+- Client sends `Authorization: Bearer <token>` header
+- Server: `createClient(url, serviceRoleKey)` → `supabase.auth.getUser(token)` to verify identity
+- Use `SUPABASE_SERVICE_ROLE_KEY` (already set as env var)
+
+Routes:
+
+`GET /api/saved-games`
+- Verify token → get user_id
+- `select * from saved_games where user_id = X order by saved_at desc`
+- Returns: `{ saved: SavedGame[] }`
+- 401 if no/invalid token
+
+`POST /api/saved-games`
+- Body: `{ appid, name, reason?, price_krw?, metacritic_score? }`
+- Verify token → get user_id
+- Upsert (unique constraint handles duplicates gracefully)
+- Returns: `{ ok: true }`
+
+`DELETE /api/saved-games/[appid]`
+- Verify token → get user_id
+- `delete from saved_games where user_id = X and appid = Y`
+- Returns: `{ ok: true }`
+
+All routes: `export const runtime = 'edge'`
+Files: `app/api/saved-games/route.ts`, `app/api/saved-games/[appid]/route.ts`
+
+**TypeScript type** (define in `types.ts` or inline in each file):
+```ts
+interface SavedGame {
+  id: string
+  user_id: string
+  appid: string
+  name: string
+  reason: string | null
+  price_krw: number | null
+  metacritic_score: number | null
+  saved_at: string
+}
+```
+
+---
+
+**Step 7-3: Result page save button** (`app/result/page.tsx`)
+
+Check if `authState` state already exists in `result/page.tsx`. If not, add it using the same pattern as `page.tsx` (createBrowserClient + getSession in useEffect).
+
+- On mount: if `authState !== 'anon'`, call `GET /api/saved-games` with Bearer token → build `Set<string>` of saved appids → `savedAppIds` state
+- Each recommendation card: add save button inside the card
+  - Only rendered if `authState !== 'anon'`
+  - **No icon library in project — use text + Unicode only:**
+    - Saved state: `"★ 저장됨"` · accent color · `background: var(--accent-dim)`
+    - Unsaved state: `"☆ 저장"` · muted color · `background: var(--bg-surface)`
+  - Button must NOT use transparent background (memory: feedback_no_transparent_buttons.md)
+  - Click: optimistic toggle (update local Set immediately), then call POST or DELETE
+  - `border: 1px solid` matching the state color · `border-radius: var(--radius)` · `padding: 4px 10px` · `font-size: 0.8125rem`
+
+---
+
+**Step 7-4: Home page saved games section** (`app/page.tsx`)
+
+Activate the FT6 placeholder shell with real logic.
+
+**Note on supabase client scope:** Currently in `page.tsx`, the supabase client is created inside the auth `useEffect`. For saved-games fetch, create a module-level constant instead:
+```ts
+// Move to module level (outside the component), replacing the inline createBrowserClient calls:
+const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+```
+Then both the auth useEffect and the saved-games useEffect can reference it directly.
+
+On mount (separate useEffect, depends on `authState`):
+```ts
+useEffect(() => {
+  if (authState === 'anon' || authState === 'loading') return
+  void (async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    const token = session?.access_token
+    if (!token) return
+    const res = await fetch('/api/saved-games', { headers: { Authorization: `Bearer ${token}` } })
+    const data = await res.json() as { saved: SavedGame[] }
+    setSavedGames(data.saved ?? [])
+  })()
+}, [authState])
+```
+
+Auth state → display:
+```
+authState === 'loading'    → show 3 placeholder cards (skeleton feel, no text)
+authState === 'anon'       → 3 placeholder cards + "로그인하면 저장한 게임이 여기에 표시돼요"
+                              + link button: "로그인하기 →" (opens login modal)
+authState !== 'anon'
+  savedGames.length === 0  → 3 placeholder cards + "추천받은 게임을 저장하면 여기에 표시돼요"
+                              + anchor: "지금 추천받기 ↑" → href="#recommend-form"
+  savedGames.length > 0    → actual saved game cards (horizontal scroll, same tile as result cards)
+                              show all saved games, newest first
+                              each card: game name + reason + price/score + "저장 취소" button
+```
+
+Card style for saved games: identical to result page cards (same CSS classes if possible, or duplicate styles — no shared abstraction per FT1 precedent).
+
+---
+
+**Files summary:**
+```
+app/api/saved-games/route.ts           ← GET + POST
+app/api/saved-games/[appid]/route.ts   ← DELETE
+app/result/page.tsx                    ← add save button
+app/result/page.module.css             ← save button styles
+app/page.tsx                           ← activate saved section
+app/page.module.css                    ← saved card styles (if new styles needed)
+```
+
+---
+
 ### FT-series Implementation Order
 
-| Step | Description | Impact |
-|------|-------------|--------|
-| FT5 | Code fixes + brand comment cleanup | Low (hygiene, do first — fast) |
-| FT3 | Footer nav enhancement | Low-Medium |
-| FT1 | Main page hero + tag scatter + preview cards | **HIGH — primary product feel change** |
-| FT2 | Genre index with counts + visual tiers | Medium |
-| FT4 | 2 new blog posts | Medium (AdSense) |
+| Step | Description | Status | Impact |
+|------|-------------|--------|--------|
+| FT5 | Code fixes + brand comment cleanup | ✅ done | Low |
+| FT3 | Footer nav enhancement | ✅ done | Low-Medium |
+| FT1 | Main page hero + TagScatter + preview cards | ✅ done | HIGH |
+| FT2 | Genre index with counts + visual tiers | ⏳ next | Medium |
+| FT4 | 2 new blog posts | ⏳ | Medium (AdSense) |
+| FT6 | Home preview redesign: thumbnail strip + saved section shell | ⏳ | HIGH |
+| FT7 | Save recommendations: DB + API + result button + home saved section | ⏳ | HIGH |
 

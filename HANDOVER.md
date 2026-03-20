@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 149/200 lines — OK**
+📏 **File health: 153/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -114,6 +114,8 @@ Full audit completed 2026-03-20. Spec written in `SPEC.md §Phase 6`. Design ide
 3. ~~**FT1** — Main page hero redesign: TagScatter + headline + stats + preview cards + How it works~~ ✅ 2026-03-20
 4. **FT2** — Genre index: game counts per genre, sort by count, tier chips ← **NEXT**
 5. **FT4** — 2 new blog posts (reach 5 total for AdSense)
+6. **FT6** — Home preview redesign: EX2-style thumbnail strip (8 games, hover→tag chips) + saved section shell
+7. **FT7** — Save recommendations: Supabase table + API routes + result page save button + home saved section activated
 
 ---
 
