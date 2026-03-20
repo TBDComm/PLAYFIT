@@ -1241,6 +1241,8 @@ Define as a `const PREVIEW_TILES` array outside the component (not inside — no
 
 **Files:** `app/page.tsx`, `app/page.module.css`
 
+**Image component:** Use `<Image unoptimized>` (CF Pages constraint — C13 decision). `width={460} height={215}`, `className={styles.previewTileImg}`.
+
 **CSS rules:**
 - Tile image transition: `filter` + `transform` only (rules/frontend-design.md — no layout-triggering props)
 - `prefers-reduced-motion: reduce` → transition: none on tile
