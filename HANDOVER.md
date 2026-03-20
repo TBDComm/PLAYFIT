@@ -95,6 +95,7 @@ _2026-03-16~18 B-series + C1/C2 entries → HANDOVER-archive.md_
 | 2026-03-18 | Fix: search debounce 300ms → 150ms; race condition via searchGenRef | `page.tsx` |
 | 2026-03-19 | C3: GA4 gtag.js + 5 events; NEXT_PUBLIC_GA_MEASUREMENT_ID added to CF Pages ✅ | `layout.tsx`, `lib/analytics.ts`, `page.tsx`, `result/page.tsx`, `Header.tsx` |
 | 2026-03-19 | UI: result page — thumbnail height:auto no-crop, card max-height via cqw, padding 14%, logo outside .inner, guideline fixes | `result/page.tsx`, `result/page.module.css` |
+| 2026-03-20 | UI: replace all button transparent backgrounds with var(--bg-elevated) — logoutBtn, steamLinkBtn, closeBtn, inlineLink, footerLink, toggleCheckbox | `Header.module.css`, `page.module.css` |
 
 ---
 

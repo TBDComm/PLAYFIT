@@ -30,7 +30,7 @@
 }
 
 .logoutBtn {
-  background: transparent;
+  background: var(--bg-elevated);
   color: var(--error);
   border-color: var(--error);
 }
@@ -41,7 +41,7 @@
 }
 
 .steamLinkBtn {
-  background: transparent;
+  background: var(--bg-elevated);
   color: var(--accent);
   border-color: var(--accent);
 }
@@ -111,7 +111,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  background: transparent;
+  background: var(--bg-elevated);
   border: none;
   color: var(--text-secondary);
   font-size: 1rem;
@@ -161,7 +161,7 @@
 }
 
 .inlineLink {
-  background: transparent;
+  background: var(--bg-elevated);
   border: none;
   color: #58a6ff;
   font-size: 0.8125rem;
@@ -241,7 +241,7 @@
 }
 
 .footerLink {
-  background: transparent;
+  background: var(--bg-elevated);
   border: none;
   color: #58a6ff;
   font-size: 0.875rem;

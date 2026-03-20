@@ -145,7 +145,7 @@
   height: 1rem;
   border: 1.5px solid var(--border);
   border-radius: 3px;
-  background: transparent;
+  background: var(--bg-elevated);
   cursor: pointer;
   flex-shrink: 0;
   position: relative;
