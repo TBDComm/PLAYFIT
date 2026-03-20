@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 131/200 lines — OK**
+📏 **File health: 136/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -116,6 +116,7 @@ _Pre-2026-03-20 entries → HANDOVER-archive.md_
 | 2026-03-20 | Fix: blog/[slug] — remove generateStaticParams (incompatible with edge runtime) | `app/blog/[slug]/page.tsx` |
 | 2026-03-20 | Rename: PlayFit → Guildeline; `@steam.playfit` + sessionStorage keys unchanged (internal identifiers) | all tsx/ts/md |
 | 2026-03-20 | feat: LoadingOverlay (G logo pulse + bouncing dots) on main page; Toast notification on Steam link success | LoadingOverlay.tsx/.css, page.tsx, Header.tsx/.css |
+| 2026-03-20 | ui: muted "Steam 연동됨" text shown in header for email/Google users with Steam already linked | Header.tsx, Header.module.css |
 | 2026-03-20 | Domain: guildeline.com live — CF Pages, NEXT_PUBLIC_BASE_URL, Google Console JS Origins, Supabase Auth URL, Search Console, GA4 all updated | external services |
 
 ---
