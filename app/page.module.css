@@ -401,16 +401,20 @@
   color: var(--error);
 }
 
-/* ===== Page nav links (top-left) ===== */
+/* ===== Page nav links — fixed top-left, same Y as authFloat ===== */
 
 .pageNav {
+  position: fixed;
+  top: 16px;
+  left: 24px;
+  z-index: 10;
   display: flex;
+  align-items: center;
   gap: 1.25rem;
-  margin-bottom: 2.5rem;
 }
 
 .pageNavLink {
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--accent);
   opacity: 0.6;
@@ -426,6 +430,18 @@
   outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: 2px;
+}
+
+@media (max-width: 639px) {
+  .pageNav {
+    top: 12px;
+    left: 16px;
+    gap: 1rem;
+  }
+
+  .pageNavLink {
+    font-size: 0.8125rem;
+  }
 }
 
 /* ===== Error ===== */

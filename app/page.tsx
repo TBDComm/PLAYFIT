@@ -264,12 +264,12 @@ export default function Home() {
 
   return (
     <main className={styles.page}>
-      <div className={styles.inner}>
-        <div className={styles.pageNav}>
-          <Link href="/genre" className={styles.pageNavLink}>장르별 탐색</Link>
-          <Link href="/blog" className={styles.pageNavLink}>블로그</Link>
-        </div>
+      <div className={styles.pageNav}>
+        <Link href="/genre" className={styles.pageNavLink}>장르별 탐색</Link>
+        <Link href="/blog" className={styles.pageNavLink}>블로그</Link>
+      </div>
 
+      <div className={styles.inner}>
         <header className={styles.header}>
           <h1 className={styles.logo}>
             <span className={styles.logoAccent}>PLAY</span>FIT
