@@ -3,11 +3,13 @@
 import { useEffect, useState, useRef, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import type { RecommendationCard, ErrorCode } from '@/types'
 import { trackEvent } from '@/lib/analytics'
 import JsonLd from './components/JsonLd'
 import LoadingOverlay from './components/LoadingOverlay'
+import TagScatter from './components/TagScatter'
 import styles from './page.module.css'
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
@@ -311,182 +313,264 @@ export default function Home() {
         <Link href="/blog" className={styles.pageNavLink}>블로그</Link>
       </div>
 
-      <div className={styles.inner}>
-        <header className={styles.header}>
-          <h1 className={styles.logo}>
-            <span className={styles.logoAccent}>GUILD</span>ELINE
-          </h1>
-          <p className={styles.tagline}>나한테 맞는 게임을 찾아드립니다</p>
-        </header>
+      {/* ── Hero ── */}
+      <section className={styles.hero}>
+        <TagScatter />
+        <div className={styles.inner}>
+          <header className={styles.header}>
+            <h1 className={styles.logo}>
+              <span className={styles.logoAccent}>GUILD</span>ELINE
+            </h1>
+            <h2 className={styles.headline}>내 플레이 기록이 곧 취향이다</h2>
+            <p className={styles.heroStat}>82,816개 Steam 게임 중에서 AI가 골라드립니다</p>
+            <a href="#recommend-form" className={styles.heroCta}>지금 시작하기 ↓</a>
+          </header>
+        </div>
+      </section>
 
-        <form className={styles.form} onSubmit={handleSubmit} noValidate>
-          {mode === 'steam' && authState === 'steam' ? (
+      {/* ── Form ── */}
+      <section className={styles.formSection}>
+        <div className={styles.inner}>
+          <form id="recommend-form" className={styles.form} onSubmit={handleSubmit} noValidate>
+            {mode === 'steam' && authState === 'steam' ? (
+              <div className={styles.inputWrapper}>
+                <p className={styles.steamAuthNotice}>Steam 계정이 연동되어 있어요</p>
+              </div>
+            ) : mode === 'steam' ? (
+              <div className={styles.inputWrapper}>
+                <label className={styles.label} htmlFor="steam-url">
+                  Steam 프로필 URL
+                </label>
+                <input
+                  id="steam-url"
+                  name="steam-url"
+                  type="url"
+                  className={styles.input}
+                  placeholder="스팀 프로필 URL을 입력하세요…"
+                  value={url}
+                  onChange={e => setUrl(e.target.value)}
+                  autoComplete="off"
+                  spellCheck={false}
+                  disabled={loading}
+                />
+                <button
+                  type="button"
+                  className={styles.modeToggle}
+                  onClick={() => switchMode('manual')}
+                  disabled={loading}
+                >
+                  스팀 계정 없이 추천받기 →
+                </button>
+              </div>
+            ) : (
+              <div className={styles.inputWrapper}>
+                <span className={styles.label}>
+                  플레이한 게임 입력 (최대 5개)
+                </span>
+                <p className={styles.manualNotice}>
+                  게임 이름은 영문으로 정확히 입력해야 분석이 가능해요 (예: Elden Ring, Stardew Valley)
+                </p>
+                <div className={styles.manualRows} role="group" aria-label="게임 목록">
+                  {manualGames.map((g, i) => (
+                    <div key={i}>
+                      <div className={styles.manualRow}>
+                        <span className={styles.manualRowNum} aria-hidden="true">{i + 1}</span>
+                        <div className={styles.dropdownWrapper}>
+                          <input
+                            ref={el => { nameInputRefs.current[i] = el }}
+                            type="text"
+                            name={`game-name-${i}`}
+                            className={styles.input}
+                            placeholder="게임 이름 검색…"
+                            value={g.name}
+                            onChange={e => handleNameChange(i, e.target.value)}
+                            onBlur={() => handleNameBlur(i)}
+                            autoComplete="off"
+                            spellCheck={false}
+                            disabled={loading}
+                            aria-label={`게임 ${i + 1} 이름`}
+                            aria-autocomplete="list"
+                            aria-expanded={!!dropdowns[i]?.length}
+                            aria-haspopup="listbox"
+                            aria-controls={`game-dropdown-${i}`}
+                            role="combobox"
+                          />
+                          {!!dropdowns[i]?.length && (
+                            <div id={`game-dropdown-${i}`} className={styles.dropdown} role="listbox" aria-label={`게임 ${i + 1} 검색 결과`}>
+                              {dropdowns[i]!.map(item => (
+                                <button
+                                  key={item.appid}
+                                  type="button"
+                                  className={styles.dropdownItem}
+                                  role="option"
+                                  aria-selected={false}
+                                  onMouseDown={() => selectGame(i, item.appid, item.name)}
+                                >
+                                  {item.name}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        <input
+                          type="number"
+                          name={`game-playtime-${i}`}
+                          className={`${styles.input} ${styles.inputNarrow}`}
+                          placeholder="시간…"
+                          value={g.playtime}
+                          onChange={e => updateManualGame(i, 'playtime', e.target.value)}
+                          autoComplete="off"
+                          inputMode="decimal"
+                          min={0}
+                          disabled={loading}
+                          aria-label={`게임 ${i + 1} 플레이 시간 (시간)`}
+                        />
+                      </div>
+                      {rowErrors[i] && (
+                        <p className={styles.rowError} role="alert">
+                          {rowErrors[i]}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  className={styles.modeToggle}
+                  onClick={() => switchMode('steam')}
+                  disabled={loading}
+                >
+                  ← 스팀 계정으로 추천받기
+                </button>
+                <p className={styles.manualNotice}>
+                  스팀 계정 없이는 피드백이 저장되지 않아요. 같은 계정으로 여러 번 추천받을수록 정확해지는 방식이라, 첫 추천은 다소 부정확할 수 있어요.
+                </p>
+              </div>
+            )}
+
             <div className={styles.inputWrapper}>
-              <p className={styles.steamAuthNotice}>Steam 계정이 연동되어 있어요</p>
-            </div>
-          ) : mode === 'steam' ? (
-            <div className={styles.inputWrapper}>
-              <label className={styles.label} htmlFor="steam-url">
-                Steam 프로필 URL
+              <label className={styles.label} htmlFor="budget">
+                예산 (선택)
               </label>
               <input
-                id="steam-url"
-                name="steam-url"
-                type="url"
+                id="budget"
+                name="budget"
+                type="number"
+                inputMode="numeric"
                 className={styles.input}
-                placeholder="스팀 프로필 URL을 입력하세요…"
-                value={url}
-                onChange={e => setUrl(e.target.value)}
+                placeholder="예산 입력 (예: 10000)…"
+                value={budget}
+                onChange={e => setBudget(e.target.value)}
                 autoComplete="off"
-                spellCheck={false}
-                disabled={loading}
+                min={0}
+                disabled={loading || freeOnly}
               />
-              <button
-                type="button"
-                className={styles.modeToggle}
-                onClick={() => switchMode('manual')}
-                disabled={loading}
-              >
-                스팀 계정 없이 추천받기 →
-              </button>
+              <label className={`${styles.toggleRow}${loading ? ` ${styles.toggleRowDisabled}` : ''}`}>
+                <input
+                  type="checkbox"
+                  name="free-only"
+                  className={styles.toggleCheckbox}
+                  checked={freeOnly}
+                  onChange={e => {
+                    setFreeOnly(e.target.checked)
+                    if (e.target.checked) setBudget('')
+                  }}
+                  disabled={loading}
+                />
+                무료 게임만 보기
+              </label>
             </div>
-          ) : (
-            <div className={styles.inputWrapper}>
-              <span className={styles.label}>
-                플레이한 게임 입력 (최대 5개)
-              </span>
-              <p className={styles.manualNotice}>
-                게임 이름은 영문으로 정확히 입력해야 분석이 가능해요 (예: Elden Ring, Stardew Valley)
-              </p>
-              <div className={styles.manualRows} role="group" aria-label="게임 목록">
-                {manualGames.map((g, i) => (
-                  <div key={i}>
-                    <div className={styles.manualRow}>
-                      <span className={styles.manualRowNum} aria-hidden="true">{i + 1}</span>
-                      <div className={styles.dropdownWrapper}>
-                        <input
-                          ref={el => { nameInputRefs.current[i] = el }}
-                          type="text"
-                          name={`game-name-${i}`}
-                          className={styles.input}
-                          placeholder="게임 이름 검색…"
-                          value={g.name}
-                          onChange={e => handleNameChange(i, e.target.value)}
-                          onBlur={() => handleNameBlur(i)}
-                          autoComplete="off"
-                          spellCheck={false}
-                          disabled={loading}
-                          aria-label={`게임 ${i + 1} 이름`}
-                          aria-autocomplete="list"
-                          aria-expanded={!!dropdowns[i]?.length}
-                          aria-haspopup="listbox"
-                          aria-controls={`game-dropdown-${i}`}
-                          role="combobox"
-                        />
-                        {!!dropdowns[i]?.length && (
-                          <div id={`game-dropdown-${i}`} className={styles.dropdown} role="listbox" aria-label={`게임 ${i + 1} 검색 결과`}>
-                            {dropdowns[i]!.map(item => (
-                              <button
-                                key={item.appid}
-                                type="button"
-                                className={styles.dropdownItem}
-                                role="option"
-                                aria-selected={false}
-                                onMouseDown={() => selectGame(i, item.appid, item.name)}
-                              >
-                                {item.name}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      <input
-                        type="number"
-                        name={`game-playtime-${i}`}
-                        className={`${styles.input} ${styles.inputNarrow}`}
-                        placeholder="시간…"
-                        value={g.playtime}
-                        onChange={e => updateManualGame(i, 'playtime', e.target.value)}
-                        autoComplete="off"
-                        inputMode="decimal"
-                        min={0}
-                        disabled={loading}
-                        aria-label={`게임 ${i + 1} 플레이 시간 (시간)`}
-                      />
-                    </div>
-                    {rowErrors[i] && (
-                      <p className={styles.rowError} role="alert">
-                        {rowErrors[i]}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-              <button
-                type="button"
-                className={styles.modeToggle}
-                onClick={() => switchMode('steam')}
-                disabled={loading}
-              >
-                ← 스팀 계정으로 추천받기
-              </button>
-              <p className={styles.manualNotice}>
-                스팀 계정 없이는 피드백이 저장되지 않아요. 같은 계정으로 여러 번 추천받을수록 정확해지는 방식이라, 첫 추천은 다소 부정확할 수 있어요.
-              </p>
-            </div>
+
+            <button
+              type="submit"
+              className={styles.button}
+              disabled={loading || !canSubmit}
+            >
+              {loading
+                ? (mode === 'manual' ? '취향 분석 중…' : '플레이 기록 분석 중…')
+                : authState === 'steam' ? '내 게임 추천받기' : '내 게임 찾기'
+              }
+            </button>
+          </form>
+
+          {error && (
+            <p className={styles.error} role="alert">
+              {error}
+            </p>
           )}
+        </div>
+      </section>
 
-          <div className={styles.inputWrapper}>
-            <label className={styles.label} htmlFor="budget">
-              예산 (선택)
-            </label>
-            <input
-              id="budget"
-              name="budget"
-              type="number"
-              inputMode="numeric"
-              className={styles.input}
-              placeholder="예산 입력 (예: 10000)…"
-              value={budget}
-              onChange={e => setBudget(e.target.value)}
-              autoComplete="off"
-              min={0}
-              disabled={loading || freeOnly}
-            />
-            <label className={`${styles.toggleRow}${loading ? ` ${styles.toggleRowDisabled}` : ''}`}>
-              <input
-                type="checkbox"
-                name="free-only"
-                className={styles.toggleCheckbox}
-                checked={freeOnly}
-                onChange={e => {
-                  setFreeOnly(e.target.checked)
-                  if (e.target.checked) setBudget('')
-                }}
-                disabled={loading}
+      {/* ── Preview ── */}
+      <section className={styles.previewSection}>
+        <div className={styles.inner}>
+          <p className={styles.previewLabel}>미리보기</p>
+          <p className={styles.previewTitle}>이런 추천을 받았어요</p>
+          <div className={styles.previewCardList}>
+            <article className={styles.previewCard}>
+              <Image
+                src="https://cdn.akamai.steamstatic.com/steam/apps/1245620/header.jpg"
+                alt="Elden Ring"
+                width={460}
+                height={215}
+                unoptimized
+                className={styles.previewThumb}
               />
-              무료 게임만 보기
-            </label>
+              <div className={styles.previewCardBody}>
+                <p className={styles.previewCardName}>Elden Ring</p>
+                <p className={styles.previewReason}>오픈 월드 탐험과 고난도 전투를 좋아하는 취향에 딱 맞아요</p>
+                <div className={styles.previewMeta}>
+                  <span className={styles.previewPrice}>₩66,000</span>
+                  <span className={`${styles.previewScore} ${styles.scoreHigh}`}>메타크리틱 96점</span>
+                </div>
+              </div>
+            </article>
+            <article className={styles.previewCard}>
+              <Image
+                src="https://cdn.akamai.steamstatic.com/steam/apps/1145360/header.jpg"
+                alt="Hades"
+                width={460}
+                height={215}
+                unoptimized
+                className={styles.previewThumb}
+              />
+              <div className={styles.previewCardBody}>
+                <p className={styles.previewCardName}>Hades</p>
+                <p className={styles.previewReason}>빠른 템포의 액션과 반복 플레이를 즐기는 취향을 반영했어요</p>
+                <div className={styles.previewMeta}>
+                  <span className={styles.previewPrice}>₩16,500</span>
+                  <span className={`${styles.previewScore} ${styles.scoreHigh}`}>메타크리틱 93점</span>
+                </div>
+              </div>
+            </article>
           </div>
+          <a href="#recommend-form" className={styles.previewCta}>내 추천 받기 ↑</a>
+        </div>
+      </section>
 
-          <button
-            type="submit"
-            className={styles.button}
-            disabled={loading || !canSubmit}
-          >
-            {loading
-              ? (mode === 'manual' ? '취향 분석 중…' : '플레이 기록 분석 중…')
-              : authState === 'steam' ? '내 게임 추천받기' : '내 게임 찾기'
-            }
-          </button>
-        </form>
-
-        {error && (
-          <p className={styles.error} role="alert">
-            {error}
-          </p>
-        )}
-      </div>
+      {/* ── How it works ── */}
+      <section className={styles.howSection}>
+        <div className={styles.inner}>
+          <h2 className={styles.howTitle}>어떻게 작동하나요</h2>
+          <div className={styles.howSteps}>
+            <div className={styles.howStep}>
+              <span className={styles.howNum}>01</span>
+              <p className={styles.howStepTitle}>Steam 연결</p>
+              <p className={styles.howStepDesc}>프로필 URL 또는 직접 입력</p>
+            </div>
+            <div className={styles.howStep}>
+              <span className={styles.howNum}>02</span>
+              <p className={styles.howStepTitle}>AI 분석</p>
+              <p className={styles.howStepDesc}>플레이 기록 → 태그 가중치 계산</p>
+            </div>
+            <div className={styles.howStep}>
+              <span className={styles.howNum}>03</span>
+              <p className={styles.howStepTitle}>취향 게임 추천</p>
+              <p className={styles.howStepDesc}>예산 내 딱 맞는 게임 목록</p>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   )
 }

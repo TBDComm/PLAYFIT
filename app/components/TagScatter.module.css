@@ -1,0 +1,26 @@
+.scatter {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.tag {
+  position: absolute;
+  font-family: inherit;
+  font-weight: 600;
+  white-space: nowrap;
+  user-select: none;
+  animation: tagDrift var(--dur, 12s) ease-in-out infinite alternate;
+}
+
+@keyframes tagDrift {
+  from { transform: translateY(0); }
+  to   { transform: translateY(8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tag {
+    animation: none;
+  }
+}

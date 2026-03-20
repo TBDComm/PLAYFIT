@@ -111,8 +111,8 @@ Full audit completed 2026-03-20. Spec written in `SPEC.md §Phase 6`. Design ide
 **FT-series order (implement in this sequence):**
 1. ~~**FT5** — quick fixes~~ ✅ 2026-03-20
 2. ~~**FT3** — Footer nav row~~ ✅ 2026-03-20
-3. **FT1** — Main page hero redesign: TagScatter + headline + stats + preview cards + How it works ← **NEXT**
-4. **FT2** — Genre index: game counts per genre, sort by count, tier chips
+3. ~~**FT1** — Main page hero redesign: TagScatter + headline + stats + preview cards + How it works~~ ✅ 2026-03-20
+4. **FT2** — Genre index: game counts per genre, sort by count, tier chips ← **NEXT**
 5. **FT4** — 2 new blog posts (reach 5 total for AdSense)
 
 ---
@@ -133,6 +133,7 @@ _Pre-2026-03-20 entries → HANDOVER-archive.md_
 | 2026-03-20 | Domain: guildeline.com live — CF Pages, NEXT_PUBLIC_BASE_URL, Google Console JS Origins, Supabase Auth URL, Search Console, GA4 all updated | external services |
 | 2026-03-20 | feat(FT5): Intl.DateTimeFormat in blog/page.tsx; CSS comment PLAYFIT→GUILDELINE (3 files) | app/blog/page.tsx, app/globals.css, app/page.module.css, app/result/page.module.css |
 | 2026-03-20 | feat(FT3): Footer nav row added (홈 · 장르별 탐색 · 블로그) above legal links | app/components/Footer.tsx |
+| 2026-03-20 | feat(FT1): Hero redesign — TagScatter bg, h2 headline, stat line, CTA anchor, preview cards (Elden Ring + Hades), How it works 3-step grid | app/page.tsx, app/page.module.css, app/components/TagScatter.tsx, app/components/TagScatter.module.css |
 
 ---
 
