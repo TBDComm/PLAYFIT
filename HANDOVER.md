@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 137/200 lines — OK**
+📏 **File health: 120/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -72,6 +72,7 @@ Next action: [exactly what to do next to resume]
 | C4 | Site Architecture — sticky nav bar, Breadcrumb, /genre index, /users/[userId] reserved | ✅ 2026-03-20 |
 | C5 | Game detail pages `/games/[appid]` — ISR 86400s, similar games TOP 10, SEO, noindex guard | ✅ 2026-03-20 |
 | C6 | Genre hub pages `/genre/[slug]` — ISR 86400s, top 20 by tag sum, ItemList JSON-LD, community placeholder | ✅ 2026-03-20 |
+| C7 | Blog section `/blog` + `/blog/[slug]` — TSX content components, BlogPosting JSON-LD, sitemap updated | ✅ 2026-03-20 |
 
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ✅
 
@@ -79,26 +80,9 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: C7 — Blog Section ────────────────────────
+## ── ACTIVE STEP: C8 — AdSense Integration ──────────────────
 
-**Files:** `app/blog/page.tsx` (new) · `app/blog/[slug]/page.tsx` (new) · `content/blog/*.mdx` (new) · `lib/blog.ts` (new — MDX loader)
-
-**Library decision (confirmed):** `next-mdx-remote` v5 + `gray-matter` — no next.config changes needed; fs reads at build time (CF Pages safe)
-
-**Content storage:** MDX files in `content/blog/[slug].mdx` — frontmatter: `title`, `description`, `publishedAt`, `tags`
-
-**First 3 posts:**
-1. `steam-game-recommendation-guide` — "내 취향에 맞는 스팀 게임 찾는 법"
-2. `best-rpg-games-steam-2026` — "2026년 스팀 RPG 게임 추천"
-3. `steam-playtime-and-taste` — "플레이 시간이 취향을 알려준다 — 스팀 데이터 분석"
-
-**Blog index `/blog`:** list of posts — title (linked) + description + date + tags; card layout consistent with C6
-
-**Schema:** `BlogPosting` JSON-LD per post (headline, datePublished, author: PlayFit, url)
-**Breadcrumb:** Home > Blog > {post title}
-**Rendering:** `export const runtime = 'edge'` (required for all dynamic routes on CF Pages) + `generateStaticParams` + `export const dynamic = 'force-static'`; index page no ISR needed (static MDX files)
-
-**After completing:** clear lock → update Current Status → Active Step to C8 → update MEMORY.md current state → commit
+Read relevant section of `SPEC.md` before implementing.
 
 ---
 
@@ -119,6 +103,7 @@ _2026-03-16~18 B-series + C1/C2 entries → HANDOVER-archive.md_
 | 2026-03-20 | C5: `/games/[appid]` — ISR 86400s, similar games TOP 10 via score_candidates RPC, SoftwareApplication JSON-LD, noindex thin content guard; sitemap updated with top 5000 games | `app/games/[appid]/page.tsx` (new), `app/games/[appid]/page.module.css` (new), `app/sitemap.ts` |
 | 2026-03-20 | C6: `/genre/[slug]` — ISR 86400s, top 20 by tag vote sum, rank numbers, ItemList JSON-LD, community placeholder, CTA | `app/genre/[slug]/page.tsx` (new), `app/genre/[slug]/page.module.css` (new) |
 | 2026-03-20 | Fix: CF Pages build failure — added `export const runtime = 'edge'` to all dynamic routes | `app/games/[appid]/page.tsx`, `app/genre/[slug]/page.tsx`, `app/users/[userId]/page.tsx` |
+| 2026-03-20 | C7: Blog section — TSX content approach (no fs/MDX, edge-safe); 3 posts; BlogPosting JSON-LD; sitemap updated | `lib/blog.ts` (new), `content/blog/*.tsx` (3 new), `app/blog/page.tsx` (new), `app/blog/[slug]/page.tsx` (new), `app/sitemap.ts` |
 
 ---
 
