@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 114/200 lines — OK**
+📏 **File health: 130/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -79,6 +79,22 @@ Next action: [exactly what to do next to resume]
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ✅ · NEXT_PUBLIC_ADSENSE_CLIENT_ID ⏳ (pending AdSense approval — add to CF Pages when Publisher ID received)
 
 **Supabase tables:** `feedback` ✅ · `games_cache` ✅ (82,816 rows) · `user_tag_weights` ✅ · `user_profiles` ✅
+
+---
+
+## ── ADSENSE ACTIVATION CHECKLIST (run after approval) ────────
+
+When AdSense approval email arrives, do these in order:
+
+1. **CF Pages env var** — add `NEXT_PUBLIC_ADSENSE_CLIENT_ID=ca-pub-XXXXXXXXXXXXXXXX`
+2. **`public/ads.txt`** — uncomment line, replace `pub-XXXXXXXXXXXXXXXX` with real Publisher ID
+3. **Ad slot IDs** — replace all `slot="0000000000"` with real slot IDs from AdSense dashboard:
+   - `app/games/[appid]/page.tsx` — "game detail" slot
+   - `app/genre/[slug]/page.tsx` — "in-list" slot
+   - `app/blog/[slug]/page.tsx` — "in-article" slot
+   - `app/blog/page.tsx` — "display" slot
+   - `app/result/page.tsx` — "display" slot
+4. Deploy → verify ads appear on each page type
 
 ---
 
