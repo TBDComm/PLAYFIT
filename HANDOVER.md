@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 147/200 lines — OK**
+📏 **File health: 149/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -109,9 +109,9 @@ Full audit completed 2026-03-20. Spec written in `SPEC.md §Phase 6`. Design ide
 **Naming note:** SPEC.md contains legacy "D-series" references (community hub hooks, user profile placeholders) from C-series implementation. These refer to the user's separately planned community feature phase — a different plan not yet documented here. FT-series is independent of that. Do NOT conflate the two.
 
 **FT-series order (implement in this sequence):**
-1. **FT5** — quick fixes: Intl.DateTimeFormat in blog/page.tsx, CSS comment "PLAYFIT"→"GUILDELINE" (3 files)
-2. **FT3** — Footer: add nav row (홈 · 장르별 탐색 · 블로그) above legal links
-3. **FT1** — Main page hero redesign: TagScatter + headline + stats + preview cards + How it works
+1. ~~**FT5** — quick fixes~~ ✅ 2026-03-20
+2. ~~**FT3** — Footer nav row~~ ✅ 2026-03-20
+3. **FT1** — Main page hero redesign: TagScatter + headline + stats + preview cards + How it works ← **NEXT**
 4. **FT2** — Genre index: game counts per genre, sort by count, tier chips
 5. **FT4** — 2 new blog posts (reach 5 total for AdSense)
 
