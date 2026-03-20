@@ -1194,8 +1194,24 @@ Quick-win fixes, implement in one pass:
 [Preview section]  ← same .previewSection wrapper, same bg
 
 ── Sub-section A: Thumbnail Strip ─────────────────────────
-Label: "미리보기"  (existing .previewLabel)
-Title: "이런 추천을 받았어요"  (existing .previewTitle)
+
+JSX layout — strip must be OUTSIDE .inner to span full section width:
+
+  <section className={styles.previewSection}>
+    <div className={styles.inner}>
+      <p className={styles.previewLabel}>미리보기</p>
+      <p className={styles.previewTitle}>이런 추천을 받았어요</p>
+    </div>
+    <div className={styles.previewStrip}>   ← full section width, outside .inner
+      {PREVIEW_TILES.map(tile => <Link ...>)}
+    </div>
+    <div className={styles.inner}>
+      <a href="#recommend-form" className={styles.previewCta}>내 추천 받기 ↑</a>
+    </div>
+    <div className={styles.inner} style={{ marginTop: '3rem' }}>
+      {/* Sub-section B */}
+    </div>
+  </section>
 
 Horizontal scroll strip — 8 hardcoded games
 Each tile: fixed width 220px, aspect-ratio 460/215, border-radius lg, overflow hidden
