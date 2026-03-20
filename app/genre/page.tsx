@@ -5,8 +5,8 @@ import Breadcrumb from '@/app/components/Breadcrumb'
 import styles from './page.module.css'
 
 export const metadata: Metadata = {
-  title: '장르별 탐색 — PlayFit',
-  description: 'PlayFit에서 게임 장르를 탐색하고 내 취향에 맞는 게임을 찾아보세요.',
+  title: '장르별 탐색 — Guildeline',
+  description: 'Guildeline에서 게임 장르를 탐색하고 내 취향에 맞는 게임을 찾아보세요.',
   alternates: { canonical: '/genre' },
 }
 

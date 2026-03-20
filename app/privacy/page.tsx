@@ -3,22 +3,22 @@ import type { Metadata } from 'next'
 import styles from '../legal.module.css'
 
 export const metadata: Metadata = {
-  title: '개인정보처리방침 — PlayFit',
-  description: 'PlayFit 서비스의 개인정보 수집·이용·보관 정책을 안내합니다.',
+  title: '개인정보처리방침 — Guildeline',
+  description: 'Guildeline 서비스의 개인정보 수집·이용·보관 정책을 안내합니다.',
   alternates: { canonical: '/privacy' },
 }
 
 export default function PrivacyPage() {
   return (
     <main className={styles.page}>
-      <Link href="/" className={styles.backLogo} aria-label="PLAYFIT 홈으로">
-        <span className={styles.backLogoAccent}>PLAY</span>FIT
+      <Link href="/" className={styles.backLogo} aria-label="GUILDELINE 홈으로">
+        <span className={styles.backLogoAccent}>GUILD</span>ELINE
       </Link>
       <h1>개인정보처리방침</h1>
       <p className={styles.updated}>최종 업데이트: 2026년 3월 18일</p>
 
       <h2>1. 수집하는 개인정보</h2>
-      <p>PlayFit은 서비스 제공을 위해 아래 정보를 수집합니다.</p>
+      <p>Guildeline은 서비스 제공을 위해 아래 정보를 수집합니다.</p>
       <ul>
         <li>이메일 주소 — 이메일·비밀번호 또는 Google 계정으로 가입 시</li>
         <li>Steam ID / 프로필 URL — Steam 계정 연동 또는 Steam 로그인 시</li>
@@ -27,7 +27,7 @@ export default function PrivacyPage() {
       </ul>
 
       <h2>2. 쿠키 및 추적 기술</h2>
-      <p>PlayFit은 다음 목적으로 쿠키와 유사 기술을 사용합니다.</p>
+      <p>Guildeline은 다음 목적으로 쿠키와 유사 기술을 사용합니다.</p>
       <ul>
         <li>로그인 세션 유지 (Supabase 인증 쿠키)</li>
         <li>Google Analytics 4 — 페이지 조회 및 상호작용 측정 (익명 데이터)</li>
@@ -55,14 +55,14 @@ export default function PrivacyPage() {
 
       <h2>5. 미성년자</h2>
       <p>
-        PlayFit은 만 14세 미만 아동으로부터 의도적으로 개인정보를 수집하지 않습니다.
+        Guildeline은 만 14세 미만 아동으로부터 의도적으로 개인정보를 수집하지 않습니다.
         미성년자의 정보가 수집되었음을 인지한 경우 즉시 삭제합니다.
       </p>
 
       <h2>6. 문의</h2>
       <p>
         개인정보 관련 문의는{' '}
-        <a href="mailto:contact@playfit.gg">contact@playfit.gg</a>로 보내주세요.
+        <a href="mailto:contact@guildeline.com">contact@guildeline.com</a>로 보내주세요.
       </p>
     </main>
   )

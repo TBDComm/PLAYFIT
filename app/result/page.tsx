@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { RecommendationCard } from '@/types'
 import { trackEvent } from '@/lib/analytics'
 import AdUnit from '@/app/components/AdUnit'
@@ -12,6 +13,7 @@ export default function ResultPage() {
   const router = useRouter()
   const [recommendations, setRecommendations] = useState<RecommendationCard[] | null>(null)
   const [feedbackSent, setFeedbackSent] = useState<Record<number, boolean>>({})
+  const [failedImages, setFailedImages] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     const raw = sessionStorage.getItem('playfit_recommendations')
@@ -64,16 +66,17 @@ export default function ResultPage() {
         <ul className={styles.cards} aria-label="추천 게임 목록">
           {recommendations.map(card => (
             <li key={card.appid} className={styles.card}>
-              <img
-                src={`https://cdn.akamai.steamstatic.com/steam/apps/${card.appid}/header.jpg`}
-                alt={card.name}
-                className={styles.thumbnail}
-                loading="lazy"
-                decoding="async"
-                width={460}
-                height={215}
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-              />
+              {!failedImages.has(card.appid) && (
+                <Image
+                  unoptimized
+                  src={`https://cdn.akamai.steamstatic.com/steam/apps/${card.appid}/header.jpg`}
+                  alt={card.name}
+                  className={styles.thumbnail}
+                  width={460}
+                  height={215}
+                  onError={() => setFailedImages(prev => new Set(prev).add(card.appid))}
+                />
+              )}
               <div className={styles.cardBody}>
               <h2 className={styles.cardName}>{card.name}</h2>
 

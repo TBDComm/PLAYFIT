@@ -6,5 +6,12 @@ declare global {
 
 export function trackEvent(eventName: string, params?: Record<string, unknown>): void {
   if (typeof window === 'undefined' || typeof window.gtag !== 'function') return
-  window.gtag('event', eventName, params)
+  const fire = () => window.gtag('event', eventName, params)
+  // Defer to idle time so analytics never blocks user interaction (INP)
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(fire)
+  } else {
+    // Safari fallback
+    setTimeout(fire, 0)
+  }
 }
