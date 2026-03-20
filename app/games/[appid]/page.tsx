@@ -5,6 +5,7 @@ import type { Metadata } from 'next'
 import Breadcrumb from '@/app/components/Breadcrumb'
 import styles from './page.module.css'
 
+export const runtime = 'edge'
 export const dynamicParams = true
 export const revalidate = 86400
 
