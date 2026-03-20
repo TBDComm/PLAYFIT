@@ -71,6 +71,7 @@ Next action: [exactly what to do next to resume]
 | C3 | GA4 Analytics — gtag.js + 5 events | ✅ 2026-03-19 |
 | C4 | Site Architecture — sticky nav bar, Breadcrumb, /genre index, /users/[userId] reserved | ✅ 2026-03-20 |
 | C5 | Game detail pages `/games/[appid]` — ISR 86400s, similar games TOP 10, SEO, noindex guard | ✅ 2026-03-20 |
+| C6 | Genre hub pages `/genre/[slug]` — ISR 86400s, top 20 by tag sum, ItemList JSON-LD, community placeholder | ✅ 2026-03-20 |
 
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ✅
 
@@ -78,26 +79,21 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: C6 — Genre Hub Pages `/genre/[slug]` ────────
+## ── ACTIVE STEP: C7 — Blog Section ────────────────────────
 
-**Files:** `app/genre/[slug]/page.tsx` (new) · `app/genre/page.tsx` (update — add genre list to existing index)
+**Files:** `app/blog/page.tsx` (new) · `app/blog/[slug]/page.tsx` (new) · `content/blog/*.mdx` (new) · `lib/blog.ts` (new — MDX loader)
 
-**Content (server-rendered, ISR revalidate 86400):**
-- H1: `최고의 {genre} 게임 추천 | PlayFit`
-- Top 20 games in this genre from `games_cache` by tag vote count sum
-- Each game: name + top 3 tags → link to `/games/[appid]`
-- Breadcrumb: Home > 장르 > {genre}; CTA "내 취향에 맞는 {genre} 게임 찾기 →" → `/`
-- Community placeholder: "{genre} 게임을 좋아하는 유저들" — static copy, no data
+**Content storage:** MDX files in `content/blog/[slug].mdx` — frontmatter: `title`, `description`, `publishedAt`, `tags`
 
-**SEO:** title = `최고의 {genre} 게임 20선 | PlayFit`; description dynamic per genre; `ItemList` JSON-LD (20 games); canonical `/genre/{slug}`
+**First 3 posts:**
+1. `steam-game-recommendation-guide` — "내 취향에 맞는 스팀 게임 찾는 법"
+2. `best-rpg-games-steam-2026` — "2026년 스팀 RPG 게임 추천"
+3. `steam-playtime-and-taste` — "플레이 시간이 취향을 알려준다 — 스팀 데이터 분석"
 
-**Slug:** genre name lowercased, spaces → hyphens (e.g. `role-playing-games`) · **Genre source:** distinct `genres` from `games_cache`
+**Schema:** `BlogPosting` JSON-LD per post (headline, datePublished, author: PlayFit, url)
+**Breadcrumb:** Home > Blog > {post title}
 
-**Scope:** no auth, no filtering, no pagination
-
-**Revenue model:** AdSense (C8–C9) + B2B direct ad sales to publishers/developers (long-term)
-
-**After completing:** clear lock → update Current Status → Active Step to C7 → update MEMORY.md current state → commit
+**After completing:** clear lock → update Current Status → Active Step to C8 → update MEMORY.md current state → commit
 
 ---
 
@@ -116,6 +112,7 @@ _2026-03-16~18 B-series + C1/C2 entries → HANDOVER-archive.md_
 | 2026-03-20 | UI: footerLink → full button (border, padding, hover); closeBtn → border added; authFooter → bg-elevated | `Header.module.css` |
 | 2026-03-20 | C4: Header → sticky nav bar (logo + nav links + auth + mobile hamburger); Footer + Blog/Genre links; Breadcrumb component; /genre index page; /users/[userId] reserved | `Header.tsx`, `Header.module.css`, `Footer.tsx`, `Breadcrumb.tsx` (new), `Breadcrumb.module.css` (new), `app/genre/page.tsx` (new), `app/genre/page.module.css` (new), `app/users/[userId]/page.tsx` (new) |
 | 2026-03-20 | C5: `/games/[appid]` — ISR 86400s, similar games TOP 10 via score_candidates RPC, SoftwareApplication JSON-LD, noindex thin content guard; sitemap updated with top 5000 games | `app/games/[appid]/page.tsx` (new), `app/games/[appid]/page.module.css` (new), `app/sitemap.ts` |
+| 2026-03-20 | C6: `/genre/[slug]` — ISR 86400s, top 20 by tag vote sum, rank numbers, ItemList JSON-LD, community placeholder, CTA | `app/genre/[slug]/page.tsx` (new), `app/genre/[slug]/page.module.css` (new) |
 
 ---
 
