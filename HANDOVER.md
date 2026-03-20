@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 141/200 lines — OK**
+📏 **File health: 142/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -69,6 +69,7 @@ Next action: [exactly what to do next to resume]
 | C1 | SEO foundation — robots.ts, sitemap.ts, OG/Twitter meta tags | ✅ 2026-03-18 |
 | C2 | Legal pages — /privacy, /terms, Footer component | ✅ 2026-03-18 |
 | C3 | GA4 Analytics — gtag.js + 5 events | ✅ 2026-03-19 |
+| C4 | Site Architecture — sticky nav bar, Breadcrumb, /genre index, /users/[userId] reserved | ✅ 2026-03-20 |
 
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ✅
 
