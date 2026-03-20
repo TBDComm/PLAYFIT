@@ -13,8 +13,7 @@ export const metadata: Metadata = {
 }
 
 function formatDate(iso: string): string {
-  const d = new Date(iso)
-  return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`
+  return new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(iso))
 }
 
 export default function BlogPage() {

@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 137/200 lines — OK**
+📏 **File health: 147/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -78,6 +78,7 @@ Next action: [exactly what to do next to resume]
 | C10 | Schema Markup — JsonLd.tsx component; @graph on all pages: WebApplication+Organization+WebSite (main), SoftwareApplication+BreadcrumbList (game), ItemList+BreadcrumbList (genre), BlogPosting+BreadcrumbList (blog) | ✅ 2026-03-20 |
 | C11 | On-Page SEO — meta title templates (main/blog post fixed), H1 logo GUILDELINE fix, blog internal links to /genre + / | ✅ 2026-03-20 |
 | C12 | AI SEO — FAQ block on game pages, definition block on genre pages, dateModified in all schemas, updatedAt on blog posts | ✅ 2026-03-20 |
+| C13 | Core Web Vitals — `<Image unoptimized>` (CF Pages constraint), `requestIdleCallback` for analytics (INP), ad minHeight wrapper (CLS) | ✅ 2026-03-20 |
 
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ✅ · NEXT_PUBLIC_ADSENSE_CLIENT_ID ⏳ (pending AdSense approval — add to CF Pages when Publisher ID received)
 
@@ -85,9 +86,9 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ADSENSE ACTIVATION CHECKLIST (run after approval) ────────
+## ── ADSENSE ACTIVATION CHECKLIST (run after FT-series + approval) ────────
 
-When AdSense approval email arrives, do these in order:
+**Apply for AdSense AFTER FT-series is fully complete.** When approval email arrives, do these in order:
 
 1. **CF Pages env var** — add `NEXT_PUBLIC_ADSENSE_CLIENT_ID=ca-pub-XXXXXXXXXXXXXXXX`
 2. **`public/ads.txt`** — uncomment line, replace `pub-XXXXXXXXXXXXXXXX` with real Publisher ID
@@ -101,9 +102,18 @@ When AdSense approval email arrives, do these in order:
 
 ---
 
-## ── ACTIVE STEP: C13 — Core Web Vitals ──────────────────
+## ── ACTIVE STEP: FT-series — Product Experience ─────────
 
-Read relevant section of `SPEC.md` before implementing.
+Full audit completed 2026-03-20. Spec written in `SPEC.md §Phase 6`. Design identity saved in `memory/project_design_identity.md`.
+
+**Naming note:** SPEC.md contains legacy "D-series" references (community hub hooks, user profile placeholders) from C-series implementation. These refer to the user's separately planned community feature phase — a different plan not yet documented here. FT-series is independent of that. Do NOT conflate the two.
+
+**FT-series order (implement in this sequence):**
+1. **FT5** — quick fixes: Intl.DateTimeFormat in blog/page.tsx, CSS comment "PLAYFIT"→"GUILDELINE" (3 files)
+2. **FT3** — Footer: add nav row (홈 · 장르별 탐색 · 블로그) above legal links
+3. **FT1** — Main page hero redesign: TagScatter + headline + stats + preview cards + How it works
+4. **FT2** — Genre index: game counts per genre, sort by count, tier chips
+5. **FT4** — 2 new blog posts (reach 5 total for AdSense)
 
 ---
 
@@ -119,7 +129,9 @@ _Pre-2026-03-20 entries → HANDOVER-archive.md_
 | 2026-03-20 | feat: LoadingOverlay (G logo pulse + bouncing dots) on main page; Toast notification on Steam link success | LoadingOverlay.tsx/.css, page.tsx, Header.tsx/.css |
 | 2026-03-20 | ui: muted "Steam 연동됨" text shown in header for email/Google users with Steam already linked | Header.tsx, Header.module.css |
 | 2026-03-20 | feat(C12): FAQ block (game pages), definition block (genre pages), dateModified schema (all), updatedAt support (blog) | games/[appid]/, genre/[slug]/, blog/[slug]/, lib/blog.ts |
+| 2026-03-20 | feat(C13): `<img>` → `<Image unoptimized>` + failedImages state; analytics defer to requestIdleCallback (Safari fallback: setTimeout 0) | result/page.tsx, lib/analytics.ts |
 | 2026-03-20 | Domain: guildeline.com live — CF Pages, NEXT_PUBLIC_BASE_URL, Google Console JS Origins, Supabase Auth URL, Search Console, GA4 all updated | external services |
+| 2026-03-20 | feat(FT5): Intl.DateTimeFormat in blog/page.tsx; CSS comment PLAYFIT→GUILDELINE (3 files) | app/blog/page.tsx, app/globals.css, app/page.module.css, app/result/page.module.css |
 
 ---
 
