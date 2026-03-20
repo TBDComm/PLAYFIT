@@ -10,6 +10,14 @@
   gap: 8px;
 }
 
+.steamLinkedNote {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: 0.01em;
+  user-select: none;
+}
+
 .loginBtn,
 .logoutBtn,
 .steamLinkBtn {

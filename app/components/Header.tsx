@@ -318,6 +318,9 @@ export default function Header() {
                 Steam 연동
               </button>
             )}
+            {!isSteamUser && steamId !== null && (
+              <span className={styles.steamLinkedNote}>Steam 연동됨</span>
+            )}
             <button onClick={handleLogout} className={styles.logoutBtn} disabled={logoutLoading}>
               {logoutLoading ? '로그아웃 중…' : '로그아웃'}
             </button>
