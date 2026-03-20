@@ -1210,6 +1210,8 @@ Links: each tile → /games/[appid]
 Scrollbar: hidden (scrollbar-width: none + ::-webkit-scrollbar display:none)
 Mobile: natural horizontal scroll
 
+previewCta ("내 추천 받기 ↑"): place immediately after the thumbnail strip, before sub-section B
+
 ── Visual divider between A and B ──────────────────────────
 margin-top: 3rem (no visible line — whitespace only)
 
@@ -1304,6 +1306,13 @@ Routes:
 - Returns: `{ ok: true }`
 
 `DELETE /api/saved-games/[appid]`
+- Extract appid: Next.js 15 params is a Promise → `const { appid } = await context.params`
+  ```ts
+  export async function DELETE(req: Request, context: { params: Promise<{ appid: string }> }) {
+    const { appid } = await context.params
+    ...
+  }
+  ```
 - Verify token → get user_id
 - `delete from saved_games where user_id = X and appid = Y`
 - Returns: `{ ok: true }`
@@ -1369,6 +1378,11 @@ useEffect(() => {
 **Step 7-4: Home page saved games section** (`app/page.tsx`)
 
 Activate the FT6 placeholder shell with real logic.
+
+Add to component state:
+```ts
+const [savedGames, setSavedGames] = useState<SavedGame[]>([])
+```
 
 **Note on supabase client scope:** Currently in `page.tsx`, the supabase client is created inside the auth `useEffect`. For saved-games fetch, create a module-level constant instead:
 ```ts
