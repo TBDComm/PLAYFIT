@@ -112,7 +112,7 @@
   top: 0;
   right: 0;
   background: var(--bg-elevated);
-  border: none;
+  border: 1px solid var(--border);
   color: var(--text-secondary);
   font-size: 1rem;
   padding: 6px 8px;
@@ -233,6 +233,7 @@
 .authFooter {
   margin-top: 16px;
   padding: 15px 20px;
+  background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: 6px;
   text-align: center;
@@ -242,18 +243,21 @@
 
 .footerLink {
   background: var(--bg-elevated);
-  border: none;
+  border: 1px solid #58a6ff;
   color: #58a6ff;
   font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
-  padding: 0;
-  transition: color 150ms;
+  padding: 5px 14px;
+  border-radius: var(--radius);
+  transition: color 150ms, background-color 150ms;
 }
 
 .footerLink:hover,
 .footerLink:focus-visible {
   color: #79b8ff;
-  text-decoration: underline;
+  background: rgba(88, 166, 255, 0.1);
+  border-color: #79b8ff;
 }
 
 /* ── Shared form elements ── */
