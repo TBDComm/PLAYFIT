@@ -1322,7 +1322,7 @@ Routes:
 All routes: `export const runtime = 'edge'`
 Files: `app/api/saved-games/route.ts`, `app/api/saved-games/[appid]/route.ts`
 
-**TypeScript type** (define in `types.ts` or inline in each file):
+**TypeScript type** (add to `types/index.ts` — same file as `RecommendationCard`):
 ```ts
 interface SavedGame {
   id: string
@@ -1418,8 +1418,12 @@ authState === 'anon'       → 3 placeholder cards + "로그인하면 저장한 
                               + button: "로그인하기 →"
                                 onClick: window.dispatchEvent(new CustomEvent('guildeline:open-login'))
                                 Header.tsx must listen for this event → setShowLoginModal(true)
-                                Add to Header.tsx useEffect:
-                                  window.addEventListener('guildeline:open-login', () => setShowLoginModal(true))
+                                Add to Header.tsx — new dedicated useEffect with cleanup:
+                                  useEffect(() => {
+                                    const handler = () => setShowLoginModal(true)
+                                    window.addEventListener('guildeline:open-login', handler)
+                                    return () => window.removeEventListener('guildeline:open-login', handler)
+                                  }, [])
 authState !== 'anon'
   savedGames.length === 0  → 3 placeholder cards + "추천받은 게임을 저장하면 여기에 표시돼요"
                               + anchor: "지금 추천받기 ↑" → href="#recommend-form"
