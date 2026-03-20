@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Space_Grotesk } from 'next/font/google'
 import Script from 'next/script'
-import Header from './components/Header'
+import NavLogo from './components/NavLogo'
 import Footer from './components/Footer'
 import './globals.css'
 
@@ -62,7 +62,7 @@ export default function RootLayout({
             </Script>
           </>
         )}
-        <Header />
+        <NavLogo />
         {children}
         <Footer />
       </body>

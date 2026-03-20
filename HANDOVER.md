@@ -104,6 +104,8 @@ _2026-03-16~18 B-series + C1/C2 entries → HANDOVER-archive.md_
 | 2026-03-20 | C6: `/genre/[slug]` — ISR 86400s, top 20 by tag vote sum, rank numbers, ItemList JSON-LD, community placeholder, CTA | `app/genre/[slug]/page.tsx` (new), `app/genre/[slug]/page.module.css` (new) |
 | 2026-03-20 | Fix: CF Pages build failure — added `export const runtime = 'edge'` to all dynamic routes | `app/games/[appid]/page.tsx`, `app/genre/[slug]/page.tsx`, `app/users/[userId]/page.tsx` |
 | 2026-03-20 | C7: Blog section — TSX content approach (no fs/MDX, edge-safe); 3 posts; BlogPosting JSON-LD; sitemap updated | `lib/blog.ts` (new), `content/blog/*.tsx` (3 new), `app/blog/page.tsx` (new), `app/blog/[slug]/page.tsx` (new), `app/sitemap.ts` |
+| 2026-03-20 | Fix: blog/[slug] — remove generateStaticParams (Next.js rejects edge runtime + generateStaticParams together) | `app/blog/[slug]/page.tsx` |
+| 2026-03-20 | UI: remove Header (nav bar + auth buttons); add NavLogo — home: hidden, other pages: PLAY(accent)+FIT wordmark | `app/layout.tsx`, `app/components/NavLogo.tsx` (new), `app/components/NavLogo.module.css` (new) |
 
 ---
 

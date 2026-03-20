@@ -1,0 +1,31 @@
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 0 24px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  background: var(--bg);
+}
+
+.wordmark {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--text-primary);
+  text-decoration: none;
+  user-select: none;
+}
+
+.play {
+  color: var(--accent);
+}
+
+@media (max-width: 480px) {
+  .bar {
+    padding: 0 16px;
+    height: 44px;
+  }
+}
