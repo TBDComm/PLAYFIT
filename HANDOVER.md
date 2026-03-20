@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 132/200 lines — OK**
+📏 **File health: 136/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -83,6 +83,8 @@ Next action: [exactly what to do next to resume]
 
 **Files:** `app/blog/page.tsx` (new) · `app/blog/[slug]/page.tsx` (new) · `content/blog/*.mdx` (new) · `lib/blog.ts` (new — MDX loader)
 
+**Library decision (confirmed):** `next-mdx-remote` v5 + `gray-matter` — no next.config changes needed; fs reads at build time (CF Pages safe)
+
 **Content storage:** MDX files in `content/blog/[slug].mdx` — frontmatter: `title`, `description`, `publishedAt`, `tags`
 
 **First 3 posts:**
@@ -90,8 +92,11 @@ Next action: [exactly what to do next to resume]
 2. `best-rpg-games-steam-2026` — "2026년 스팀 RPG 게임 추천"
 3. `steam-playtime-and-taste` — "플레이 시간이 취향을 알려준다 — 스팀 데이터 분석"
 
+**Blog index `/blog`:** list of posts — title (linked) + description + date + tags; card layout consistent with C6
+
 **Schema:** `BlogPosting` JSON-LD per post (headline, datePublished, author: PlayFit, url)
 **Breadcrumb:** Home > Blog > {post title}
+**Rendering:** `generateStaticParams` + `export const dynamic = 'force-static'`; index page no ISR needed (static MDX files)
 
 **After completing:** clear lock → update Current Status → Active Step to C8 → update MEMORY.md current state → commit
 
