@@ -71,7 +71,7 @@ async function collectAllAppIds(): Promise<SteamSpyListEntry[]> {
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
       try {
         const res = await fetch(`https://steamspy.com/api.php?request=all&page=${page}`, {
-          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PlayFit/1.0)' },
+          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Guildeline/1.0)' },
         })
         if (!res.ok) {
           console.error(`  Page ${page} HTTP ${res.status} (attempt ${attempt}) — retrying...`)
@@ -107,7 +107,7 @@ async function collectAllAppIds(): Promise<SteamSpyListEntry[]> {
 async function fetchAppDetail(appid: number): Promise<SteamSpyDetail | null> {
   try {
     const res = await fetch(`https://steamspy.com/api.php?request=appdetails&appid=${appid}`, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PlayFit/1.0)' },
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Guildeline/1.0)' },
     })
     if (!res.ok) return null
     const data = await res.json() as SteamSpyDetail

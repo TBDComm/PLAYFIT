@@ -1,4 +1,4 @@
-# PLAYFIT — Claude Code Instructions
+# GUILDELINE — Claude Code Instructions
 
 > ## MANDATORY — every session, every task, no exceptions
 >

@@ -1,5 +1,20 @@
 # HANDOVER Archive
 
+## Minor Changes — 2026-03-18~20 (C-series UI + fixes)
+| Change | Files |
+|--------|-------|
+| UI: legal page logo, result card thumbnails + Metacritic score tiers | `privacy/page.tsx`, `terms/page.tsx`, `result/page.tsx`, `result/page.module.css`, `layout.tsx` |
+| Fix: search debounce 300ms → 150ms; race condition via searchGenRef | `page.tsx` |
+| C3: GA4 gtag.js + 5 events; NEXT_PUBLIC_GA_MEASUREMENT_ID added to CF Pages | `layout.tsx`, `lib/analytics.ts`, `page.tsx`, `result/page.tsx`, `Header.tsx` |
+| UI: result page — thumbnail height:auto no-crop, card max-height via cqw, padding 14%, logo outside .inner | `result/page.tsx`, `result/page.module.css` |
+| UI: all button transparent backgrounds → var(--bg-elevated); footerLink full button; closeBtn border added | `Header.module.css`, `page.module.css` |
+| C4: sticky nav bar → removed; auth buttons fixed top-right; NavLogo fixed top-left; Breadcrumb; /genre index; /users/[userId] reserved | multiple |
+| C5: `/games/[appid]` ISR 86400s, similar games TOP 10 via score_candidates RPC, SoftwareApplication JSON-LD | `app/games/[appid]/page.tsx`, `app/games/[appid]/page.module.css`, `app/sitemap.ts` |
+| C6: `/genre/[slug]` ISR 86400s, top 20 by tag sum, ItemList JSON-LD, community placeholder | `app/genre/[slug]/page.tsx`, `app/genre/[slug]/page.module.css` |
+| C7: Blog TSX content approach (edge-safe); 3 posts; BlogPosting JSON-LD; sitemap updated | `lib/blog.ts`, `content/blog/*.tsx`, `app/blog/page.tsx`, `app/blog/[slug]/page.tsx` |
+| UI: home page — genre + blog links fixed top-left; footer — privacy + terms only | `app/page.tsx`, `app/page.module.css`, `app/components/Footer.tsx` |
+| UI: genre page — aspect-ratio 5/2 + font-size clamp(cqi) for auto text scaling | `app/genre/page.module.css` |
+
 ## Minor Changes — 2026-03-18 (B-series fixes + C1/C2)
 | Change | Files |
 |--------|-------|

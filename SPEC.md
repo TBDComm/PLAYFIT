@@ -1,4 +1,4 @@
-# PLAYFIT — Project Specification
+# GUILDELINE — Project Specification
 
 > Read only the relevant section before implementing a step — do not read the full file.
 > Addendum sections override the original spec where they conflict.
@@ -609,7 +609,7 @@ Ask for Google OAuth credentials before implementing Google login.
 
 ### Main page (`app/page.tsx`)
 **Steam mode elements (in order):**
-1. Logo: **PLAYFIT**
+1. Logo: **GUILDELINE**
 2. Tagline: 나한테 맞는 게임을 찾아드립니다
 3. Input: Steam profile URL — placeholder: 스팀 프로필 URL을 입력하세요
 4. Input: Budget (optional) — placeholder: 예산 입력 (예: 10000) — 비우면 전체 가격대
@@ -678,7 +678,7 @@ NEXT_PUBLIC_BASE_URL=          ← Addendum B4 — e.g. http://localhost:3000 in
 
 ### Strategy
 
-PlayFit is currently a tool site. To maximize AdSense revenue it must expand into a content site.
+Guildeline is currently a tool site. To maximize AdSense revenue it must expand into a content site.
 
 **Revenue formula:** `Revenue = Traffic × RPM`
 - Traffic: driven by SEO (programmatic game pages + blog)
@@ -712,7 +712,7 @@ PlayFit is currently a tool site. To maximize AdSense revenue it must expand int
 
 - `/privacy` (`app/privacy/page.tsx`) — Privacy Policy: data collected (GA4 analytics, Supabase auth), cookies, third-party services (Steam API, Google AdSense), contact info
 - `/terms` (`app/terms/page.tsx`) — Terms of Service: service description, usage rules, disclaimer, no warranty
-- Footer component (`app/components/Footer.tsx`) — rendered in `app/layout.tsx`; links: Privacy Policy · Terms · © 2026 PlayFit
+- Footer component (`app/components/Footer.tsx`) — rendered in `app/layout.tsx`; links: Privacy Policy · Terms · © 2026 Guildeline
 - Both pages: plain prose, dark theme consistent with existing design, no fancy layout needed
 
 **Files:** `app/privacy/page.tsx` (new), `app/terms/page.tsx` (new), `app/components/Footer.tsx` (new), `app/layout.tsx`
@@ -787,10 +787,10 @@ PlayFit is currently a tool site. To maximize AdSense revenue it must expand int
 - Link to main tool: "내 플레이 기록으로 추천받기 →"
 - Breadcrumb: Home > 게임 > {game name}
 
-**Community placeholder (D-series hook):** render a static section "이 게임을 좋아하는 PlayFit 유저" with placeholder copy — no data yet, just the UI slot so the page structure is ready when D-series adds real user data.
+**Community placeholder (D-series hook):** render a static section "이 게임을 좋아하는 Guildeline 유저" with placeholder copy — no data yet, just the UI slot so the page structure is ready when D-series adds real user data.
 
 **SEO:**
-- `generateMetadata`: title = `{game name} 비슷한 게임 추천 | PlayFit`, description = `{game name}을 좋아한다면 이런 게임도 좋아할 거예요. PlayFit이 태그 기반으로 추천합니다.`
+- `generateMetadata`: title = `{game name} 비슷한 게임 추천 | Guildeline`, description = `{game name}을 좋아한다면 이런 게임도 좋아할 거예요. Guildeline이 태그 기반으로 추천합니다.`
 - Canonical: `/games/{appid}`
 - Schema: `SoftwareApplication` JSON-LD (name, applicationCategory: Game, offers if free)
 - Internal links: each similar game links to its own `/games/[appid]` + genre links to `/genre/[slug]`
@@ -814,7 +814,7 @@ PlayFit is currently a tool site. To maximize AdSense revenue it must expand int
 **Route:** `app/genre/[slug]/page.tsx`
 
 **Page content (server-rendered, ISR revalidate 86400):**
-- H1: `최고의 {genre} 게임 추천 | PlayFit`
+- H1: `최고의 {genre} 게임 추천 | Guildeline`
 - Top 20 games in this genre from `games_cache` (by tag vote count sum)
 - Each game: name, top 3 tags, link to `/games/[appid]`
 - "내 취향에 맞는 {genre} 게임 찾기 →" CTA to main tool
@@ -822,7 +822,7 @@ PlayFit is currently a tool site. To maximize AdSense revenue it must expand int
 - Community placeholder (D-series hook): "{genre} 게임을 좋아하는 유저들" — static copy, no data yet
 
 **SEO:**
-- `generateMetadata`: title = `최고의 {genre} 게임 20선 | PlayFit`, description = dynamic per genre
+- `generateMetadata`: title = `최고의 {genre} 게임 20선 | Guildeline`, description = dynamic per genre
 - Schema: `ItemList` JSON-LD listing the 20 games
 
 **Slug format:** genre name lowercased, spaces → hyphens (e.g., `role-playing-games`)
@@ -845,7 +845,7 @@ PlayFit is currently a tool site. To maximize AdSense revenue it must expand int
 2. `best-rpg-games-steam-2026` — "2026년 스팀 RPG 게임 추천"
 3. `steam-playtime-and-taste` — "플레이 시간이 취향을 알려준다 — 스팀 데이터 분석"
 
-**Schema:** `BlogPosting` JSON-LD per post (headline, datePublished, author: PlayFit, url)
+**Schema:** `BlogPosting` JSON-LD per post (headline, datePublished, author: Guildeline, url)
 **Breadcrumb:** Home > Blog > {post title}
 
 **Files:** `app/blog/page.tsx` (new), `app/blog/[slug]/page.tsx` (new), `content/blog/*.mdx` (new), `lib/blog.ts` (new — MDX loader)
@@ -860,7 +860,7 @@ PlayFit is currently a tool site. To maximize AdSense revenue it must expand int
 
 **Prerequisites (user actions before this step):**
 1. Apply for Google AdSense at adsense.google.com
-2. Submit PlayFit URL for review (requires C2 legal pages + sufficient content from C5–C7)
+2. Submit Guildeline URL for review (requires C2 legal pages + sufficient content from C5–C7)
 3. Receive Publisher ID (`ca-pub-XXXXXXXXXXXXXXXX`)
 
 **Implementation:**
@@ -922,10 +922,10 @@ Implementation: server-rendered JSON-LD `<script>` in each page's `generateMetad
 **Goal:** Ensure every page type has optimized titles, descriptions, headings, and internal links.
 
 **Meta title templates:**
-- Game page: `{name} 비슷한 게임 추천 | PlayFit`
-- Genre page: `최고의 {genre} 게임 20선 | PlayFit`
-- Blog post: `{title} | PlayFit`
-- Main: `내 스팀 취향에 맞는 게임 추천 | PlayFit`
+- Game page: `{name} 비슷한 게임 추천 | Guildeline`
+- Genre page: `최고의 {genre} 게임 20선 | Guildeline`
+- Blog post: `{title} | Guildeline`
+- Main: `내 스팀 취향에 맞는 게임 추천 | Guildeline`
 
 **Internal linking:**
 - Game pages → link to their genre pages
@@ -945,7 +945,7 @@ Implementation: server-rendered JSON-LD `<script>` in each page's `generateMetad
 
 - `robots.txt` (C1 already covers AI bots — verify correct)
 - Game pages: add FAQ block — "Q: {game name}과 비슷한 게임은? A: 태그 기반으로 {top 3 similar games}을 추천합니다."
-- Genre pages: add definition block — "{genre}란 {genre description}입니다. PlayFit에서 추천하는 상위 게임은 {top 3}입니다."
+- Genre pages: add definition block — "{genre}란 {genre description}입니다. Guildeline에서 추천하는 상위 게임은 {top 3}입니다."
 - Blog posts: structured with clear H2 questions, definition in first paragraph, statistics with sources
 - All pages: add `dateModified` to schema; blog posts show "마지막 업데이트" date visibly
 
@@ -991,4 +991,202 @@ Implementation: server-rendered JSON-LD `<script>` in each page's `generateMetad
 **User actions required:**
 - Before C3: create GA4 property → provide `NEXT_PUBLIC_GA_MEASUREMENT_ID`
 - Before C8: apply for AdSense → wait for approval → provide `NEXT_PUBLIC_ADSENSE_CLIENT_ID`
+
+---
+
+## Phase 6 — Product Experience (FT-series)
+
+**Context:** C1–C13 complete. Site is technically solid but feels like a prototype — just a centered form with no value proposition, no visual depth beyond the main page dot grid, no showcase of what results look like. Goal: make it feel like a real commercial product without adding new backend features.
+
+**Full audit conducted 2026-03-20. Findings:**
+
+### Design Audit
+
+| Issue | Severity | Location |
+|-------|----------|----------|
+| Main page = only a form. No hero, no value prop, no result preview | CRITICAL | `/` |
+| Every page uses identical centered single-column layout — no visual rhythm | HIGH | all pages |
+| Genre/game pages are text-only lists — no thumbnails, no visual depth | HIGH | `/genre`, `/genre/[slug]`, `/games/[appid]` |
+| Footer has only legal links — no navigation value | MEDIUM | Footer.tsx |
+| No social proof or stats visible anywhere | MEDIUM | all pages |
+| CSS comment headers still say "PLAYFIT" (old brand) | LOW | globals.css, page.module.css, result/page.module.css |
+
+### Code Audit
+
+| Issue | Rule | Location |
+|-------|------|----------|
+| `formatDate()` uses hardcoded date format instead of `Intl.DateTimeFormat` | web-design-guidelines: "use Intl.DateTimeFormat" | `app/blog/page.tsx:15-18` |
+
+All other rules (async-parallel, bundle-barrel, rerender-optimization, accessibility) — **pass**.
+
+### Content Audit
+
+| Item | Current | Needed |
+|------|---------|--------|
+| Blog posts | 3 | 5+ for AdSense credibility |
+| Result preview | None visible to new visitors | Static preview on main page |
+| Stats/social proof | None exposed | "82,816개 게임 분석" visible |
+
+---
+
+### Design Identity — "Guildeline Smell"
+
+**Confirmed direction:** Dark terminal × gaming HUD. Phosphor lime `#c8f135` on near-black `#09090b`. Space Grotesk. Dot grid. This is distinctive and good — extend it, don't replace it.
+
+**What Guildeline is NOT:** A game cover gallery (that's Backloggd). We don't compete on visual richness of game art.
+
+**What Guildeline IS:** An AI taste matcher. Our visual language should say: "your play data → AI analysis → perfect match." The vocabulary of gaming — genre tags, mood descriptors — is our ambient texture.
+
+**The "Guildeline smell":** Gaming genre/mood tags (`Souls-like`, `Open World`, `Co-op`, `Roguelike`…) scattered as ambient background text. Phosphor lime at very low opacity. This communicates "we understand game DNA" without resorting to cover art grids.
+
+---
+
+#### FT1 — Main Page Hero Redesign
+
+**Goal:** Transform from "a form" into "a landing page that sells."
+
+**Page structure (top → bottom):**
+```
+[Hero section — new]
+  TagScatter background (decorative, aria-hidden)
+  existing <h1>GUILDELINE</h1> (keep as-is — SEO anchor, C11 decision)
+  <h2>: "내 플레이 기록이 곧 취향이다"  ← marketing headline, NOT h1
+  <p>: "82,816개 Steam 게임 중에서 AI가 골라드립니다"
+  <a href="#recommend-form">지금 시작하기 ↓</a>  ← anchor scroll to form
+
+[Form section — existing logic unchanged]
+  Add id="recommend-form" to the <form> element
+
+[Preview section — new]
+  Label: "이런 추천을 받았어요"
+  2 hardcoded static result cards (real game data)
+  Muted CTA: "내 추천 받기 ↑"  ← <a href="#recommend-form">
+
+[How it works — new, 3 steps]
+  1. Steam 연결 — 프로필 URL 또는 직접 입력
+  2. AI 분석 — 플레이 기록 → 태그 가중치 계산
+  3. 취향 게임 추천 — 예산 내 딱 맞는 게임 목록
+```
+
+**Layout change required:**
+Current `.page` CSS uses `justify-content: center` (single-screen vertical centering). With multi-section structure this must change:
+- Remove `justify-content: center` from `.page`
+- Add `padding-top: max(6rem, 15vh)` to hero section for breathing room
+- Smooth scroll: add `scroll-behavior: smooth` to `.page` under `@media (prefers-reduced-motion: no-preference)` only
+
+**pageNav (existing fixed top-left genre/blog links):** keep as-is — still provides value on the expanded page.
+
+**TagScatter component** (`app/components/TagScatter.tsx`):
+- Client component, `aria-hidden="true"`, purely decorative
+- Hardcoded ~20 gaming tags, positioned absolutely with varied opacity (0.04–0.12) and font-size (0.75rem–1.5rem)
+- Tag list: `Souls-like · Open World · Co-op · Indie · RPG · Strategy · Roguelike · FPS · Sandbox · Puzzle · Horror · Simulation · Platformer · MMORPG · Card Game · Metroidvania · Visual Novel · Sports · Racing · Stealth`
+- CSS animation: slow Y-drift (±8px, 8–15s, staggered per tag) — `@media (prefers-reduced-motion: reduce)` → animation: none
+- Animate only `transform` and `opacity` (rules/frontend-design.md)
+- Color: `var(--accent)` at varied opacity via `rgba(200, 241, 53, X)`
+- Position data hardcoded (not random — SSR safe, no hydration mismatch)
+
+**Hardcoded preview cards (2 static cards):**
+```
+Card 1 — Elden Ring (appid: 1245620)
+  thumbnail: https://cdn.akamai.steamstatic.com/steam/apps/1245620/header.jpg
+  reason: "오픈 월드 탐험과 고난도 전투를 좋아하는 취향에 딱 맞아요"
+  price_krw: 66000 · metacritic_score: 96
+
+Card 2 — Hades (appid: 1145360)
+  thumbnail: https://cdn.akamai.steamstatic.com/steam/apps/1145360/header.jpg
+  reason: "빠른 템포의 액션과 반복 플레이를 즐기는 취향을 반영했어요"
+  price_krw: 16500 · metacritic_score: 93
+```
+- Use `<Image unoptimized>` (same pattern as result/page.tsx — C13 decision)
+- Card layout: **separate `PreviewCard` styles written inline in `app/page.module.css`** — do NOT touch `result/page.module.css` or extract shared components. Visual output identical to result cards; code kept independent. (Rationale: result page works correctly; shared abstraction premature at 2 usage sites.)
+- Cards visually identical to real result cards — shows exactly what users will see
+- Label above cards: small muted uppercase "미리보기"
+- No feedback buttons, no failedImages state — static display only
+
+**How It Works — 3-step grid:**
+- Simple 3-column (desktop) / stacked (mobile) layout
+- Each step: number badge (accent color) + title + 1-line desc
+- No icons — numbers only (consistent with terminal aesthetic)
+
+**Files:** `app/page.tsx`, `app/page.module.css`, `app/components/TagScatter.tsx`
+
+---
+
+#### FT2 — Genre Index Visual Enhancement
+
+**Current state:** Alphabetical flat chip list — 100+ genre names, all identical size, no counts.
+
+**Goal:** A navigable content hub that communicates scale and lets users orient.
+
+**Changes:**
+- Count games per genre **by extending the existing JS loop** in `getGenres()` — same 5000-row Supabase fetch already done; add a `Map<slug, count>` accumulator in the same loop, no new query needed
+- Sort by count descending (most popular first) instead of alphabetical
+- Add count to each chip: `Action (1,243)` style
+- Visual tier: top 12 genres (by count) → larger featured chips in a 3-col grid; remaining → smaller standard chips
+- Add intro stat line: `"Guildeline이 분석한 장르 N개 · 총 82,816개 게임"` (82,816 is hardcoded — matches games_cache row count as of 2026-03-20)
+
+**Files:** `app/genre/page.tsx`, `app/genre/page.module.css`
+
+---
+
+#### FT3 — Footer Enhancement
+
+**Current:** `개인정보처리방침 · 이용약관 · © 2026 Guildeline` — navigation dead-end.
+
+**Goal:** Light navigation value without being heavy.
+
+**New structure:**
+```
+[Nav row]  홈  ·  장르별 탐색  ·  블로그
+[Legal row]  개인정보처리방침  ·  이용약관
+[Copy row]  © 2026 Guildeline
+```
+
+**Files:** `app/components/Footer.tsx`, `app/components/Footer.module.css`
+
+---
+
+#### FT4 — Blog Content (2 new posts)
+
+**Goal:** Reach 5 posts total — baseline for AdSense reviewer trust.
+
+**Post 4:** `steam-genre-guide-action.tsx`
+- Title: `액션 게임 입문 가이드: 스팀 액션 게임 추천 10선`
+- Tags: `[액션, 추천, 입문]`
+- 1,000+ words, internal links to `/genre/action`, CTA to `/`
+
+**Post 5:** `indie-games-hidden-gems.tsx`
+- Title: `스팀 인디 게임 숨겨진 명작 10선`
+- Tags: `[인디, 추천, 명작]`
+- 1,000+ words, internal links to `/genre/indie`, CTA to `/`
+
+**Files:** `content/blog/steam-genre-guide-action.tsx`, `content/blog/indie-games-hidden-gems.tsx`, `lib/blog.ts` (add to registry)
+
+---
+
+#### FT5 — Code Fixes & Brand Cleanup
+
+Quick-win fixes, implement in one pass:
+
+1. **`app/blog/page.tsx:15-18`** — replace `formatDate()` hardcoded format with `Intl.DateTimeFormat('ko-KR')`:
+   ```ts
+   function formatDate(iso: string): string {
+     return new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(iso))
+   }
+   ```
+2. **`app/globals.css:1`** — `PLAYFIT — Global Styles` → `GUILDELINE — Global Styles`
+3. **`app/page.module.css:1`** — `PLAYFIT — Main Page` → `GUILDELINE — Main Page`
+4. **`app/result/page.module.css:1`** — `PLAYFIT — Result Page` → `GUILDELINE — Result Page`
+
+---
+
+### FT-series Implementation Order
+
+| Step | Description | Impact |
+|------|-------------|--------|
+| FT5 | Code fixes + brand comment cleanup | Low (hygiene, do first — fast) |
+| FT3 | Footer nav enhancement | Low-Medium |
+| FT1 | Main page hero + tag scatter + preview cards | **HIGH — primary product feel change** |
+| FT2 | Genre index with counts + visual tiers | Medium |
+| FT4 | 2 new blog posts | Medium (AdSense) |
 
