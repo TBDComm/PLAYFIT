@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { createClient } from '@supabase/supabase-js'
 import { allPosts } from '@/lib/blog'
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://playfit.pages.dev'
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
 
 function toSlug(genre: string): string {
   return genre.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
