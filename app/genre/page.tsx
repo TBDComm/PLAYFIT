@@ -14,7 +14,7 @@ function toSlug(genre: string): string {
   return genre.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
 }
 
-async function getGenres(): Promise<{ name: string; slug: string }[]> {
+async function getGenres(): Promise<{ name: string; slug: string; count: number }[]> {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -28,45 +28,76 @@ async function getGenres(): Promise<{ name: string; slug: string }[]> {
 
   if (!data) return []
 
-  // Deduplicate: slug → first-seen name
+  // Deduplicate: slug → first-seen name + count
   const seen = new Map<string, string>()
+  const counts = new Map<string, number>()
   for (const row of data) {
     if (Array.isArray(row.genres)) {
       for (const g of row.genres as unknown[]) {
         if (typeof g === 'string' && g.trim()) {
           const slug = toSlug(g.trim())
-          if (slug && !seen.has(slug)) seen.set(slug, g.trim())
+          if (slug) {
+            if (!seen.has(slug)) seen.set(slug, g.trim())
+            counts.set(slug, (counts.get(slug) ?? 0) + 1)
+          }
         }
       }
     }
   }
 
   return Array.from(seen.entries())
-    .map(([slug, name]) => ({ name, slug }))
-    .sort((a, b) => a.name.localeCompare(b.name))
+    .map(([slug, name]) => ({ name, slug, count: counts.get(slug) ?? 0 }))
+    .sort((a, b) => b.count - a.count)
+}
+
+function formatCount(n: number): string {
+  return n.toLocaleString('en-US')
 }
 
 export default async function GenrePage() {
   const genres = await getGenres()
+  const featured = genres.slice(0, 12)
+  const rest = genres.slice(12)
 
   return (
     <main className={styles.page}>
       <div className={styles.inner}>
         <Breadcrumb items={[{ label: '홈', href: '/' }, { label: '장르별 탐색' }]} />
         <h1 className={styles.title}>장르별 탐색</h1>
+        <p className={styles.stat}>
+          Guildeline이 분석한 장르 {genres.length.toLocaleString('en-US')}개 · 총 82,816개 게임
+        </p>
         <p className={styles.desc}>관심 있는 장르를 선택해 게임을 탐색해 보세요.</p>
+
         {genres.length === 0 ? (
           <p className={styles.empty}>장르 데이터를 불러오는 중입니다.</p>
         ) : (
-          <ul className={styles.grid} aria-label="게임 장르 목록">
-            {genres.map(({ name, slug }) => (
-              <li key={slug}>
-                <Link href={`/genre/${slug}`} className={styles.genreCard}>
-                  {name}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <>
+            {/* Top 12 featured genres */}
+            <ul className={styles.featuredGrid} aria-label="인기 게임 장르">
+              {featured.map(({ name, slug, count }) => (
+                <li key={slug}>
+                  <Link href={`/genre/${slug}`} className={styles.featuredCard}>
+                    <span className={styles.featuredName}>{name}</span>
+                    <span className={styles.featuredCount}>{formatCount(count)}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            {/* Remaining genres */}
+            {rest.length > 0 && (
+              <ul className={styles.grid} aria-label="전체 게임 장르 목록">
+                {rest.map(({ name, slug, count }) => (
+                  <li key={slug}>
+                    <Link href={`/genre/${slug}`} className={styles.genreCard}>
+                      {name} <span className={styles.count}>({formatCount(count)})</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
         )}
       </div>
     </main>

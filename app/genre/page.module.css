@@ -1,3 +1,5 @@
+/* GUILDELINE — Genre Index Page */
+
 .page {
   min-height: 100vh;
   min-height: 100dvh;
@@ -13,21 +15,80 @@
   font-size: 2rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   letter-spacing: -0.03em;
+}
+
+.stat {
+  font-size: 0.875rem;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 8px;
 }
 
 .desc {
   font-size: 1rem;
   color: var(--text-secondary);
-  margin-bottom: 40px;
+  margin-bottom: 32px;
   line-height: 1.6;
 }
+
+/* ── Featured grid (top 12) ────────────────────────────── */
+
+.featuredGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+}
+
+.featuredCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 20px 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  text-align: center;
+  transition: background-color 150ms, border-color 150ms;
+}
+
+.featuredCard:hover,
+.featuredCard:focus-visible {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+}
+
+.featuredCard:hover .featuredName,
+.featuredCard:focus-visible .featuredName {
+  color: var(--accent);
+}
+
+.featuredName {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: color 150ms;
+}
+
+.featuredCount {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Standard grid (remaining) ─────────────────────────── */
 
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  gap: 10px;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -39,11 +100,11 @@
   align-items: center;
   justify-content: center;
   aspect-ratio: 5 / 2;
-  padding: 0 12px;
+  padding: 0 10px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  font-size: clamp(0.625rem, 9cqi, 0.9375rem);
+  font-size: clamp(0.5625rem, 8cqi, 0.875rem);
   font-weight: 500;
   color: var(--text-primary);
   text-decoration: none;
@@ -59,21 +120,38 @@
   color: var(--accent);
 }
 
+.count {
+  color: var(--text-muted);
+  font-size: 0.75em;
+  margin-left: 2px;
+}
+
+.genreCard:hover .count,
+.genreCard:focus-visible .count {
+  color: inherit;
+}
+
 .empty {
   font-size: 0.9375rem;
   color: var(--text-muted);
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .featuredCard,
+  .featuredName,
   .genreCard {
     transition: none;
   }
 }
 
 @media (max-width: 600px) {
+  .featuredGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    gap: 8px;
   }
 }
 
@@ -86,8 +164,13 @@
     font-size: 1.5rem;
   }
 
-  .grid {
+  .featuredGrid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
   }
 }
