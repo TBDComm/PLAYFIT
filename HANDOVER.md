@@ -134,7 +134,7 @@ Next action: [exactly what to do next to resume]
 **Sub-B shell:** Label "내 저장 목록" (`.previewLabel`), title "내가 저장한 게임" (`.previewTitle`). 3 placeholder cards (~120px height): "추천받은 게임을 저장하면 여기에 표시돼요". No auth check — FT7 replaces entirely.
 
 **Scope:** No auth logic, no Supabase calls — FT7 only.
-**After completing:** Clear lock → mark FT6 done in FT-series list → update Active Step to FT7 spec (read SPEC.md §FT7) → add Minor Changes Log entry → AdSense activation checklist → `HANDOVER-archive.md`.
+**After completing:** Clear lock → mark FT6 done in FT-series list → update Active Step to FT7 spec (read SPEC.md §FT7) → add Minor Changes Log entry.
 
 ---
 
