@@ -86,57 +86,57 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: FT6 — Home Preview Section Redesign ────
+## ── ACTIVE STEP: FT7 — Save Recommendations Feature ────
 
-**Prerequisites:** FT4 complete ✅ — no blockers.
-**FT done:** FT5✅ FT3✅ FT1✅ FT2✅ FT4✅ · FT7 follows · D-series = separate community phase — not FT-series
-**Files:** `app/page.tsx`, `app/page.module.css`
-**Goal:** Replace FT1's 2 clipped preview cards with (A) full-width thumbnail strip + (B) saved games shell.
-**Design:** Tag chips on hover — taste matcher signal, not a browse gallery.
+**FT done:** FT1✅ FT2✅ FT3✅ FT4✅ FT5✅ FT6✅ · D-series = separate community phase
+**Context:** Logged-in users save game recommendations. "Save = taste alignment signal." Minimal UI.
 
-**Migration:** Remove `previewCardList` JSX block (Elden Ring + Hades; classes `previewCard`/`previewThumb`/`previewCardBody`). Keep `previewLabel`, `previewTitle`, `previewCta`.
-
-**JSX** — `.previewStrip` OUTSIDE `.inner` for full-width scroll:
-```tsx
-<section className={styles.previewSection}>
-  <div className={styles.inner}>…previewLabel, previewTitle…</div>
-  <div className={styles.previewStrip}>
-    {PREVIEW_TILES.map(tile => (
-      <Link href={`/games/${tile.appid}`} key={tile.appid} className={styles.previewTile}>
-        <Image unoptimized src={`https://cdn.akamai.steamstatic.com/steam/apps/${tile.appid}/header.jpg`}
-          width={460} height={215} alt={tile.name} className={styles.previewTileImg} />
-        <div className={styles.previewTileOverlay}>
-          <span className={styles.previewTileName}>{tile.name}</span>
-          <div className={styles.previewTileChips}>{tile.tags.map(t => <span key={t} className={styles.previewTileChip}>{t}</span>)}</div>
-        </div>
-      </Link>
-    ))}
-  </div>
-  <div className={styles.inner}>…previewCta…</div>
-  <div className={styles.inner} style={{ marginTop: '3rem' }}>…Sub-section B…</div>
-</section>
+**Step 7-1: Supabase table** — user runs this SQL in dashboard:
+```sql
+create table saved_games (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users(id) on delete cascade not null,
+  appid text not null, name text not null, reason text,
+  price_krw integer, metacritic_score integer,
+  saved_at timestamptz default now() not null,
+  unique(user_id, appid)
+);
+alter table saved_games enable row level security;
+create policy "users can manage their own saved games"
+  on saved_games for all using (auth.uid() = user_id);
 ```
 
-**PREVIEW_TILES** (const outside component — appid · name · tags[]):
-```
-1245620 Elden Ring      · Souls-like, Open World, Action RPG, Difficult
-1145360 Hades           · Roguelike, Action, Fast-Paced, Story Rich
-413150  Stardew Valley  · Farming Sim, Relaxing, Pixel Graphics, Indie
-367520  Hollow Knight   · Metroidvania, Souls-like, Atmospheric, Indie
-292030  The Witcher 3   · Open World, RPG, Story Rich, Dark Fantasy
-105600  Terraria        · Sandbox, Crafting, Building, Exploration
-504230  Celeste         · Platformer, Difficult, Pixel Art, Story Rich
-588650  Dead Cells      · Roguelike, Action, Metroidvania, Fast-Paced
-```
+**Step 7-2: API routes** — auth pattern: client sends `Authorization: Bearer <token>`, server uses `serviceRoleKey` + `supabase.auth.getUser(token)`. All routes: `export const runtime = 'edge'`
+- `GET /api/saved-games` → `{ saved: SavedGame[] }` · 401 if unauthed
+- `POST /api/saved-games` body: `{ appid, name, reason?, price_krw?, metacritic_score? }` → upsert → `{ ok: true }`
+- `DELETE /api/saved-games/[appid]` — Next.js 15: `const { appid } = await context.params` (params is a Promise)
 
-**CSS:** Tile `width:220px`, `aspect-ratio:460/215`, `overflow:hidden`. Image hover: `filter:blur(4px) brightness(0.4)` + `scale(1.04)`, 300ms. Overlay: `position:absolute; inset:0`, `opacity:0→1`, 300ms, pure CSS `:hover`. Chips: accent-dim bg/border/text, `flex-wrap:wrap; gap:4px; justify-content:center`. Scrollbar: `scrollbar-width:none` + `::-webkit-scrollbar{display:none}`. `prefers-reduced-motion` → `transition:none`.
+**TypeScript type** (add to `types/index.ts`): `SavedGame { id, user_id, appid, name, reason, price_krw, metacritic_score, saved_at }`
 
-**Sub-B shell:** Label "내 저장 목록" (`.previewLabel`), title "내가 저장한 게임" (`.previewTitle`). 3 `<div className={styles.savedPlaceholder}>` cards (~120px height, centered text): "추천받은 게임을 저장하면 여기에 표시돼요". No auth check — FT7 replaces this entire sub-section.
+**Step 7-3: Result page** (`app/result/page.tsx`) — currently has NO supabase client.
+- Add module-level `const supabase = createBrowserClient(...)`
+- States: `authState: 'loading'|'authed'|'anon'`, `savedAppIds: Set<string>`
+- useEffect: getSession → if authed, fetch saved-games → build Set of appids
+- Each card: save button (only if `authState !== 'anon'`). No icon library — text+Unicode only:
+  - Saved: `"★ 저장됨"` · accent color · `background: var(--accent-dim)` · `border: 1px solid`
+  - Unsaved: `"☆ 저장"` · muted · `background: var(--bg-surface)` · `border: 1px solid`
+  - Optimistic toggle → POST or DELETE; `padding: 4px 10px; font-size: 0.8125rem; border-radius: var(--radius)`
+  - NEVER transparent background (feedback_no_transparent_buttons rule)
 
-**CSS cleanup:** After removing `previewCardList` JSX block, also delete the corresponding dead CSS rules in `page.module.css`: `.previewCardList`, `.previewCard`, `.previewThumb`, `.previewCardBody`, `.previewCardName`, `.previewReason`, `.previewMeta`, `.previewPrice`, `.previewScore`.
+**Step 7-4: Home page** (`app/page.tsx`) — activate FT6 placeholder with real data.
+- Move supabase client to module level (currently created inside useEffect — refactor out)
+- Add `savedGames: SavedGame[]` state; second useEffect depends on `authState`
+- authState display logic:
+  - `loading` → 3 placeholder cards (skeleton, no text)
+  - `anon` → 3 placeholders + "로그인하면 저장한 게임이 여기에 표시돼요" + "로그인하기 →" button
+    - onClick: `window.dispatchEvent(new CustomEvent('guildeline:open-login'))`
+    - Header.tsx: add useEffect listener for this event → `setShowLoginModal(true)`
+  - authed, 0 saved → 3 placeholders + "추천받은 게임을 저장하면 여기에 표시돼요" + anchor "지금 추천받기 ↑"
+  - authed, >0 saved → actual cards (newest first): name + reason + price/score + "저장 취소" button
 
-**Scope:** No auth logic, no Supabase calls — FT7 only.
-**After completing:** Clear lock → mark FT6 done in FT-series list → update Active Step to FT7 spec (read SPEC.md §FT7) → add Minor Changes Log entry.
+**Files:** `app/api/saved-games/route.ts`, `app/api/saved-games/[appid]/route.ts`, `app/result/page.tsx`, `app/result/page.module.css`, `app/page.tsx`, `app/page.module.css`, `app/components/Header.tsx`, `types/index.ts`
+
+**After completing:** Clear lock → mark FT7 done → update Active Step to next → add Minor Changes Log.
 
 ---
 
@@ -148,6 +148,7 @@ _Pre-2026-03-21 entries → HANDOVER-archive.md_
 |------|--------|-------|
 | 2026-03-21 | feat(FT2): genre index — count per genre, sort by count desc, top 12 featured 3-col grid, stat line | app/genre/page.tsx, app/genre/page.module.css |
 | 2026-03-21 | feat(FT4): 2 new blog posts — action guide 10선, indie hidden gems 10선; registry updated | content/blog/steam-genre-guide-action.tsx, content/blog/indie-games-hidden-gems.tsx, lib/blog.ts |
+| 2026-03-21 | feat(FT6): preview section redesign — 8-tile horizontal scroll strip + hover tag chips + saved games placeholder shell; removed dead previewCard CSS | app/page.tsx, app/page.module.css |
 
 ---
 

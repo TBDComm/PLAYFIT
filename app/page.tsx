@@ -14,6 +14,17 @@ import styles from './page.module.css'
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
 
+const PREVIEW_TILES = [
+  { appid: 1245620, name: 'Elden Ring',      tags: ['Souls-like', 'Open World', 'Action RPG', 'Difficult'] },
+  { appid: 1145360, name: 'Hades',           tags: ['Roguelike', 'Action', 'Fast-Paced', 'Story Rich'] },
+  { appid: 413150,  name: 'Stardew Valley',  tags: ['Farming Sim', 'Relaxing', 'Pixel Graphics', 'Indie'] },
+  { appid: 367520,  name: 'Hollow Knight',   tags: ['Metroidvania', 'Souls-like', 'Atmospheric', 'Indie'] },
+  { appid: 292030,  name: 'The Witcher 3',   tags: ['Open World', 'RPG', 'Story Rich', 'Dark Fantasy'] },
+  { appid: 105600,  name: 'Terraria',        tags: ['Sandbox', 'Crafting', 'Building', 'Exploration'] },
+  { appid: 504230,  name: 'Celeste',         tags: ['Platformer', 'Difficult', 'Pixel Art', 'Story Rich'] },
+  { appid: 588650,  name: 'Dead Cells',      tags: ['Roguelike', 'Action', 'Metroidvania', 'Fast-Paced'] },
+] as const
+
 const homeJsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -506,45 +517,42 @@ export default function Home() {
         <div className={styles.inner}>
           <p className={styles.previewLabel}>미리보기</p>
           <p className={styles.previewTitle}>이런 추천을 받았어요</p>
-          <div className={styles.previewCardList}>
-            <article className={styles.previewCard}>
+        </div>
+        <div className={styles.previewStrip}>
+          {PREVIEW_TILES.map(tile => (
+            <Link
+              href={`/games/${tile.appid}`}
+              key={tile.appid}
+              className={styles.previewTile}
+            >
               <Image
-                src="https://cdn.akamai.steamstatic.com/steam/apps/1245620/header.jpg"
-                alt="Elden Ring"
+                unoptimized
+                src={`https://cdn.akamai.steamstatic.com/steam/apps/${tile.appid}/header.jpg`}
                 width={460}
                 height={215}
-                unoptimized
-                className={styles.previewThumb}
+                alt={tile.name}
+                className={styles.previewTileImg}
               />
-              <div className={styles.previewCardBody}>
-                <p className={styles.previewCardName}>Elden Ring</p>
-                <p className={styles.previewReason}>오픈 월드 탐험과 고난도 전투를 좋아하는 취향에 딱 맞아요</p>
-                <div className={styles.previewMeta}>
-                  <span className={styles.previewPrice}>₩66,000</span>
-                  <span className={`${styles.previewScore} ${styles.scoreHigh}`}>메타크리틱 96점</span>
+              <div className={styles.previewTileOverlay}>
+                <span className={styles.previewTileName}>{tile.name}</span>
+                <div className={styles.previewTileChips}>
+                  {tile.tags.map(t => (
+                    <span key={t} className={styles.previewTileChip}>{t}</span>
+                  ))}
                 </div>
               </div>
-            </article>
-            <article className={styles.previewCard}>
-              <Image
-                src="https://cdn.akamai.steamstatic.com/steam/apps/1145360/header.jpg"
-                alt="Hades"
-                width={460}
-                height={215}
-                unoptimized
-                className={styles.previewThumb}
-              />
-              <div className={styles.previewCardBody}>
-                <p className={styles.previewCardName}>Hades</p>
-                <p className={styles.previewReason}>빠른 템포의 액션과 반복 플레이를 즐기는 취향을 반영했어요</p>
-                <div className={styles.previewMeta}>
-                  <span className={styles.previewPrice}>₩16,500</span>
-                  <span className={`${styles.previewScore} ${styles.scoreHigh}`}>메타크리틱 93점</span>
-                </div>
-              </div>
-            </article>
-          </div>
+            </Link>
+          ))}
+        </div>
+        <div className={styles.inner}>
           <a href="#recommend-form" className={styles.previewCta}>내 추천 받기 ↑</a>
+        </div>
+        <div className={styles.inner} style={{ marginTop: '3rem' }}>
+          <p className={styles.previewLabel}>내 저장 목록</p>
+          <p className={styles.previewTitle}>내가 저장한 게임</p>
+          <div className={styles.savedPlaceholder}>추천받은 게임을 저장하면 여기에 표시돼요</div>
+          <div className={styles.savedPlaceholder}>추천받은 게임을 저장하면 여기에 표시돼요</div>
+          <div className={styles.savedPlaceholder}>추천받은 게임을 저장하면 여기에 표시돼요</div>
         </div>
       </section>
 

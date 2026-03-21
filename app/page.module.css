@@ -305,6 +305,10 @@
   .dropdownItem {
     transition: none;
   }
+  .previewTileImg,
+  .previewTileOverlay {
+    transition: none;
+  }
 }
 
 /* ── Mobile ── */
@@ -536,84 +540,99 @@
   color: var(--text-primary);
 }
 
-.previewCardList {
-  container-type: inline-size;
+/* ── Preview strip (horizontal scroll) ── */
+
+.previewStrip {
+  display: flex;
+  overflow-x: auto;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  scrollbar-width: none;
+}
+
+.previewStrip::-webkit-scrollbar {
+  display: none;
+}
+
+.previewTile {
+  position: relative;
+  width: 220px;
+  aspect-ratio: 460 / 215;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: var(--radius);
+  display: block;
+  text-decoration: none;
+}
+
+.previewTileImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.previewTile:hover .previewTileImg {
+  filter: blur(4px) brightness(0.4);
+  transform: scale(1.04);
+}
+
+.previewTileOverlay {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-top: 1.25rem;
-}
-
-.previewCard {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  max-height: calc(40cqw * 215 / 460 + 2px);
-}
-
-.previewThumb {
-  width: 40%;
-  height: auto;
-  flex-shrink: 0;
-  display: block;
-  object-fit: cover;
-}
-
-.previewCardBody {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  padding: 1.25rem;
-}
-
-.previewCardName {
-  font-size: 1.125rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-  line-height: 1.3;
-  margin-bottom: 0.5rem;
-  text-wrap: balance;
-}
-
-.previewReason {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin-bottom: 0.875rem;
-}
-
-.previewMeta {
-  display: flex;
   align-items: center;
-  gap: 0.625rem;
-  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.previewPrice {
-  font-size: 0.9375rem;
+.previewTile:hover .previewTileOverlay {
+  opacity: 1;
+}
+
+.previewTileName {
+  font-size: 0.875rem;
   font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  color: var(--accent);
+  color: var(--text-primary);
+  text-align: center;
   letter-spacing: -0.01em;
 }
 
-.previewScore {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  border-radius: 4px;
-  padding: 0.1875rem 0.5rem;
-  font-variant-numeric: tabular-nums;
+.previewTileChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
 }
 
-.scoreHigh {
-  color: var(--accent);
+.previewTileChip {
   background: var(--accent-dim);
   border: 1px solid rgba(200, 241, 53, 0.25);
+  color: var(--accent);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 0.125rem 0.4rem;
+  border-radius: 3px;
+}
+
+/* ── Saved games shell (FT7 replaces this) ── */
+
+.savedPlaceholder {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  margin-top: 0.75rem;
 }
 
 .previewCta {
