@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 153/200 lines — OK**
+📏 **File health: 176/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -102,41 +102,62 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: FT-series — Product Experience ─────────
+## ── ACTIVE STEP: FT6 — Home Preview Section Redesign ────
 
-Full audit completed 2026-03-20. Spec written in `SPEC.md §Phase 6`. Design identity saved in `memory/project_design_identity.md`.
+**FT done:** FT5✅ FT3✅ FT1✅ FT2✅ FT4✅ · FT7 follows · D-series = separate community phase — not FT-series
+**Files:** `app/page.tsx`, `app/page.module.css`
+**Goal:** Replace FT1's 2 clipped preview cards with (A) full-width thumbnail strip + (B) saved games shell.
+**Design:** Tag chips on hover — taste matcher signal, not a browse gallery.
 
-**Naming note:** SPEC.md contains legacy "D-series" references (community hub hooks, user profile placeholders) from C-series implementation. These refer to the user's separately planned community feature phase — a different plan not yet documented here. FT-series is independent of that. Do NOT conflate the two.
+**Migration:** Remove `previewCardList` JSX block (Elden Ring + Hades; classes `previewCard`/`previewThumb`/`previewCardBody`). Keep `previewLabel`, `previewTitle`, `previewCta`.
 
-**FT-series order (implement in this sequence):**
-1. ~~**FT5** — quick fixes~~ ✅ 2026-03-20
-2. ~~**FT3** — Footer nav row~~ ✅ 2026-03-20
-3. ~~**FT1** — Main page hero redesign: TagScatter + headline + stats + preview cards + How it works~~ ✅ 2026-03-20
-4. ~~**FT2** — Genre index: game counts per genre, sort by count, tier chips~~ ✅ 2026-03-21
-5. ~~**FT4** — 2 new blog posts (reach 5 total for AdSense)~~ ✅ 2026-03-21
-6. **FT6** — Home preview redesign: EX2-style thumbnail strip (8 games, hover→tag chips) + saved section shell ← **NEXT**
-7. **FT7** — Save recommendations: Supabase table + API routes + result page save button + home saved section activated
+**JSX** — `.previewStrip` OUTSIDE `.inner` for full-width scroll:
+```tsx
+<section className={styles.previewSection}>
+  <div className={styles.inner}>…previewLabel, previewTitle…</div>
+  <div className={styles.previewStrip}>
+    {PREVIEW_TILES.map(tile => (
+      <Link href={`/games/${tile.appid}`} key={tile.appid} className={styles.previewTile}>
+        <Image unoptimized src={`https://cdn.akamai.steamstatic.com/steam/apps/${tile.appid}/header.jpg`}
+          width={460} height={215} alt={tile.name} className={styles.previewTileImg} />
+        <div className={styles.previewTileOverlay}>
+          <span className={styles.previewTileName}>{tile.name}</span>
+          <div className={styles.previewTileChips}>{tile.tags.map(t => <span key={t} className={styles.previewTileChip}>{t}</span>)}</div>
+        </div>
+      </Link>
+    ))}
+  </div>
+  <div className={styles.inner}>…previewCta…</div>
+  <div className={styles.inner} style={{ marginTop: '3rem' }}>…Sub-section B…</div>
+</section>
+```
+
+**PREVIEW_TILES** (const outside component — appid · name · tags[]):
+```
+1245620 Elden Ring      · Souls-like, Open World, Action RPG, Difficult
+1145360 Hades           · Roguelike, Action, Fast-Paced, Story Rich
+413150  Stardew Valley  · Farming Sim, Relaxing, Pixel Graphics, Indie
+367520  Hollow Knight   · Metroidvania, Souls-like, Atmospheric, Indie
+292030  The Witcher 3   · Open World, RPG, Story Rich, Dark Fantasy
+105600  Terraria        · Sandbox, Crafting, Building, Exploration
+504230  Celeste         · Platformer, Difficult, Pixel Art, Story Rich
+588650  Dead Cells      · Roguelike, Action, Metroidvania, Fast-Paced
+```
+
+**CSS:** Tile `width:220px`, `aspect-ratio:460/215`, `overflow:hidden`. Image hover: `filter:blur(4px) brightness(0.4)` + `scale(1.04)`, 300ms. Overlay: `position:absolute; inset:0`, `opacity:0→1`, 300ms, pure CSS `:hover`. Chips: accent-dim bg/border/text, `flex-wrap:wrap; gap:4px; justify-content:center`. Scrollbar: `scrollbar-width:none` + `::-webkit-scrollbar{display:none}`. `prefers-reduced-motion` → `transition:none`.
+
+**Sub-B shell:** Label "내 저장 목록" (`.previewLabel`), title "내가 저장한 게임" (`.previewTitle`). 3 placeholder cards (~120px height): "추천받은 게임을 저장하면 여기에 표시돼요". No auth check — FT7 replaces entirely.
+
+**Scope:** No auth logic, no Supabase calls — FT7 only.
 
 ---
 
 ## ── MINOR CHANGES LOG ────────────────────────────────────
 
-_Pre-2026-03-20 entries → HANDOVER-archive.md_
+_Pre-2026-03-21 entries → HANDOVER-archive.md_
 
 | Date | Change | Files |
 |------|--------|-------|
-| 2026-03-20 | Fix: `export const runtime = 'edge'` required on all dynamic `[param]` routes | `games/[appid]/page.tsx`, `genre/[slug]/page.tsx`, `users/[userId]/page.tsx` |
-| 2026-03-20 | Fix: blog/[slug] — remove generateStaticParams (incompatible with edge runtime) | `app/blog/[slug]/page.tsx` |
-| 2026-03-20 | Rename: PlayFit → Guildeline; `@steam.playfit` + sessionStorage keys unchanged (internal identifiers) | all tsx/ts/md |
-| 2026-03-20 | feat: LoadingOverlay (G logo pulse + bouncing dots) on main page; Toast notification on Steam link success | LoadingOverlay.tsx/.css, page.tsx, Header.tsx/.css |
-| 2026-03-20 | ui: muted "Steam 연동됨" text shown in header for email/Google users with Steam already linked | Header.tsx, Header.module.css |
-| 2026-03-20 | feat(C12): FAQ block (game pages), definition block (genre pages), dateModified schema (all), updatedAt support (blog) | games/[appid]/, genre/[slug]/, blog/[slug]/, lib/blog.ts |
-| 2026-03-20 | feat(C13): `<img>` → `<Image unoptimized>` + failedImages state; analytics defer to requestIdleCallback (Safari fallback: setTimeout 0) | result/page.tsx, lib/analytics.ts |
-| 2026-03-20 | Domain: guildeline.com live — CF Pages, NEXT_PUBLIC_BASE_URL, Google Console JS Origins, Supabase Auth URL, Search Console, GA4 all updated | external services |
-| 2026-03-20 | feat(FT5): Intl.DateTimeFormat in blog/page.tsx; CSS comment PLAYFIT→GUILDELINE (3 files) | app/blog/page.tsx, app/globals.css, app/page.module.css, app/result/page.module.css |
-| 2026-03-20 | feat(FT3): Footer nav row added (홈 · 장르별 탐색 · 블로그) above legal links | app/components/Footer.tsx |
-| 2026-03-20 | feat(FT1): Hero redesign — TagScatter bg, h2 headline, stat line, CTA anchor, preview cards (Elden Ring + Hades), How it works 3-step grid | app/page.tsx, app/page.module.css, app/components/TagScatter.tsx, app/components/TagScatter.module.css |
-| 2026-03-20 | fix: genre index buttons uniform size — fixed 4/3/2 column grid (was auto-fill causing last-row stretch) | app/genre/page.module.css |
 | 2026-03-21 | feat(FT2): genre index — count per genre, sort by count desc, top 12 featured 3-col grid, stat line | app/genre/page.tsx, app/genre/page.module.css |
 | 2026-03-21 | feat(FT4): 2 new blog posts — action guide 10선, indie hidden gems 10선; registry updated | content/blog/steam-genre-guide-action.tsx, content/blog/indie-games-hidden-gems.tsx, lib/blog.ts |
 

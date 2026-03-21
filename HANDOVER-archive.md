@@ -1,5 +1,21 @@
 # HANDOVER Archive
 
+## Minor Changes — 2026-03-20 (FT1–5, domain rename, C12–C13)
+| Change | Files |
+|--------|-------|
+| Fix: `runtime = 'edge'` required on all dynamic `[param]` routes | `games/[appid]/page.tsx`, `genre/[slug]/page.tsx`, `users/[userId]/page.tsx` |
+| Fix: blog/[slug] — remove generateStaticParams (edge runtime incompatible) | `app/blog/[slug]/page.tsx` |
+| Rename: PlayFit → Guildeline (internal identifiers unchanged) | all tsx/ts/md |
+| feat: LoadingOverlay (G logo pulse + bouncing dots); Toast on Steam link success | `LoadingOverlay.tsx/.css`, `page.tsx`, `Header.tsx/.css` |
+| ui: "Steam 연동됨" muted text for email/Google users already linked | `Header.tsx`, `Header.module.css` |
+| feat(C12): FAQ block (game pages), definition block (genre), dateModified + updatedAt | `games/[appid]/`, `genre/[slug]/`, `blog/[slug]/`, `lib/blog.ts` |
+| feat(C13): `<Image unoptimized>` + failedImages; analytics → requestIdleCallback | `result/page.tsx`, `lib/analytics.ts` |
+| Domain: guildeline.com live — CF Pages, BASE_URL, Google, Supabase, GA4 updated | external |
+| feat(FT5): Intl.DateTimeFormat blog/page.tsx; CSS comments PLAYFIT→GUILDELINE | `blog/page.tsx`, `globals.css`, `page.module.css`, `result/page.module.css` |
+| feat(FT3): Footer nav row (홈 · 장르별 탐색 · 블로그) | `Footer.tsx` |
+| feat(FT1): Hero — TagScatter bg, h2, stat line, CTA, preview cards, How it works | `page.tsx`, `page.module.css`, `TagScatter.tsx/.css` |
+| fix: genre index — fixed 4/3/2 col grid (auto-fill caused last-row stretch) | `genre/page.module.css` |
+
 ## Minor Changes — 2026-03-18~20 (C-series UI + fixes)
 | Change | Files |
 |--------|-------|
