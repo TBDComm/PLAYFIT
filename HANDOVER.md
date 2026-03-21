@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 163/200 lines — OK**
+📏 **File health: 165/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -131,7 +131,9 @@ Next action: [exactly what to do next to resume]
 
 **CSS:** Tile `width:220px`, `aspect-ratio:460/215`, `overflow:hidden`. Image hover: `filter:blur(4px) brightness(0.4)` + `scale(1.04)`, 300ms. Overlay: `position:absolute; inset:0`, `opacity:0→1`, 300ms, pure CSS `:hover`. Chips: accent-dim bg/border/text, `flex-wrap:wrap; gap:4px; justify-content:center`. Scrollbar: `scrollbar-width:none` + `::-webkit-scrollbar{display:none}`. `prefers-reduced-motion` → `transition:none`.
 
-**Sub-B shell:** Label "내 저장 목록" (`.previewLabel`), title "내가 저장한 게임" (`.previewTitle`). 3 placeholder cards (~120px height): "추천받은 게임을 저장하면 여기에 표시돼요". No auth check — FT7 replaces entirely.
+**Sub-B shell:** Label "내 저장 목록" (`.previewLabel`), title "내가 저장한 게임" (`.previewTitle`). 3 `<div className={styles.savedPlaceholder}>` cards (~120px height, centered text): "추천받은 게임을 저장하면 여기에 표시돼요". No auth check — FT7 replaces this entire sub-section.
+
+**CSS cleanup:** After removing `previewCardList` JSX block, also delete the corresponding dead CSS rules in `page.module.css`: `.previewCardList`, `.previewCard`, `.previewThumb`, `.previewCardBody`, `.previewCardName`, `.previewReason`, `.previewMeta`, `.previewPrice`, `.previewScore`.
 
 **Scope:** No auth logic, no Supabase calls — FT7 only.
 **After completing:** Clear lock → mark FT6 done in FT-series list → update Active Step to FT7 spec (read SPEC.md §FT7) → add Minor Changes Log entry.
