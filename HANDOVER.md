@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 176/200 lines — OK**
+📏 **File health: 163/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -86,24 +86,9 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ADSENSE ACTIVATION CHECKLIST (run after FT-series + approval) ────────
-
-**Apply for AdSense AFTER FT-series is fully complete.** When approval email arrives, do these in order:
-
-1. **CF Pages env var** — add `NEXT_PUBLIC_ADSENSE_CLIENT_ID=ca-pub-XXXXXXXXXXXXXXXX`
-2. **`public/ads.txt`** — uncomment line, replace `pub-XXXXXXXXXXXXXXXX` with real Publisher ID
-3. **Ad slot IDs** — replace all `slot="0000000000"` with real slot IDs from AdSense dashboard:
-   - `app/games/[appid]/page.tsx` — "game detail" slot
-   - `app/genre/[slug]/page.tsx` — "in-list" slot
-   - `app/blog/[slug]/page.tsx` — "in-article" slot
-   - `app/blog/page.tsx` — "display" slot
-   - `app/result/page.tsx` — "display" slot
-4. Deploy → verify ads appear on each page type
-
----
-
 ## ── ACTIVE STEP: FT6 — Home Preview Section Redesign ────
 
+**Prerequisites:** FT4 complete ✅ — no blockers.
 **FT done:** FT5✅ FT3✅ FT1✅ FT2✅ FT4✅ · FT7 follows · D-series = separate community phase — not FT-series
 **Files:** `app/page.tsx`, `app/page.module.css`
 **Goal:** Replace FT1's 2 clipped preview cards with (A) full-width thumbnail strip + (B) saved games shell.
@@ -149,6 +134,7 @@ Next action: [exactly what to do next to resume]
 **Sub-B shell:** Label "내 저장 목록" (`.previewLabel`), title "내가 저장한 게임" (`.previewTitle`). 3 placeholder cards (~120px height): "추천받은 게임을 저장하면 여기에 표시돼요". No auth check — FT7 replaces entirely.
 
 **Scope:** No auth logic, no Supabase calls — FT7 only.
+**After completing:** Clear lock → mark FT6 done in FT-series list → update Active Step to FT7 spec (read SPEC.md §FT7) → add Minor Changes Log entry → AdSense activation checklist → `HANDOVER-archive.md`.
 
 ---
 
@@ -172,5 +158,6 @@ _Pre-2026-03-21 entries → HANDOVER-archive.md_
 ## ── PROJECT REFERENCE ────────────────────────────────────
 
 Completed step detail → `HANDOVER-archive.md`
+AdSense activation steps (post FT-series) → `HANDOVER-archive.md §AdSense Activation Checklist`
 Full spec (pending steps only) → `SPEC.md` — read only when starting a new step, relevant section only
 Completed spec detail → `SPEC_archive.md`

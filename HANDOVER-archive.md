@@ -1,5 +1,19 @@
 # HANDOVER Archive
 
+## AdSense Activation Checklist (run after FT-series complete + approval)
+
+Apply for AdSense AFTER FT-series is fully complete. When approval email arrives:
+
+1. **CF Pages env var** — add `NEXT_PUBLIC_ADSENSE_CLIENT_ID=ca-pub-XXXXXXXXXXXXXXXX`
+2. **`public/ads.txt`** — uncomment line, replace `pub-XXXXXXXXXXXXXXXX` with real Publisher ID
+3. **Ad slot IDs** — replace all `slot="0000000000"` with real slot IDs from AdSense dashboard:
+   - `app/games/[appid]/page.tsx` — "game detail" slot
+   - `app/genre/[slug]/page.tsx` — "in-list" slot
+   - `app/blog/[slug]/page.tsx` — "in-article" slot
+   - `app/blog/page.tsx` — "display" slot
+   - `app/result/page.tsx` — "display" slot
+4. Deploy → verify ads appear on each page type
+
 ## Minor Changes — 2026-03-20 (FT1–5, domain rename, C12–C13)
 | Change | Files |
 |--------|-------|
