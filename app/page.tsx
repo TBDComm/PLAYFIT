@@ -19,16 +19,32 @@ const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-const PREVIEW_TILES = [
-  { appid: 1245620, name: 'Elden Ring',      tags: ['Souls-like', 'Open World', 'Action RPG', 'Difficult'] },
-  { appid: 1145360, name: 'Hades',           tags: ['Roguelike', 'Action', 'Fast-Paced', 'Story Rich'] },
-  { appid: 413150,  name: 'Stardew Valley',  tags: ['Farming Sim', 'Relaxing', 'Pixel Graphics', 'Indie'] },
-  { appid: 367520,  name: 'Hollow Knight',   tags: ['Metroidvania', 'Souls-like', 'Atmospheric', 'Indie'] },
-  { appid: 292030,  name: 'The Witcher 3',   tags: ['Open World', 'RPG', 'Story Rich', 'Dark Fantasy'] },
-  { appid: 105600,  name: 'Terraria',        tags: ['Sandbox', 'Crafting', 'Building', 'Exploration'] },
-  { appid: 504230,  name: 'Celeste',         tags: ['Platformer', 'Difficult', 'Pixel Art', 'Story Rich'] },
-  { appid: 588650,  name: 'Dead Cells',      tags: ['Roguelike', 'Action', 'Metroidvania', 'Fast-Paced'] },
-] as const
+const PREVIEW_POOL = [
+  { appid: 1245620, name: 'Elden Ring',           tags: ['Souls-like', 'Open World', 'Action RPG', 'Difficult'] },
+  { appid: 1145360, name: 'Hades',                tags: ['Roguelike', 'Action', 'Fast-Paced', 'Story Rich'] },
+  { appid: 413150,  name: 'Stardew Valley',       tags: ['Farming Sim', 'Relaxing', 'Pixel Art', 'Indie'] },
+  { appid: 367520,  name: 'Hollow Knight',        tags: ['Metroidvania', 'Souls-like', 'Atmospheric', 'Indie'] },
+  { appid: 292030,  name: 'The Witcher 3',        tags: ['Open World', 'RPG', 'Story Rich', 'Dark Fantasy'] },
+  { appid: 105600,  name: 'Terraria',             tags: ['Sandbox', 'Crafting', 'Building', 'Exploration'] },
+  { appid: 504230,  name: 'Celeste',              tags: ['Platformer', 'Difficult', 'Pixel Art', 'Story Rich'] },
+  { appid: 588650,  name: 'Dead Cells',           tags: ['Roguelike', 'Action', 'Metroidvania', 'Fast-Paced'] },
+  { appid: 620,     name: 'Portal 2',             tags: ['Puzzle', 'Co-op', 'Physics', 'First-Person'] },
+  { appid: 1086940, name: "Baldur's Gate 3",      tags: ['RPG', 'Turn-Based', 'Co-op', 'Story Rich'] },
+  { appid: 1091500, name: 'Cyberpunk 2077',       tags: ['Open World', 'RPG', 'Action', 'Sci-Fi'] },
+  { appid: 814380,  name: 'Sekiro',               tags: ['Souls-like', 'Action', 'Difficult', 'Stealth'] },
+  { appid: 548430,  name: 'Deep Rock Galactic',   tags: ['Co-op', 'FPS', 'Mining', 'Procedural'] },
+  { appid: 1794680, name: 'Vampire Survivors',    tags: ['Roguelike', 'Bullet Hell', 'Pixel Art', 'Survival'] },
+  { appid: 646570,  name: 'Slay the Spire',       tags: ['Card Game', 'Roguelike', 'Strategy', 'Turn-Based'] },
+  { appid: 582010,  name: 'Monster Hunter World', tags: ['Action RPG', 'Co-op', 'Open World', 'Hunting'] },
+  { appid: 590380,  name: 'Into the Breach',      tags: ['Strategy', 'Turn-Based', 'Roguelike', 'Sci-Fi'] },
+  { appid: 632470,  name: 'Disco Elysium',        tags: ['RPG', 'Story Rich', 'Detective', 'Philosophical'] },
+  { appid: 1868140, name: 'Dave the Diver',       tags: ['Adventure', 'Fishing', 'Pixel Art', 'Management'] },
+  { appid: 264710,  name: 'Subnautica',           tags: ['Survival', 'Open World', 'Underwater', 'Exploration'] },
+  { appid: 391540,  name: 'Undertale',            tags: ['RPG', 'Indie', 'Pixel Art', 'Comedy'] },
+  { appid: 1174180, name: 'Red Dead Redemption 2',tags: ['Open World', 'Action', 'Western', 'Story Rich'] },
+]
+
+const PREVIEW_COUNT = 15
 
 const homeJsonLd = {
   '@context': 'https://schema.org',
@@ -89,6 +105,8 @@ export default function Home() {
   const router = useRouter()
   const [authState, setAuthState] = useState<AuthState>('loading')
   const [savedGames, setSavedGames] = useState<SavedGame[]>([])
+  const [previewTiles, setPreviewTiles] = useState(() => PREVIEW_POOL.slice(0, PREVIEW_COUNT))
+  const [fadingIdx, setFadingIdx] = useState<number | null>(null)
   const [mode, setMode] = useState<'steam' | 'manual'>('steam')
   const [url, setUrl] = useState('')
   const [manualGames, setManualGames] = useState<ManualGame[]>(EMPTY_MANUAL_GAMES)
@@ -136,6 +154,24 @@ export default function Home() {
       } catch { /* silent fail */ }
     })
   }, [authState])
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      const swapIdx = Math.floor(Math.random() * PREVIEW_COUNT)
+      setFadingIdx(swapIdx)
+      setTimeout(() => {
+        setPreviewTiles(prev => {
+          const hidden = PREVIEW_POOL.filter(g => !prev.some(d => d.appid === g.appid))
+          if (hidden.length === 0) return prev
+          const next = [...prev]
+          next[swapIdx] = hidden[Math.floor(Math.random() * hidden.length)]
+          return next
+        })
+        setFadingIdx(null)
+      }, 350)
+    }, 2800)
+    return () => clearInterval(id)
+  }, [])
 
   function handleUnsaveFromHome(appid: string) {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -549,11 +585,11 @@ export default function Home() {
         </div>
         <div className={styles.inner}>
           <div className={styles.previewGrid}>
-            {PREVIEW_TILES.map(tile => (
+            {previewTiles.map((tile, idx) => (
               <Link
                 href={`/games/${tile.appid}`}
                 key={tile.appid}
-                className={styles.previewTile}
+                className={`${styles.previewTile}${fadingIdx === idx ? ` ${styles.previewTileFading}` : ''}`}
               >
                 <Image
                   unoptimized

@@ -180,14 +180,21 @@ export default function ResultPage() {
                   </a>
 
                   <div className={styles.cardActions}>
-                    {authState === 'authed' && (
+                    {authState === 'authed' ? (
                       <button
                         className={isSaved ? styles.saveBtnSaved : styles.saveBtnUnsaved}
                         onClick={() => handleSaveToggle(card)}
                       >
                         {isSaved ? '★ 저장됨' : '☆ 저장'}
                       </button>
-                    )}
+                    ) : authState === 'anon' ? (
+                      <button
+                        className={styles.saveBtnUnsaved}
+                        onClick={() => window.dispatchEvent(new CustomEvent('guildeline:open-login'))}
+                      >
+                        ☆ 저장
+                      </button>
+                    ) : null}
 
                     <div className={styles.feedback} aria-live="polite">
                       {feedbackSent[card.appid] ? (
