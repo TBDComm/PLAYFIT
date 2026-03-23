@@ -120,6 +120,13 @@ export default function Header() {
     return () => subscription.unsubscribe()
   }, [supabase])
 
+  // Open login modal from custom event (dispatched by home page anon CTA)
+  useEffect(() => {
+    const handler = () => setShowLoginModal(true)
+    window.addEventListener('guildeline:open-login', handler)
+    return () => window.removeEventListener('guildeline:open-login', handler)
+  }, [])
+
   // Render Google Sign-In button via GIS renderButton (avoids FedCM dependency)
   useEffect(() => {
     if (!showLoginModal || !googleBtnRef.current || !window.google?.accounts?.id) return

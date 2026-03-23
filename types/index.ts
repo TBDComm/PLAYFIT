@@ -68,6 +68,19 @@ export type ErrorCode =
   | 'DB_NOT_READY'
   | 'TAG_EXTRACTION_FAILED'
 
+// ===== Saved games types =====
+
+export interface SavedGame {
+  id: string
+  user_id: string
+  appid: string
+  name: string
+  reason: string | null
+  price_krw: number | null
+  metacritic_score: number | null
+  saved_at: string
+}
+
 // ===== Feedback types =====
 
 export type FeedbackRating = 'positive' | 'negative'

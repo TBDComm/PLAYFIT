@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
-import type { RecommendationCard, ErrorCode } from '@/types'
+import type { RecommendationCard, ErrorCode, SavedGame } from '@/types'
 import { trackEvent } from '@/lib/analytics'
 import JsonLd from './components/JsonLd'
 import LoadingOverlay from './components/LoadingOverlay'
@@ -13,6 +13,11 @@ import TagScatter from './components/TagScatter'
 import styles from './page.module.css'
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
+
+const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 const PREVIEW_TILES = [
   { appid: 1245620, name: 'Elden Ring',      tags: ['Souls-like', 'Open World', 'Action RPG', 'Difficult'] },
@@ -83,6 +88,7 @@ const EMPTY_MANUAL_GAMES: ManualGame[] = Array.from({ length: 5 }, () => ({
 export default function Home() {
   const router = useRouter()
   const [authState, setAuthState] = useState<AuthState>('loading')
+  const [savedGames, setSavedGames] = useState<SavedGame[]>([])
   const [mode, setMode] = useState<'steam' | 'manual'>('steam')
   const [url, setUrl] = useState('')
   const [manualGames, setManualGames] = useState<ManualGame[]>(EMPTY_MANUAL_GAMES)
@@ -97,10 +103,6 @@ export default function Home() {
   const searchGenRef = useRef<number[]>(Array(5).fill(0))
 
   useEffect(() => {
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) { setAuthState('anon'); return }
       const { data } = await supabase
@@ -118,6 +120,33 @@ export default function Home() {
       }
     })
   }, [])
+
+  useEffect(() => {
+    if (authState === 'loading' || authState === 'anon') return
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session) return
+      try {
+        const res = await fetch('/api/saved-games', {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        })
+        if (res.ok) {
+          const json = await res.json() as { saved: SavedGame[] }
+          setSavedGames(json.saved)
+        }
+      } catch { /* silent fail */ }
+    })
+  }, [authState])
+
+  function handleUnsaveFromHome(appid: string) {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session) return
+      setSavedGames(prev => prev.filter(g => g.appid !== appid))
+      fetch(`/api/saved-games/${appid}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      }).catch(() => { /* silent fail */ })
+    })
+  }
 
   function updateManualGame(idx: number, field: 'playtime', value: string) {
     setManualGames(prev => prev.map((g, i) => i === idx ? { ...g, [field]: value } : g))
@@ -550,9 +579,70 @@ export default function Home() {
         <div className={styles.inner} style={{ marginTop: '3rem' }}>
           <p className={styles.previewLabel}>내 저장 목록</p>
           <p className={styles.previewTitle}>내가 저장한 게임</p>
-          <div className={styles.savedPlaceholder}>추천받은 게임을 저장하면 여기에 표시돼요</div>
-          <div className={styles.savedPlaceholder}>추천받은 게임을 저장하면 여기에 표시돼요</div>
-          <div className={styles.savedPlaceholder}>추천받은 게임을 저장하면 여기에 표시돼요</div>
+
+          {authState === 'loading' && (
+            <>
+              <div className={styles.savedPlaceholder} />
+              <div className={styles.savedPlaceholder} />
+              <div className={styles.savedPlaceholder} />
+            </>
+          )}
+
+          {authState === 'anon' && (
+            <>
+              <div className={styles.savedPlaceholder} />
+              <div className={styles.savedPlaceholder} />
+              <div className={styles.savedPlaceholder} />
+              <p className={styles.savedStatusMsg}>로그인하면 저장한 게임이 여기에 표시돼요</p>
+              <button
+                className={styles.savedLoginBtn}
+                onClick={() => window.dispatchEvent(new CustomEvent('guildeline:open-login'))}
+              >
+                로그인하기 →
+              </button>
+            </>
+          )}
+
+          {(authState === 'steam' || authState === 'linked' || authState === 'unlinked_auth') && savedGames.length === 0 && (
+            <>
+              <div className={styles.savedPlaceholder} />
+              <div className={styles.savedPlaceholder} />
+              <div className={styles.savedPlaceholder} />
+              <p className={styles.savedStatusMsg}>추천받은 게임을 저장하면 여기에 표시돼요</p>
+              <a href="#recommend-form" className={styles.savedLoginBtn}>지금 추천받기 ↑</a>
+            </>
+          )}
+
+          {(authState === 'steam' || authState === 'linked' || authState === 'unlinked_auth') && savedGames.length > 0 && (
+            <ul className={styles.savedCards}>
+              {savedGames.map(game => (
+                <li key={game.appid} className={styles.savedCard}>
+                  <span className={styles.savedCardName}>{game.name}</span>
+                  {game.reason && (
+                    <span className={styles.savedCardReason}>{game.reason}</span>
+                  )}
+                  <div className={styles.savedCardMeta}>
+                    {game.price_krw !== null && (
+                      <span className={styles.savedCardPrice}>
+                        ₩{new Intl.NumberFormat('ko-KR').format(game.price_krw)}
+                      </span>
+                    )}
+                    {game.metacritic_score !== null && (
+                      <span className={styles.savedCardScore}>
+                        메타크리틱 {game.metacritic_score}점
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    className={styles.savedCardUnsaveBtn}
+                    onClick={() => handleUnsaveFromHome(game.appid)}
+                  >
+                    저장 취소
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </section>
 
