@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 122/200 lines — OK**
+📏 **File health: 123/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -105,6 +105,7 @@ _Pre-2026-03-21 entries → HANDOVER-archive.md_
 | 2026-03-21 | feat(FT6): preview section redesign — 8-tile horizontal scroll strip + hover tag chips + saved games placeholder shell; removed dead previewCard CSS | app/page.tsx, app/page.module.css |
 | 2026-03-23 | feat(FT7): save recommendations — API routes (GET/POST/DELETE), result ★/☆ optimistic toggle, home saved section activated (skeleton/anon/empty/live cards + unsave), Header open-login event | 8 files |
 | 2026-03-23 | feat: LoadingOverlay redesign — glitch wordmark entrance + radar sweep + terminal log; PageLoading (server) for page transitions; loading.tsx added to games/[appid], genre/[slug], genre, blog/[slug], blog | 9 files |
+| 2026-03-23 | fix: LoadingOverlay — glitchIn filter:blur() → removed; barFill width → transform:scaleX() (compositor-friendly) | LoadingOverlay.module.css |
 
 ---
 
