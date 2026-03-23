@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 124/200 lines — OK**
+📏 **File health: 126/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -88,9 +88,11 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: FT8 (next — TBD) ────
+## ── ACTIVE STEP: NONE — AWAIT USER DIRECTION ────
 
-**FT done:** FT1✅ FT2✅ FT3✅ FT4✅ FT5✅ FT6✅ FT7✅ · Read SPEC.md §Phase 6 for next step.
+**FT done:** FT1✅ FT2✅ FT3✅ FT4✅ FT5✅ FT6✅ FT7✅
+**SPEC.md §Phase 6 ends at FT7 — no next step is defined yet.**
+Do NOT read SPEC.md or infer a next step. Ask the user what to work on next.
 
 ---
 
