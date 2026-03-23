@@ -156,6 +156,7 @@ export default function Home() {
   }, [authState])
 
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const id = setInterval(() => {
       const swapIdx = Math.floor(Math.random() * PREVIEW_COUNT)
       setFadingIdx(swapIdx)

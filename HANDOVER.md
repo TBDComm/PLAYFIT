@@ -110,7 +110,8 @@ _Pre-2026-03-21 entries → HANDOVER-archive.md_
 | 2026-03-23 | fix: LoadingOverlay — glitchIn filter:blur() → removed; barFill width → transform:scaleX() (compositor-friendly) | LoadingOverlay.module.css |
 | 2026-03-23 | fix: polish — '...'→'…', saveBtnSaved hover, savedLoginBtn touch-action, savedCardUnsaveBtn focus-visible, HANDOVER saved_games | 4 files |
 | 2026-03-23 | feat: preview section — portrait grid (library_600x900.jpg), 5-col grid wrapping, bottom-gradient hover overlay | app/page.tsx, app/page.module.css |
-| 2026-03-23 | feat: preview rotation — PREVIEW_POOL 22개, 15개 표시, 2.8s마다 랜덤 1개 swap + fade; 결과 저장 버튼 비로그인 대응 (open-login event) | app/page.tsx, app/page.module.css, app/result/page.tsx |
+| 2026-03-23 | feat: preview rotation — PREVIEW_POOL 22 games, show 15, random 1-tile swap every 2.8s + fade; result save button shown for anon users (triggers open-login event) | app/page.tsx, app/page.module.css, app/result/page.tsx |
+| 2026-03-23 | fix: guideline violations — filter→opacity on previewTileImg hover (compositor), previewTile added to reduced-motion block, JS interval gated on matchMedia, HANDOVER log English | app/page.tsx, app/page.module.css, HANDOVER.md |
 
 ---
 

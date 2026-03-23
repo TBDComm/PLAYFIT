@@ -306,7 +306,8 @@
     transition: none;
   }
   .previewTileImg,
-  .previewTileOverlay {
+  .previewTileOverlay,
+  .previewTile {
     transition: none;
   }
 }
@@ -574,7 +575,7 @@
 }
 
 .previewTile:hover .previewTileImg {
-  filter: brightness(0.35);
+  opacity: 0.25;
   transform: scale(1.04);
 }
 
