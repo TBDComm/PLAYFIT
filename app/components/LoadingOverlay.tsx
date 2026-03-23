@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react'
 import styles from './LoadingOverlay.module.css'
 
 const LINES = [
-  '플레이 기록 분석 중...',
-  '취향 태그 가중치 계산 중...',
-  '82,816개 게임에서 매칭 중...',
+  '플레이 기록 분석 중…',
+  '취향 태그 가중치 계산 중…',
+  '82,816개 게임에서 매칭 중…',
 ] as const
 
 interface Props {

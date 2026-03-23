@@ -208,6 +208,11 @@
   border: 1px solid rgba(200, 241, 53, 0.35);
   color: var(--accent);
   touch-action: manipulation;
+  transition: opacity 0.15s ease;
+}
+
+.saveBtnSaved:hover {
+  opacity: 0.8;
 }
 
 .saveBtnUnsaved:focus-visible,
