@@ -547,31 +547,33 @@ export default function Home() {
           <p className={styles.previewLabel}>미리보기</p>
           <p className={styles.previewTitle}>이런 추천을 받았어요</p>
         </div>
-        <div className={styles.previewStrip}>
-          {PREVIEW_TILES.map(tile => (
-            <Link
-              href={`/games/${tile.appid}`}
-              key={tile.appid}
-              className={styles.previewTile}
-            >
-              <Image
-                unoptimized
-                src={`https://cdn.akamai.steamstatic.com/steam/apps/${tile.appid}/header.jpg`}
-                width={460}
-                height={215}
-                alt={tile.name}
-                className={styles.previewTileImg}
-              />
-              <div className={styles.previewTileOverlay}>
-                <span className={styles.previewTileName}>{tile.name}</span>
-                <div className={styles.previewTileChips}>
-                  {tile.tags.map(t => (
-                    <span key={t} className={styles.previewTileChip}>{t}</span>
-                  ))}
+        <div className={styles.inner}>
+          <div className={styles.previewGrid}>
+            {PREVIEW_TILES.map(tile => (
+              <Link
+                href={`/games/${tile.appid}`}
+                key={tile.appid}
+                className={styles.previewTile}
+              >
+                <Image
+                  unoptimized
+                  src={`https://cdn.akamai.steamstatic.com/steam/apps/${tile.appid}/library_600x900.jpg`}
+                  width={600}
+                  height={900}
+                  alt={tile.name}
+                  className={styles.previewTileImg}
+                />
+                <div className={styles.previewTileOverlay}>
+                  <span className={styles.previewTileName}>{tile.name}</span>
+                  <div className={styles.previewTileChips}>
+                    {tile.tags.map(t => (
+                      <span key={t} className={styles.previewTileChip}>{t}</span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))}
+          </div>
         </div>
         <div className={styles.inner}>
           <a href="#recommend-form" className={styles.previewCta}>내 추천 받기 ↑</a>

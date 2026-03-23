@@ -109,6 +109,7 @@ _Pre-2026-03-21 entries → HANDOVER-archive.md_
 | 2026-03-23 | feat: LoadingOverlay redesign — glitch wordmark entrance + radar sweep + terminal log; PageLoading (server) for page transitions; loading.tsx added to games/[appid], genre/[slug], genre, blog/[slug], blog | 9 files |
 | 2026-03-23 | fix: LoadingOverlay — glitchIn filter:blur() → removed; barFill width → transform:scaleX() (compositor-friendly) | LoadingOverlay.module.css |
 | 2026-03-23 | fix: polish — '...'→'…', saveBtnSaved hover, savedLoginBtn touch-action, savedCardUnsaveBtn focus-visible, HANDOVER saved_games | 4 files |
+| 2026-03-23 | feat: preview section — portrait grid (library_600x900.jpg), 5-col grid wrapping, bottom-gradient hover overlay | app/page.tsx, app/page.module.css |
 
 ---
 
