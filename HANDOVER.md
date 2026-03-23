@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 165/200 lines — OK**
+📏 **File health: 121/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -79,6 +79,8 @@ Next action: [exactly what to do next to resume]
 | C11 | On-Page SEO — meta title templates (main/blog post fixed), H1 logo GUILDELINE fix, blog internal links to /genre + / | ✅ 2026-03-20 |
 | C12 | AI SEO — FAQ block on game pages, definition block on genre pages, dateModified in all schemas, updatedAt on blog posts | ✅ 2026-03-20 |
 | C13 | Core Web Vitals — `<Image unoptimized>` (CF Pages constraint), `requestIdleCallback` for analytics (INP), ad minHeight wrapper (CLS) | ✅ 2026-03-20 |
+| FT1–FT6 | Home preview strip, genre index, blog posts, etc. | ✅ 2026-03-21 |
+| FT7 | Save recommendations — saved_games table, API routes, result save toggle, home saved section | ✅ 2026-03-23 |
 
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ✅ · NEXT_PUBLIC_ADSENSE_CLIENT_ID ⏳ (pending AdSense approval — add to CF Pages when Publisher ID received)
 
@@ -86,57 +88,9 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: FT7 — Save Recommendations Feature ────
+## ── ACTIVE STEP: FT8 (next — TBD) ────
 
-**FT done:** FT1✅ FT2✅ FT3✅ FT4✅ FT5✅ FT6✅ · D-series = separate community phase
-**Context:** Logged-in users save game recommendations. "Save = taste alignment signal." Minimal UI.
-
-**Step 7-1: Supabase table** — user runs this SQL in dashboard:
-```sql
-create table saved_games (
-  id uuid default gen_random_uuid() primary key,
-  user_id uuid references auth.users(id) on delete cascade not null,
-  appid text not null, name text not null, reason text,
-  price_krw integer, metacritic_score integer,
-  saved_at timestamptz default now() not null,
-  unique(user_id, appid)
-);
-alter table saved_games enable row level security;
-create policy "users can manage their own saved games"
-  on saved_games for all using (auth.uid() = user_id);
-```
-
-**Step 7-2: API routes** — auth pattern: client sends `Authorization: Bearer <token>`, server uses `serviceRoleKey` + `supabase.auth.getUser(token)`. All routes: `export const runtime = 'edge'`
-- `GET /api/saved-games` → `{ saved: SavedGame[] }` · 401 if unauthed
-- `POST /api/saved-games` body: `{ appid, name, reason?, price_krw?, metacritic_score? }` → upsert → `{ ok: true }`
-- `DELETE /api/saved-games/[appid]` — Next.js 15: `const { appid } = await context.params` (params is a Promise)
-
-**TypeScript type** (add to `types/index.ts`): `SavedGame { id, user_id, appid, name, reason, price_krw, metacritic_score, saved_at }`
-
-**Step 7-3: Result page** (`app/result/page.tsx`) — currently has NO supabase client.
-- Add module-level `const supabase = createBrowserClient(...)`
-- States: `authState: 'loading'|'authed'|'anon'`, `savedAppIds: Set<string>`
-- useEffect: getSession → if authed, fetch saved-games → build Set of appids
-- Each card: save button (only if `authState !== 'anon'`). No icon library — text+Unicode only:
-  - Saved: `"★ 저장됨"` · accent color · `background: var(--accent-dim)` · `border: 1px solid`
-  - Unsaved: `"☆ 저장"` · muted · `background: var(--bg-surface)` · `border: 1px solid`
-  - Optimistic toggle → POST or DELETE; `padding: 4px 10px; font-size: 0.8125rem; border-radius: var(--radius)`
-  - NEVER transparent background (feedback_no_transparent_buttons rule)
-
-**Step 7-4: Home page** (`app/page.tsx`) — activate FT6 placeholder with real data.
-- Move supabase client to module level (currently created inside useEffect — refactor out)
-- Add `savedGames: SavedGame[]` state; second useEffect depends on `authState`
-- authState display logic:
-  - `loading` → 3 placeholder cards (skeleton, no text)
-  - `anon` → 3 placeholders + "로그인하면 저장한 게임이 여기에 표시돼요" + "로그인하기 →" button
-    - onClick: `window.dispatchEvent(new CustomEvent('guildeline:open-login'))`
-    - Header.tsx: add useEffect listener for this event → `setShowLoginModal(true)`
-  - authed, 0 saved → 3 placeholders + "추천받은 게임을 저장하면 여기에 표시돼요" + anchor "지금 추천받기 ↑"
-  - authed, >0 saved → actual cards (newest first): name + reason + price/score + "저장 취소" button
-
-**Files:** `app/api/saved-games/route.ts`, `app/api/saved-games/[appid]/route.ts`, `app/result/page.tsx`, `app/result/page.module.css`, `app/page.tsx`, `app/page.module.css`, `app/components/Header.tsx`, `types/index.ts`
-
-**After completing:** Clear lock → mark FT7 done → update Active Step to next → add Minor Changes Log.
+**FT done:** FT1✅ FT2✅ FT3✅ FT4✅ FT5✅ FT6✅ FT7✅ · Read SPEC.md §Phase 6 for next step.
 
 ---
 
@@ -149,6 +103,7 @@ _Pre-2026-03-21 entries → HANDOVER-archive.md_
 | 2026-03-21 | feat(FT2): genre index — count per genre, sort by count desc, top 12 featured 3-col grid, stat line | app/genre/page.tsx, app/genre/page.module.css |
 | 2026-03-21 | feat(FT4): 2 new blog posts — action guide 10선, indie hidden gems 10선; registry updated | content/blog/steam-genre-guide-action.tsx, content/blog/indie-games-hidden-gems.tsx, lib/blog.ts |
 | 2026-03-21 | feat(FT6): preview section redesign — 8-tile horizontal scroll strip + hover tag chips + saved games placeholder shell; removed dead previewCard CSS | app/page.tsx, app/page.module.css |
+| 2026-03-23 | feat(FT7): save recommendations — API routes (GET/POST/DELETE), result ★/☆ optimistic toggle, home saved section activated (skeleton/anon/empty/live cards + unsave), Header open-login event | 8 files |
 
 ---
 
