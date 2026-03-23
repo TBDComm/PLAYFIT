@@ -11,10 +11,11 @@ export async function DELETE(req: Request, context: { params: Promise<{ appid: s
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 
-  const { data: { user }, error: userError } = await supabase.auth.getUser(token)
+  const [{ data: { user }, error: userError }, { appid }] = await Promise.all([
+    supabase.auth.getUser(token),
+    context.params,
+  ])
   if (userError || !user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const { appid } = await context.params
 
   const { error } = await supabase
     .from('saved_games')

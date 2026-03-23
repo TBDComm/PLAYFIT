@@ -33,16 +33,17 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const auth = await getUser(req)
+  const [auth, body] = await Promise.all([
+    getUser(req),
+    req.json() as Promise<{
+      appid: string
+      name: string
+      reason?: string
+      price_krw?: number
+      metacritic_score?: number
+    }>,
+  ])
   if (!auth) return Response.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const body = await req.json() as {
-    appid: string
-    name: string
-    reason?: string
-    price_krw?: number
-    metacritic_score?: number
-  }
 
   const { error } = await auth.supabase
     .from('saved_games')
