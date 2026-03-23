@@ -1,9 +1,9 @@
-/* ── LoadingOverlay — full-screen branded loading screen ── */
+/* ── LoadingOverlay — glitch wordmark + radar sweep + terminal log ── */
 
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(9, 9, 11, 0.92);
+  background: rgba(9, 9, 11, 0.93);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -15,66 +15,173 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 1.5rem;
 }
 
-/* G logo — same style as modal logo, with breathing pulse */
-.logo {
-  width: 64px;
-  height: 64px;
+/* ── Glitch wordmark ── */
+
+.wordmark {
+  font-size: 1.375rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  user-select: none;
+  animation: glitchIn 0.45s ease-out both;
+}
+
+.accent {
+  color: var(--accent);
+}
+
+@keyframes glitchIn {
+  0%   { opacity: 0; transform: translateX(0); }
+  15%  { opacity: 1; transform: translateX(-5px); filter: blur(0.5px); }
+  35%  { transform: translateX(5px); filter: blur(0); }
+  55%  { transform: translateX(-2px); }
+  75%  { transform: translateX(1px); }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+/* ── Radar ── */
+
+.radar {
+  position: relative;
+  width: 72px;
+  height: 72px;
+}
+
+.radarSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.radarRing {
+  stroke: var(--accent);
+  stroke-width: 0.75;
+  opacity: 0.25;
+}
+
+.radarRingInner {
+  stroke: var(--accent);
+  stroke-width: 0.5;
+  opacity: 0.15;
+}
+
+.radarCross {
+  stroke: var(--accent);
+  stroke-width: 0.5;
+  opacity: 0.12;
+}
+
+.radarDot {
+  fill: var(--accent);
+  opacity: 0.7;
+}
+
+/* Fading trail (conic gradient rotates with the sweep) */
+.radarTrail {
+  position: absolute;
+  inset: 3px;
   border-radius: 50%;
-  background: var(--accent);
-  color: #09090b;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    transparent 55%,
+    rgba(200, 241, 53, 0.04) 75%,
+    rgba(200, 241, 53, 0.18) 100%
+  );
+  animation: sweep 2.5s linear infinite;
+}
+
+/* Leading edge line */
+.radarLine {
+  position: absolute;
+  top: calc(50% - 0.5px);
+  left: 50%;
+  width: calc(50% - 5px);
+  height: 1px;
+  background: linear-gradient(to right, rgba(200, 241, 53, 0.3), var(--accent));
+  transform-origin: left center;
+  animation: sweep 2.5s linear infinite;
+}
+
+@keyframes sweep {
+  from { transform: rotate(-90deg); }
+  to   { transform: rotate(270deg); }
+}
+
+/* ── Terminal log ── */
+
+.terminal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 240px;
+}
+
+.termLine {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 1.75rem;
-  font-weight: 900;
-  user-select: none;
-  animation: pulse 1.8s ease-in-out infinite;
+  gap: 0.5rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8125rem;
+  animation: termSlideIn 0.2s ease-out both;
 }
 
-/* Three bouncing dots */
-.dots {
-  display: flex;
-  gap: 8px;
+.termPrompt {
+  color: var(--accent);
+  font-weight: 700;
+  flex-shrink: 0;
 }
 
-.dots span {
-  display: block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  opacity: 0.4;
-  animation: bounce 1.2s ease-in-out infinite;
-}
-
-.dots span:nth-child(2) { animation-delay: 0.2s; }
-.dots span:nth-child(3) { animation-delay: 0.4s; }
-
-.message {
-  font-size: 0.9375rem;
+.termText {
   color: var(--text-secondary);
-  text-align: center;
-  letter-spacing: 0.01em;
+  flex: 1;
 }
 
-/* ── Keyframes ── */
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1);    opacity: 1; }
-  50%       { transform: scale(1.1); opacity: 0.8; }
+.termDone {
+  color: var(--accent);
+  font-size: 0.75rem;
+  flex-shrink: 0;
 }
 
-@keyframes bounce {
-  0%, 80%, 100% { transform: translateY(0);   opacity: 0.4; }
-  40%           { transform: translateY(-8px); opacity: 1; }
+.termBar {
+  display: inline-block;
+  width: 52px;
+  height: 3px;
+  background: var(--bg-elevated);
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
-/* ── Reduced motion — static, no animation ── */
+.termBarFill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  animation: barFill 3s ease-in-out infinite;
+}
+
+@keyframes termSlideIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes barFill {
+  0%  { width: 0%; }
+  70% { width: 80%; }
+  100%{ width: 80%; }
+}
+
+/* ── Reduced motion ── */
 
 @media (prefers-reduced-motion: reduce) {
-  .logo          { animation: none; }
-  .dots span     { animation: none; opacity: 0.7; }
+  .wordmark    { animation: none; }
+  .radarTrail,
+  .radarLine   { animation: none; }
+  .termLine    { animation: none; }
+  .termBarFill { animation: none; width: 60%; }
 }

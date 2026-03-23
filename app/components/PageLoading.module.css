@@ -1,0 +1,103 @@
+/* ── PageLoading — page-transition loading state (wordmark + radar) ── */
+
+.page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.wordmark {
+  font-size: 1.375rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  user-select: none;
+}
+
+.accent {
+  color: var(--accent);
+}
+
+/* ── Radar (shared pattern with LoadingOverlay) ── */
+
+.radar {
+  position: relative;
+  width: 72px;
+  height: 72px;
+}
+
+.radarSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.radarRing {
+  stroke: var(--accent);
+  stroke-width: 0.75;
+  opacity: 0.25;
+}
+
+.radarRingInner {
+  stroke: var(--accent);
+  stroke-width: 0.5;
+  opacity: 0.15;
+}
+
+.radarCross {
+  stroke: var(--accent);
+  stroke-width: 0.5;
+  opacity: 0.12;
+}
+
+.radarDot {
+  fill: var(--accent);
+  opacity: 0.7;
+}
+
+.radarTrail {
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    transparent 55%,
+    rgba(200, 241, 53, 0.04) 75%,
+    rgba(200, 241, 53, 0.18) 100%
+  );
+  animation: sweep 2.5s linear infinite;
+}
+
+.radarLine {
+  position: absolute;
+  top: calc(50% - 0.5px);
+  left: 50%;
+  width: calc(50% - 5px);
+  height: 1px;
+  background: linear-gradient(to right, rgba(200, 241, 53, 0.3), var(--accent));
+  transform-origin: left center;
+  animation: sweep 2.5s linear infinite;
+}
+
+@keyframes sweep {
+  from { transform: rotate(-90deg); }
+  to   { transform: rotate(270deg); }
+}
+
+/* ── Reduced motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .radarTrail,
+  .radarLine { animation: none; }
+}
