@@ -31,7 +31,7 @@ export default function Content() {
       <h2>퍼즐 · 어드벤처 — 서사와 실험</h2>
       <ul>
         <li>
-          <strong>Disco Elysium</strong> — 전투 없는 RPG. 텍스트와 선택지만으로 이 정도 밀도의
+          <Link href="/games/632470"><strong>Disco Elysium</strong></Link> — 전투 없는 RPG, 메타크리틱 91점. 텍스트와 선택지만으로 이 정도 밀도의
           서사를 구축할 수 있다는 걸 증명한 작품입니다. 형사가 되어 자신의 과거를 되찾는 여정이
           매 선택마다 전혀 다른 방향으로 펼쳐집니다.
         </li>
@@ -67,13 +67,13 @@ export default function Content() {
       <h2>전략 · 시뮬레이션 — 작은 규모의 깊은 시스템</h2>
       <ul>
         <li>
-          <strong>Into the Breach</strong> — 턴제 전략의 교과서. 3×3 타일에서 펼쳐지는 전투가
+          <Link href="/games/590380"><strong>Into the Breach</strong></Link> — 턴제 전략의 교과서, 메타크리틱 89점. 3×3 타일에서 펼쳐지는 전투가
           이렇게까지 복잡한 판단을 요구할 수 있다는 게 놀랍습니다. 퍼즐처럼 느껴지는 전략 게임을
           원한다면 첫 번째 선택지입니다.
         </li>
         <li>
-          <strong>Slay the Spire</strong> — 덱빌딩 로그라이크의 장르를 정의한 작품. 카드 조합의
-          시너지를 파악하는 과정이 핵심입니다. 이후 수십 개의 유사작이 나왔지만 원작의 밸런스는
+          <Link href="/games/646570"><strong>Slay the Spire</strong></Link> — 덱빌딩 로그라이크의 장르를 정의한 작품. Steam 압도적으로 긍정적(16만 건 이상). 카드 조합의
+          시너지를 파악하는 과정이 핵심이며, 이후 수십 개의 유사작이 나왔지만 원작의 밸런스는
           여전히 가장 완성도가 높습니다.
         </li>
       </ul>
@@ -81,7 +81,7 @@ export default function Content() {
       <h2>분위기 · 탐험 — 경험으로서의 게임</h2>
       <ul>
         <li>
-          <strong>Subnautica</strong> — 해저 생존 탐험. 공개된 월드를 탐험하며 이야기를 스스로
+          <Link href="/games/264710"><strong>Subnautica</strong></Link> — 해저 생존 탐험. 공개된 월드를 탐험하며 이야기를 스스로
           발견하는 구조입니다. 심해 공포증을 자극하는 분위기 설계가 독보적입니다.
         </li>
         <li>

@@ -33,7 +33,7 @@ export default function Content() {
 
       <h2>태그 가중치: 시간을 게임 특성으로 변환하기</h2>
       <p>
-        스팀의 각 게임에는 유저가 붙인 태그가 있습니다. <em>Stardew Valley</em>라면
+        스팀의 각 게임에는 유저가 붙인 태그가 있습니다. <Link href="/games/413150"><em>Stardew Valley</em></Link>라면
         &lsquo;Farming Sim&rsquo;, &lsquo;Relaxing&rsquo;, &lsquo;Resource Management&rsquo;,
         &lsquo;Pixel Graphics&rsquo; 등의 태그가 붙어 있습니다.
       </p>

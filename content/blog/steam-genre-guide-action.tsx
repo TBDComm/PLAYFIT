@@ -45,8 +45,8 @@ export default function Content() {
           아이템 파밍 루프가 잘 설계되어 있습니다. 협동 플레이도 지원합니다.
         </li>
         <li>
-          <strong>Hades</strong> — 로그라이크와 핵앤슬래시의 결합. 죽고 다시 시작하는 반복 구조가
-          오히려 중독성을 높입니다. 스토리와 전투가 함께 완성도 있게 구성된 드문 사례입니다.
+          <Link href="/games/1145360"><strong>Hades</strong></Link> — 로그라이크와 핵앤슬래시의 결합. 비디오 게임 최초로 Hugo Award를 수상한 작품(2021)입니다.
+          스토리와 전투가 함께 완성도 있게 구성된 드문 사례입니다.
         </li>
       </ul>
 
@@ -66,8 +66,8 @@ export default function Content() {
           다른 작품보다 반응이 후하게 설계되어 있어 입문자도 비교적 빠르게 적응합니다.
         </li>
         <li>
-          <strong>Elden Ring</strong> — 오픈 월드라는 구조 덕분에 막히면 다른 지역으로 이동해
-          성장할 수 있습니다. 고정된 순서를 강요하지 않아 소울라이크 중 진입이 유연한 편입니다.
+          <Link href="/games/1245620"><strong>Elden Ring</strong></Link> — 2022 The Game Awards 올해의 게임. 오픈 월드 구조 덕분에 막히면
+          다른 지역으로 이동해 성장할 수 있어 소울라이크 중 진입이 유연한 편입니다.
         </li>
       </ul>
 
@@ -78,11 +78,11 @@ export default function Content() {
       </p>
       <ul>
         <li>
-          <strong>Hollow Knight</strong> — 분위기와 전투 설계 모두 수준급인 메트로배니아.
+          <Link href="/games/367520"><strong>Hollow Knight</strong></Link> — 분위기와 전투 설계 모두 수준급인 메트로배니아.
           탐험 구조와 보스 패턴이 유기적으로 연결되어 있습니다.
         </li>
         <li>
-          <strong>Celeste</strong> — 전투 없는 플랫포머지만, 정밀한 조작을 요구한다는 점에서
+          <Link href="/games/504230"><strong>Celeste</strong></Link> — 전투 없는 플랫포머지만, 정밀한 조작을 요구한다는 점에서
           액션 장르의 재미를 충분히 전달합니다. 접근성 옵션이 잘 갖춰져 있습니다.
         </li>
       </ul>

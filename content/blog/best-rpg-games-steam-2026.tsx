@@ -27,7 +27,7 @@ export default function Content() {
       </p>
       <ul>
         <li>
-          <strong>Baldur&apos;s Gate 3</strong> — D&amp;D 5판 룰 기반의 현세대 최고 CRPG.
+          <Link href="/games/1086940"><strong>Baldur&apos;s Gate 3</strong></Link> — 2023 The Game Awards 올해의 게임. D&amp;D 5판 룰 기반의 현세대 최고 CRPG.
           선택지마다 실질적인 결과 차이가 있고, 협동 플레이도 지원합니다.
         </li>
         <li>
@@ -67,7 +67,7 @@ export default function Content() {
       </p>
       <ul>
         <li>
-          <strong>Elden Ring</strong> — 오픈 월드와 소울라이크의 결합. 2022년 출시 이후에도
+          <Link href="/games/1245620"><strong>Elden Ring</strong></Link> — 2022 The Game Awards 올해의 게임. 오픈 월드와 소울라이크의 결합으로
           여전히 장르의 기준점입니다.
         </li>
         <li>
@@ -91,7 +91,7 @@ export default function Content() {
           전술 전투의 깊이가 BG3 못지않습니다.
         </li>
         <li>
-          <strong>XCOM 2</strong> — SF 배경의 턴제 전술. 퍼마데스 시스템이 모든 결정에
+          <Link href="/games/268500"><strong>XCOM 2</strong></Link> — SF 배경의 턴제 전술. 퍼마데스 시스템이 모든 결정에
           무게를 실어줍니다.
         </li>
         <li>
