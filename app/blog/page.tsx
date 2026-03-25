@@ -9,7 +9,7 @@ import styles from './page.module.css'
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
 
 export const metadata: Metadata = {
-  title: '블로그 — Guildeline',
+  title: 'Steam 게임 추천 블로그 | Guildeline',
   description:
     '스팀 게임 추천, 취향 분석, 장르 가이드 — Guildeline 블로그에서 게임 선택에 도움이 되는 글을 읽어보세요.',
   alternates: { canonical: '/blog' },

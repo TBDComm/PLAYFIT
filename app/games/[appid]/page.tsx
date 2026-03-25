@@ -96,11 +96,13 @@ export async function generateMetadata({
   }
 
   const hasTags = game.tags && Object.keys(game.tags).length > 0
+  const steamHeaderUrl = `https://cdn.akamai.steamstatic.com/steam/apps/${appid}/header.jpg`
 
   return {
     title: `${game.name} 비슷한 게임 추천 | Guildeline`,
     description: `${game.name}을 좋아한다면 이런 게임도 좋아할 거예요. Guildeline이 태그 기반으로 추천합니다.`,
     alternates: { canonical: `/games/${appid}` },
+    openGraph: { images: [{ url: steamHeaderUrl, width: 460, height: 215 }] },
     ...(!hasTags ? { robots: { index: false } } : {}),
   }
 }
@@ -157,7 +159,7 @@ export default async function GamePage({
     '@context': 'https://schema.org',
     '@graph': [
       {
-        '@type': 'SoftwareApplication',
+        '@type': 'VideoGame',
         name: game.name,
         applicationCategory: 'Game',
         url: storeUrl,

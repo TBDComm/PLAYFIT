@@ -178,8 +178,7 @@ export default async function GenreSlugPage({
         {/* Definition block — AI SEO (C12) */}
         {games.length > 0 && (
           <p className={styles.definition}>
-            {genreName} 게임은 Steam에서 많은 유저가 즐기는 인기 장르입니다.
-            Guildeline에서 추천하는 상위 게임은 {top3Names}입니다.
+            {genreName} 게임은 Steam에서 많은 플레이어가 즐기는 장르입니다. 대표작으로는 {top3Names}이 있으며, {genreName} 특유의 게임플레이를 찾는 플레이어에게 추천합니다.
           </p>
         )}
 
