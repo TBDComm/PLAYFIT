@@ -1,6 +1,5 @@
 // app/apple-icon.tsx
-// iOS home screen icon — 180×180, dark hex + lime chevrons
-// Next.js App Router generates /apple-touch-icon.png automatically
+// iOS home screen icon — 180×180, lime filled hex
 
 import { ImageResponse } from 'next/og'
 
