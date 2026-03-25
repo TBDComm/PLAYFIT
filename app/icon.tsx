@@ -24,13 +24,13 @@ export default function Icon() {
       <div
         style={{
           width: 32, height: 32,
-          background: '#0A0A0A',
+          background: 'transparent',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}
       >
         <svg viewBox="0 0 32 32" width={32} height={32} fill="none">
           {/* Hex */}
-          <path d={hexPath} fill="rgba(197,241,53,0.08)" stroke="#C5F135" strokeWidth="0.8" strokeLinejoin="round"/>
+          <path d={hexPath} fill="#0A0A0A" stroke="#C5F135" strokeWidth="0.8" strokeLinejoin="round"/>
           {/* Chevron 1 */}
           <polyline
             points={`${x0},${cy-ch} ${x0+cw},${cy} ${x0},${cy+ch}`}

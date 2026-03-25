@@ -19,9 +19,9 @@ export default function AppleIcon() {
 
   return new ImageResponse(
     (
-      <div style={{ width: 180, height: 180, background: '#0A0A0A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ width: 180, height: 180, background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <svg viewBox="0 0 180 180" width={180} height={180} fill="none">
-          <polygon points={hex} fill="rgba(197,241,53,0.09)" stroke="#C5F135" strokeWidth="4" strokeLinejoin="round"/>
+          <polygon points={hex} fill="#0A0A0A" stroke="#C5F135" strokeWidth="4" strokeLinejoin="round"/>
           <polyline points={`${x0},${cy-ch} ${x0+cw},${cy} ${x0},${cy+ch}`} stroke="#C5F135" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
           <polyline points={`${x0+cw+cg},${cy-ch} ${x0+cw*2+cg},${cy} ${x0+cw+cg},${cy+ch}`} stroke="#C5F135" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" fill="none" opacity={0.38}/>
         </svg>
