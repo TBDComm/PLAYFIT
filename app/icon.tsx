@@ -15,8 +15,8 @@ export default function Icon() {
   })
   const hexPath = hex.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ') + 'Z'
 
-  // Double chevron — centered, tight gap, sharp angle
-  const ch = 9, cw = 3.5, cg = 1
+  // Double chevron — centered
+  const ch = 7, cw = 5.5, cg = 4.5
   const x0 = cx - (cw * 2 + cg) / 2
 
   return new ImageResponse(

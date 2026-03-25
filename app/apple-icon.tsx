@@ -14,7 +14,7 @@ export default function AppleIcon() {
     return `${(cx + r * Math.cos(rad)).toFixed(1)},${(cy + r * Math.sin(rad)).toFixed(1)}`
   }).join(' ')
 
-  const ch = 51, cw = 20, cg = 6
+  const ch = 38, cw = 30, cg = 24
   const x0 = cx - (cw * 2 + cg) / 2
 
   return new ImageResponse(
