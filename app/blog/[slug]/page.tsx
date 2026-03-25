@@ -32,7 +32,7 @@ export async function generateMetadata({
       description: meta.description,
       type: 'article',
       publishedTime: meta.publishedAt,
-      images: [{ url: '/og-image.png' }],
+      images: [{ url: '/opengraph-image' }],
     },
   }
 }
@@ -80,7 +80,7 @@ export default async function BlogPostPage({
         datePublished: meta.publishedAt,
         dateModified,
         author: { '@type': 'Person', name: 'Guildeline 에디터' },
-        image: { '@type': 'ImageObject', url: `${baseUrl}/og-image.png` },
+        image: { '@type': 'ImageObject', url: `${baseUrl}/opengraph-image` },
         publisher: { '@type': 'Organization', name: 'Guildeline', url: baseUrl },
         url: `${baseUrl}/blog/${slug}`,
       },
