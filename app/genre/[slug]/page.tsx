@@ -105,6 +105,9 @@ export async function generateMetadata({
     title: `최고의 ${data.genreName} 게임 20선 | Guildeline`,
     description: `Guildeline이 추천하는 최고의 ${data.genreName} 게임 20선. 내 플레이 기록 기반으로 딱 맞는 게임을 찾아보세요.`,
     alternates: { canonical: `/genre/${slug}` },
+    openGraph: {
+      images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Guildeline — 스팀 취향 게임 추천' }],
+    },
   }
 }
 

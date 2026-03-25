@@ -38,6 +38,10 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: 'Google-Extended',
         allow: '/',
       },
+      {
+        userAgent: 'Bingbot',
+        allow: '/',
+      },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
   }

@@ -118,6 +118,7 @@ _Pre-2026-03-21 entries → HANDOVER-archive.md_
 | 2026-03-25 | fix(SEO): P1–P3 pending tasks — BlogPosting image+publisher+Person author, blog post OG image, VideoGame schema, Steam CDN OG image on game pages, root/blog/genre meta descriptions, blog index title, genre definition block | 6 files |
 | 2026-03-25 | feat(SEO): OG image + favicon via ImageResponse — opengraph-image.tsx (1200×630), icon.tsx (32×32), apple-icon.tsx (180×180); /og-image.png refs → /opengraph-image | app/opengraph-image.tsx, app/icon.tsx, app/apple-icon.tsx, app/layout.tsx, app/blog/[slug]/page.tsx |
 | 2026-03-25 | fix(favicon): square bg → transparent + hex solid fill — favicon/apple-icon now render as hexagon shape; image-guildeline synced to confirmed design | app/icon.tsx, app/apple-icon.tsx, image-guildeline/favicon.tsx, image-guildeline/apple-icon.tsx, image-guildeline/LOGO_INSTRUCTIONS.md |
+| 2026-03-25 | fix(SEO): Bingbot added to robots.ts; genre/[slug] OG image added; blog post OG image width/height added; MEMORY.md SEO pending reference cleaned up | app/robots.ts, app/genre/[slug]/page.tsx, app/blog/[slug]/page.tsx, memory/MEMORY.md |
 
 ---
 
