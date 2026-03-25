@@ -35,11 +35,13 @@ export const metadata: Metadata = {
     url: '/',
     siteName: 'Guildeline',
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Guildeline — 스팀 취향 게임 추천' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: '내 스팀 취향에 맞는 게임 추천 | Guildeline',
     description: '스팀 플레이 기록과 예산을 기반으로 내 취향에 맞는 게임을 추천해 드립니다.',
+    images: ['/og-image.png'],
   },
 }
 

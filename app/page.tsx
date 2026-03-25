@@ -54,11 +54,6 @@ const homeJsonLd = {
       '@id': `${BASE_URL}/#website`,
       url: BASE_URL,
       name: 'Guildeline',
-      potentialAction: {
-        '@type': 'SearchAction',
-        target: `${BASE_URL}/?q={search_term_string}`,
-        'query-input': 'required name=search_term_string',
-      },
     },
     {
       '@type': 'WebApplication',
@@ -397,6 +392,7 @@ export default function Home() {
           <header className={styles.header}>
             <h1 className={styles.logo}>
               <span className={styles.logoAccent}>GUILD</span>ELINE
+              <span className={styles.srOnly}> — 스팀 취향 게임 추천</span>
             </h1>
             <h2 className={styles.headline}>내 플레이 기록이 곧 취향이다</h2>
             <p className={styles.heroStat}>82,816개 Steam 게임 중에서 AI가 골라드립니다</p>

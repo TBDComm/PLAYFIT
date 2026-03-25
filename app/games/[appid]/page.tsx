@@ -165,6 +165,29 @@ export default async function GamePage({
         ...(game.genres?.length ? { genre: game.genres } : {}),
       },
       {
+        '@type': 'FAQPage',
+        mainEntity: [
+          {
+            '@type': 'Question',
+            name: `${game.name}과 비슷한 게임은?`,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: similarGames.length > 0
+                ? `${game.name}과 태그가 유사한 게임으로 ${similarGames.slice(0, 3).map(g => g.name).join(', ')}을 추천합니다. Guildeline에서 태그 기반으로 선정한 TOP 10 목록을 확인하세요.`
+                : `${game.name}의 태그 데이터를 분석해 비슷한 게임을 찾아보세요.`,
+            },
+          },
+          {
+            '@type': 'Question',
+            name: `${game.name}은 어떤 태그를 가지고 있나요?`,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: `${game.name}의 주요 태그는 ${topTags.slice(0, 5).join(', ')}입니다.`,
+            },
+          },
+        ],
+      },
+      {
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: '홈', item: baseUrl },
@@ -244,6 +267,12 @@ export default async function GamePage({
                 <dt className={styles.faqQ}>{game.name}과 비슷한 게임은?</dt>
                 <dd className={styles.faqA}>
                   태그 기반으로 {similarGames.slice(0, 3).map(g => g.name).join(', ')}을 추천합니다. 아래 목록에서 더 많은 추천을 확인하세요.
+                </dd>
+              </div>
+              <div className={styles.faqItem}>
+                <dt className={styles.faqQ}>{game.name}은 어떤 태그를 가지고 있나요?</dt>
+                <dd className={styles.faqA}>
+                  {game.name}의 주요 태그는 {topTags.slice(0, 5).join(', ')}입니다.
                 </dd>
               </div>
             </dl>

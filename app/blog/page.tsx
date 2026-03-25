@@ -2,8 +2,11 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import Breadcrumb from '@/app/components/Breadcrumb'
 import AdUnit from '@/app/components/AdUnit'
+import JsonLd from '@/app/components/JsonLd'
 import { allPosts } from '@/lib/blog'
 import styles from './page.module.css'
+
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
 
 export const metadata: Metadata = {
   title: '블로그 — Guildeline',
@@ -16,10 +19,20 @@ function formatDate(iso: string): string {
   return new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(iso))
 }
 
+const blogJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'Guildeline 블로그',
+  description: '스팀 게임 추천, 취향 분석, 장르 가이드',
+  url: `${baseUrl}/blog`,
+  publisher: { '@type': 'Organization', name: 'Guildeline', url: baseUrl },
+}
+
 export default function BlogPage() {
   return (
     <main className={styles.page}>
       <div className={styles.inner}>
+        <JsonLd data={blogJsonLd} />
         <Breadcrumb items={[{ label: '홈', href: '/' }, { label: '블로그' }]} />
         <h1 className={styles.title}>블로그</h1>
         <p className={styles.desc}>

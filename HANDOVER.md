@@ -112,6 +112,8 @@ _Pre-2026-03-21 entries → HANDOVER-archive.md_
 | 2026-03-23 | feat: preview section — portrait grid (library_600x900.jpg), 5-col grid wrapping, bottom-gradient hover overlay | app/page.tsx, app/page.module.css |
 | 2026-03-23 | feat: preview rotation — PREVIEW_POOL 22 games, show 15, random 1-tile swap every 2.8s + fade; result save button shown for anon users (triggers open-login event) | app/page.tsx, app/page.module.css, app/result/page.tsx |
 | 2026-03-23 | fix: guideline violations — filter→opacity on previewTileImg hover (compositor), previewTile added to reduced-motion block, JS interval gated on matchMedia, HANDOVER log English | app/page.tsx, app/page.module.css, HANDOVER.md |
+| 2026-03-25 | refactor: marketing-skills — 9 irrelevant skill dirs deleted, 12 kept skills merged into SEO-SKILLS.md (750 lines), REMOVED.md updated | marketing-skills/SEO-SKILLS.md, marketing-skills/REMOVED.md |
+| 2026-03-25 | fix(SEO): sitemap /genre missing; robots.txt add ChatGPT-User + anthropic-ai; remove broken SearchAction schema; H1 srOnly keyword; FAQPage schema + 2nd Q&A on game pages; result noindex layout; blog+genre JSON-LD; layout OG image field | app/sitemap.ts, app/robots.ts, app/layout.tsx, app/page.tsx, app/page.module.css, app/games/[appid]/page.tsx, app/result/layout.tsx, app/blog/page.tsx, app/genre/page.tsx |
 
 ---
 

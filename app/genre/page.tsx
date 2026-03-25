@@ -2,7 +2,10 @@ import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import Breadcrumb from '@/app/components/Breadcrumb'
+import JsonLd from '@/app/components/JsonLd'
 import styles from './page.module.css'
+
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
 
 export const metadata: Metadata = {
   title: '장르별 탐색 — Guildeline',
@@ -59,9 +62,23 @@ export default async function GenrePage() {
   const featured = genres.slice(0, 12)
   const rest = genres.slice(12)
 
+  const genreJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Steam 게임 장르별 탐색',
+    description: 'Guildeline에서 분석한 Steam 게임 장르 목록. 장르별 인기 게임 탐색.',
+    url: `${baseUrl}/genre`,
+    hasPart: featured.map(g => ({
+      '@type': 'WebPage',
+      name: `${g.name} 게임 추천`,
+      url: `${baseUrl}/genre/${g.slug}`,
+    })),
+  }
+
   return (
     <main className={styles.page}>
       <div className={styles.inner}>
+        <JsonLd data={genreJsonLd} />
         <Breadcrumb items={[{ label: '홈', href: '/' }, { label: '장르별 탐색' }]} />
         <h1 className={styles.title}>장르별 탐색</h1>
         <p className={styles.stat}>
