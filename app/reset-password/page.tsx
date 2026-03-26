@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import type { AuthChangeEvent } from '@supabase/supabase-js'
 import styles from './page.module.css'
+import GuildelineMark from '@/app/components/GuildelineMark'
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('')
@@ -54,7 +55,7 @@ export default function ResetPasswordPage() {
   return (
     <main className={styles.page}>
       <div className={styles.container}>
-        <div className={styles.logoMark} aria-hidden="true">P</div>
+        <GuildelineMark size={48} />
         <h1 className={styles.title}>새 비밀번호 설정</h1>
         <div className={styles.card}>
           {done ? (

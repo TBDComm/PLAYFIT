@@ -5,6 +5,7 @@ import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
 import { trackEvent } from '@/lib/analytics'
 import styles from './Header.module.css'
+import GuildelineMark from './GuildelineMark'
 
 declare global {
   interface Window {
@@ -353,7 +354,7 @@ export default function Header() {
 
             {/* Logo + title — outside card */}
             <div className={styles.modalLogoArea}>
-              <div className={styles.modalLogo} aria-hidden="true">G</div>
+              <GuildelineMark size={48} />
               <h2 id="login-modal-title" className={styles.modalTitle}>
                 {modalTitles[loginView]}
               </h2>
@@ -608,7 +609,7 @@ export default function Header() {
           <div className={styles.modalWrap} ref={linkPopupRef}>
             <button onClick={closeLinkPopup} className={styles.closeBtn} aria-label="팝업 닫기">✕</button>
             <div className={styles.modalLogoArea}>
-              <div className={styles.modalLogo} aria-hidden="true">G</div>
+              <GuildelineMark size={48} />
               <h2 id="link-popup-title" className={styles.modalTitle}>Steam 계정 연동</h2>
             </div>
             <div className={styles.card}>
