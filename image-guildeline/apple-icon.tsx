@@ -14,26 +14,17 @@ export default function AppleIcon() {
     return `${(cx + r * Math.cos(rad)).toFixed(1)},${(cy + r * Math.sin(rad)).toFixed(1)}`
   }).join(' ')
 
-  // Arrowhead chevrons — horizontal cuts, pointed tip, cg 23→17 (closer)
+  // cg 23→17 (closer), strokeWidth 14→11 (thinner)
   const ch = 37, cw = 28, cg = 17
   const x0 = cx - (cw * 2 + cg) / 2
-  const a = Math.sqrt(cw * cw + ch * ch) / ch * 5.625  // hw=5.625 (proportional to 180/32 scale)
-
-  const pts = (xi: number) => [
-    `${(xi - a).toFixed(2)},${cy - ch}`,
-    `${(xi + a).toFixed(2)},${cy - ch}`,
-    `${xi + cw},${cy}`,
-    `${(xi + a).toFixed(2)},${cy + ch}`,
-    `${(xi - a).toFixed(2)},${cy + ch}`,
-  ].join(' ')
 
   return new ImageResponse(
     (
       <div style={{ width: 180, height: 180, background: '#0A0A0A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <svg viewBox="0 0 180 180" width={180} height={180} fill="none">
           <polygon points={hex} fill="rgba(197,241,53,0.08)" stroke="#C5F135" strokeWidth="8" strokeLinejoin="round"/>
-          <polygon points={pts(x0)} fill="#C5F135" />
-          <polygon points={pts(x0 + cw + cg)} fill="#C5F135" opacity={0.48} />
+          <polyline points={`${x0},${cy-ch} ${x0+cw},${cy} ${x0},${cy+ch}`} stroke="#C5F135" strokeWidth="11" strokeLinecap="butt" strokeLinejoin="miter" fill="none"/>
+          <polyline points={`${x0+cw+cg},${cy-ch} ${x0+cw*2+cg},${cy} ${x0+cw+cg},${cy+ch}`} stroke="#C5F135" strokeWidth="11" strokeLinecap="butt" strokeLinejoin="miter" fill="none" opacity={0.48}/>
         </svg>
       </div>
     ),

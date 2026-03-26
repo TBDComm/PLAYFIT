@@ -134,7 +134,7 @@ _Pre-2026-03-21 entries → HANDOVER-archive.md_
 | 2026-03-26 | perf(GuildelineMark): hoist constant SVG path calcs to module level (guideline check) | app/components/GuildelineMark.tsx |
 | 2026-03-26 | feat(ui): favicon/mark refinement — hex strokeWidth↑, rgba lime fill, chevron2 opacity 0.38→0.48, apple-icon solid bg; applied to 7 files | app/icon.tsx, app/apple-icon.tsx, GuildelineMark.tsx, opengraph-image.tsx, blog/[slug]/opengraph-image.tsx, image-guildeline/×2 |
 | 2026-03-26 | feat(ui): chevron strokeLinecap butt + strokeLinejoin miter — sharp angular ends; 7 files | same 7 files |
-| 2026-03-26 | feat(ui): chevron redesign — polyline→polygon arrowhead (5-pt); horizontal top/bottom cuts, pointed tip, cg 4→3 (closer), thinner (hw=1.0); 7 files | GuildelineMark.tsx, icon.tsx, apple-icon.tsx, opengraph-image.tsx, blog/[slug]/opengraph-image.tsx, image-guildeline/×2 |
+| 2026-03-26 | fix(ui): revert chevron polygon→polyline (solid arrowhead broke chevron shape); keep cg closer + strokeWidth thinner; 7 files | GuildelineMark.tsx, icon.tsx, apple-icon.tsx, opengraph-image.tsx, blog/[slug]/opengraph-image.tsx, image-guildeline/×2 |
 | 2026-03-26 | feat(ui): saved games — 2-col grid, header.jpg thumbnail on left, savedCardContent wrapper, compact text (name 2-line clamp, reason 2-line clamp), mobile 1-col | app/page.tsx, app/page.module.css |
 
 ---
