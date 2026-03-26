@@ -15,9 +15,18 @@ export default function Icon() {
   })
   const hexPath = hex.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ') + 'Z'
 
-  // Double chevron — centered
-  const ch = 6.5, cw = 5, cg = 4
+  // Arrowhead chevrons — horizontal cuts, pointed tip, cg 4→3 (closer)
+  const ch = 6.5, cw = 5, cg = 3
   const x0 = cx - (cw * 2 + cg) / 2
+  const a = Math.sqrt(cw * cw + ch * ch) / ch  // arm base half-width (hw=1.0)
+
+  const pts = (xi: number) => [
+    `${(xi - a).toFixed(2)},${cy - ch}`,
+    `${(xi + a).toFixed(2)},${cy - ch}`,
+    `${xi + cw},${cy}`,
+    `${(xi + a).toFixed(2)},${cy + ch}`,
+    `${(xi - a).toFixed(2)},${cy + ch}`,
+  ].join(' ')
 
   return new ImageResponse(
     (
@@ -32,19 +41,9 @@ export default function Icon() {
           {/* Hex — subtle lime interior + crisp border */}
           <path d={hexPath} fill="rgba(197,241,53,0.08)" stroke="#C5F135" strokeWidth="1.4" strokeLinejoin="round"/>
           {/* Chevron 1 */}
-          <polyline
-            points={`${x0},${cy-ch} ${x0+cw},${cy} ${x0},${cy+ch}`}
-            stroke="#C5F135" strokeWidth="2.5"
-            strokeLinecap="butt" strokeLinejoin="miter"
-            fill="none"
-          />
+          <polygon points={pts(x0)} fill="#C5F135" />
           {/* Chevron 2 */}
-          <polyline
-            points={`${x0+cw+cg},${cy-ch} ${x0+cw*2+cg},${cy} ${x0+cw+cg},${cy+ch}`}
-            stroke="#C5F135" strokeWidth="2.5"
-            strokeLinecap="butt" strokeLinejoin="miter"
-            fill="none" opacity={0.48}
-          />
+          <polygon points={pts(x0 + cw + cg)} fill="#C5F135" opacity={0.48} />
         </svg>
       </div>
     ),

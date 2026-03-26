@@ -15,9 +15,18 @@ export default function OgImage() {
     return `${(cx + r * Math.cos(rad)).toFixed(1)},${(cy + r * Math.sin(rad)).toFixed(1)}`
   }).join(' ')
 
-  // Double chevron — centered at (80,80)
-  const ch = 32, cw = 25, cg = 20
+  // Arrowhead chevrons — horizontal cuts, pointed tip, cg 20→15 (closer)
+  const ch = 32, cw = 25, cg = 15
   const x0 = cx - (cw * 2 + cg) / 2
+  const a = Math.sqrt(cw * cw + ch * ch) / ch * 5.0  // hw=5.0 (proportional to 160/32 scale)
+
+  const pts = (xi: number) => [
+    `${(xi - a).toFixed(2)},${cy - ch}`,
+    `${(xi + a).toFixed(2)},${cy - ch}`,
+    `${xi + cw},${cy}`,
+    `${(xi + a).toFixed(2)},${cy + ch}`,
+    `${(xi - a).toFixed(2)},${cy + ch}`,
+  ].join(' ')
 
   return new ImageResponse(
     (
@@ -43,23 +52,8 @@ export default function OgImage() {
               strokeWidth="7"
               strokeLinejoin="round"
             />
-            <polyline
-              points={`${x0},${cy - ch} ${x0 + cw},${cy} ${x0},${cy + ch}`}
-              stroke="#C5F135"
-              strokeWidth="12"
-              strokeLinecap="butt"
-              strokeLinejoin="miter"
-              fill="none"
-            />
-            <polyline
-              points={`${x0 + cw + cg},${cy - ch} ${x0 + cw * 2 + cg},${cy} ${x0 + cw + cg},${cy + ch}`}
-              stroke="#C5F135"
-              strokeWidth="12"
-              strokeLinecap="butt"
-              strokeLinejoin="miter"
-              fill="none"
-              opacity={0.48}
-            />
+            <polygon points={pts(x0)} fill="#C5F135" />
+            <polygon points={pts(x0 + cw + cg)} fill="#C5F135" opacity={0.48} />
           </svg>
           <div style={{ display: 'flex', fontSize: 76, fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1 }}>
             <span style={{ color: '#C5F135' }}>GUILD</span>
