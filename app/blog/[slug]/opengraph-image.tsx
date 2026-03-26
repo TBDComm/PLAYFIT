@@ -19,13 +19,13 @@ export default function BlogPostOgImage({
   const description = entry?.meta.description ?? 'Steam 게임 추천 블로그'
 
   // Hexagon icon — same as root OG image
-  const cx = 40, cy = 40, r = 35
+  const cx = 40, cy = 40, r = 33
   const hex = Array.from({ length: 6 }, (_, i) => {
     const rad = ((-90 + 60 * i) * Math.PI) / 180
     return `${(cx + r * Math.cos(rad)).toFixed(1)},${(cy + r * Math.sin(rad)).toFixed(1)}`
   }).join(' ')
 
-  const ch = 17, cw = 14, cg = 11
+  const ch = 16, cw = 13, cg = 10
   const x0 = cx - (cw * 2 + cg) / 2
 
   return new ImageResponse(
@@ -49,13 +49,13 @@ export default function BlogPostOgImage({
               points={hex}
               fill="rgba(197,241,53,0.08)"
               stroke="#C5F135"
-              strokeWidth="1.8"
+              strokeWidth="3.5"
               strokeLinejoin="round"
             />
             <polyline
               points={`${x0},${cy - ch} ${x0 + cw},${cy} ${x0},${cy + ch}`}
               stroke="#C5F135"
-              strokeWidth="4.5"
+              strokeWidth="6"
               strokeLinecap="round"
               strokeLinejoin="round"
               fill="none"
@@ -63,11 +63,11 @@ export default function BlogPostOgImage({
             <polyline
               points={`${x0 + cw + cg},${cy - ch} ${x0 + cw * 2 + cg},${cy} ${x0 + cw + cg},${cy + ch}`}
               stroke="#C5F135"
-              strokeWidth="4.5"
+              strokeWidth="6"
               strokeLinecap="round"
               strokeLinejoin="round"
               fill="none"
-              opacity={0.38}
+              opacity={0.48}
             />
           </svg>
           <div style={{ display: 'flex', fontSize: 36, fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1 }}>

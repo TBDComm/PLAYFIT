@@ -8,7 +8,7 @@ export const size      = { width: 32, height: 32 }
 export const contentType = 'image/png'
 
 export default function Icon() {
-  const cx = 16, cy = 16, r = 14
+  const cx = 16, cy = 16, r = 13
   const hex = Array.from({ length: 6 }, (_, i) => {
     const rad = ((-90 + 60 * i) * Math.PI) / 180
     return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)] as [number, number]
@@ -16,7 +16,7 @@ export default function Icon() {
   const hexPath = hex.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ') + 'Z'
 
   // Double chevron — centered
-  const ch = 7, cw = 5.5, cg = 4.5
+  const ch = 6.5, cw = 5, cg = 4
   const x0 = cx - (cw * 2 + cg) / 2
 
   return new ImageResponse(
@@ -29,21 +29,21 @@ export default function Icon() {
         }}
       >
         <svg viewBox="0 0 32 32" width={32} height={32} fill="none">
-          {/* Hex */}
-          <path d={hexPath} fill="#0A0A0A" stroke="#C5F135" strokeWidth="0.8" strokeLinejoin="round"/>
+          {/* Hex — subtle lime interior + crisp border */}
+          <path d={hexPath} fill="rgba(197,241,53,0.08)" stroke="#C5F135" strokeWidth="1.4" strokeLinejoin="round"/>
           {/* Chevron 1 */}
           <polyline
             points={`${x0},${cy-ch} ${x0+cw},${cy} ${x0},${cy+ch}`}
-            stroke="#C5F135" strokeWidth="2.2"
+            stroke="#C5F135" strokeWidth="2.5"
             strokeLinecap="round" strokeLinejoin="round"
             fill="none"
           />
           {/* Chevron 2 */}
           <polyline
             points={`${x0+cw+cg},${cy-ch} ${x0+cw*2+cg},${cy} ${x0+cw+cg},${cy+ch}`}
-            stroke="#C5F135" strokeWidth="2.2"
+            stroke="#C5F135" strokeWidth="2.5"
             strokeLinecap="round" strokeLinejoin="round"
-            fill="none" opacity={0.38}
+            fill="none" opacity={0.48}
           />
         </svg>
       </div>
