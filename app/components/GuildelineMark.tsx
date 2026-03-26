@@ -30,12 +30,12 @@ export default function GuildelineMark({ size = 48 }: GuildelineMarkProps) {
       <polyline
         points={CHEV1}
         stroke="#C5F135" strokeWidth={2.5}
-        strokeLinecap="round" strokeLinejoin="round"
+        strokeLinecap="butt" strokeLinejoin="miter"
       />
       <polyline
         points={CHEV2}
         stroke="#C5F135" strokeWidth={2.5}
-        strokeLinecap="round" strokeLinejoin="round"
+        strokeLinecap="butt" strokeLinejoin="miter"
         opacity={0.48}
       />
     </svg>

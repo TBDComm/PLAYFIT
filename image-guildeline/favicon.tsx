@@ -35,14 +35,14 @@ export default function Icon() {
           <polyline
             points={`${x0},${cy-ch} ${x0+cw},${cy} ${x0},${cy+ch}`}
             stroke="#C5F135" strokeWidth="2.5"
-            strokeLinecap="round" strokeLinejoin="round"
+            strokeLinecap="butt" strokeLinejoin="miter"
             fill="none"
           />
           {/* Chevron 2 */}
           <polyline
             points={`${x0+cw+cg},${cy-ch} ${x0+cw*2+cg},${cy} ${x0+cw+cg},${cy+ch}`}
             stroke="#C5F135" strokeWidth="2.5"
-            strokeLinecap="round" strokeLinejoin="round"
+            strokeLinecap="butt" strokeLinejoin="miter"
             fill="none" opacity={0.48}
           />
         </svg>
