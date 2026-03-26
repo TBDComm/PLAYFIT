@@ -125,6 +125,15 @@ _Pre-2026-03-21 entries → HANDOVER-archive.md_
 | 2026-03-26 | feat(SEO): blog citation structure — blockquote+table CSS added; stat blocks + comparison tables in all 5 posts | app/blog/[slug]/page.module.css, content/blog/*.tsx x5 |
 | 2026-03-26 | fix(ui): genre card equal height (li flex + card width:100% + gameName 2-line clamp); game FAQ items gap:12px | app/genre/[slug]/page.module.css, app/games/[appid]/page.module.css |
 | 2026-03-26 | feat(ui): game page hero redesign — full-bleed blurred library_hero.jpg bg + library_600x900.jpg portrait cover + info panel; similar games cards with header.jpg thumbnails | app/games/[appid]/page.tsx, app/games/[appid]/page.module.css |
+| 2026-03-26 | feat: /about page — service intro, contact, Footer link, sitemap entry | app/about/page.tsx, app/components/Footer.tsx, app/sitemap.ts |
+| 2026-03-26 | refactor(footer): remove nav links (홈/장르/블로그) — header is fixed, redundant | app/components/Footer.tsx |
+| 2026-03-26 | feat(ui): replace circular G/P badge → GuildelineMark SVG (hexagon+chevron) in login modal, Steam link popup, reset-password page | app/components/GuildelineMark.tsx (new), Header.tsx, Header.module.css, reset-password/page.tsx, reset-password/page.module.css |
+| 2026-03-26 | feat(ui): backdrop-filter blur(6px) on modal overlay | app/components/Header.module.css |
+| 2026-03-26 | fix(result): save button visible (remove max-height clip) + compact cards (thumbnail 30%, tighter padding/margins, reason 3-line clamp) | app/result/page.module.css |
+| 2026-03-26 | fix(result): save button stays anon after modal login — replace one-shot getSession() with onAuthStateChange subscription; loadSession() shared helper | app/result/page.tsx |
+| 2026-03-26 | perf(GuildelineMark): hoist constant SVG path calcs to module level (guideline check) | app/components/GuildelineMark.tsx |
+| 2026-03-26 | feat(ui): favicon/mark refinement — hex strokeWidth↑, rgba lime fill, chevron2 opacity 0.38→0.48, apple-icon solid bg; applied to 7 files | app/icon.tsx, app/apple-icon.tsx, GuildelineMark.tsx, opengraph-image.tsx, blog/[slug]/opengraph-image.tsx, image-guildeline/×2 |
+| 2026-03-26 | feat(ui): chevron strokeLinecap butt + strokeLinejoin miter — sharp angular ends; 7 files | same 7 files |
 
 ---
 

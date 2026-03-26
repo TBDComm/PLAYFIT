@@ -37,7 +37,7 @@ export default function ResultPage() {
   }, [router])
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    async function loadSession(session: { access_token: string } | null) {
       if (!session) { setAuthState('anon'); return }
       setAccessToken(session.access_token)
       try {
@@ -50,7 +50,15 @@ export default function ResultPage() {
         }
       } catch { /* silent fail */ }
       setAuthState('authed')
+    }
+
+    supabase.auth.getSession().then(({ data: { session } }) => loadSession(session))
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      loadSession(session)
     })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   function handleFeedback(card: RecommendationCard, rating: 'positive' | 'negative') {
