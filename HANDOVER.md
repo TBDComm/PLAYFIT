@@ -139,8 +139,10 @@ _Pre-2026-03-21 entries → HANDOVER-archive.md_
 | 2026-03-26 | feat(ui): guildeline-logo.png — favicon+apple-icon use PNG via ImageResponse; NavLogo = PNG mark + GUILDELINE text; light theme filter: brightness(0.45) → #5a6c17; PNG white bg+interior → transparent (sharp pixel removal) | icon.tsx, apple-icon.tsx, NavLogo.tsx, NavLogo.module.css, public/guildeline-logo.png |
 | 2026-03-26 | fix(ui): favicon transparent — GuildelineMark SVG → PNG; icon/apple-icon: base64-embedded PNG in ImageResponse (no URL fetch, runtime='edge') | GuildelineMark.tsx, icon.tsx, apple-icon.tsx |
 | 2026-03-26 | fix(ui): logo PNG trimmed → zero padding (671x587); OG images + GuildelineMark updated — SVG replaced with PNG; GuildelineMark now shows mark + GUILDELINE wordmark | public/guildeline-logo.png, icon.tsx, apple-icon.tsx, opengraph-image.tsx, blog/[slug]/opengraph-image.tsx, GuildelineMark.tsx, GuildelineMark.module.css |
+| 2026-03-26 | fix(a11y+ui): guideline check — NavLogo height 22→19 + height:auto (aspect ratio); GuildelineMark remove invalid aria-label on div | NavLogo.tsx, NavLogo.module.css, GuildelineMark.tsx |
 | 2026-03-26 | fix(ui): savedStrip — add padding-inline-end:1.5rem so rightmost card isn't clipped at container edge | app/page.module.css |
 | 2026-03-26 | feat(ui): saved games redesign — portrait strip (library_600x900.jpg), hover-expand right animation (120px→320px, 0.32s cubic), bottom gradient overlay fades out, detail panel reveals; prefers-reduced-motion safe | app/page.tsx, app/page.module.css |
+| 2026-03-26 | fix(ui): saved card — reason flex:1 removed + clamp 4→3 (prevents mid-line clip when name is 2 lines); meta margin-top:auto (pins to bottom); savedStrip padding-inline-end 1.5rem→200px (rightmost card expand no longer clips) | app/page.module.css |
 
 ---
 
