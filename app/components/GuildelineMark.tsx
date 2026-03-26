@@ -1,7 +1,7 @@
-// Guildeline mark — uses guildeline-logo.png (transparent bg)
-// Used in auth modals and reset-password page
+// Guildeline mark + wordmark — used in auth modals and reset-password page
 
 import Image from 'next/image'
+import styles from './GuildelineMark.module.css'
 
 interface GuildelineMarkProps {
   size?: number
@@ -9,13 +9,18 @@ interface GuildelineMarkProps {
 
 export default function GuildelineMark({ size = 48 }: GuildelineMarkProps) {
   return (
-    <Image
-      src="/guildeline-logo.png"
-      alt=""
-      width={size}
-      height={size}
-      unoptimized
-      aria-hidden="true"
-    />
+    <div className={styles.wrap} aria-label="Guildeline">
+      <Image
+        src="/guildeline-logo.png"
+        alt=""
+        width={size}
+        height={Math.round(size * 0.875)}
+        unoptimized
+        aria-hidden="true"
+      />
+      <span className={styles.wordmark} style={{ fontSize: Math.round(size * 0.5) }}>
+        <span className={styles.accent}>GUILD</span>ELINE
+      </span>
+    </div>
   )
 }
