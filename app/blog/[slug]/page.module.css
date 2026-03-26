@@ -119,6 +119,61 @@
   font-weight: 700;
 }
 
+/* ── Stat block (blockquote) ─────────────────────────────────────────────────── */
+
+.prose blockquote {
+  border-left: 3px solid var(--accent);
+  padding: 14px 18px;
+  margin: 0 0 1.25em;
+  background: var(--bg-elevated);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.prose blockquote p {
+  margin-bottom: 0;
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+}
+
+.prose blockquote strong {
+  color: var(--accent);
+}
+
+/* ── Comparison table ────────────────────────────────────────────────────────── */
+
+.prose table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  margin: 0 0 1.25em;
+}
+
+.prose thead th {
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.prose tbody td {
+  padding: 10px 14px;
+  color: var(--text-primary);
+  vertical-align: top;
+  line-height: 1.5;
+  border: 1px solid var(--border-subtle);
+}
+
+.prose tbody td:first-child {
+  font-weight: 600;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
 /* ── Footer nav ──────────────────────────────────────────────────────────────── */
 
 .footer {

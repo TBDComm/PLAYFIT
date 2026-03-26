@@ -21,11 +21,22 @@ function formatDate(iso: string): string {
 
 const blogJsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'Blog',
-  name: 'Guildeline 블로그',
-  description: '스팀 게임 추천, 취향 분석, 장르 가이드',
-  url: `${baseUrl}/blog`,
-  publisher: { '@type': 'Organization', name: 'Guildeline', url: baseUrl },
+  '@graph': [
+    {
+      '@type': 'Blog',
+      name: 'Guildeline 블로그',
+      description: '스팀 게임 추천, 취향 분석, 장르 가이드',
+      url: `${baseUrl}/blog`,
+      publisher: { '@type': 'Organization', name: 'Guildeline', url: baseUrl },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: '홈', item: baseUrl },
+        { '@type': 'ListItem', position: 2, name: '블로그' },
+      ],
+    },
+  ],
 }
 
 export default function BlogPage() {
@@ -34,7 +45,7 @@ export default function BlogPage() {
       <div className={styles.inner}>
         <JsonLd data={blogJsonLd} />
         <Breadcrumb items={[{ label: '홈', href: '/' }, { label: '블로그' }]} />
-        <h1 className={styles.title}>블로그</h1>
+        <h1 className={styles.title}>Steam 게임 추천 블로그</h1>
         <p className={styles.desc}>
           게임 취향 분석, 추천 가이드, 장르별 탐색 — Guildeline이 직접 씁니다.
         </p>

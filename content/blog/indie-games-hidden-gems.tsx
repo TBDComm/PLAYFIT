@@ -7,6 +7,7 @@ export const meta: PostMeta = {
   description:
     '대형 타이틀에 가려진 스팀 인디 게임 중 완성도 높은 숨겨진 명작 10선. 장르별로 엄선했습니다.',
   publishedAt: '2026-03-21',
+  updatedAt: '2026-03-25',
   tags: ['인디', '추천', '명작'],
 }
 
@@ -27,6 +28,15 @@ export default function Content() {
         통과되지 못할 실험적인 설계를 그대로 구현하기도 합니다. 특정 장르나 감성을 깊게 파고드는
         플레이어에게 인디 게임은 때로 그 장르의 가장 순수한 버전을 보여줍니다.
       </p>
+
+      <blockquote>
+        <p>
+          Steam에 등록된 게임의 약 <strong>80% 이상</strong>이 인디 타이틀입니다.
+          이 중 Steam 리뷰 &ldquo;압도적으로 긍정적&rdquo;을 받은 인디 게임은
+          전체의 <strong>1% 미만</strong>입니다. 아래 목록은 그 기준을 충족하거나
+          Metacritic 85점 이상을 기록한 작품만 포함했습니다.
+        </p>
+      </blockquote>
 
       <h2>퍼즐 · 어드벤처 — 서사와 실험</h2>
       <ul>

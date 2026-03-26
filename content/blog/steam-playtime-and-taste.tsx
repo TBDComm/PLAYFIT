@@ -7,6 +7,7 @@ export const meta: PostMeta = {
   description:
     '스팀 플레이 시간은 단순한 숫자가 아닙니다. 어떤 경험에 얼마나 몰입했는지를 기록한 취향 데이터입니다. Guildeline이 이 데이터를 어떻게 활용하는지 설명합니다.',
   publishedAt: '2026-03-18',
+  updatedAt: '2026-03-25',
   tags: ['데이터 분석', '스팀', '취향', '알고리즘'],
 }
 
@@ -30,6 +31,38 @@ export default function Content() {
         대부분의 유저 데이터에서 플레이 시간과 만족도 사이의 상관관계는 별점보다 일관적입니다.
         특히 100시간 이상의 장기 플레이는 강한 취향 신호입니다.
       </p>
+
+      <h2>취향 신호 비교</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>신호</th>
+            <th>조작 가능성</th>
+            <th>개인화 수준</th>
+            <th>노이즈 요인</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>판매 순위</td>
+            <td>낮음</td>
+            <td>낮음</td>
+            <td>마케팅·출시 시점</td>
+          </tr>
+          <tr>
+            <td>리뷰 별점</td>
+            <td>높음</td>
+            <td>낮음</td>
+            <td>커뮤니티 여론·리뷰 봄</td>
+          </tr>
+          <tr>
+            <td>플레이 시간</td>
+            <td>낮음</td>
+            <td>높음</td>
+            <td>AFK·업적 파밍</td>
+          </tr>
+        </tbody>
+      </table>
 
       <h2>태그 가중치: 시간을 게임 특성으로 변환하기</h2>
       <p>

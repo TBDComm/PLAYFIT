@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 133/200 lines — OK**
+📏 **File health: 142/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -75,7 +75,7 @@ Next action: [exactly what to do next to resume]
 | C7 | Blog section `/blog` + `/blog/[slug]` — TSX content components, BlogPosting JSON-LD, sitemap updated | ✅ 2026-03-20 |
 | C8 | AdSense script (`layout.tsx`), `AdUnit.tsx` component, `ads.txt` placeholder — Publisher ID pending AdSense approval | ✅ 2026-03-20 |
 | C9 | Ad placement — game detail (after similar games), genre hub (after item 10), blog post (end of post), result (below cards), blog index (below fold) | ✅ 2026-03-20 |
-| C10 | Schema Markup — JsonLd.tsx component; @graph on all pages: WebApplication+Organization+WebSite (main), SoftwareApplication+BreadcrumbList (game), ItemList+BreadcrumbList (genre), BlogPosting+BreadcrumbList (blog) | ✅ 2026-03-20 |
+| C10 | Schema Markup — JsonLd.tsx component; @graph on all pages: WebApplication+Organization+WebSite (main), VideoGame+FAQPage+BreadcrumbList (game), CollectionPage+BreadcrumbList (/genre index), ItemList+BreadcrumbList (genre slug), Blog+BreadcrumbList (/blog index), BlogPosting+BreadcrumbList (blog post) | ✅ 2026-03-20, updated 2026-03-26 |
 | C11 | On-Page SEO — meta title templates (main/blog post fixed), H1 logo GUILDELINE fix, blog internal links to /genre + / | ✅ 2026-03-20 |
 | C12 | AI SEO — FAQ block on game pages, definition block on genre pages, dateModified in all schemas, updatedAt on blog posts | ✅ 2026-03-20 |
 | C13 | Core Web Vitals — `<Image unoptimized>` (CF Pages constraint), `requestIdleCallback` for analytics (INP), ad minHeight wrapper (CLS) | ✅ 2026-03-20 |
@@ -120,6 +120,9 @@ _Pre-2026-03-21 entries → HANDOVER-archive.md_
 | 2026-03-25 | fix(favicon): square bg → transparent + hex solid fill — favicon/apple-icon now render as hexagon shape; image-guildeline synced to confirmed design | app/icon.tsx, app/apple-icon.tsx, image-guildeline/favicon.tsx, image-guildeline/apple-icon.tsx, image-guildeline/LOGO_INSTRUCTIONS.md |
 | 2026-03-25 | fix(SEO): Bingbot added to robots.ts; genre/[slug] OG image added; blog post OG image width/height added; MEMORY.md SEO pending reference cleaned up | app/robots.ts, app/genre/[slug]/page.tsx, app/blog/[slug]/page.tsx, memory/MEMORY.md |
 | 2026-03-25 | feat(SEO): blog AI citation + internal game links — GOTY/Metacritic stats added, /games/[appid] links in all 5 posts | content/blog/*.tsx x5 |
+| 2026-03-26 | fix(SEO): game meta description + tags, VideoGame schema image, blog H1 keyword, /genre+/blog BreadcrumbList schema, sitemap updatedAt, blog posts updatedAt | app/games/[appid]/page.tsx, app/blog/page.tsx, app/genre/page.tsx, app/sitemap.ts, content/blog/*.tsx x5 |
+| 2026-03-26 | feat(SEO): per-post OG image for blog — opengraph-image.tsx (title+desc), generateMetadata images removed (file-based takes over) | app/blog/[slug]/opengraph-image.tsx, app/blog/[slug]/page.tsx |
+| 2026-03-26 | feat(SEO): blog citation structure — blockquote+table CSS added; stat blocks + comparison tables in all 5 posts | app/blog/[slug]/page.module.css, content/blog/*.tsx x5 |
 
 ---
 

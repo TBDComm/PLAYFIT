@@ -7,6 +7,7 @@ export const meta: PostMeta = {
   description:
     '처음 액션 게임을 시작한다면 어디서부터? 스팀 액션 장르의 유형별 특징과 입문작 10선을 정리했습니다.',
   publishedAt: '2026-03-21',
+  updatedAt: '2026-03-25',
   tags: ['액션', '추천', '입문'],
 }
 
@@ -28,6 +29,44 @@ export default function Content() {
         공격이 결합된 2D 기반의 액션. 넷째, <strong>액션 어드벤처</strong> — 전투보다 탐험과 퍼즐,
         서사가 섞인 방식. 어떤 유형이 본인 취향에 맞는지 먼저 파악하는 것이 첫 번째 단계입니다.
       </p>
+
+      <h2>액션 유형 비교</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>유형</th>
+            <th>조작 난이도</th>
+            <th>전투 속도</th>
+            <th>추천 입문작</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>핵앤슬래시</td>
+            <td>낮음</td>
+            <td>빠름</td>
+            <td>Hades (Hugo Award 2021)</td>
+          </tr>
+          <tr>
+            <td>소울라이크</td>
+            <td>높음</td>
+            <td>중간</td>
+            <td>Lies of P</td>
+          </tr>
+          <tr>
+            <td>플랫포머 액션</td>
+            <td>중간</td>
+            <td>중간</td>
+            <td>Hollow Knight</td>
+          </tr>
+          <tr>
+            <td>액션 어드벤처</td>
+            <td>낮음</td>
+            <td>느림</td>
+            <td>Control</td>
+          </tr>
+        </tbody>
+      </table>
 
       <h2>핵앤슬래시 입문 — 통쾌함이 먼저</h2>
       <p>

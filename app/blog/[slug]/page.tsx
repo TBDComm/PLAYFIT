@@ -32,7 +32,6 @@ export async function generateMetadata({
       description: meta.description,
       type: 'article',
       publishedTime: meta.publishedAt,
-      images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: meta.title }],
     },
   }
 }

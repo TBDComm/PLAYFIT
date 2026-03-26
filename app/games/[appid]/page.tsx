@@ -98,9 +98,12 @@ export async function generateMetadata({
   const hasTags = game.tags && Object.keys(game.tags).length > 0
   const steamHeaderUrl = `https://cdn.akamai.steamstatic.com/steam/apps/${appid}/header.jpg`
 
+  const topTags = hasTags ? getTopTags(game.tags!, 3) : []
+  const tagPart = topTags.length > 0 ? ` ${topTags.join(', ')} 태그 기반으로 TOP 10을 선정했습니다.` : ''
+
   return {
     title: `${game.name} 비슷한 게임 추천 | Guildeline`,
-    description: `${game.name}을 좋아한다면 이런 게임도 좋아할 거예요. Guildeline이 태그 기반으로 추천합니다.`,
+    description: `${game.name}과 비슷한 게임 추천.${tagPart} Guildeline에서 취향 맞는 게임을 찾아보세요.`,
     alternates: { canonical: `/games/${appid}` },
     openGraph: { images: [{ url: steamHeaderUrl, width: 460, height: 215 }] },
     ...(!hasTags ? { robots: { index: false } } : {}),
@@ -151,6 +154,7 @@ export default async function GamePage({
   const topTags = getTopTags(tags, 10)
   const similarGames = await getSimilarGames(appid, tags)
   const storeUrl = `https://store.steampowered.com/app/${appid}`
+  const steamHeaderUrl = `https://cdn.akamai.steamstatic.com/steam/apps/${appid}/header.jpg`
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
 
   const dateModified = new Date().toISOString()
@@ -163,6 +167,7 @@ export default async function GamePage({
         name: game.name,
         applicationCategory: 'Game',
         url: storeUrl,
+        image: steamHeaderUrl,
         dateModified,
         ...(game.genres?.length ? { genre: game.genres } : {}),
       },

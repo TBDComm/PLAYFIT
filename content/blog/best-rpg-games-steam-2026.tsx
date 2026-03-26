@@ -7,6 +7,7 @@ export const meta: PostMeta = {
   description:
     '턴제, 액션, 소울라이크, CRPG — 취향별로 다른 RPG. 2026년 현재 스팀에서 플레이 가치가 높은 RPG를 유형별로 정리했습니다.',
   publishedAt: '2026-03-19',
+  updatedAt: '2026-03-25',
   tags: ['RPG', '스팀', '게임 추천', '2026'],
 }
 
@@ -19,6 +20,44 @@ export default function Content() {
         공존합니다. 어떤 RPG를 골라야 할지 막막하다면, 먼저 자신이 원하는 경험의 유형을
         명확히 하는 것이 출발점입니다.
       </p>
+
+      <h2>RPG 유형 한눈에 비교</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>유형</th>
+            <th>핵심 경험</th>
+            <th>진입 난이도</th>
+            <th>대표작 (Metacritic)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CRPG</td>
+            <td>서사·선택·탐험</td>
+            <td>중간</td>
+            <td>Baldur&apos;s Gate 3 (96)</td>
+          </tr>
+          <tr>
+            <td>액션 RPG</td>
+            <td>즉각 전투 피드백·성장</td>
+            <td>낮음</td>
+            <td>Hades (93)</td>
+          </tr>
+          <tr>
+            <td>소울라이크</td>
+            <td>도전·패턴 파악·달성감</td>
+            <td>높음</td>
+            <td>Elden Ring (96)</td>
+          </tr>
+          <tr>
+            <td>턴제 RPG</td>
+            <td>전략·자원 관리·계획</td>
+            <td>중간</td>
+            <td>XCOM 2 (88)</td>
+          </tr>
+        </tbody>
+      </table>
 
       <h2>CRPG — 서사와 선택</h2>
       <p>

@@ -7,6 +7,7 @@ export const meta: PostMeta = {
   description:
     '스팀 보유 게임이 수백 개인데 뭘 해야 할지 모르겠다면? 플레이 데이터를 분석해 취향에 딱 맞는 게임을 찾는 방법을 알려드립니다.',
   publishedAt: '2026-03-20',
+  updatedAt: '2026-03-25',
   tags: ['스팀', '게임 추천', '취향 분석'],
 }
 
@@ -19,6 +20,14 @@ export default function Content() {
         한 번쯤 겪어봤을 겁니다. 문제는 선택지가 너무 많다는 게 아닙니다. 자신이 어떤 게임을
         좋아하는지 명확히 파악하지 못한 채 남의 추천이나 상위 판매작에 의존하기 때문입니다.
       </p>
+
+      <blockquote>
+        <p>
+          <strong>Steam 현황 (2026년 기준)</strong> — 등록 게임 100,000개 이상 ·
+          월간 활성 사용자 1억 3,000만 명 이상 (Valve, 2023) ·
+          Guildeline 분석 데이터베이스: <strong>82,816개</strong> 게임
+        </p>
+      </blockquote>
 
       <h2>플레이 시간이 곧 취향 데이터</h2>
       <p>
@@ -46,6 +55,38 @@ export default function Content() {
         설명합니다. 플레이 시간이 긴 게임들의 공통 태그를 찾으면, 당신이 반복적으로 끌리는 경험의
         패턴이 보입니다.
       </p>
+
+      <h2>추천 방법별 비교</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>방법</th>
+            <th>개인화 수준</th>
+            <th>신뢰도</th>
+            <th>한계</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>판매 순위 기반</td>
+            <td>낮음</td>
+            <td>중간</td>
+            <td>대중 취향 ≠ 개인 취향</td>
+          </tr>
+          <tr>
+            <td>스팀 리뷰 기반</td>
+            <td>낮음</td>
+            <td>낮음–중간</td>
+            <td>커뮤니티 여론에 좌우됨</td>
+          </tr>
+          <tr>
+            <td>플레이 시간 기반</td>
+            <td>높음</td>
+            <td>높음</td>
+            <td>비공개 프로필 불가</td>
+          </tr>
+        </tbody>
+      </table>
 
       <h2>Guildeline이 이 과정을 자동화하는 방식</h2>
       <p>
