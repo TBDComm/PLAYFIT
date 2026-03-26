@@ -9,7 +9,7 @@ interface GuildelineMarkProps {
 
 export default function GuildelineMark({ size = 48 }: GuildelineMarkProps) {
   return (
-    <div className={styles.wrap} aria-label="Guildeline">
+    <div className={styles.wrap}>
       <Image
         src="/guildeline-logo.png"
         alt=""

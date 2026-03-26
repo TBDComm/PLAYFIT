@@ -18,7 +18,7 @@ export default function NavLogo() {
           src="/guildeline-logo.png"
           alt=""
           width={22}
-          height={22}
+          height={19}
           className={styles.logoImg}
           unoptimized
         />
