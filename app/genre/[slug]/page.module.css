@@ -28,11 +28,17 @@
   margin: 0 0 56px;
 }
 
+/* li stretches to row height so cards align evenly */
+.gameGrid li {
+  display: flex;
+}
+
 .gameCard {
   display: flex;
   align-items: flex-start;
   gap: 14px;
   padding: 16px 18px;
+  width: 100%;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -67,6 +73,10 @@
   font-weight: 600;
   color: var(--text-primary);
   line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .gameTags {
