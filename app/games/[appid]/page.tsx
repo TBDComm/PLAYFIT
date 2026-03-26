@@ -31,6 +31,18 @@ function createSupabase() {
   )
 }
 
+// ── Steam CDN ────────────────────────────────────────────────────────────────
+
+function steamHero(appid: string) {
+  return `https://cdn.akamai.steamstatic.com/steam/apps/${appid}/library_hero.jpg`
+}
+function steamPortrait(appid: string) {
+  return `https://cdn.akamai.steamstatic.com/steam/apps/${appid}/library_600x900.jpg`
+}
+function steamHeader(appid: string) {
+  return `https://cdn.akamai.steamstatic.com/steam/apps/${appid}/header.jpg`
+}
+
 // ── Types ────────────────────────────────────────────────────────────────────
 
 interface GameRow {
@@ -96,7 +108,7 @@ export async function generateMetadata({
   }
 
   const hasTags = game.tags && Object.keys(game.tags).length > 0
-  const steamHeaderUrl = `https://cdn.akamai.steamstatic.com/steam/apps/${appid}/header.jpg`
+  const headerUrl = steamHeader(appid)
 
   const topTags = hasTags ? getTopTags(game.tags!, 3) : []
   const tagPart = topTags.length > 0 ? ` ${topTags.join(', ')} 태그 기반으로 TOP 10을 선정했습니다.` : ''
@@ -105,7 +117,7 @@ export async function generateMetadata({
     title: `${game.name} 비슷한 게임 추천 | Guildeline`,
     description: `${game.name}과 비슷한 게임 추천.${tagPart} Guildeline에서 취향 맞는 게임을 찾아보세요.`,
     alternates: { canonical: `/games/${appid}` },
-    openGraph: { images: [{ url: steamHeaderUrl, width: 460, height: 215 }] },
+    openGraph: { images: [{ url: headerUrl, width: 460, height: 215 }] },
     ...(!hasTags ? { robots: { index: false } } : {}),
   }
 }
@@ -154,9 +166,7 @@ export default async function GamePage({
   const topTags = getTopTags(tags, 10)
   const similarGames = await getSimilarGames(appid, tags)
   const storeUrl = `https://store.steampowered.com/app/${appid}`
-  const steamHeaderUrl = `https://cdn.akamai.steamstatic.com/steam/apps/${appid}/header.jpg`
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
-
   const dateModified = new Date().toISOString()
 
   const jsonLd = {
@@ -167,7 +177,7 @@ export default async function GamePage({
         name: game.name,
         applicationCategory: 'Game',
         url: storeUrl,
-        image: steamHeaderUrl,
+        image: steamHeader(appid),
         dateModified,
         ...(game.genres?.length ? { genre: game.genres } : {}),
       },
@@ -207,29 +217,75 @@ export default async function GamePage({
 
   return (
     <main className={styles.page}>
-      <div className={styles.inner}>
-        <JsonLd data={jsonLd} />
+      <JsonLd data={jsonLd} />
 
-        <Breadcrumb
-          items={[
-            { label: '홈', href: '/' },
-            { label: '게임', href: '/genre' },
-            { label: game.name },
-          ]}
-        />
+      {/* ── Hero ──────────────────────────────────────────────────────────── */}
+      <div className={styles.hero}>
+        {/* Blurred background art */}
+        <div className={styles.heroBgWrap} aria-hidden="true">
+          <img
+            src={steamHero(appid)}
+            alt=""
+            className={styles.heroBg}
+          />
+        </div>
 
-        <h1 className={styles.title}>{game.name} — 비슷한 게임 추천</h1>
+        <div className={styles.heroInner}>
+          <Breadcrumb
+            items={[
+              { label: '홈', href: '/' },
+              { label: '게임', href: '/genre' },
+              { label: game.name },
+            ]}
+          />
 
-        {/* Genre links */}
-        {game.genres && game.genres.length > 0 && (
-          <div className={styles.genreRow} aria-label="장르">
-            {game.genres.map((g) => (
-              <Link key={g} href={`/genre/${toSlug(g)}`} className={styles.genreChip}>
-                {g}
-              </Link>
-            ))}
+          <div className={styles.heroLayout}>
+            {/* Portrait cover card */}
+            <div className={styles.heroCoverWrap}>
+              <img
+                src={steamPortrait(appid)}
+                alt={`${game.name} cover`}
+                className={styles.heroCover}
+                width={180}
+                height={270}
+              />
+            </div>
+
+            {/* Game info */}
+            <div className={styles.heroInfo}>
+              <h1 className={styles.heroTitle}>{game.name} — 비슷한 게임 추천</h1>
+
+              {game.genres && game.genres.length > 0 && (
+                <div className={styles.genreRow} aria-label="장르">
+                  {game.genres.map((g) => (
+                    <Link key={g} href={`/genre/${toSlug(g)}`} className={styles.genreChip}>
+                      {g}
+                    </Link>
+                  ))}
+                </div>
+              )}
+
+              <div className={styles.heroTagRow} aria-label="태그">
+                {topTags.slice(0, 5).map((tag) => (
+                  <span key={tag} className={styles.heroTag}>{tag}</span>
+                ))}
+              </div>
+
+              <a
+                href={storeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.steamBtn}
+              >
+                Steam에서 보기 →
+              </a>
+            </div>
           </div>
-        )}
+        </div>
+      </div>
+
+      {/* ── Content ───────────────────────────────────────────────────────── */}
+      <div className={styles.inner}>
 
         {/* Tags */}
         <section className={styles.section} aria-labelledby="tags-heading">
@@ -253,10 +309,22 @@ export default async function GamePage({
                 return (
                   <li key={sg.appid}>
                     <Link href={`/games/${sg.appid}`} className={styles.gameCard}>
-                      <span className={styles.gameName}>{sg.name}</span>
-                      {sgTopTags.length > 0 && (
-                        <span className={styles.gameTags}>{sgTopTags.join(' · ')}</span>
-                      )}
+                      <div className={styles.gameCardImg}>
+                        <img
+                          src={steamHeader(sg.appid)}
+                          alt={sg.name}
+                          className={styles.gameThumb}
+                          width={460}
+                          height={215}
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className={styles.gameCardBody}>
+                        <span className={styles.gameName}>{sg.name}</span>
+                        {sgTopTags.length > 0 && (
+                          <span className={styles.gameTags}>{sgTopTags.join(' · ')}</span>
+                        )}
+                      </div>
                     </Link>
                   </li>
                 )

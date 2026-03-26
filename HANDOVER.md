@@ -123,6 +123,8 @@ _Pre-2026-03-21 entries → HANDOVER-archive.md_
 | 2026-03-26 | fix(SEO): game meta description + tags, VideoGame schema image, blog H1 keyword, /genre+/blog BreadcrumbList schema, sitemap updatedAt, blog posts updatedAt | app/games/[appid]/page.tsx, app/blog/page.tsx, app/genre/page.tsx, app/sitemap.ts, content/blog/*.tsx x5 |
 | 2026-03-26 | feat(SEO): per-post OG image for blog — opengraph-image.tsx (title+desc), generateMetadata images removed (file-based takes over) | app/blog/[slug]/opengraph-image.tsx, app/blog/[slug]/page.tsx |
 | 2026-03-26 | feat(SEO): blog citation structure — blockquote+table CSS added; stat blocks + comparison tables in all 5 posts | app/blog/[slug]/page.module.css, content/blog/*.tsx x5 |
+| 2026-03-26 | fix(ui): genre card equal height (li flex + card width:100% + gameName 2-line clamp); game FAQ items gap:12px | app/genre/[slug]/page.module.css, app/games/[appid]/page.module.css |
+| 2026-03-26 | feat(ui): game page hero redesign — full-bleed blurred library_hero.jpg bg + library_600x900.jpg portrait cover + info panel; similar games cards with header.jpg thumbnails | app/games/[appid]/page.tsx, app/games/[appid]/page.module.css |
 
 ---
 

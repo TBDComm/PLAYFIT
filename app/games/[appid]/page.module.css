@@ -1,40 +1,111 @@
+/* ── Page shell ──────────────────────────────────────────────────────────── */
+
 .page {
   min-height: 100vh;
   min-height: 100dvh;
-  padding: 48px 24px 80px;
 }
 
+/* Fallback inner (noTags / notFound cases — no hero) */
 .inner {
   max-width: 900px;
   margin: 0 auto;
+  padding: 48px 24px 80px;
 }
 
-.title {
-  font-size: 1.75rem;
+/* ── Hero ────────────────────────────────────────────────────────────────── */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  /* Background color fallback when library_hero.jpg unavailable */
+  background: #0a0a0a;
+}
+
+/* Blurred background art */
+.heroBgWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.heroBg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Dark + blur — keep game art barely visible for atmosphere */
+  filter: blur(18px) brightness(0.22) saturate(1.2);
+  /* Scale prevents visible blur edge artifact */
+  transform: scale(1.08);
+  transform-origin: center center;
+  display: block;
+}
+
+/* Content overlay */
+.heroInner {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 72px 24px 48px;
+}
+
+/* Layout: cover left | info right */
+.heroLayout {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  margin-top: 20px;
+}
+
+/* Portrait cover card */
+.heroCoverWrap {
+  flex-shrink: 0;
+}
+
+.heroCover {
+  width: 180px;
+  height: 270px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+  display: block;
+  /* Fallback bg when library_600x900.jpg unavailable */
+  background: var(--bg-elevated);
+}
+
+/* Info panel */
+.heroInfo {
+  flex: 1;
+  min-width: 0;
+  padding-top: 4px;
+}
+
+.heroTitle {
+  font-size: 1.875rem;
   font-weight: 700;
-  color: var(--text-primary);
-  margin: 16px 0 20px;
+  color: #ffffff;
+  margin: 0 0 16px;
   letter-spacing: -0.03em;
   line-height: 1.2;
 }
 
-/* Genre chips (linked) */
+/* Genre chips */
 .genreRow {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 36px;
+  margin-bottom: 16px;
 }
 
 .genreChip {
   display: inline-block;
   padding: 4px 12px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 100px;
   font-size: 0.8125rem;
   font-weight: 500;
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.75);
   text-decoration: none;
   transition: border-color 150ms, color 150ms;
 }
@@ -45,7 +116,45 @@
   color: var(--accent);
 }
 
-/* Sections */
+/* Tag row in hero */
+.heroTagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 28px;
+}
+
+.heroTag {
+  display: inline-block;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* Steam store link */
+.steamBtn {
+  display: inline-block;
+  padding: 10px 20px;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  transition: background-color 150ms;
+}
+
+.steamBtn:hover,
+.steamBtn:focus-visible {
+  background: var(--accent-glow);
+}
+
+/* ── Sections ─────────────────────────────────────────────────────────────── */
+
 .section {
   margin-bottom: 48px;
 }
@@ -59,7 +168,8 @@
   margin-bottom: 16px;
 }
 
-/* Tag chips (non-linked) */
+/* ── Tag chips (content area) ─────────────────────────────────────────────── */
+
 .tagList {
   display: flex;
   flex-wrap: wrap;
@@ -79,11 +189,12 @@
   color: var(--text-secondary);
 }
 
-/* Similar games grid */
+/* ── Similar games grid (with thumbnails) ─────────────────────────────────── */
+
 .gameGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -92,19 +203,44 @@
 .gameCard {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 16px 18px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   text-decoration: none;
-  transition: background-color 150ms, border-color 150ms;
+  overflow: hidden;
+  transition: border-color 150ms;
 }
 
 .gameCard:hover,
 .gameCard:focus-visible {
-  background: var(--bg-hover);
   border-color: var(--accent);
+}
+
+/* Thumbnail area — preserves header.jpg aspect ratio (460×215 ≈ 2.14:1) */
+.gameCardImg {
+  aspect-ratio: 460 / 215;
+  overflow: hidden;
+  background: var(--bg-surface);
+}
+
+.gameThumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 220ms;
+}
+
+.gameCard:hover .gameThumb,
+.gameCard:focus-visible .gameThumb {
+  transform: scale(1.04);
+}
+
+.gameCardBody {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .gameName {
@@ -112,6 +248,11 @@
   font-weight: 600;
   color: var(--text-primary);
   line-height: 1.3;
+  /* 2-line clamp prevents height variance */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .gameTags {
@@ -119,7 +260,8 @@
   color: var(--text-muted);
 }
 
-/* FAQ block — AI SEO */
+/* ── FAQ block ────────────────────────────────────────────────────────────── */
+
 .faqSection {
   margin-bottom: 48px;
 }
@@ -153,7 +295,14 @@
   margin: 0;
 }
 
-/* Community placeholder */
+/* ── Ad unit ──────────────────────────────────────────────────────────────── */
+
+.adUnit {
+  margin-bottom: 48px;
+}
+
+/* ── Community placeholder ────────────────────────────────────────────────── */
+
 .communitySection {
   margin-bottom: 48px;
   padding: 24px;
@@ -168,7 +317,8 @@
   line-height: 1.6;
 }
 
-/* CTA */
+/* ── CTA ──────────────────────────────────────────────────────────────────── */
+
 .ctaSection {
   margin-top: 8px;
 }
@@ -191,7 +341,17 @@
   background: var(--accent-glow);
 }
 
-/* Empty / error states */
+/* ── Fallback states ──────────────────────────────────────────────────────── */
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 16px 0 20px;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
 .emptyMsg {
   font-size: 0.9375rem;
   color: var(--text-muted);
@@ -203,23 +363,50 @@
   margin-bottom: 20px;
 }
 
-/* Reduced motion */
+/* ── Reduced motion ───────────────────────────────────────────────────────── */
+
 @media (prefers-reduced-motion: reduce) {
   .genreChip,
+  .steamBtn,
   .gameCard,
+  .gameThumb,
   .ctaLink {
     transition: none;
   }
+
+  .gameCard:hover .gameThumb,
+  .gameCard:focus-visible .gameThumb {
+    transform: none;
+  }
 }
 
-/* Mobile */
-@media (max-width: 600px) {
-  .page {
-    padding: 32px 16px 64px;
+/* ── Mobile ───────────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .heroInner {
+    padding: 64px 16px 40px;
   }
 
-  .title {
-    font-size: 1.375rem;
+  .heroLayout {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .heroCoverWrap {
+    align-self: center;
+  }
+
+  .heroCover {
+    width: 140px;
+    height: 210px;
+  }
+
+  .heroTitle {
+    font-size: 1.4rem;
+  }
+
+  .inner {
+    padding: 40px 16px 64px;
   }
 
   .gameGrid {
