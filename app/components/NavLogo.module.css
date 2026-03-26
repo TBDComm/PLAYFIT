@@ -22,17 +22,15 @@
   color: var(--accent);
 }
 
-/* Logo mark — dark theme: original lime; light theme: darkened for white bg */
-.logoImg {
-  width: 22px;
-  height: auto;
+/* Logo mark — dark theme: original lime; light theme: darkened for contrast */
+.logoMark {
   display: block;
   flex-shrink: 0;
 }
 
 /* ~#5a6c17 (dark olive-green) — WCAG AA contrast on white */
 @media (prefers-color-scheme: light) {
-  .logoImg {
+  .logoMark {
     filter: brightness(0.45);
   }
 }

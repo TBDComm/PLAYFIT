@@ -350,14 +350,17 @@ export default function Header() {
           onClick={(e) => { if (e.target === e.currentTarget) closeLoginModal() }}
         >
           <div className={styles.modalWrap} ref={loginModalRef}>
-            <button onClick={closeLoginModal} className={styles.closeBtn} aria-label="모달 닫기">✕</button>
-
-            {/* Logo + title — outside card */}
+            {/* Logo — centered, above title and close button */}
             <div className={styles.modalLogoArea}>
               <GuildelineMark size={48} />
+            </div>
+
+            {/* Title row — title centered, close button at right */}
+            <div className={styles.modalTitleRow}>
               <h2 id="login-modal-title" className={styles.modalTitle}>
                 {modalTitles[loginView]}
               </h2>
+              <button onClick={closeLoginModal} className={styles.closeBtn} aria-label="모달 닫기">✕</button>
             </div>
 
             {/* Bordered card */}
@@ -607,10 +610,15 @@ export default function Header() {
           onClick={(e) => { if (e.target === e.currentTarget) closeLinkPopup() }}
         >
           <div className={styles.modalWrap} ref={linkPopupRef}>
-            <button onClick={closeLinkPopup} className={styles.closeBtn} aria-label="팝업 닫기">✕</button>
+            {/* Logo — centered, above title and close button */}
             <div className={styles.modalLogoArea}>
               <GuildelineMark size={48} />
+            </div>
+
+            {/* Title row — title centered, close button at right */}
+            <div className={styles.modalTitleRow}>
               <h2 id="link-popup-title" className={styles.modalTitle}>Steam 계정 연동</h2>
+              <button onClick={closeLinkPopup} className={styles.closeBtn} aria-label="팝업 닫기">✕</button>
             </div>
             <div className={styles.card}>
               <div className={styles.fieldGroup}>

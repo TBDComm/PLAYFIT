@@ -4,12 +4,27 @@ export const runtime = 'edge'
 export const size = { width: 32, height: 32 }
 export const contentType = 'image/png'
 
-const LOGO_B64 = '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'
+// All geometry constants at module level — stable across renders
+const CX = 16, CY = 16, R = 13
+const hexPath = Array.from({ length: 6 }, (_, i) => {
+  const rad = ((-90 + 60 * i) * Math.PI) / 180
+  return [CX + R * Math.cos(rad), CY + R * Math.sin(rad)] as [number, number]
+}).map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ') + 'Z'
+
+const CH = 6.5, CW = 5, CG = 3
+const X0 = CX - (CW * 2 + CG) / 2
 
 export default function Icon() {
   return new ImageResponse(
-    // eslint-disable-next-line @next/next/no-img-element
-    (<img src={`data:image/png;base64,${LOGO_B64}`} width={32} height={32} alt="" />),
+    (
+      <div style={{ width: 32, height: 32, background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <svg viewBox="0 0 32 32" width={32} height={32} fill="none">
+          <path d={hexPath} fill="rgba(197,241,53,0.08)" stroke="#C5F135" strokeWidth="1.4" strokeLinejoin="round"/>
+          <polyline points={`${X0},${CY-CH} ${X0+CW},${CY} ${X0},${CY+CH}`} stroke="#C5F135" strokeWidth="2.0" strokeLinecap="butt" strokeLinejoin="miter" fill="none"/>
+          <polyline points={`${X0+CW+CG},${CY-CH} ${X0+CW*2+CG},${CY} ${X0+CW+CG},${CY+CH}`} stroke="#C5F135" strokeWidth="2.0" strokeLinecap="butt" strokeLinejoin="miter" fill="none" opacity={0.48}/>
+        </svg>
+      </div>
+    ),
     { ...size }
   )
 }

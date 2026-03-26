@@ -88,16 +88,23 @@
   position: relative;
 }
 
-/* ── Logo + title — outside the card ── */
+/* ── Logo — centered, above title ── */
 
 .modalLogoArea {
-  text-align: center;
-  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 14px;
 }
 
-.modalLogoArea > svg {
-  display: block;
-  margin: 0 auto 14px;
+/* ── Title row — title centered, close button absolutely at right ── */
+
+.modalTitleRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 40px;  /* reserves space so title doesn't overlap close btn */
+  margin-bottom: 16px;
 }
 
 .modalTitle {
@@ -105,13 +112,13 @@
   font-weight: 300;
   color: var(--text-primary);
   text-wrap: balance;
+  text-align: center;
 }
 
-/* ── Close button ── */
+/* ── Close button — right side of title row ── */
 
 .closeBtn {
   position: absolute;
-  top: 0;
   right: 0;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
@@ -121,7 +128,6 @@
   border-radius: var(--radius);
   line-height: 1;
   transition: color 150ms, background-color 150ms;
-  z-index: 1;
 }
 
 .closeBtn:hover,
@@ -419,7 +425,5 @@
   /* Larger close button tap area */
   .closeBtn {
     padding: 8px 10px;
-    top: -2px;
-    right: -2px;
   }
 }
