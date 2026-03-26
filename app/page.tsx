@@ -617,7 +617,7 @@ export default function Home() {
           <p className={styles.previewTitle}>내가 저장한 게임</p>
 
           {authState === 'loading' && (
-            <div className={styles.savedCards}>
+            <div className={styles.savedStrip}>
               <div className={styles.savedPlaceholder} />
               <div className={styles.savedPlaceholder} />
               <div className={styles.savedPlaceholder} />
@@ -627,7 +627,7 @@ export default function Home() {
 
           {authState === 'anon' && (
             <>
-              <div className={styles.savedCards}>
+              <div className={styles.savedStrip}>
                 <div className={styles.savedPlaceholder} />
                 <div className={styles.savedPlaceholder} />
                 <div className={styles.savedPlaceholder} />
@@ -645,7 +645,7 @@ export default function Home() {
 
           {(authState === 'steam' || authState === 'linked' || authState === 'unlinked_auth') && savedGames.length === 0 && (
             <>
-              <div className={styles.savedCards}>
+              <div className={styles.savedStrip}>
                 <div className={styles.savedPlaceholder} />
                 <div className={styles.savedPlaceholder} />
                 <div className={styles.savedPlaceholder} />
@@ -657,33 +657,38 @@ export default function Home() {
           )}
 
           {(authState === 'steam' || authState === 'linked' || authState === 'unlinked_auth') && savedGames.length > 0 && (
-            <ul className={styles.savedCards}>
+            <ul className={styles.savedStrip}>
               {savedGames.map(game => (
                 <li key={game.appid} className={styles.savedCard}>
-                  {!failedSavedImages.has(game.appid) && (
-                    <Image
-                      unoptimized
-                      src={`https://cdn.akamai.steamstatic.com/steam/apps/${game.appid}/header.jpg`}
-                      alt={game.name}
-                      className={styles.savedCardThumb}
-                      width={460}
-                      height={215}
-                      onError={() => setFailedSavedImages(prev => new Set(prev).add(game.appid))}
-                    />
-                  )}
-                  <div className={styles.savedCardContent}>
-                    <span className={styles.savedCardName}>{game.name}</span>
-                    {game.reason && (
-                      <span className={styles.savedCardReason}>{game.reason}</span>
+                  <div className={styles.savedCardImgWrap}>
+                    {!failedSavedImages.has(game.appid) && (
+                      <Image
+                        unoptimized
+                        src={`https://cdn.akamai.steamstatic.com/steam/apps/${game.appid}/library_600x900.jpg`}
+                        alt={game.name}
+                        className={styles.savedCardImg}
+                        width={600}
+                        height={900}
+                        onError={() => setFailedSavedImages(prev => new Set(prev).add(game.appid))}
+                      />
                     )}
-                    <div className={styles.savedCardMeta}>
+                    <div className={styles.savedCardOverlay}>
+                      <span className={styles.savedCardOverlayName}>{game.name}</span>
+                    </div>
+                  </div>
+                  <div className={styles.savedCardPanel}>
+                    <span className={styles.savedCardPanelName}>{game.name}</span>
+                    {game.reason && (
+                      <span className={styles.savedCardPanelReason}>{game.reason}</span>
+                    )}
+                    <div className={styles.savedCardPanelMeta}>
                       {game.price_krw !== null && (
-                        <span className={styles.savedCardPrice}>
+                        <span className={styles.savedCardPanelPrice}>
                           ₩{new Intl.NumberFormat('ko-KR').format(game.price_krw)}
                         </span>
                       )}
                       {game.metacritic_score !== null && (
-                        <span className={styles.savedCardScore}>
+                        <span className={styles.savedCardPanelScore}>
                           메타크리틱 {game.metacritic_score}점
                         </span>
                       )}

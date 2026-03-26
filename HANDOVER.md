@@ -136,6 +136,7 @@ _Pre-2026-03-21 entries → HANDOVER-archive.md_
 | 2026-03-26 | feat(ui): chevron strokeLinecap butt + strokeLinejoin miter — sharp angular ends; 7 files | same 7 files |
 | 2026-03-26 | fix(ui): revert chevron polygon→polyline (solid arrowhead broke chevron shape); keep cg closer + strokeWidth thinner; 7 files | GuildelineMark.tsx, icon.tsx, apple-icon.tsx, opengraph-image.tsx, blog/[slug]/opengraph-image.tsx, image-guildeline/×2 |
 | 2026-03-26 | feat(ui): saved games — 2-col grid, header.jpg thumbnail on left, savedCardContent wrapper, compact text (name 2-line clamp, reason 2-line clamp), mobile 1-col | app/page.tsx, app/page.module.css |
+| 2026-03-26 | feat(ui): saved games redesign — portrait strip (library_600x900.jpg), hover-expand right animation (120px→320px, 0.32s cubic), bottom gradient overlay fades out, detail panel reveals; prefers-reduced-motion safe | app/page.tsx, app/page.module.css |
 
 ---
 
