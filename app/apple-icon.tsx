@@ -1,5 +1,5 @@
 // app/apple-icon.tsx
-// iOS home screen icon — 180×180, dark hex + lime chevrons
+// iOS home screen icon — 180×180, dark bg + guildeline-logo.png mark
 // Next.js App Router generates /apple-touch-icon.png automatically
 
 import { ImageResponse } from 'next/og'
@@ -8,24 +8,12 @@ export const size        = { width: 180, height: 180 }
 export const contentType = 'image/png'
 
 export default function AppleIcon() {
-  const cx = 90, cy = 90, r = 73
-  const hex = Array.from({ length: 6 }, (_, i) => {
-    const rad = ((-90 + 60 * i) * Math.PI) / 180
-    return `${(cx + r * Math.cos(rad)).toFixed(1)},${(cy + r * Math.sin(rad)).toFixed(1)}`
-  }).join(' ')
-
-  // cg 23→17 (closer), strokeWidth 14→11 (thinner)
-  const ch = 37, cw = 28, cg = 17
-  const x0 = cx - (cw * 2 + cg) / 2
-
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
   return new ImageResponse(
     (
       <div style={{ width: 180, height: 180, background: '#0A0A0A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <svg viewBox="0 0 180 180" width={180} height={180} fill="none">
-          <polygon points={hex} fill="rgba(197,241,53,0.08)" stroke="#C5F135" strokeWidth="8" strokeLinejoin="round"/>
-          <polyline points={`${x0},${cy-ch} ${x0+cw},${cy} ${x0},${cy+ch}`} stroke="#C5F135" strokeWidth="11" strokeLinecap="butt" strokeLinejoin="miter" fill="none"/>
-          <polyline points={`${x0+cw+cg},${cy-ch} ${x0+cw*2+cg},${cy} ${x0+cw+cg},${cy+ch}`} stroke="#C5F135" strokeWidth="11" strokeLinecap="butt" strokeLinejoin="miter" fill="none" opacity={0.48}/>
-        </svg>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={`${base}/guildeline-logo.png`} width={136} height={136} alt="" style={{ objectFit: 'contain' }} />
       </div>
     ),
     { ...size }

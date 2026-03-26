@@ -13,10 +13,28 @@
   color: var(--text-primary);
   text-decoration: none;
   user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .play {
   color: var(--accent);
+}
+
+/* Logo mark — dark theme: original lime; light theme: darkened for white bg */
+.logoImg {
+  width: 22px;
+  height: 22px;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ~#5a6c17 (dark olive-green) — WCAG AA contrast on white */
+@media (prefers-color-scheme: light) {
+  .logoImg {
+    filter: brightness(0.45);
+  }
 }
 
 @media (max-width: 480px) {
