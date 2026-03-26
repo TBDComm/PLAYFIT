@@ -12,6 +12,8 @@ export default function Footer() {
         <Link href="/blog">블로그</Link>
       </nav>
       <nav className={styles.links} aria-label="Footer legal">
+        <Link href="/about">서비스 소개</Link>
+        <span className={styles.sep} aria-hidden="true">·</span>
         <Link href="/privacy">개인정보처리방침</Link>
         <span className={styles.sep} aria-hidden="true">·</span>
         <Link href="/terms">이용약관</Link>
