@@ -100,6 +100,7 @@ export default function Home() {
   const router = useRouter()
   const [authState, setAuthState] = useState<AuthState>('loading')
   const [savedGames, setSavedGames] = useState<SavedGame[]>([])
+  const [failedSavedImages, setFailedSavedImages] = useState<Set<string>>(new Set())
   const [previewTiles, setPreviewTiles] = useState(() => PREVIEW_POOL.slice(0, PREVIEW_COUNT))
   const [fadingIdx, setFadingIdx] = useState<number | null>(null)
   const [mode, setMode] = useState<'steam' | 'manual'>('steam')
@@ -616,18 +617,22 @@ export default function Home() {
           <p className={styles.previewTitle}>내가 저장한 게임</p>
 
           {authState === 'loading' && (
-            <>
+            <div className={styles.savedCards}>
               <div className={styles.savedPlaceholder} />
               <div className={styles.savedPlaceholder} />
               <div className={styles.savedPlaceholder} />
-            </>
+              <div className={styles.savedPlaceholder} />
+            </div>
           )}
 
           {authState === 'anon' && (
             <>
-              <div className={styles.savedPlaceholder} />
-              <div className={styles.savedPlaceholder} />
-              <div className={styles.savedPlaceholder} />
+              <div className={styles.savedCards}>
+                <div className={styles.savedPlaceholder} />
+                <div className={styles.savedPlaceholder} />
+                <div className={styles.savedPlaceholder} />
+                <div className={styles.savedPlaceholder} />
+              </div>
               <p className={styles.savedStatusMsg}>로그인하면 저장한 게임이 여기에 표시돼요</p>
               <button
                 className={styles.savedLoginBtn}
@@ -640,9 +645,12 @@ export default function Home() {
 
           {(authState === 'steam' || authState === 'linked' || authState === 'unlinked_auth') && savedGames.length === 0 && (
             <>
-              <div className={styles.savedPlaceholder} />
-              <div className={styles.savedPlaceholder} />
-              <div className={styles.savedPlaceholder} />
+              <div className={styles.savedCards}>
+                <div className={styles.savedPlaceholder} />
+                <div className={styles.savedPlaceholder} />
+                <div className={styles.savedPlaceholder} />
+                <div className={styles.savedPlaceholder} />
+              </div>
               <p className={styles.savedStatusMsg}>추천받은 게임을 저장하면 여기에 표시돼요</p>
               <a href="#recommend-form" className={styles.savedLoginBtn}>지금 추천받기 ↑</a>
             </>
@@ -652,28 +660,41 @@ export default function Home() {
             <ul className={styles.savedCards}>
               {savedGames.map(game => (
                 <li key={game.appid} className={styles.savedCard}>
-                  <span className={styles.savedCardName}>{game.name}</span>
-                  {game.reason && (
-                    <span className={styles.savedCardReason}>{game.reason}</span>
+                  {!failedSavedImages.has(game.appid) && (
+                    <Image
+                      unoptimized
+                      src={`https://cdn.akamai.steamstatic.com/steam/apps/${game.appid}/header.jpg`}
+                      alt={game.name}
+                      className={styles.savedCardThumb}
+                      width={460}
+                      height={215}
+                      onError={() => setFailedSavedImages(prev => new Set(prev).add(game.appid))}
+                    />
                   )}
-                  <div className={styles.savedCardMeta}>
-                    {game.price_krw !== null && (
-                      <span className={styles.savedCardPrice}>
-                        ₩{new Intl.NumberFormat('ko-KR').format(game.price_krw)}
-                      </span>
+                  <div className={styles.savedCardContent}>
+                    <span className={styles.savedCardName}>{game.name}</span>
+                    {game.reason && (
+                      <span className={styles.savedCardReason}>{game.reason}</span>
                     )}
-                    {game.metacritic_score !== null && (
-                      <span className={styles.savedCardScore}>
-                        메타크리틱 {game.metacritic_score}점
-                      </span>
-                    )}
+                    <div className={styles.savedCardMeta}>
+                      {game.price_krw !== null && (
+                        <span className={styles.savedCardPrice}>
+                          ₩{new Intl.NumberFormat('ko-KR').format(game.price_krw)}
+                        </span>
+                      )}
+                      {game.metacritic_score !== null && (
+                        <span className={styles.savedCardScore}>
+                          메타크리틱 {game.metacritic_score}점
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      className={styles.savedCardUnsaveBtn}
+                      onClick={() => handleUnsaveFromHome(game.appid)}
+                    >
+                      저장 취소
+                    </button>
                   </div>
-                  <button
-                    className={styles.savedCardUnsaveBtn}
-                    onClick={() => handleUnsaveFromHome(game.appid)}
-                  >
-                    저장 취소
-                  </button>
                 </li>
               ))}
             </ul>
