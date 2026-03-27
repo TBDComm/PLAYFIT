@@ -80,6 +80,9 @@ Read the relevant rule file before writing code in that area.
 - Always wrap Claude API response in try-catch + JSON.parse defense
 - Working code first, optimization later
 - File structure stays flat — no unnecessary nesting
+- **NEVER embed base64 image data in TSX/JS files** — use `public/` static files instead (base64 in code = massive token cost every read)
+- **NEVER use the Read tool on image files** (PNG, JPG, etc.) — vision tokens are far more expensive than text; use bash one-liners to inspect image metadata if needed
+- **Favicons/icons must live in `public/`**, referenced via `metadata.icons` in `layout.tsx` — placing them in `app/` creates dynamic metadata routes that break CF Pages build
 
 ---
 
