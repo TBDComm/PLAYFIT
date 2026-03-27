@@ -146,7 +146,7 @@ _Pre-2026-03-21 entries → HANDOVER-archive.md_
 | 2026-03-26 | fix(ui): saved card — reason flex:1 removed + clamp 4→3 (prevents mid-line clip when name is 2 lines); meta margin-top:auto (pins to bottom); savedStrip padding-inline-end 1.5rem→200px (rightmost card expand no longer clips) | app/page.module.css |
 | 2026-03-27 | fix(ui): icon.tsx SVG→PNG (guildeline-logo base64); NavLogo SVG mark→img tag; login modal logo removed + title 'guildeline에 로그인하기'; favicon transparent bg wrapper div in ImageResponse | app/icon.tsx, NavLogo.tsx, Header.tsx |
 | 2026-03-27 | fix(favicon): static PNG via public/ — app/icon.png+apple-icon.png deleted (CF Pages treats app/ PNGs as dynamic routes); layout.tsx metadata icons → /guildeline-logo.png | app/layout.tsx, app/icon.png (deleted), app/apple-icon.png (deleted) |
-| 2026-03-27 | feat(ui): login modal title — icon (guildeline-logo.png 22px) + accent color on 'guildeline'; overlay flex-start+padding-top:72px (modal sits higher) | Header.tsx, Header.module.css |
+| 2026-03-27 | feat(ui): login modal title — icon (guildeline-logo.png 22px) + accent color on 'guildeline'; modalTitleRow column layout (title above X btn) | Header.tsx, Header.module.css |
 
 ---
 

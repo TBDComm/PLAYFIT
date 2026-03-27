@@ -70,11 +70,11 @@
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(6px);
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   z-index: 100;
   overscroll-behavior: contain;
-  padding: 72px 16px 24px;
+  padding: 24px 16px;
 }
 
 /* ── Modal wrapper — GitHub-style vertical layout, no border ── */
@@ -96,15 +96,14 @@
   margin-bottom: 14px;
 }
 
-/* ── Title row — title centered, close button absolutely at right ── */
+/* ── Title row — title on top, close button below right ── */
 
 .modalTitleRow {
-  position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-inline: 40px;  /* reserves space so title doesn't overlap close btn */
-  margin-bottom: 20px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
 .modalTitle {
@@ -131,11 +130,10 @@
   color: var(--accent);
 }
 
-/* ── Close button — right side of title row ── */
+/* ── Close button — right-aligned below title ── */
 
 .closeBtn {
-  position: absolute;
-  right: 0;
+  align-self: flex-end;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   color: var(--text-secondary);
