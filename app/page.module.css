@@ -434,6 +434,10 @@
   position: relative;
 }
 
+.urlInputWrap .input {
+  padding-right: 2.5rem;
+}
+
 .urlValidIcon {
   position: absolute;
   right: 0.875rem;
