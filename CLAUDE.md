@@ -15,6 +15,7 @@
 >
 > **AFTER any work** (step or non-step, however small):
 > - Clear the lock, update `HANDOVER.md` before reporting back — never skip
+> - Include `HANDOVER.md` in the **same** `git commit` as the code — never a separate commit or push
 
 ---
 
