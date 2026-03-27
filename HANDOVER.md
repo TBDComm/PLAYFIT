@@ -150,6 +150,7 @@ _Pre-2026-03-21 entries → HANDOVER-archive.md_
 | 2026-03-27 | fix(ui): saved strip last card clip — last-child flex-direction:row-reverse + translateX(-200px) on hover; image stays right, panel expands left; z-index:1 on hover; reduced-motion safe | app/page.module.css |
 | 2026-03-27 | perf: remove base64 PNG from OG image files — LOGO_B64 const deleted, img src → NEXT_PUBLIC_BASE_URL/guildeline-logo.png; 38KB→4.7KB (token cost fix) | app/opengraph-image.tsx, app/blog/[slug]/opengraph-image.tsx |
 | 2026-03-27 | chore: token waste audit — SPEC.md 65KB→stub (all content → SPEC_archive.md); project_seo_pending.md condensed to regression checklist; project_design_identity.md pruned (TagScatter data in code) | SPEC.md, SPEC_archive.md, memory/×2, MEMORY.md |
+| 2026-03-27 | feat(ui): saved card dimmed neighbors — non-hovered cards scale(0.95)+opacity:0.38 when panel open; prefers-reduced-motion: transform:none | app/page.tsx, app/page.module.css |
 | 2026-03-27 | feat(ui): saved card hover panel — portal overlay (Option C); card fixed 120px, panel position:fixed via createPortal; enter/leave timers (120ms grace + 100ms fade-out); keyboard unsave btn (focus-visible only); left-side flip when near right viewport edge; prefers-reduced-motion safe | app/page.tsx, app/page.module.css |
 
 ---

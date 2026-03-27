@@ -326,6 +326,9 @@
   .savedCard {
     transition: border-color 0.15s ease;
   }
+  .savedCardDimmed {
+    transform: none;
+  }
   .savedCardOverlay {
     transition: none;
   }
@@ -720,7 +723,12 @@
   background: var(--bg-surface);
   border: 1px solid var(--border);
   position: relative;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, opacity 0.22s ease, transform 0.22s ease;
+}
+
+.savedCardDimmed {
+  opacity: 0.38;
+  transform: scale(0.95);
 }
 
 .savedCard:hover,

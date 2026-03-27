@@ -717,7 +717,7 @@ export default function Home() {
               {savedGames.map(game => (
                 <li
                   key={game.appid}
-                  className={styles.savedCard}
+                  className={`${styles.savedCard}${hoveredPanel && hoveredPanel.game.appid !== game.appid ? ` ${styles.savedCardDimmed}` : ''}`}
                   onMouseEnter={(e) => handleSavedCardEnter(game, e.currentTarget)}
                   onMouseLeave={handleSavedCardLeave}
                 >
