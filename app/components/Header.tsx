@@ -353,7 +353,13 @@ export default function Header() {
             {/* Title row — title centered, close button at right */}
             <div className={styles.modalTitleRow}>
               <h2 id="login-modal-title" className={styles.modalTitle}>
-                {modalTitles[loginView]}
+                {loginView === 'login' ? (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/guildeline-logo.png" alt="" aria-hidden="true" className={styles.modalTitleIcon} />
+                    <span className={styles.modalTitleAccent}>guildeline</span>에 로그인하기
+                  </>
+                ) : modalTitles[loginView]}
               </h2>
               <button onClick={closeLoginModal} className={styles.closeBtn} aria-label="모달 닫기">✕</button>
             </div>
