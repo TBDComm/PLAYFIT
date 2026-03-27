@@ -112,8 +112,8 @@ export default function Home() {
   const [budget, setBudget] = useState('')
   const [freeOnly, setFreeOnly] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [statCount, setStatCount] = useState(0)
-  const [urlValid, setUrlValid] = useState(false)
+  const statRef = useRef<HTMLSpanElement>(null)
+  const urlValid = /steamcommunity\.com\/(id|profiles)\//.test(url)
   const [error, setError] = useState<string | null>(null)
   const [dropdowns, setDropdowns] = useState<Array<SearchResult[] | null>>(Array(5).fill(null))
   const [rowErrors, setRowErrors] = useState<Array<string | null>>(Array(5).fill(null))
@@ -187,10 +187,13 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
+    const fmt = (n: number) => new Intl.NumberFormat('ko-KR').format(n)
+    if (!statRef.current) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setStatCount(82816)
+      statRef.current.textContent = fmt(82816)
       return
     }
+    const el = statRef.current
     const TARGET = 82816
     const DURATION = 1200
     const start = performance.now()
@@ -199,7 +202,7 @@ export default function Home() {
       const elapsed = now - start
       const progress = Math.min(elapsed / DURATION, 1)
       const eased = 1 - Math.pow(1 - progress, 3)
-      setStatCount(Math.round(TARGET * eased))
+      el.textContent = fmt(Math.round(TARGET * eased))
       if (progress < 1) raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
@@ -499,7 +502,7 @@ export default function Home() {
               <span className={styles.srOnly}> — 스팀 취향 게임 추천</span>
             </h1>
             <h2 className={styles.headline}>내 플레이 기록이 곧 취향이다</h2>
-            <p className={styles.heroStat}>{new Intl.NumberFormat('ko-KR').format(statCount)}개 Steam 게임 중에서 AI가 골라드립니다</p>
+            <p className={styles.heroStat}><span ref={statRef}>0</span>개 Steam 게임 중에서 AI가 골라드립니다</p>
             <a href="#recommend-form" className={styles.heroCta}>지금 시작하기 ↓</a>
           </header>
         </div>
@@ -526,10 +529,7 @@ export default function Home() {
                     className={styles.input}
                     placeholder="스팀 프로필 URL을 입력하세요…"
                     value={url}
-                    onChange={e => {
-                      setUrl(e.target.value)
-                      setUrlValid(/steamcommunity\.com\/(id|profiles)\//.test(e.target.value))
-                    }}
+                    onChange={e => setUrl(e.target.value)}
                     autoComplete="off"
                     spellCheck={false}
                     disabled={loading}

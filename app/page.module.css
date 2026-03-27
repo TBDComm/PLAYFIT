@@ -357,7 +357,7 @@
   }
 
   .previewSectionRevealed .previewTile {
-    animation: tileFadeUp 0.5s ease both;
+    animation: tileFadeUp 0.5s ease backwards;
   }
 
   .buttonLoading { animation: loadingPulse 1.4s ease-in-out infinite }
