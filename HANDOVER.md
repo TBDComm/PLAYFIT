@@ -60,6 +60,7 @@ Next action: [exactly what to do next to resume]
 | FT1–FT7 | Preview strip, genre/blog UX, save system (saved_games table + API + UI) | ✅ 2026-03-21–23 |
 | S1 | Home page polish: remove howSection, hero animation, stat counter, scroll reveals, tile stagger, label accent, URL validation, button pulse, TagScatter opacity | ✅ 2026-03-27 |
 | S1-fix | tileFadeUp both→backwards (rotation bug), urlValid→derived, statCount→useRef | ✅ 2026-03-27 |
+| S2 | Sample result card (Hades, between form+preview), heroCta ↓ bounce, previewTitle copy fix | ✅ 2026-03-27 |
 
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ✅ · NEXT_PUBLIC_ADSENSE_CLIENT_ID ⏳ (pending AdSense approval — add to CF Pages when Publisher ID received)
 
