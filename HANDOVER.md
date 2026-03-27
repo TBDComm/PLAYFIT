@@ -145,6 +145,7 @@ _Pre-2026-03-21 entries → HANDOVER-archive.md_
 | 2026-03-26 | fix(ui): regular hexagon everywhere — icon.tsx/GuildelineMark/NavLogo all use inline SVG with same geometry ratios (r=halfSize×0.8125); modal logo above close button (modalLogoArea→modalTitleRow split, closeBtn inside title row at right) | app/icon.tsx, GuildelineMark.tsx, NavLogo.tsx, NavLogo.module.css, Header.tsx, Header.module.css |
 | 2026-03-26 | fix(ui): saved card — reason flex:1 removed + clamp 4→3 (prevents mid-line clip when name is 2 lines); meta margin-top:auto (pins to bottom); savedStrip padding-inline-end 1.5rem→200px (rightmost card expand no longer clips) | app/page.module.css |
 | 2026-03-27 | fix(ui): icon.tsx SVG→PNG (guildeline-logo base64); NavLogo SVG mark→img tag; login modal logo removed + title 'guildeline에 로그인하기'; favicon transparent bg wrapper div in ImageResponse | app/icon.tsx, NavLogo.tsx, Header.tsx |
+| 2026-03-27 | fix(favicon): replace ImageResponse approach with static PNG — app/icon.png + app/apple-icon.png (RGBA, transparent bg); apple-icon.tsx deleted | app/icon.png, app/apple-icon.png, app/apple-icon.tsx (deleted) |
 
 ---
 
