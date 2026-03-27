@@ -732,8 +732,14 @@
 }
 
 .savedCard:hover,
-.savedCard:focus-within {
+.savedCard:focus-within,
+.savedCardActive {
   border-color: var(--text-muted);
+}
+
+/* Keep overlay hidden while panel is open for this card (mouse may be on panel, not card) */
+.savedCardActive .savedCardOverlay {
+  opacity: 0;
 }
 
 /* Image fills the card */
