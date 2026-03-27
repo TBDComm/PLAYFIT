@@ -356,7 +356,7 @@ export default function Header() {
                 {loginView === 'login' ? (
                   <>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/guildeline-logo.png" alt="" aria-hidden="true" className={styles.modalTitleIcon} />
+                    <img src="/guildeline-logo.png" alt="" aria-hidden="true" width={22} height={22} className={styles.modalTitleIcon} />
                     <span className={styles.modalTitleAccent}>guildeline</span>에 로그인하기
                   </>
                 ) : modalTitles[loginView]}
