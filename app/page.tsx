@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useRef, type FormEvent } from 'react'
+import { createPortal } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -96,6 +97,8 @@ const EMPTY_MANUAL_GAMES: ManualGame[] = Array.from({ length: 5 }, () => ({
   playtime: '',
 }))
 
+type PanelState = { game: SavedGame; top: number; left: number }
+
 export default function Home() {
   const router = useRouter()
   const [authState, setAuthState] = useState<AuthState>('loading')
@@ -115,6 +118,13 @@ export default function Home() {
   const nameInputRefs = useRef<Array<HTMLInputElement | null>>(Array(5).fill(null))
   const debounceRefs = useRef<Array<ReturnType<typeof setTimeout> | null>>(Array(5).fill(null))
   const searchGenRef = useRef<number[]>(Array(5).fill(0))
+
+  // Saved card hover panel state
+  const [hoveredPanel, setHoveredPanel] = useState<PanelState | null>(null)
+  const [panelVisible, setPanelVisible] = useState(false)
+  const hoveredPanelRef = useRef<PanelState | null>(null)
+  const panelLeaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const panelHideTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -179,6 +189,52 @@ export default function Home() {
         headers: { Authorization: `Bearer ${session.access_token}` },
       }).catch(() => { /* silent fail */ })
     })
+  }
+
+  function handleSavedCardEnter(game: SavedGame, el: HTMLElement) {
+    if (panelLeaveTimer.current) clearTimeout(panelLeaveTimer.current)
+    if (panelHideTimer.current) clearTimeout(panelHideTimer.current)
+    if (hoveredPanelRef.current) setPanelVisible(true)  // restore if mid-fade
+
+    const rect = el.getBoundingClientRect()
+    const PANEL_W = 212
+    const GAP = 6
+    let left = rect.right + GAP
+    if (left + PANEL_W > window.innerWidth - 12) left = rect.left - PANEL_W - GAP
+    let top = rect.top
+    if (top + 220 > window.innerHeight - 8) top = window.innerHeight - 228
+    if (top < 8) top = 8
+
+    const next: PanelState = { game, top, left }
+    hoveredPanelRef.current = next
+    setHoveredPanel(next)
+    requestAnimationFrame(() => setPanelVisible(true))
+  }
+
+  function handleSavedCardLeave() {
+    if (panelLeaveTimer.current) clearTimeout(panelLeaveTimer.current)
+    if (panelHideTimer.current) clearTimeout(panelHideTimer.current)
+    panelLeaveTimer.current = setTimeout(() => {
+      setPanelVisible(false)
+      panelHideTimer.current = setTimeout(() => {
+        hoveredPanelRef.current = null
+        setHoveredPanel(null)
+      }, 100)
+    }, 120)
+  }
+
+  function cancelPanelLeave() {
+    if (panelLeaveTimer.current) clearTimeout(panelLeaveTimer.current)
+    if (panelHideTimer.current) clearTimeout(panelHideTimer.current)
+    if (hoveredPanelRef.current) setPanelVisible(true)
+  }
+
+  function dismissPanel() {
+    if (panelLeaveTimer.current) clearTimeout(panelLeaveTimer.current)
+    if (panelHideTimer.current) clearTimeout(panelHideTimer.current)
+    hoveredPanelRef.current = null
+    setHoveredPanel(null)
+    setPanelVisible(false)
   }
 
   function updateManualGame(idx: number, field: 'playtime', value: string) {
@@ -659,7 +715,12 @@ export default function Home() {
           {(authState === 'steam' || authState === 'linked' || authState === 'unlinked_auth') && savedGames.length > 0 && (
             <ul className={styles.savedStrip}>
               {savedGames.map(game => (
-                <li key={game.appid} className={styles.savedCard}>
+                <li
+                  key={game.appid}
+                  className={styles.savedCard}
+                  onMouseEnter={(e) => handleSavedCardEnter(game, e.currentTarget)}
+                  onMouseLeave={handleSavedCardLeave}
+                >
                   <div className={styles.savedCardImgWrap}>
                     {!failedSavedImages.has(game.appid) && (
                       <Image
@@ -675,27 +736,13 @@ export default function Home() {
                     <div className={styles.savedCardOverlay}>
                       <span className={styles.savedCardOverlayName}>{game.name}</span>
                     </div>
-                  </div>
-                  <div className={styles.savedCardPanel}>
-                    <span className={styles.savedCardPanelName}>{game.name}</span>
-                    {game.reason && (
-                      <span className={styles.savedCardPanelReason}>{game.reason}</span>
-                    )}
-                    <div className={styles.savedCardPanelMeta}>
-                      {game.price_krw !== null && (
-                        <span className={styles.savedCardPanelPrice}>
-                          ₩{new Intl.NumberFormat('ko-KR').format(game.price_krw)}
-                        </span>
-                      )}
-                      {game.metacritic_score !== null && (
-                        <span className={styles.savedCardPanelScore}>
-                          메타크리틱 {game.metacritic_score}점
-                        </span>
-                      )}
-                    </div>
+                    {/* Keyboard-accessible unsave — visible only on focus-visible */}
                     <button
-                      className={styles.savedCardUnsaveBtn}
+                      className={styles.savedCardKbdUnsave}
                       onClick={() => handleUnsaveFromHome(game.appid)}
+                      onFocus={(e) => { const li = e.currentTarget.closest('li') as HTMLElement | null; if (li) handleSavedCardEnter(game, li) }}
+                      onBlur={handleSavedCardLeave}
+                      aria-label={`${game.name} 저장 취소`}
                     >
                       저장 취소
                     </button>
@@ -730,6 +777,39 @@ export default function Home() {
           </div>
         </div>
       </section>
+      {/* Saved card hover panel — portal to escape overflow container */}
+      {hoveredPanel && typeof document !== 'undefined' && createPortal(
+        <div
+          className={`${styles.savedFloatingPanel}${panelVisible ? ` ${styles.savedFloatingPanelVisible}` : ''}`}
+          style={{ top: hoveredPanel.top, left: hoveredPanel.left }}
+          onMouseEnter={cancelPanelLeave}
+          onMouseLeave={handleSavedCardLeave}
+        >
+          <span className={styles.savedCardPanelName}>{hoveredPanel.game.name}</span>
+          {hoveredPanel.game.reason && (
+            <span className={styles.savedCardPanelReason}>{hoveredPanel.game.reason}</span>
+          )}
+          <div className={styles.savedCardPanelMeta}>
+            {hoveredPanel.game.price_krw !== null && (
+              <span className={styles.savedCardPanelPrice}>
+                ₩{new Intl.NumberFormat('ko-KR').format(hoveredPanel.game.price_krw)}
+              </span>
+            )}
+            {hoveredPanel.game.metacritic_score !== null && (
+              <span className={styles.savedCardPanelScore}>
+                메타크리틱 {hoveredPanel.game.metacritic_score}점
+              </span>
+            )}
+          </div>
+          <button
+            className={styles.savedCardUnsaveBtn}
+            onClick={() => { handleUnsaveFromHome(hoveredPanel.game.appid); dismissPanel() }}
+          >
+            저장 취소
+          </button>
+        </div>,
+        document.body
+      )}
     </main>
   )
 }
