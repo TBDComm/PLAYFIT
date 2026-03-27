@@ -112,9 +112,15 @@ export default function Home() {
   const [budget, setBudget] = useState('')
   const [freeOnly, setFreeOnly] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [statCount, setStatCount] = useState(0)
+  const [urlValid, setUrlValid] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [dropdowns, setDropdowns] = useState<Array<SearchResult[] | null>>(Array(5).fill(null))
   const [rowErrors, setRowErrors] = useState<Array<string | null>>(Array(5).fill(null))
+  const [formRevealed, setFormRevealed] = useState(false)
+  const [previewRevealed, setPreviewRevealed] = useState(false)
+  const formRevealRef = useRef<HTMLElement>(null)
+  const previewRevealRef = useRef<HTMLElement>(null)
   const nameInputRefs = useRef<Array<HTMLInputElement | null>>(Array(5).fill(null))
   const debounceRefs = useRef<Array<ReturnType<typeof setTimeout> | null>>(Array(5).fill(null))
   const searchGenRef = useRef<number[]>(Array(5).fill(0))
@@ -178,6 +184,47 @@ export default function Home() {
       }, 350)
     }, 2800)
     return () => clearInterval(id)
+  }, [])
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setStatCount(82816)
+      return
+    }
+    const TARGET = 82816
+    const DURATION = 1200
+    const start = performance.now()
+    let raf: number
+    function tick(now: number) {
+      const elapsed = now - start
+      const progress = Math.min(elapsed / DURATION, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setStatCount(Math.round(TARGET * eased))
+      if (progress < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [])
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return
+          if (entry.target === formRevealRef.current) {
+            setFormRevealed(true)
+            obs.unobserve(entry.target)
+          } else if (entry.target === previewRevealRef.current) {
+            setPreviewRevealed(true)
+            obs.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -32px 0px' }
+    )
+    if (formRevealRef.current) obs.observe(formRevealRef.current)
+    if (previewRevealRef.current) obs.observe(previewRevealRef.current)
+    return () => obs.disconnect()
   }, [])
 
   function handleUnsaveFromHome(appid: string) {
@@ -444,7 +491,7 @@ export default function Home() {
 
       {/* ── Hero ── */}
       <section className={styles.hero}>
-        <TagScatter />
+        <div className={styles.tagScatterWrap}><TagScatter /></div>
         <div className={styles.inner}>
           <header className={styles.header}>
             <h1 className={styles.logo}>
@@ -452,14 +499,14 @@ export default function Home() {
               <span className={styles.srOnly}> — 스팀 취향 게임 추천</span>
             </h1>
             <h2 className={styles.headline}>내 플레이 기록이 곧 취향이다</h2>
-            <p className={styles.heroStat}>82,816개 Steam 게임 중에서 AI가 골라드립니다</p>
+            <p className={styles.heroStat}>{new Intl.NumberFormat('ko-KR').format(statCount)}개 Steam 게임 중에서 AI가 골라드립니다</p>
             <a href="#recommend-form" className={styles.heroCta}>지금 시작하기 ↓</a>
           </header>
         </div>
       </section>
 
       {/* ── Form ── */}
-      <section className={styles.formSection}>
+      <section ref={formRevealRef} className={`${styles.formSection}${formRevealed ? ` ${styles.formSectionRevealed}` : ''}`}>
         <div className={styles.inner}>
           <form id="recommend-form" className={styles.form} onSubmit={handleSubmit} noValidate>
             {mode === 'steam' && authState === 'steam' ? (
@@ -471,18 +518,24 @@ export default function Home() {
                 <label className={styles.label} htmlFor="steam-url">
                   Steam 프로필 URL
                 </label>
-                <input
-                  id="steam-url"
-                  name="steam-url"
-                  type="url"
-                  className={styles.input}
-                  placeholder="스팀 프로필 URL을 입력하세요…"
-                  value={url}
-                  onChange={e => setUrl(e.target.value)}
-                  autoComplete="off"
-                  spellCheck={false}
-                  disabled={loading}
-                />
+                <div className={styles.urlInputWrap}>
+                  <input
+                    id="steam-url"
+                    name="steam-url"
+                    type="url"
+                    className={styles.input}
+                    placeholder="스팀 프로필 URL을 입력하세요…"
+                    value={url}
+                    onChange={e => {
+                      setUrl(e.target.value)
+                      setUrlValid(/steamcommunity\.com\/(id|profiles)\//.test(e.target.value))
+                    }}
+                    autoComplete="off"
+                    spellCheck={false}
+                    disabled={loading}
+                  />
+                  {urlValid && <span className={styles.urlValidIcon} aria-hidden="true">✓</span>}
+                </div>
                 <button
                   type="button"
                   className={styles.modeToggle}
@@ -613,7 +666,7 @@ export default function Home() {
 
             <button
               type="submit"
-              className={styles.button}
+              className={`${styles.button}${loading ? ` ${styles.buttonLoading}` : ''}`}
               disabled={loading || !canSubmit}
             >
               {loading
@@ -632,7 +685,7 @@ export default function Home() {
       </section>
 
       {/* ── Preview ── */}
-      <section className={styles.previewSection}>
+      <section ref={previewRevealRef} className={`${styles.previewSection}${previewRevealed ? ` ${styles.previewSectionRevealed}` : ''}`}>
         <div className={styles.inner}>
           <p className={styles.previewLabel}>미리보기</p>
           <p className={styles.previewTitle}>이런 추천을 받았어요</p>
@@ -644,6 +697,7 @@ export default function Home() {
                 href={`/games/${tile.appid}`}
                 key={tile.appid}
                 className={`${styles.previewTile}${fadingIdx === idx ? ` ${styles.previewTileFading}` : ''}`}
+                style={previewRevealed ? { animationDelay: `${idx * 28}ms` } : undefined}
               >
                 <Image
                   unoptimized
@@ -754,29 +808,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── How it works ── */}
-      <section className={styles.howSection}>
-        <div className={styles.inner}>
-          <h2 className={styles.howTitle}>어떻게 작동하나요</h2>
-          <div className={styles.howSteps}>
-            <div className={styles.howStep}>
-              <span className={styles.howNum}>01</span>
-              <p className={styles.howStepTitle}>Steam 연결</p>
-              <p className={styles.howStepDesc}>프로필 URL 또는 직접 입력</p>
-            </div>
-            <div className={styles.howStep}>
-              <span className={styles.howNum}>02</span>
-              <p className={styles.howStepTitle}>AI 분석</p>
-              <p className={styles.howStepDesc}>플레이 기록 → 태그 가중치 계산</p>
-            </div>
-            <div className={styles.howStep}>
-              <span className={styles.howNum}>03</span>
-              <p className={styles.howStepTitle}>취향 게임 추천</p>
-              <p className={styles.howStepDesc}>예산 내 딱 맞는 게임 목록</p>
-            </div>
-          </div>
-        </div>
-      </section>
+
       {/* Saved card hover panel — portal to escape overflow container */}
       {hoveredPanel && typeof document !== 'undefined' && createPortal(
         <div

@@ -91,6 +91,12 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-muted);
+  transition: color 0.15s ease;
+}
+
+.inputWrapper:has(.input:focus) .label,
+.inputWrapper:has(.input:not(:placeholder-shown)) .label {
+  color: var(--accent);
 }
 
 .input {
@@ -311,10 +317,57 @@
   line-height: 1.55;
 }
 
+/* ===== Entrance animations (reduced-motion gated) ===== */
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes heroFadeUp {
+    from { opacity: 0; transform: translateY(-10px) }
+    to   { opacity: 1; transform: none }
+  }
+  @keyframes opacityIn {
+    from { opacity: 0 }
+    to   { opacity: 1 }
+  }
+  @keyframes tileFadeUp {
+    from { opacity: 0; transform: translateY(10px) }
+    to   { opacity: 1; transform: none }
+  }
+  @keyframes loadingPulse {
+    0%, 100% { opacity: 1 }
+    50%       { opacity: 0.65 }
+  }
+
+  .logo     { animation: heroFadeUp 0.7s ease both 0ms }
+  .headline { animation: heroFadeUp 0.7s ease both 80ms }
+  .heroStat { animation: heroFadeUp 0.7s ease both 140ms }
+  .heroCta  { animation: heroFadeUp 0.7s ease both 200ms }
+
+  .tagScatterWrap { animation: opacityIn 0.8s ease both 100ms }
+
+  .formSection,
+  .previewSection {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+  .formSectionRevealed,
+  .previewSectionRevealed {
+    opacity: 1;
+    transform: none;
+  }
+
+  .previewSectionRevealed .previewTile {
+    animation: tileFadeUp 0.5s ease both;
+  }
+
+  .buttonLoading { animation: loadingPulse 1.4s ease-in-out infinite }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .button:active:not(:disabled) {
     transform: none;
   }
+  .buttonLoading { animation: none }
   .dropdownItem {
     transition: none;
   }
@@ -373,6 +426,22 @@
   .dropdown {
     max-height: 8.5rem;
   }
+}
+
+/* ===== Steam URL inline validation ===== */
+
+.urlInputWrap {
+  position: relative;
+}
+
+.urlValidIcon {
+  position: absolute;
+  right: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent);
+  font-size: 0.875rem;
+  pointer-events: none;
 }
 
 /* ===== Autocomplete dropdown ===== */
@@ -924,53 +993,6 @@
   border-radius: 2px;
 }
 
-/* ===== How it works section ===== */
-
-.howSection {
-  width: 100%;
-  padding: 4rem 1.5rem 5rem;
-}
-
-.howTitle {
-  font-size: clamp(1.125rem, 2.5vw, 1.375rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-  margin-bottom: 2rem;
-}
-
-.howSteps {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-}
-
-.howStep {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.howNum {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: -0.04em;
-  line-height: 1;
-}
-
-.howStepTitle {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.01em;
-}
-
-.howStepDesc {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-}
 
 /* ── Mobile adjustments for new sections ── */
 
@@ -991,12 +1013,4 @@
     grid-template-columns: repeat(4, 1fr);
   }
 
-  .howSection {
-    padding: 3rem 1rem 4rem;
-  }
-
-  .howSteps {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
 }
