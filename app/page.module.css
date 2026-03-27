@@ -329,6 +329,10 @@
   .savedCardOverlay {
     transition: none;
   }
+  .savedStrip > .savedCard:last-child:hover,
+  .savedStrip > .savedCard:last-child:focus-within {
+    transform: none;
+  }
 }
 
 /* ── Mobile ── */
@@ -713,13 +717,25 @@
   border-radius: var(--radius);
   background: var(--bg-surface);
   border: 1px solid var(--border);
-  transition: width 0.32s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.15s ease;
+  position: relative;
+  transition: width 0.32s cubic-bezier(0.4, 0, 0.2, 1), transform 0.32s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.15s ease;
 }
 
 .savedCard:hover,
 .savedCard:focus-within {
   width: 320px;
   border-color: var(--text-muted);
+  z-index: 1;
+}
+
+/* Last card: reverse flex so image stays on right, panel expands left — prevents right-edge clip */
+.savedStrip > .savedCard:last-child {
+  flex-direction: row-reverse;
+}
+
+.savedStrip > .savedCard:last-child:hover,
+.savedStrip > .savedCard:last-child:focus-within {
+  transform: translateX(-200px);
 }
 
 /* Fixed-width image column */
