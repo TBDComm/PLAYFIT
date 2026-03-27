@@ -8,8 +8,12 @@ const LOGO_B64 = 'iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAACXBIWXMAAAPoAA
 
 export default function Icon() {
   return new ImageResponse(
-    // eslint-disable-next-line @next/next/no-img-element
-    (<img src={`data:image/png;base64,${LOGO_B64}`} width={32} height={32} alt="" />),
+    (
+      <div style={{ width: 32, height: 32, background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={`data:image/png;base64,${LOGO_B64}`} width={32} height={32} alt="" />
+      </div>
+    ),
     { ...size }
   )
 }
