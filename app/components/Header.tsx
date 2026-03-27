@@ -38,7 +38,7 @@ function SteamIcon() {
 type LoginView = 'login' | 'signup' | 'verify' | 'forgot' | 'forgot-sent'
 
 const modalTitles: Record<LoginView, string> = {
-  login: 'Guildeline 로그인',
+  login: 'guildeline에 로그인하기',
   signup: 'Guildeline 회원가입',
   verify: '이메일 인증',
   forgot: '비밀번호 재설정',
@@ -350,11 +350,6 @@ export default function Header() {
           onClick={(e) => { if (e.target === e.currentTarget) closeLoginModal() }}
         >
           <div className={styles.modalWrap} ref={loginModalRef}>
-            {/* Logo — centered, above title and close button */}
-            <div className={styles.modalLogoArea}>
-              <GuildelineMark size={48} />
-            </div>
-
             {/* Title row — title centered, close button at right */}
             <div className={styles.modalTitleRow}>
               <h2 id="login-modal-title" className={styles.modalTitle}>
