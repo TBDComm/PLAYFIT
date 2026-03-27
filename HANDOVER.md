@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 167/200 lines — OK**
+📏 **File health: 166/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -54,33 +54,10 @@ Next action: [exactly what to do next to resume]
 
 | Step | Description | Status |
 |------|-------------|--------|
-| 1–10 | Original MVP | ✅ |
-| A1–A10 | Supabase DB, tag-based Claude, manual mode, search, E2E tests | ✅ 2026-03-13–16 |
-| A7-1 | Korean game name search — removed (Steam API returns empty server-side) | ❌ 2026-03-16 |
-| B1 | Create `user_profiles` table | ✅ 2026-03-16 |
-| B2 | Alter `user_tag_weights` + `feedback` (add user_id, keep steam_id) | ✅ 2026-03-16 |
-| B3 | Google auth — Header, login modal, auth callback, logout | ✅ 2026-03-16 |
-| B4 | Steam OpenID — `/api/auth/steam` + callback | ✅ 2026-03-16 |
-| B4-link | `/api/auth/link-steam` — Steam URL → migrate weights to user_id | ✅ 2026-03-16 |
-| B5 | Update `/api/recommend` — all four auth cases | ✅ 2026-03-16 |
-| B6 | Update `/api/feedback` — user_id if session, steam_id if not | ✅ 2026-03-16 |
-| B7 | Update Header (Steam link button) + main page layout per auth state | ✅ 2026-03-16 |
-| B8–B10 | E2E tests (email, Steam, non-auth) | ✅ |
-| C1 | SEO foundation — robots.ts, sitemap.ts, OG/Twitter meta tags | ✅ 2026-03-18 |
-| C2 | Legal pages — /privacy, /terms, Footer component | ✅ 2026-03-18 |
-| C3 | GA4 Analytics — gtag.js + 5 events | ✅ 2026-03-19 |
-| C4 | Site Architecture — Breadcrumb, /genre index, /users/[userId] reserved (nav bar subsequently removed — no sticky bar anywhere; auth buttons float top-right in Header.tsx) | ✅ 2026-03-20 |
-| C5 | Game detail pages `/games/[appid]` — ISR 86400s, similar games TOP 10, SEO, noindex guard | ✅ 2026-03-20 |
-| C6 | Genre hub pages `/genre/[slug]` — ISR 86400s, top 20 by tag sum, ItemList JSON-LD, community placeholder | ✅ 2026-03-20 |
-| C7 | Blog section `/blog` + `/blog/[slug]` — TSX content components, BlogPosting JSON-LD, sitemap updated | ✅ 2026-03-20 |
-| C8 | AdSense script (`layout.tsx`), `AdUnit.tsx` component, `ads.txt` placeholder — Publisher ID pending AdSense approval | ✅ 2026-03-20 |
-| C9 | Ad placement — game detail (after similar games), genre hub (after item 10), blog post (end of post), result (below cards), blog index (below fold) | ✅ 2026-03-20 |
-| C10 | Schema Markup — JsonLd.tsx component; @graph on all pages: WebApplication+Organization+WebSite (main), VideoGame+FAQPage+BreadcrumbList (game), CollectionPage+BreadcrumbList (/genre index), ItemList+BreadcrumbList (genre slug), Blog+BreadcrumbList (/blog index), BlogPosting+BreadcrumbList (blog post) | ✅ 2026-03-20, updated 2026-03-26 |
-| C11 | On-Page SEO — meta title templates (main/blog post fixed), H1 logo GUILDELINE fix, blog internal links to /genre + / | ✅ 2026-03-20 |
-| C12 | AI SEO — FAQ block on game pages, definition block on genre pages, dateModified in all schemas, updatedAt on blog posts | ✅ 2026-03-20 |
-| C13 | Core Web Vitals — `<Image unoptimized>` (CF Pages constraint), `requestIdleCallback` for analytics (INP), ad minHeight wrapper (CLS) | ✅ 2026-03-20 |
-| FT1–FT6 | Home preview strip, genre index, blog posts, etc. | ✅ 2026-03-21 |
-| FT7 | Save recommendations — saved_games table, API routes, result save toggle, home saved section | ✅ 2026-03-23 |
+| 1–10, A1–A10 | MVP + Supabase + Claude tags (A7-1 removed: Steam API empty server-side) | ✅ 2026-03-13–16 |
+| B1–B10 | Auth: Google OAuth, Steam OpenID, email+pw, link-steam migration, E2E tests | ✅ 2026-03-16 |
+| C1–C13 | SEO, legal, GA4, architecture, game/genre/blog pages, AdSense, Schema, CWV | ✅ 2026-03-18–20 |
+| FT1–FT7 | Preview strip, genre/blog UX, save system (saved_games table + API + UI) | ✅ 2026-03-21–23 |
 
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ✅ · NEXT_PUBLIC_ADSENSE_CLIENT_ID ⏳ (pending AdSense approval — add to CF Pages when Publisher ID received)
 
@@ -88,71 +65,90 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: NONE — AWAIT USER DIRECTION ────
+## ── ACTIVE STEP: S1 — Home Page Polish ────
 
-**FT done:** FT1✅ FT2✅ FT3✅ FT4✅ FT5✅ FT6✅ FT7✅
-**SPEC.md §Phase 6 ends at FT7 — no next step is defined yet.**
-Do NOT read SPEC.md or infer a next step. Ask the user what to work on next.
+**S-series: site-wide polish toward backlogged.com quality level.**
+S1 = home page UX overhaul. Full spec below — do NOT read SPEC.md.
+
+### S1 Spec (implement in order)
+
+**1. Remove "How it works" section**
+- Delete `.howSection` JSX block (app/page.tsx)
+- Delete all how* CSS classes (app/page.module.css)
+
+**2. Hero entrance animation (CSS only)**
+- `@keyframes heroFadeUp`: `opacity 0→1, translateY(-10px)→0`
+- Apply to (actual CSS class names in `page.module.css`):
+  - `.logo` (0ms), `.headline` (80ms), `.heroStat` (140ms), `.heroCta` (200ms)
+  - Note: `.tagline` class exists in CSS but is unused in JSX — use `.headline` for the `<h2>`
+- TagScatter wrapper: opacity-only fade, 100ms delay
+  - In `app/page.tsx`: wrap `<TagScatter />` with `<div className={styles.tagScatterWrap}>`
+  - In `app/page.module.css`: add `.tagScatterWrap { animation: opacityIn 0.8s ease both 100ms }` under no-preference gate
+  - `@keyframes opacityIn { from { opacity: 0 } to { opacity: 1 } }` (separate from heroFadeUp — no translateY)
+- Gate all above: `@media (prefers-reduced-motion: no-preference)` only
+
+**3. Stat counter animation**
+- "82,816" counts up from 0 on mount via `useEffect` + `requestAnimationFrame`
+- Duration: 1200ms, ease-out curve
+- Disable under `prefers-reduced-motion: reduce`
+- Display value formatted with `Intl.NumberFormat('ko-KR')`
+
+**4. Scroll-triggered section reveals**
+- IntersectionObserver (threshold 0.08, rootMargin `0px 0px -32px 0px`)
+- Refs: `const formRevealRef = useRef<HTMLElement>(null)`, `const previewRevealRef = useRef<HTMLElement>(null)`
+- Place `ref={formRevealRef}` on `<section className={styles.formSection}>`, `ref={previewRevealRef}` on `<section className={styles.previewSection}>`
+- State: `formRevealed`, `previewRevealed` (boolean). When true, append CSS class to the section:
+  - `formSectionRevealed` on the formSection, `previewSectionRevealed` on the previewSection
+- CSS: under `@media (prefers-reduced-motion: no-preference)`:
+  - `.formSection`, `.previewSection` start: `opacity: 0; transform: translateY(16px); transition: opacity 0.55s ease, transform 0.55s ease`
+  - `.formSectionRevealed`, `.previewSectionRevealed`: `opacity: 1; transform: none`
+- unobserve each target immediately after first intersection (reveal is one-time)
+
+**5. Preview tiles stagger on reveal**
+- When `previewRevealed` becomes true, each tile `<Link>` gets `style={previewRevealed ? { animationDelay: \`${idx * 28}ms\` } : undefined}`
+- CSS trigger (under no-preference gate): `.previewSectionRevealed .previewTile { animation: tileFadeUp 0.5s ease both }`
+- `@keyframes tileFadeUp { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }`
+
+**6. Form input focus glow + label activation**
+- Focus glow: ALREADY implemented in `.input:focus-visible` (page.module.css) — do NOT add again
+- Label accent (NEW — add to page.module.css):
+  - Add `transition: color 0.15s ease` to `.label`
+  - `.inputWrapper:has(.input:focus) .label, .inputWrapper:has(.input:not(:placeholder-shown)) .label { color: var(--accent) }`
+
+**7. Steam URL inline validation (no API call)**
+- New state: `const [urlValid, setUrlValid] = useState(false)`
+- In steam URL `<input>` onChange: `setUrlValid(/steamcommunity\.com\/(id|profiles)\//.test(e.target.value))`
+- Wrap the steam `<input>` in `<div className={styles.urlInputWrap}>` (position: relative)
+- Inside wrapper after `<input>`: `{urlValid && <span className={styles.urlValidIcon} aria-hidden="true">✓</span>}`
+- CSS: `.urlInputWrap { position: relative }` · `.urlValidIcon { position: absolute; right: 0.875rem; top: 50%; transform: translateY(-50%); color: var(--accent); font-size: 0.875rem; pointer-events: none }`
+- Input is already inside `mode === 'steam'` block — no extra mode check needed on the icon
+
+**8. Loading button pulse animation**
+- Submit button className: `\`${styles.button}${loading ? \` ${styles.buttonLoading}\` : ''}\``
+- CSS (under no-preference gate): `@keyframes loadingPulse { 0%, 100% { opacity: 1 } 50% { opacity: 0.65 } }`
+- `.buttonLoading { animation: loadingPulse 1.4s ease-in-out infinite }`
+- Also add to `@media (prefers-reduced-motion: reduce)` block: `.buttonLoading { animation: none }`
+
+**9. TagScatter opacity boost**
+- In `app/components/TagScatter.tsx`, multiply each `opacity` value × 1.6, round to 2 dp
+- Full mapping: 0.04→0.07, 0.05→0.08, 0.06→0.10, 0.07→0.11, 0.08→0.13, 0.09→0.14, 0.10→0.16
+
+### S1 Files
+- `app/page.tsx`
+- `app/page.module.css`
+- `app/components/TagScatter.tsx`
+
+### S1 Constraints
+- Only animate `transform` + `opacity`
+- No `transition: all`
+- No external animation libraries
+- tsc must pass before commit
 
 ---
 
 ## ── MINOR CHANGES LOG ────────────────────────────────────
 
-_Pre-2026-03-21 entries → HANDOVER-archive.md_
-
-| Date | Change | Files |
-|------|--------|-------|
-| 2026-03-21 | feat(FT2): genre index — count per genre, sort by count desc, top 12 featured 3-col grid, stat line | app/genre/page.tsx, app/genre/page.module.css |
-| 2026-03-21 | feat(FT4): 2 new blog posts — action guide 10선, indie hidden gems 10선; registry updated | content/blog/steam-genre-guide-action.tsx, content/blog/indie-games-hidden-gems.tsx, lib/blog.ts |
-| 2026-03-21 | feat(FT6): preview section redesign — 8-tile horizontal scroll strip + hover tag chips + saved games placeholder shell; removed dead previewCard CSS | app/page.tsx, app/page.module.css |
-| 2026-03-23 | feat(FT7): save recommendations — API routes (GET/POST/DELETE), result ★/☆ optimistic toggle, home saved section activated (skeleton/anon/empty/live cards + unsave), Header open-login event | 8 files |
-| 2026-03-23 | feat: LoadingOverlay redesign — glitch wordmark entrance + radar sweep + terminal log; PageLoading (server) for page transitions; loading.tsx added to games/[appid], genre/[slug], genre, blog/[slug], blog | 9 files |
-| 2026-03-23 | fix: LoadingOverlay — glitchIn filter:blur() → removed; barFill width → transform:scaleX() (compositor-friendly) | LoadingOverlay.module.css |
-| 2026-03-23 | fix: polish — '...'→'…', saveBtnSaved hover, savedLoginBtn touch-action, savedCardUnsaveBtn focus-visible, HANDOVER saved_games | 4 files |
-| 2026-03-23 | feat: preview section — portrait grid (library_600x900.jpg), 5-col grid wrapping, bottom-gradient hover overlay | app/page.tsx, app/page.module.css |
-| 2026-03-23 | feat: preview rotation — PREVIEW_POOL 22 games, show 15, random 1-tile swap every 2.8s + fade; result save button shown for anon users (triggers open-login event) | app/page.tsx, app/page.module.css, app/result/page.tsx |
-| 2026-03-23 | fix: guideline violations — filter→opacity on previewTileImg hover (compositor), previewTile added to reduced-motion block, JS interval gated on matchMedia, HANDOVER log English | app/page.tsx, app/page.module.css, HANDOVER.md |
-| 2026-03-25 | refactor: marketing-skills — 9 irrelevant skill dirs deleted, 12 kept skills merged into SEO-SKILLS.md (750 lines), REMOVED.md updated | marketing-skills/SEO-SKILLS.md, marketing-skills/REMOVED.md |
-| 2026-03-25 | fix(SEO): sitemap /genre missing; robots.txt add ChatGPT-User + anthropic-ai; remove broken SearchAction schema; H1 srOnly keyword; FAQPage schema + 2nd Q&A on game pages; result noindex layout; blog+genre JSON-LD; layout OG image field | app/sitemap.ts, app/robots.ts, app/layout.tsx, app/page.tsx, app/page.module.css, app/games/[appid]/page.tsx, app/result/layout.tsx, app/blog/page.tsx, app/genre/page.tsx |
-| 2026-03-25 | chore(SEO): full audit against SEO-SKILLS.md — findings saved to memory/project_seo_pending.md | memory/project_seo_pending.md, memory/MEMORY.md |
-| 2026-03-25 | fix(SEO): P1–P3 pending tasks — BlogPosting image+publisher+Person author, blog post OG image, VideoGame schema, Steam CDN OG image on game pages, root/blog/genre meta descriptions, blog index title, genre definition block | 6 files |
-| 2026-03-25 | feat(SEO): OG image + favicon via ImageResponse — opengraph-image.tsx (1200×630), icon.tsx (32×32), apple-icon.tsx (180×180); /og-image.png refs → /opengraph-image | app/opengraph-image.tsx, app/icon.tsx, app/apple-icon.tsx, app/layout.tsx, app/blog/[slug]/page.tsx |
-| 2026-03-25 | fix(favicon): square bg → transparent + hex solid fill — favicon/apple-icon now render as hexagon shape; image-guildeline synced to confirmed design | app/icon.tsx, app/apple-icon.tsx, image-guildeline/favicon.tsx, image-guildeline/apple-icon.tsx, image-guildeline/LOGO_INSTRUCTIONS.md |
-| 2026-03-25 | fix(SEO): Bingbot added to robots.ts; genre/[slug] OG image added; blog post OG image width/height added; MEMORY.md SEO pending reference cleaned up | app/robots.ts, app/genre/[slug]/page.tsx, app/blog/[slug]/page.tsx, memory/MEMORY.md |
-| 2026-03-25 | feat(SEO): blog AI citation + internal game links — GOTY/Metacritic stats added, /games/[appid] links in all 5 posts | content/blog/*.tsx x5 |
-| 2026-03-26 | fix(SEO): game meta description + tags, VideoGame schema image, blog H1 keyword, /genre+/blog BreadcrumbList schema, sitemap updatedAt, blog posts updatedAt | app/games/[appid]/page.tsx, app/blog/page.tsx, app/genre/page.tsx, app/sitemap.ts, content/blog/*.tsx x5 |
-| 2026-03-26 | feat(SEO): per-post OG image for blog — opengraph-image.tsx (title+desc), generateMetadata images removed (file-based takes over) | app/blog/[slug]/opengraph-image.tsx, app/blog/[slug]/page.tsx |
-| 2026-03-26 | feat(SEO): blog citation structure — blockquote+table CSS added; stat blocks + comparison tables in all 5 posts | app/blog/[slug]/page.module.css, content/blog/*.tsx x5 |
-| 2026-03-26 | fix(ui): genre card equal height (li flex + card width:100% + gameName 2-line clamp); game FAQ items gap:12px | app/genre/[slug]/page.module.css, app/games/[appid]/page.module.css |
-| 2026-03-26 | feat(ui): game page hero redesign — full-bleed blurred library_hero.jpg bg + library_600x900.jpg portrait cover + info panel; similar games cards with header.jpg thumbnails | app/games/[appid]/page.tsx, app/games/[appid]/page.module.css |
-| 2026-03-26 | feat: /about page — service intro, contact, Footer link, sitemap entry | app/about/page.tsx, app/components/Footer.tsx, app/sitemap.ts |
-| 2026-03-26 | refactor(footer): remove nav links (홈/장르/블로그) — header is fixed, redundant | app/components/Footer.tsx |
-| 2026-03-26 | feat(ui): replace circular G/P badge → GuildelineMark SVG (hexagon+chevron) in login modal, Steam link popup, reset-password page | app/components/GuildelineMark.tsx (new), Header.tsx, Header.module.css, reset-password/page.tsx, reset-password/page.module.css |
-| 2026-03-26 | feat(ui): backdrop-filter blur(6px) on modal overlay | app/components/Header.module.css |
-| 2026-03-26 | fix(result): save button visible (remove max-height clip) + compact cards (thumbnail 30%, tighter padding/margins, reason 3-line clamp) | app/result/page.module.css |
-| 2026-03-26 | fix(result): save button stays anon after modal login — replace one-shot getSession() with onAuthStateChange subscription; loadSession() shared helper | app/result/page.tsx |
-| 2026-03-26 | perf(GuildelineMark): hoist constant SVG path calcs to module level (guideline check) | app/components/GuildelineMark.tsx |
-| 2026-03-26 | feat(ui): favicon/mark refinement — hex strokeWidth↑, rgba lime fill, chevron2 opacity 0.38→0.48, apple-icon solid bg; applied to 7 files | app/icon.tsx, app/apple-icon.tsx, GuildelineMark.tsx, opengraph-image.tsx, blog/[slug]/opengraph-image.tsx, image-guildeline/×2 |
-| 2026-03-26 | feat(ui): chevron strokeLinecap butt + strokeLinejoin miter — sharp angular ends; 7 files | same 7 files |
-| 2026-03-26 | fix(ui): revert chevron polygon→polyline (solid arrowhead broke chevron shape); keep cg closer + strokeWidth thinner; 7 files | GuildelineMark.tsx, icon.tsx, apple-icon.tsx, opengraph-image.tsx, blog/[slug]/opengraph-image.tsx, image-guildeline/×2 |
-| 2026-03-26 | feat(ui): saved games — 2-col grid, header.jpg thumbnail on left, savedCardContent wrapper, compact text (name 2-line clamp, reason 2-line clamp), mobile 1-col | app/page.tsx, app/page.module.css |
-| 2026-03-26 | feat(ui): guildeline-logo.png — favicon+apple-icon use PNG via ImageResponse; NavLogo = PNG mark + GUILDELINE text; light theme filter: brightness(0.45) → #5a6c17; PNG white bg+interior → transparent (sharp pixel removal) | icon.tsx, apple-icon.tsx, NavLogo.tsx, NavLogo.module.css, public/guildeline-logo.png |
-| 2026-03-26 | fix(ui): favicon transparent — GuildelineMark SVG → PNG; icon/apple-icon: base64-embedded PNG in ImageResponse (no URL fetch, runtime='edge') | GuildelineMark.tsx, icon.tsx, apple-icon.tsx |
-| 2026-03-26 | fix(ui): logo PNG trimmed → zero padding (671x587); OG images + GuildelineMark updated — SVG replaced with PNG; GuildelineMark now shows mark + GUILDELINE wordmark | public/guildeline-logo.png, icon.tsx, apple-icon.tsx, opengraph-image.tsx, blog/[slug]/opengraph-image.tsx, GuildelineMark.tsx, GuildelineMark.module.css |
-| 2026-03-26 | fix(a11y+ui): guideline check — NavLogo height 22→19 + height:auto (aspect ratio); GuildelineMark remove invalid aria-label on div | NavLogo.tsx, NavLogo.module.css, GuildelineMark.tsx |
-| 2026-03-26 | fix(ui): savedStrip — add padding-inline-end:1.5rem so rightmost card isn't clipped at container edge | app/page.module.css |
-| 2026-03-26 | feat(ui): saved games redesign — portrait strip (library_600x900.jpg), hover-expand right animation (120px→320px, 0.32s cubic), bottom gradient overlay fades out, detail panel reveals; prefers-reduced-motion safe | app/page.tsx, app/page.module.css |
-| 2026-03-26 | fix(ui): regular hexagon everywhere — icon.tsx/GuildelineMark/NavLogo all use inline SVG with same geometry ratios (r=halfSize×0.8125); modal logo above close button (modalLogoArea→modalTitleRow split, closeBtn inside title row at right) | app/icon.tsx, GuildelineMark.tsx, NavLogo.tsx, NavLogo.module.css, Header.tsx, Header.module.css |
-| 2026-03-26 | fix(ui): saved card — reason flex:1 removed + clamp 4→3 (prevents mid-line clip when name is 2 lines); meta margin-top:auto (pins to bottom); savedStrip padding-inline-end 1.5rem→200px (rightmost card expand no longer clips) | app/page.module.css |
-| 2026-03-27 | fix(ui): icon.tsx SVG→PNG (guildeline-logo base64); NavLogo SVG mark→img tag; login modal logo removed + title 'guildeline에 로그인하기'; favicon transparent bg wrapper div in ImageResponse | app/icon.tsx, NavLogo.tsx, Header.tsx |
-| 2026-03-27 | fix(ui): NavLogo wordmark — wrap text in span so GUILD+ELINE are one flex item (gap was splitting them) | app/components/NavLogo.tsx |
-| 2026-03-27 | fix(favicon): static PNG via public/ — app/icon.png+apple-icon.png deleted (CF Pages treats app/ PNGs as dynamic routes); layout.tsx metadata icons → /guildeline-logo.png | app/layout.tsx, app/icon.png (deleted), app/apple-icon.png (deleted) |
-| 2026-03-27 | feat(ui): login modal title — icon (guildeline-logo.png 22px) + accent color on 'guildeline'; modalTitleRow column layout (title above X btn) | Header.tsx, Header.module.css |
-| 2026-03-27 | fix(ui): saved strip last card clip — last-child flex-direction:row-reverse + translateX(-200px) on hover; image stays right, panel expands left; z-index:1 on hover; reduced-motion safe | app/page.module.css |
-| 2026-03-27 | perf: remove base64 PNG from OG image files — LOGO_B64 const deleted, img src → NEXT_PUBLIC_BASE_URL/guildeline-logo.png; 38KB→4.7KB (token cost fix) | app/opengraph-image.tsx, app/blog/[slug]/opengraph-image.tsx |
-| 2026-03-27 | chore: token waste audit — SPEC.md 65KB→stub (all content → SPEC_archive.md); project_seo_pending.md condensed to regression checklist; project_design_identity.md pruned (TagScatter data in code) | SPEC.md, SPEC_archive.md, memory/×2, MEMORY.md |
-| 2026-03-27 | feat(ui): saved card dimmed neighbors — non-hovered cards scale(0.95)+opacity:0.38 when panel open; savedCardActive keeps border+overlay state while mouse is on panel (not card) | app/page.tsx, app/page.module.css |
-| 2026-03-27 | feat(ui): saved card hover panel — portal overlay (Option C); card fixed 120px, panel position:fixed via createPortal; enter/leave timers (120ms grace + 100ms fade-out); keyboard unsave btn (focus-visible only); left-side flip when near right viewport edge; prefers-reduced-motion safe | app/page.tsx, app/page.module.css |
+_2026-03-21 to 2026-03-27 entries → HANDOVER-archive.md §Minor Changes Log_
 
 ---
 

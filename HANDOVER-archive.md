@@ -1,5 +1,36 @@
 # HANDOVER Archive
 
+## Minor Changes Log — 2026-03-21 to 2026-03-27
+
+| Date | Change | Files |
+|------|--------|-------|
+| 2026-03-21 | feat(FT2): genre index — count per genre, sort by count desc, top 12 featured 3-col grid, stat line | app/genre/page.tsx, app/genre/page.module.css |
+| 2026-03-21 | feat(FT4): 2 new blog posts — action guide 10선, indie hidden gems 10선; registry updated | content/blog/steam-genre-guide-action.tsx, content/blog/indie-games-hidden-gems.tsx, lib/blog.ts |
+| 2026-03-21 | feat(FT6): preview section redesign — 8-tile horizontal scroll strip + hover tag chips + saved games placeholder shell | app/page.tsx, app/page.module.css |
+| 2026-03-23 | feat(FT7): save recommendations — API routes, result ★/☆ toggle, home saved section | 8 files |
+| 2026-03-23 | feat: LoadingOverlay redesign — glitch wordmark + radar sweep + terminal log; PageLoading for transitions | 9 files |
+| 2026-03-23 | feat: preview section — portrait grid, 5-col grid, hover overlay; rotation pool 22 games, 15 shown, swap every 2.8s | app/page.tsx, app/page.module.css |
+| 2026-03-25 | refactor: marketing-skills — 9 dirs deleted, 12 merged into SEO-SKILLS.md | marketing-skills/ |
+| 2026-03-25 | fix(SEO): sitemap, robots, schemas, meta, OG images — full audit P1–P3 | multiple files |
+| 2026-03-25 | feat(SEO): OG image + favicon via ImageResponse (opengraph-image.tsx, icon.tsx, apple-icon.tsx) | 3 new files |
+| 2026-03-25 | feat(SEO): blog AI citation + internal game links, stat blocks, comparison tables | content/blog/*.tsx x5 |
+| 2026-03-26 | feat(ui): game page hero redesign — full-bleed blurred hero bg + portrait cover + info panel | app/games/[appid]/page.tsx, .module.css |
+| 2026-03-26 | feat(ui): saved games → portrait strip, hover-expand panel (later replaced by portal overlay) | app/page.tsx, app/page.module.css |
+| 2026-03-26 | feat(ui): GuildelineMark SVG component; login modal, Steam link popup, reset-password | GuildelineMark.tsx (new), Header.tsx, Header.module.css |
+| 2026-03-26 | feat(ui): guildeline-logo.png — favicon via PNG; NavLogo = PNG mark + wordmark | icon.tsx, apple-icon.tsx, NavLogo.tsx, public/guildeline-logo.png |
+| 2026-03-26 | fix(ui): various — genre card equal height, FAQ gap, footer nav removed, hexagon geometry, modal layout | multiple files |
+| 2026-03-26 | fix(SEO): game meta desc+tags, VideoGame schema, blog H1, BreadcrumbList, sitemap updatedAt, per-post OG | multiple files |
+| 2026-03-26 | feat: /about page | app/about/page.tsx, Footer.tsx, sitemap.ts |
+| 2026-03-27 | fix(ui): icon.tsx SVG→PNG (guildeline-logo base64); NavLogo SVG mark→img tag; login modal logo removed + title 'guildeline에 로그인하기'; favicon transparent bg wrapper div in ImageResponse | app/icon.tsx, NavLogo.tsx, Header.tsx |
+| 2026-03-27 | fix(ui): NavLogo wordmark — wrap text in span so GUILD+ELINE are one flex item (gap was splitting them) | app/components/NavLogo.tsx |
+| 2026-03-27 | fix(favicon): static PNG via public/ — app/icon.png+apple-icon.png deleted (CF Pages treats app/ PNGs as dynamic routes); layout.tsx metadata icons → /guildeline-logo.png | app/layout.tsx, app/icon.png (deleted), app/apple-icon.png (deleted) |
+| 2026-03-27 | feat(ui): login modal title — icon (guildeline-logo.png 22px) + accent color on 'guildeline'; modalTitleRow column layout (title above X btn) | Header.tsx, Header.module.css |
+| 2026-03-27 | fix(ui): saved strip last card clip — last-child flex-direction:row-reverse + translateX(-200px) on hover; image stays right, panel expands left; z-index:1 on hover; reduced-motion safe | app/page.module.css |
+| 2026-03-27 | perf: remove base64 PNG from OG image files — LOGO_B64 const deleted, img src → NEXT_PUBLIC_BASE_URL/guildeline-logo.png; 38KB→4.7KB (token cost fix) | app/opengraph-image.tsx, app/blog/[slug]/opengraph-image.tsx |
+| 2026-03-27 | chore: token waste audit — SPEC.md 65KB→stub (all content → SPEC_archive.md); project_seo_pending.md condensed to regression checklist; project_design_identity.md pruned (TagScatter data in code) | SPEC.md, SPEC_archive.md, memory/×2, MEMORY.md |
+| 2026-03-27 | feat(ui): saved card dimmed neighbors — non-hovered cards scale(0.95)+opacity:0.38 when panel open; savedCardActive keeps border+overlay state while mouse is on panel (not card) | app/page.tsx, app/page.module.css |
+| 2026-03-27 | feat(ui): saved card hover panel — portal overlay (Option C); card fixed 120px, panel position:fixed via createPortal; enter/leave timers (120ms grace + 100ms fade-out); keyboard unsave btn (focus-visible only); left-side flip when near right viewport edge; prefers-reduced-motion safe | app/page.tsx, app/page.module.css |
+
 ## AdSense Activation Checklist (run after FT-series complete + approval)
 
 Apply for AdSense AFTER FT-series is fully complete. When approval email arrives:
