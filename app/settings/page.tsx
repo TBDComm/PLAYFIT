@@ -28,9 +28,13 @@ function WeightRow({
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(String(item.weight))
   const inputRef = useRef<HTMLInputElement>(null)
+  // Guards against double-commit when Enter fires commit() then blur also fires
+  const didCommitRef = useRef(false)
   const barPct = Math.round((item.weight / Math.max(maxWeight, MAX_WEIGHT)) * 100)
 
   const commit = useCallback(() => {
+    if (didCommitRef.current) return
+    didCommitRef.current = true
     const parsed = parseFloat(draft)
     if (!isNaN(parsed)) {
       const clamped = Math.min(MAX_WEIGHT, Math.max(MIN_WEIGHT, parsed))
@@ -43,7 +47,10 @@ function WeightRow({
   }, [draft, item.tag, item.weight, onChange])
 
   useEffect(() => {
-    if (editing) inputRef.current?.focus()
+    if (editing) {
+      didCommitRef.current = false
+      inputRef.current?.focus()
+    }
   }, [editing])
 
   return (
@@ -60,6 +67,7 @@ function WeightRow({
           min={MIN_WEIGHT}
           max={MAX_WEIGHT}
           step={0.1}
+          aria-label={`${item.tag} 가중치`}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onBlur={commit}
@@ -169,6 +177,14 @@ export default function SettingsPage() {
     }
   }
 
+  // Warn before unload when there are unsaved weight changes
+  useEffect(() => {
+    if (!weightsDirty) return
+    const handler = (e: BeforeUnloadEvent) => { e.preventDefault() }
+    window.addEventListener('beforeunload', handler)
+    return () => window.removeEventListener('beforeunload', handler)
+  }, [weightsDirty])
+
   const handleWeightChange = useCallback((tag: string, value: number) => {
     setWeights(prev => prev.map(w => w.tag === tag ? { ...w, weight: value } : w))
     setWeightsDirty(true)
@@ -255,11 +271,13 @@ export default function SettingsPage() {
           )}
 
           <div className={styles.linkForm}>
-            <p className={styles.linkLabel}>
+            <label htmlFor="steam-url-settings" className={styles.linkLabel}>
               {steamState === 'linked' ? 'Steam 계정 재연동' : 'Steam 프로필 URL 입력'}
-            </p>
+            </label>
             <div className={styles.linkRow}>
               <input
+                id="steam-url-settings"
+                name="steam-url"
                 type="url"
                 className={styles.urlInput}
                 placeholder="https://steamcommunity.com/id/…"
@@ -278,8 +296,10 @@ export default function SettingsPage() {
                 {linkLoading ? '연동 중…' : steamState === 'linked' ? '재연동' : '연동하기'}
               </button>
             </div>
-            {linkError && <p className={styles.errorMsg}>{linkError}</p>}
-            {linkSuccess && <p className={styles.successMsg}>Steam 계정이 연동되었어요!</p>}
+            <div aria-live="polite" aria-atomic="true">
+              {linkError && <p className={styles.errorMsg}>{linkError}</p>}
+              {linkSuccess && <p className={styles.successMsg}>Steam 계정이 연동되었어요!</p>}
+            </div>
           </div>
         </section>
 
@@ -291,7 +311,7 @@ export default function SettingsPage() {
               className={styles.reloadBtn}
               onClick={handleReloadWeights}
               disabled={weightsLoading}
-              title="새로고침"
+              aria-label="가중치 새로고침"
             >
               {weightsLoading ? '…' : '↺'}
             </button>
@@ -319,7 +339,9 @@ export default function SettingsPage() {
                 ))}
               </div>
               <div className={styles.saveRow}>
-                {weightsSaved && <span className={styles.savedNote}>저장되었어요 ✓</span>}
+                <span aria-live="polite" aria-atomic="true" className={styles.savedNote}>
+                  {weightsSaved ? '저장되었어요 ✓' : ''}
+                </span>
                 <button
                   className={styles.saveBtn}
                   onClick={handleSaveWeights}

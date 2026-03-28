@@ -84,6 +84,7 @@ _2026-03-21 to 2026-03-27 entries → HANDOVER-archive.md §Minor Changes Log_
 - 2026-03-28 sampleCard: moved to sampleSection (below hero, above form); layout matches result page card (row, 30% thumb, no badge); mobile ≤480px column
 - 2026-03-28 sampleSection moved below formSection: order is now Hero → Form → Sample → Preview
 - 2026-03-28 link-steam: update→upsert (email/Google users had no user_profiles row → silent save failure)
+- 2026-03-28 settings: guideline audit fixes — label/aria-live/aria-label/focus-visible/beforeunload/double-commit guard
 - 2026-03-28 /settings page: Steam re-link + tag weight bar graph editor (GET/PUT /api/tag-weights)
 - 2026-03-28 Header: added "내 설정" link → /settings; removed "Steam 연동됨" text (status visible in settings)
 
