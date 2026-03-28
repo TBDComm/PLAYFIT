@@ -1,9 +1,17 @@
 export const runtime = 'edge'
 
+import { createClient } from '@supabase/supabase-js'
 import { createServerClient } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import type { FeedbackRating } from '@/types'
+
+function getServiceSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,6 +65,8 @@ export async function POST(request: NextRequest) {
     // Weights update requires a rating, at least one identifier, and tags to act on
     const weightFetchNeeded = !!rating && (userId !== null || !!steam_id) && tag_snapshot.length > 0
 
+    const serviceSupabase = getServiceSupabase()
+
     // Insert feedback and fetch current weights in parallel
     const [insertResult, existingWeights] = await Promise.all([
       supabase.from('feedback').insert({
@@ -70,8 +80,8 @@ export async function POST(request: NextRequest) {
       }),
       weightFetchNeeded
         ? userId !== null
-          ? supabase.from('user_tag_weights').select('tag, weight').eq('user_id', userId).in('tag', tag_snapshot)
-          : supabase.from('user_tag_weights').select('tag, weight').eq('steam_id', steam_id).in('tag', tag_snapshot)
+          ? serviceSupabase.from('user_tag_weights').select('tag, weight').eq('user_id', userId).in('tag', tag_snapshot)
+          : serviceSupabase.from('user_tag_weights').select('tag, weight').eq('steam_id', steam_id).in('tag', tag_snapshot)
         : Promise.resolve({ data: null }),
     ])
 
@@ -93,7 +103,7 @@ export async function POST(request: NextRequest) {
             : current === null ? 0.7 : Math.max(current - 0.3, 0.1)
           return { user_id: userId, tag, weight, updated_at: new Date().toISOString() }
         })
-        await supabase.from('user_tag_weights').upsert(rows, { onConflict: 'user_id,tag' })
+        await serviceSupabase.from('user_tag_weights').upsert(rows, { onConflict: 'user_id,tag' })
       } else {
         // No session: upsert by steam_id
         const rows = tag_snapshot.map(tag => {
@@ -103,7 +113,7 @@ export async function POST(request: NextRequest) {
             : current === null ? 0.7 : Math.max(current - 0.3, 0.1)
           return { steam_id, tag, weight, updated_at: new Date().toISOString() }
         })
-        await supabase.from('user_tag_weights').upsert(rows, { onConflict: 'steam_id,tag' })
+        await serviceSupabase.from('user_tag_weights').upsert(rows, { onConflict: 'steam_id,tag' })
       }
     }
 
