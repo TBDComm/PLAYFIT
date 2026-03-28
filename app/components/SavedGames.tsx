@@ -53,15 +53,14 @@ export default function SavedGames() {
     void fetchSavedGames()
   }, [authState])
 
-  function handleUnsave(appid: string) {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (!session) return
-      setSavedGames(prev => prev.filter(g => g.appid !== appid))
-      fetch(`/api/saved-games/${appid}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      }).catch(() => { /* silent fail */ })
-    })
+  async function handleUnsave(appid: string) {
+    setSavedGames(prev => prev.filter(g => g.appid !== appid))
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) return
+    fetch(`/api/saved-games/${appid}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    }).catch(() => { /* silent fail */ })
   }
 
   function handleCardEnter(game: SavedGame, el: HTMLElement) {
@@ -211,6 +210,7 @@ export default function SavedGames() {
           <button
             className={styles.savedCardUnsaveBtn}
             onClick={() => { handleUnsave(hoveredPanel.game.appid); dismissPanel() }}
+            aria-label={`${hoveredPanel.game.name} 저장 취소`}
           >
             저장 취소
           </button>

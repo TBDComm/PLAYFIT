@@ -34,7 +34,20 @@
 
   /* State colors */
   --success: #4ade80;
-  --error:   #f87171;
+  --error:        #f87171;
+  --error-dim:    rgba(248, 113, 113, 0.06);
+  --error-border: rgba(248, 113, 113, 0.18);
+  --error-glow:   rgba(248, 113, 113, 0.35);
+
+  /* Accent tints */
+  --accent-low:  rgba(200, 241, 53, 0.25);
+
+  /* Image overlay tints */
+  --overlay-sm:       rgba(0, 0, 0, 0.28);
+  --overlay-md:       rgba(0, 0, 0, 0.55);
+  --overlay-lg:       rgba(0, 0, 0, 0.65);
+  --overlay-xl:       rgba(0, 0, 0, 0.78);
+  --overlay-gradient: rgba(0, 0, 0, 0.88);
 
   /* Third-party brand colors */
   --metacritic: #e8c31a;
