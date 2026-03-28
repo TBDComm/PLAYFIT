@@ -24,29 +24,22 @@ export async function GET(req: Request) {
 
   const { user, supabase } = auth
 
-  // Get steam_id linked to this account (may be null)
-  const profileResult = await supabase
-    .from('user_profiles')
-    .select('steam_id')
-    .eq('id', user.id)
-    .maybeSingle()
+  // Profile and user_id weights have no dependency on each other — fetch in parallel
+  const [profileResult, byUserId] = await Promise.all([
+    supabase.from('user_profiles').select('steam_id').eq('id', user.id).maybeSingle(),
+    supabase.from('user_tag_weights').select('tag, weight').eq('user_id', user.id),
+  ])
 
   const steamId = profileResult.data?.steam_id ?? null
 
-  // Fetch by user_id and (if linked) by steam_id in parallel
-  const [byUserId, bySteamId] = await Promise.all([
-    supabase
-      .from('user_tag_weights')
-      .select('tag, weight')
-      .eq('user_id', user.id),
-    steamId
-      ? supabase
-          .from('user_tag_weights')
-          .select('tag, weight')
-          .eq('steam_id', steamId)
-          .is('user_id', null)  // only rows not already claimed by a user_id
-      : Promise.resolve({ data: [] }),
-  ])
+  // steam_id query depends on steamId — run after profile resolves
+  const bySteamId = steamId
+    ? await supabase
+        .from('user_tag_weights')
+        .select('tag, weight')
+        .eq('steam_id', steamId)
+        .is('user_id', null)  // only rows not already claimed by a user_id
+    : { data: [] }
 
   // Merge: user_id rows win for the same tag
   const merged = new Map<string, number>()

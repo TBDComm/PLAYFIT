@@ -152,15 +152,22 @@ export default function Home() {
       }
     }
 
+    let loaded = false
+    function onceSteam(session: Parameters<typeof loadSteam>[0]) {
+      if (loaded) return
+      loaded = true
+      void loadSteam(session)
+    }
+
     // Fast path: use cached session if immediately available
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) loadSteam(session)
+      if (session) onceSteam(session)
     })
 
     // Reliable path: covers expired/refreshing tokens (fires after refresh completes)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'INITIAL_SESSION') loadSteam(session)
-      else if (event === 'SIGNED_OUT') { setAuthState('anon'); setUrl('') }
+      if (event === 'INITIAL_SESSION') onceSteam(session)
+      else if (event === 'SIGNED_OUT') { loaded = false; setAuthState('anon'); setUrl('') }
     })
 
     return () => subscription.unsubscribe()
