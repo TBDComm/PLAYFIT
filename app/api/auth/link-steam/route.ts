@@ -75,11 +75,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'STEAM_ALREADY_LINKED' }, { status: 409 })
   }
 
-  // 4. Link steam_id to current user
+  // 4. Link steam_id to current user (upsert — email/Google users have no row yet)
   const { error: updateProfileError } = await supabaseAdmin
     .from('user_profiles')
-    .update({ steam_id: steamId })
-    .eq('id', session.user.id)
+    .upsert({ id: session.user.id, steam_id: steamId }, { onConflict: 'id' })
 
   if (updateProfileError) {
     return NextResponse.json({ error: 'GENERAL_ERROR' }, { status: 500 })

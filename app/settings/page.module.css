@@ -1,0 +1,367 @@
+/* ── Settings page ── */
+
+.page {
+  min-height: 100vh;
+  padding: 80px 24px 80px;
+}
+
+.inner {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 40px;
+  letter-spacing: -0.02em;
+}
+
+/* ── Sections ── */
+
+.section {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.sectionTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 16px;
+}
+
+.sectionHeader .sectionTitle {
+  margin-bottom: 0;
+}
+
+.sectionDesc {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* ── Steam section ── */
+
+.steamLinked {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 10px 14px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.linkedBadge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--success);
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  border-radius: 4px;
+  padding: 2px 7px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.steamIdDisplay {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.steamIdDisplay code {
+  color: var(--text-primary);
+  font-family: monospace;
+  font-size: 0.8125rem;
+}
+
+.linkLabel {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.linkRow {
+  display: flex;
+  gap: 8px;
+}
+
+.urlInput {
+  flex: 1;
+  padding: 9px 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 150ms;
+  min-width: 0;
+}
+
+.urlInput:focus {
+  border-color: var(--accent);
+}
+
+.urlInput::placeholder {
+  color: var(--text-muted);
+}
+
+.linkBtn {
+  padding: 9px 16px;
+  background: var(--accent);
+  color: #09090b;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 150ms;
+  flex-shrink: 0;
+}
+
+.linkBtn:hover:not(:disabled),
+.linkBtn:focus-visible:not(:disabled) {
+  background: #d4f54a;
+}
+
+.linkBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.errorMsg {
+  font-size: 0.8125rem;
+  color: var(--error);
+  margin-top: 8px;
+}
+
+.successMsg {
+  font-size: 0.8125rem;
+  color: var(--success);
+  margin-top: 8px;
+}
+
+/* ── Tag weight list ── */
+
+.reloadBtn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 1rem;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 150ms, border-color 150ms;
+  flex-shrink: 0;
+}
+
+.reloadBtn:hover:not(:disabled),
+.reloadBtn:focus-visible:not(:disabled) {
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+
+.weightList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.weightRow {
+  display: grid;
+  grid-template-columns: 140px 1fr 52px;
+  align-items: center;
+  gap: 12px;
+}
+
+.tagChip {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.barTrack {
+  height: 6px;
+  background: var(--bg-elevated);
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+.barFill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 250ms ease;
+  min-width: 3px;
+}
+
+.weightValue {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--accent);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: monospace;
+  padding: 3px 6px;
+  cursor: pointer;
+  text-align: center;
+  width: 52px;
+  transition: border-color 150ms, background-color 150ms;
+}
+
+.weightValue:hover,
+.weightValue:focus-visible {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.weightInput {
+  background: var(--bg-elevated);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--accent);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: monospace;
+  padding: 3px 6px;
+  width: 52px;
+  text-align: center;
+  outline: none;
+}
+
+/* hide number spinner */
+.weightInput::-webkit-outer-spin-button,
+.weightInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.weightInput[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* ── Save row ── */
+
+.saveRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.savedNote {
+  font-size: 0.8125rem;
+  color: var(--success);
+}
+
+.saveBtn {
+  padding: 9px 18px;
+  background: var(--accent);
+  color: #09090b;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 150ms;
+}
+
+.saveBtn:hover:not(:disabled),
+.saveBtn:focus-visible:not(:disabled) {
+  background: #d4f54a;
+}
+
+.saveBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ── Skeleton / loading ── */
+
+.skeleton {
+  height: 200px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-lg);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonLine {
+  height: 36px;
+  width: 200px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius);
+  animation: pulse 1.5s ease-in-out infinite;
+  margin-bottom: 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  .skeletonLine {
+    animation: none;
+  }
+  .barFill {
+    transition: none;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1; }
+}
+
+/* ── Empty / unauth ── */
+
+.emptyMsg,
+.unauthMsg {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 24px 0;
+}
+
+/* ── Mobile ── */
+
+@media (max-width: 480px) {
+  .page {
+    padding: 72px 16px 60px;
+  }
+
+  .weightRow {
+    grid-template-columns: 110px 1fr 48px;
+    gap: 8px;
+  }
+
+  .weightValue,
+  .weightInput {
+    width: 48px;
+  }
+}

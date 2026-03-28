@@ -61,6 +61,24 @@
   background: rgba(190, 242, 100, 0.1);
 }
 
+.settingsLink {
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  text-decoration: none;
+  transition: color 150ms, border-color 150ms;
+}
+
+.settingsLink:hover,
+.settingsLink:focus-visible {
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+
 
 /* ── Overlay ── */
 
