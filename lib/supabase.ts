@@ -6,8 +6,8 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// Service role client — bypasses RLS for server-side reads (e.g. user_tag_weights)
-const serviceSupabase = createClient(
+// Service role client — bypasses RLS; use for all server-side writes/reads that need elevated access
+export const serviceSupabase = createClient(
   supabaseUrl,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )

@@ -18,13 +18,13 @@
   font-weight: 600;
   border: 1px solid transparent;
   background: var(--accent);
-  color: #09090b;
+  color: var(--bg);
   transition: background-color 150ms;
 }
 
 .loginBtn:hover,
 .loginBtn:focus-visible {
-  background: #d4f54a;
+  background: var(--accent-hover);
 }
 
 /* ── Hamburger menu (logged-in state) ── */
@@ -87,7 +87,7 @@
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 8px 32px var(--shadow-md);
   overflow: hidden;
   animation: dropdownIn 150ms ease-out;
   z-index: 60;
@@ -127,8 +127,8 @@
   font-size: 0.6875rem;
   font-weight: 700;
   color: var(--success);
-  background: rgba(74, 222, 128, 0.1);
-  border: 1px solid rgba(74, 222, 128, 0.25);
+  background: var(--success-dim);
+  border: 1px solid var(--success-border);
   border-radius: 4px;
   padding: 2px 7px;
   letter-spacing: 0.04em;
@@ -141,7 +141,7 @@
   font-weight: 600;
   color: var(--accent);
   background: var(--accent-dim);
-  border: 1px solid rgba(200, 241, 53, 0.3);
+  border: 1px solid var(--accent-mid);
   border-radius: 4px;
   padding: 3px 8px;
   cursor: pointer;
@@ -151,7 +151,7 @@
 
 .dropdownSteamLink:hover,
 .dropdownSteamLink:focus-visible {
-  background: rgba(200, 241, 53, 0.15);
+  background: var(--accent-soft);
 }
 
 /* ── Dropdown divider ── */
@@ -189,7 +189,7 @@
 
 .dropdownLogout:hover,
 .dropdownLogout:focus-visible {
-  background: rgba(248, 113, 113, 0.08);
+  background: var(--error-soft);
 }
 
 .dropdownLogout:disabled {
@@ -203,7 +203,7 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: var(--overlay-xl);
   backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
@@ -321,7 +321,7 @@
 .inlineLink {
   background: var(--bg-elevated);
   border: none;
-  color: #58a6ff;
+  color: var(--github-blue);
   font-size: 0.8125rem;
   cursor: pointer;
   padding: 0;
@@ -330,7 +330,7 @@
 
 .inlineLink:hover,
 .inlineLink:focus-visible {
-  color: #79b8ff;
+  color: var(--github-blue-hover);
   text-decoration: underline;
 }
 
@@ -375,15 +375,15 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: #1b2838;
+  background: var(--steam-bg);
   color: var(--text-primary);
-  border: 1px solid #2a475e;
+  border: 1px solid var(--steam-border);
   transition: background-color 150ms, border-color 150ms;
 }
 
 .steamBtn:hover,
 .steamBtn:focus-visible {
-  background: #213347;
+  background: var(--steam-hover);
 }
 
 /* ── Footer link box — outside card ── */
@@ -401,8 +401,8 @@
 
 .footerLink {
   background: var(--bg-elevated);
-  border: 1px solid #58a6ff;
-  color: #58a6ff;
+  border: 1px solid var(--github-blue);
+  color: var(--github-blue);
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
@@ -413,9 +413,9 @@
 
 .footerLink:hover,
 .footerLink:focus-visible {
-  color: #79b8ff;
-  background: rgba(88, 166, 255, 0.1);
-  border-color: #79b8ff;
+  color: var(--github-blue-hover);
+  background: var(--github-blue-dim);
+  border-color: var(--github-blue-hover);
 }
 
 /* ── Shared form elements ── */
@@ -434,8 +434,8 @@
 
 .modalInput:focus-visible {
   outline: none;
-  border-color: #58a6ff;
-  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+  border-color: var(--github-blue);
+  box-shadow: 0 0 0 3px var(--github-blue-glow);
 }
 
 .primaryBtn {
@@ -444,15 +444,15 @@
   border-radius: 6px;
   font-size: 0.9375rem;
   font-weight: 600;
-  background: #238636;
-  color: #fff;
-  border: 1px solid rgba(240, 246, 252, 0.1);
+  background: var(--github-green);
+  color: var(--text-primary);
+  border: 1px solid var(--github-green-border);
   transition: background-color 150ms;
 }
 
 .primaryBtn:hover:not(:disabled),
 .primaryBtn:focus-visible:not(:disabled) {
-  background: #2ea043;
+  background: var(--github-green-hover);
 }
 
 .primaryBtn:disabled {
@@ -491,7 +491,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 24px var(--shadow-sm);
   animation: toastSlideIn 0.25s ease-out;
 }
 

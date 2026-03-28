@@ -18,7 +18,7 @@
   position: relative;
   overflow: hidden;
   /* Background color fallback when library_hero.jpg unavailable */
-  background: #0a0a0a;
+  background: var(--bg);
 }
 
 /* Blurred background art */
@@ -67,7 +67,7 @@
   height: 270px;
   object-fit: cover;
   border-radius: var(--radius-lg);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 12px 40px var(--shadow-lg);
   display: block;
   /* Fallback bg when library_600x900.jpg unavailable */
   background: var(--bg-elevated);
@@ -83,7 +83,7 @@
 .heroTitle {
   font-size: 1.875rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 0 0 16px;
   letter-spacing: -0.03em;
   line-height: 1.2;
@@ -100,12 +100,12 @@
 .genreChip {
   display: inline-block;
   padding: 4px 12px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: var(--white-dim);
+  border: 1px solid var(--white-border);
   border-radius: 100px;
   font-size: 0.8125rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--white-soft);
   text-decoration: none;
   transition: border-color 150ms, color 150ms;
 }
@@ -127,11 +127,11 @@
 .heroTag {
   display: inline-block;
   padding: 4px 10px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--white-faint);
+  border: 1px solid var(--white-border-faint);
   border-radius: var(--radius);
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--white-muted);
 }
 
 /* Steam store link */

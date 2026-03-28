@@ -39,8 +39,18 @@
   --error-border: rgba(248, 113, 113, 0.18);
   --error-glow:   rgba(248, 113, 113, 0.35);
 
-  /* Accent tints */
-  --accent-low:  rgba(200, 241, 53, 0.25);
+  /* Accent hover + tints */
+  --accent-hover: #d4f54a;
+  --accent-soft:  rgba(200, 241, 53, 0.15);
+  --accent-low:   rgba(200, 241, 53, 0.25);
+  --accent-mid:   rgba(200, 241, 53, 0.30);
+
+  /* Success tints */
+  --success-dim:    rgba(74, 222, 128, 0.10);
+  --success-border: rgba(74, 222, 128, 0.25);
+
+  /* Error tints */
+  --error-soft:   rgba(248, 113, 113, 0.08);
 
   /* Image overlay tints */
   --overlay-sm:       rgba(0, 0, 0, 0.28);
@@ -49,7 +59,34 @@
   --overlay-xl:       rgba(0, 0, 0, 0.78);
   --overlay-gradient: rgba(0, 0, 0, 0.88);
 
-  /* Third-party brand colors */
+  /* Box-shadow tints */
+  --shadow-sm: rgba(0, 0, 0, 0.50);
+  --shadow-md: rgba(0, 0, 0, 0.60);
+  --shadow-lg: rgba(0, 0, 0, 0.70);
+
+  /* White overlays (for content over dark game art) */
+  --white-faint:        rgba(255, 255, 255, 0.07);
+  --white-dim:          rgba(255, 255, 255, 0.08);
+  --white-border-faint: rgba(255, 255, 255, 0.14);
+  --white-border:       rgba(255, 255, 255, 0.18);
+  --white-muted:        rgba(255, 255, 255, 0.55);
+  --white-soft:         rgba(255, 255, 255, 0.75);
+
+  /* Third-party brand — GitHub */
+  --github-blue:         #58a6ff;
+  --github-blue-hover:   #79b8ff;
+  --github-blue-dim:     rgba(88, 166, 255, 0.10);
+  --github-blue-glow:    rgba(88, 166, 255, 0.15);
+  --github-green:        #238636;
+  --github-green-hover:  #2ea043;
+  --github-green-border: rgba(240, 246, 252, 0.10);
+
+  /* Third-party brand — Steam */
+  --steam-bg:     #1b2838;
+  --steam-border: #2a475e;
+  --steam-hover:  #213347;
+
+  /* Third-party brand — Metacritic */
   --metacritic: #e8c31a;
 
   /* Typography */

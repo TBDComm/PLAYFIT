@@ -1,22 +1,15 @@
 export const runtime = 'edge'
 
-import { createClient } from '@supabase/supabase-js'
 import { createServerClient } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
+import { serviceSupabase } from '@/lib/supabase'
 import type { FeedbackRating } from '@/types'
-
-function getServiceSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
-}
 
 async function getUserId(request: NextRequest): Promise<string | null> {
   // Prefer explicit Bearer token (sent by result page when logged in)
   const token = request.headers.get('Authorization')?.replace('Bearer ', '')
   if (token) {
-    const service = getServiceSupabase()
+    const service = serviceSupabase
     const { data: { user } } = await service.auth.getUser(token)
     return user?.id ?? null
   }
@@ -73,7 +66,7 @@ export async function POST(request: NextRequest) {
     // Weights update requires a rating, at least one identifier, and tags to act on
     const weightFetchNeeded = !!rating && (userId !== null || !!steam_id) && tag_snapshot.length > 0
 
-    const serviceSupabase = getServiceSupabase()
+
 
     // Insert feedback and fetch current weights in parallel
     const [insertResult, existingWeights] = await Promise.all([

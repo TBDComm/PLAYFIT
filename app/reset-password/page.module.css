@@ -66,8 +66,8 @@
 
 .input:focus-visible {
   outline: none;
-  border-color: #58a6ff;
-  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+  border-color: var(--github-blue);
+  box-shadow: 0 0 0 3px var(--github-blue-glow);
 }
 
 .primaryBtn {
@@ -76,15 +76,15 @@
   border-radius: 6px;
   font-size: 0.9375rem;
   font-weight: 600;
-  background: #238636;
-  color: #fff;
-  border: 1px solid rgba(240, 246, 252, 0.1);
+  background: var(--github-green);
+  color: var(--text-primary);
+  border: 1px solid var(--github-green-border);
   transition: background-color 150ms;
 }
 
 .primaryBtn:hover:not(:disabled),
 .primaryBtn:focus-visible:not(:disabled) {
-  background: #2ea043;
+  background: var(--github-green-hover);
 }
 
 .primaryBtn:disabled {
@@ -114,7 +114,7 @@
 }
 
 .footerLink {
-  color: #58a6ff;
+  color: var(--github-blue);
   font-size: 0.875rem;
   text-decoration: none;
   transition: color 150ms;
@@ -122,7 +122,7 @@
 
 .footerLink:hover,
 .footerLink:focus-visible {
-  color: #79b8ff;
+  color: var(--github-blue-hover);
   text-decoration: underline;
 }
 

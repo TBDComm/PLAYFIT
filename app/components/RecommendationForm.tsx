@@ -163,6 +163,27 @@ export default function RecommendationForm() {
     setRowErrors(Array(5).fill(null))
   }
 
+  async function callApi(payload: object, analyticsMode: string): Promise<void> {
+    const budgetValue = !freeOnly && budget.trim() ? Number(budget) : undefined
+    const res = await fetch('/api/generate-recommendation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...payload, budget: budgetValue, freeOnly }),
+    })
+    const data = await res.json() as { id?: string; error?: ErrorCode; filters?: { budget?: number; freeOnly?: boolean } }
+    if (!res.ok || data.error) {
+      if (data.error === 'NO_GAMES_IN_BUDGET') {
+        if (data.filters?.freeOnly) setError('현재 무료 게임 중 추천 가능한 게임이 없어요')
+        else setError('예산 내 추천 가능한 게임이 없어요. 예산을 높여보세요')
+      } else {
+        setError(ERROR_MESSAGES[data.error ?? 'GENERAL_ERROR'])
+      }
+      return
+    }
+    trackEvent('recommendation_generated', { mode: analyticsMode })
+    router.push(`/result/${data.id}`)
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     if (authState === 'loading') return
@@ -171,13 +192,8 @@ export default function RecommendationForm() {
     setLoading(true)
 
     try {
-      const budgetValue = !freeOnly && budget.trim() ? Number(budget) : undefined
-      let requestBody: object
-      let analyticsMode: string
-
       if (mode === 'steam') {
-        requestBody = { url: url.trim(), budget: budgetValue, freeOnly }
-        analyticsMode = 'steam'
+        await callApi({ url: url.trim() }, 'steam')
       } else {
         const newRowErrors: Array<string | null> = Array(5).fill(null)
         let hasRowError = false
@@ -199,31 +215,10 @@ export default function RecommendationForm() {
           setLoading(false)
           return
         }
-        requestBody = { manualGames: filledGames.map(g => ({ appid: g.appid, name: g.name.trim(), playtime_hours: parseFloat(g.playtime) || 0 })), budget: budgetValue, freeOnly }
-        analyticsMode = 'manual'
+        await callApi({
+          manualGames: filledGames.map(g => ({ appid: g.appid, name: g.name.trim(), playtime_hours: parseFloat(g.playtime) || 0 })),
+        }, 'manual')
       }
-
-      const res = await fetch('/api/generate-recommendation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
-      })
-
-      const data = await res.json() as { id?: string; error?: ErrorCode; filters?: { budget?: number; freeOnly?: boolean } }
-
-      if (!res.ok || data.error) {
-        if (data.error === 'NO_GAMES_IN_BUDGET') {
-            if (data.filters?.freeOnly) setError('현재 무료 게임 중 추천 가능한 게임이 없어요')
-            else setError('예산 내 추천 가능한 게임이 없어요. 예산을 높여보세요')
-        } else {
-            setError(ERROR_MESSAGES[data.error ?? 'GENERAL_ERROR'])
-        }
-        return
-      }
-
-      trackEvent('recommendation_generated', { mode: analyticsMode })
-      router.push(`/result/${data.id}`)
-
     } catch {
       setError(ERROR_MESSAGES.GENERAL_ERROR)
     } finally {
@@ -247,24 +242,9 @@ export default function RecommendationForm() {
     loadingMsgRef.current = '취향 분석 중…'
     setLoading(true)
     try {
-      const budgetValue = !freeOnly && budget.trim() ? Number(budget) : undefined
-      const res = await fetch('/api/generate-recommendation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ manualGames: games.map(g => ({ appid: g.appid, name: g.name, playtime_hours: g.playtime_hours })), budget: budgetValue, freeOnly }),
-      })
-      const data = await res.json() as { id?: string; error?: ErrorCode; filters?: { budget?: number; freeOnly?: boolean } }
-      if (!res.ok || data.error) {
-        if (data.error === 'NO_GAMES_IN_BUDGET') {
-          if (data.filters?.freeOnly) setError('현재 무료 게임 중 추천 가능한 게임이 없어요')
-          else setError('예산 내 추천 가능한 게임이 없어요. 예산을 높여보세요')
-        } else {
-          setError(ERROR_MESSAGES[data.error ?? 'GENERAL_ERROR'])
-        }
-        return
-      }
-      trackEvent('recommendation_generated', { mode: 'library_pick' })
-      router.push(`/result/${data.id}`)
+      await callApi({
+        manualGames: games.map(g => ({ appid: g.appid, name: g.name, playtime_hours: g.playtime_hours })),
+      }, 'library_pick')
     } catch {
       setError(ERROR_MESSAGES.GENERAL_ERROR)
     } finally {
