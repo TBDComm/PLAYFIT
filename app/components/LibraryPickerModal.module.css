@@ -66,6 +66,11 @@
   border-color: var(--text-muted);
 }
 
+.closeBtn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* ── Search ── */
 .searchWrap {
   padding: 0.75rem 1.25rem;
@@ -86,7 +91,7 @@
   transition: border-color 0.15s;
 }
 
-.searchInput:focus {
+.searchInput:focus-visible {
   border-color: var(--accent);
 }
 
@@ -101,6 +106,7 @@
   padding: 0.5rem 0;
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
+  overscroll-behavior: contain;
 }
 
 .statusMsg {
@@ -124,10 +130,18 @@
   cursor: pointer;
   text-align: left;
   transition: background 0.1s;
+  touch-action: manipulation;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 50px;
 }
 
 .gameRow:hover:not(:disabled) {
   background: var(--bg-hover);
+}
+
+.gameRow:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
 }
 
 .gameRowSelected {
@@ -168,6 +182,7 @@
 
 .gameName {
   flex: 1;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -213,4 +228,9 @@
 
 .confirmBtn:not(:disabled):hover {
   opacity: 0.88;
+}
+
+.confirmBtn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }

@@ -92,6 +92,7 @@ _Pre-2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log_
 | 2026-03-28 | fix(library-picker): loading message wrong (was "플레이 기록" for library picks); body scroll not locked; "0개" button text; max-5 count label | `app/page.tsx`, `app/components/LibraryPickerModal.tsx`, `app/components/LibraryPickerModal.module.css` |
 | 2026-03-28 | feat(library-picker): add Steam capsule thumbnails to game rows; checkbox moved to right; selected row gets accent outline on thumb | `app/components/LibraryPickerModal.tsx`, `app/components/LibraryPickerModal.module.css` |
 | 2026-03-28 | fix(library-picker): add loading="lazy" to thumbnails — prevents 2000+ simultaneous CDN requests on large libraries | `app/components/LibraryPickerModal.tsx` |
+| 2026-03-28 | fix(library-picker): 7 guideline violations — img CLS, min-w-0 truncation, overscroll-behavior, focus-visible on all buttons, :focus→:focus-visible, touch-action, content-visibility | `app/components/LibraryPickerModal.tsx`, `app/components/LibraryPickerModal.module.css` |
 
 ---
 

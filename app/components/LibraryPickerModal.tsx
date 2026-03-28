@@ -129,6 +129,8 @@ export default function LibraryPickerModal({ steamId, externalLoading, onClose, 
                   alt=""
                   aria-hidden="true"
                   loading="lazy"
+                  width={80}
+                  height={30}
                   className={styles.thumb}
                   onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
                 />
