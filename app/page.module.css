@@ -858,6 +858,13 @@
 
 /* ── Saved games section ── */
 
+.savedSection {
+  width: 100%;
+  padding: 4rem 1.5rem;
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--border);
+}
+
 .savedStatusMsg {
   font-size: 0.875rem;
   color: var(--text-muted);
@@ -1148,6 +1155,10 @@
     grid-template-columns: repeat(4, 1fr);
   }
 
+  .savedSection {
+    padding: 3rem 1rem;
+  }
+
   .sampleCard {
     flex-direction: column;
   }
@@ -1169,6 +1180,7 @@
 
 .savedGamesSkeleton {
   width: 100%;
-  max-width: var(--max-w);
-  height: 180px;
+  height: 300px;
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--border);
 }

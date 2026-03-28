@@ -109,7 +109,8 @@ export default function SavedGames() {
   }
 
   return (
-    <div className={styles.inner} style={{ marginTop: '3rem' }}>
+    <section className={styles.savedSection}>
+      <div className={styles.inner}>
       <p className={styles.previewLabel}>내 저장 목록</p>
       <p className={styles.previewTitle}>내가 저장한 게임</p>
 
@@ -216,6 +217,7 @@ export default function SavedGames() {
         </div>,
         document.body
       )}
-    </div>
+      </div>
+    </section>
   )
 }
