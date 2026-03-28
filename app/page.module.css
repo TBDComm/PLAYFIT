@@ -542,6 +542,17 @@
   border-radius: 2px;
 }
 
+@media (max-width: 768px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .heroInner {
+    padding: 0 1.5rem;
+  }
+}
+
 @media (max-width: 639px) {
   .pageNav {
     top: 12px;
@@ -1133,15 +1144,6 @@
 
   .formSection {
     padding: 2rem 1rem;
-  }
-
-  .heroGrid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-
-  .heroInner {
-    padding: 0 1rem;
   }
 
   .previewSection {
