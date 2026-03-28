@@ -1,8 +1,6 @@
 export const runtime = 'edge'
 
-import dynamic from 'next/dynamic'
-
-const SettingsClient = dynamic(() => import('./SettingsClient'), { ssr: false })
+import SettingsClient from './SettingsClient'
 
 export default function SettingsPage() {
   return <SettingsClient />
