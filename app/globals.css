@@ -36,6 +36,9 @@
   --success: #4ade80;
   --error:   #f87171;
 
+  /* Third-party brand colors */
+  --metacritic: #e8c31a;
+
   /* Typography */
   --font-sans: var(--font-space-grotesk), 'Space Grotesk', system-ui, sans-serif;
 
