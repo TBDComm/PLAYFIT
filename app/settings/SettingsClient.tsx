@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
+import PageLoading from '@/app/components/PageLoading'
 import styles from './page.module.css'
 
 type TagWeight = { tag: string; weight: number }
@@ -261,13 +262,7 @@ export default function SettingsClient() {
   }
 
   if (!authReady) {
-    return (
-      <main className={styles.page}>
-        <div className={styles.inner}>
-          <div className={styles.skeleton} />
-        </div>
-      </main>
-    )
+    return <PageLoading />
   }
 
   if (!userId) {

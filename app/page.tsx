@@ -10,6 +10,7 @@ import type { RecommendationCard, ErrorCode, SavedGame } from '@/types'
 import { trackEvent } from '@/lib/analytics'
 import JsonLd from './components/JsonLd'
 import LoadingOverlay from './components/LoadingOverlay'
+import PageLoading from './components/PageLoading'
 import TagScatter from './components/TagScatter'
 import styles from './page.module.css'
 
@@ -503,6 +504,8 @@ export default function Home() {
     }
   }
 
+  if (authState === 'loading') return <PageLoading />
+
   const canSubmit = mode === 'steam'
     ? !!url.trim()
     : manualGames.some(g => g.name.trim() && g.appid !== null && g.playtime.trim())
@@ -783,15 +786,6 @@ export default function Home() {
         <div className={styles.inner} style={{ marginTop: '3rem' }}>
           <p className={styles.previewLabel}>내 저장 목록</p>
           <p className={styles.previewTitle}>내가 저장한 게임</p>
-
-          {authState === 'loading' && (
-            <div className={styles.savedStrip}>
-              <div className={styles.savedPlaceholder} />
-              <div className={styles.savedPlaceholder} />
-              <div className={styles.savedPlaceholder} />
-              <div className={styles.savedPlaceholder} />
-            </div>
-          )}
 
           {authState === 'anon' && (
             <>

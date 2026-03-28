@@ -8,6 +8,7 @@ import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import type { RecommendationCard } from '@/types'
 import { trackEvent } from '@/lib/analytics'
 import AdUnit from '@/app/components/AdUnit'
+import PageLoading from '@/app/components/PageLoading'
 import styles from './page.module.css'
 
 const supabase = createBrowserClient(
@@ -126,7 +127,7 @@ export default function ResultPage() {
     }
   }
 
-  if (!recommendations) return null
+  if (!recommendations) return <PageLoading />
 
   return (
     <main className={styles.page}>
