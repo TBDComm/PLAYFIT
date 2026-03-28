@@ -29,6 +29,14 @@
 }
 
 
+/* Auth loading overlay — covers page until auth resolves; keeps DOM mounted so animations/refs work */
+.authLoadingOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--bg);
+}
+
 /* Vignette: fades grid toward edges */
 .page::before {
   content: '';

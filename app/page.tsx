@@ -504,14 +504,15 @@ export default function Home() {
     }
   }
 
-  if (authState === 'loading') return <PageLoading />
-
   const canSubmit = mode === 'steam'
     ? !!url.trim()
     : manualGames.some(g => g.name.trim() && g.appid !== null && g.playtime.trim())
 
   return (
     <main className={styles.page}>
+      {authState === 'loading' && (
+        <div className={styles.authLoadingOverlay}><PageLoading /></div>
+      )}
       {loading && (
         <LoadingOverlay
           message={mode === 'manual' ? '취향 분석 중…' : '플레이 기록 분석 중…'}
