@@ -57,7 +57,12 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Sample Card (Static) — shown before form so users see what a recommendation looks like */}
+      {/* Recommendation Form (Client Component) */}
+      <Suspense fallback={<div className={styles.formSkeleton} />}>
+        <RecommendationForm />
+      </Suspense>
+
+      {/* Sample Card (Static) */}
       <section className={styles.sampleSection}>
         <div className={styles.inner}>
           <p className={styles.previewLabel}>추천 예시</p>
@@ -81,11 +86,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-
-      {/* Recommendation Form (Client Component) */}
-      <Suspense fallback={<div className={styles.formSkeleton} />}>
-        <RecommendationForm />
-      </Suspense>
 
       {/* Preview Section (Static Component) */}
       <Preview />
