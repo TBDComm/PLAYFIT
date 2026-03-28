@@ -1,40 +1,30 @@
 export const runtime = 'edge'
 
-import { createClient } from '@supabase/supabase-js'
-
-function getSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
-}
+import { serviceSupabase } from '@/lib/supabase'
 
 async function getUser(req: Request) {
   const token = req.headers.get('Authorization')?.replace('Bearer ', '')
   if (!token) return null
-  const supabase = getSupabase()
-  const { data: { user }, error } = await supabase.auth.getUser(token)
+  const { data: { user }, error } = await serviceSupabase.auth.getUser(token)
   if (error || !user) return null
-  return { user, supabase }
+  return user
 }
 
 export async function GET(req: Request) {
-  const auth = await getUser(req)
-  if (!auth) return Response.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const { user, supabase } = auth
+  const user = await getUser(req)
+  if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
   // Profile and user_id weights have no dependency on each other — fetch in parallel
   const [profileResult, byUserId] = await Promise.all([
-    supabase.from('user_profiles').select('steam_id').eq('id', user.id).maybeSingle(),
-    supabase.from('user_tag_weights').select('tag, weight').eq('user_id', user.id),
+    serviceSupabase.from('user_profiles').select('steam_id').eq('id', user.id).maybeSingle(),
+    serviceSupabase.from('user_tag_weights').select('tag, weight').eq('user_id', user.id),
   ])
 
   const steamId = profileResult.data?.steam_id ?? null
 
   // steam_id query depends on steamId — run after profile resolves
   const bySteamId = steamId
-    ? await supabase
+    ? await serviceSupabase
         .from('user_tag_weights')
         .select('tag, weight')
         .eq('steam_id', steamId)
@@ -58,11 +48,11 @@ export async function GET(req: Request) {
 }
 
 export async function PUT(req: Request) {
-  const [auth, body] = await Promise.all([
+  const [user, body] = await Promise.all([
     getUser(req),
     req.json() as Promise<{ weights?: unknown }>,
   ])
-  if (!auth) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
   if (!Array.isArray(body.weights)) {
     return Response.json({ error: 'Invalid body' }, { status: 400 })
@@ -78,7 +68,7 @@ export async function PUT(req: Request) {
         r.weight <= 3.0
     )
     .map((r) => ({
-      user_id: auth.user.id,
+      user_id: user.id,
       tag: r.tag as string,
       weight: Math.round((r.weight as number) * 100) / 100,
       updated_at: new Date().toISOString(),
@@ -88,7 +78,7 @@ export async function PUT(req: Request) {
     return Response.json({ ok: true })
   }
 
-  const { error } = await auth.supabase
+  const { error } = await serviceSupabase
     .from('user_tag_weights')
     .upsert(rows, { onConflict: 'user_id,tag' })
 

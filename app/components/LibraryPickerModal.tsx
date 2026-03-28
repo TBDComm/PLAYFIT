@@ -75,11 +75,14 @@ export default function LibraryPickerModal({ steamId, externalLoading, onClose, 
     <div
       className={styles.backdrop}
       onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label="라이브러리에서 게임 선택"
     >
-      <div className={styles.modal} onClick={e => e.stopPropagation()}>
+      <div
+        className={styles.modal}
+        onClick={e => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="라이브러리에서 게임 선택"
+      >
         <div className={styles.header}>
           <span className={styles.title}>라이브러리에서 선택</span>
           <span className={`${styles.count}${selected.size >= 5 ? ` ${styles.countFull}` : ''}`}>
@@ -92,6 +95,8 @@ export default function LibraryPickerModal({ steamId, externalLoading, onClose, 
           <input
             ref={searchRef}
             type="text"
+            name="game-search"
+            aria-label="게임 검색"
             className={styles.searchInput}
             placeholder="게임 검색…"
             value={search}

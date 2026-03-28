@@ -76,7 +76,7 @@ function WeightRow({
         <button
           className={styles.weightValue}
           onClick={() => { setDraft(String(item.weight)); setEditing(true) }}
-          title="클릭하여 수정"
+          aria-label={`${item.tag} 가중치 수정 (현재 ${item.weight.toFixed(1)})`}
         >
           {item.weight.toFixed(1)}
         </button>
