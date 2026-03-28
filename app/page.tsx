@@ -118,8 +118,10 @@ export default function Home() {
   const [dropdowns, setDropdowns] = useState<Array<SearchResult[] | null>>(Array(5).fill(null))
   const [rowErrors, setRowErrors] = useState<Array<string | null>>(Array(5).fill(null))
   const [formRevealed, setFormRevealed] = useState(false)
+  const [sampleRevealed, setSampleRevealed] = useState(false)
   const [previewRevealed, setPreviewRevealed] = useState(false)
   const formRevealRef = useRef<HTMLElement>(null)
+  const sampleRevealRef = useRef<HTMLElement>(null)
   const previewRevealRef = useRef<HTMLElement>(null)
   const nameInputRefs = useRef<Array<HTMLInputElement | null>>(Array(5).fill(null))
   const debounceRefs = useRef<Array<ReturnType<typeof setTimeout> | null>>(Array(5).fill(null))
@@ -218,6 +220,9 @@ export default function Home() {
           if (entry.target === formRevealRef.current) {
             setFormRevealed(true)
             obs.unobserve(entry.target)
+          } else if (entry.target === sampleRevealRef.current) {
+            setSampleRevealed(true)
+            obs.unobserve(entry.target)
           } else if (entry.target === previewRevealRef.current) {
             setPreviewRevealed(true)
             obs.unobserve(entry.target)
@@ -227,6 +232,7 @@ export default function Home() {
       { threshold: 0.08, rootMargin: '0px 0px -32px 0px' }
     )
     if (formRevealRef.current) obs.observe(formRevealRef.current)
+    if (sampleRevealRef.current) obs.observe(sampleRevealRef.current)
     if (previewRevealRef.current) obs.observe(previewRevealRef.current)
     return () => obs.disconnect()
   }, [])
@@ -497,40 +503,42 @@ export default function Home() {
       <section className={styles.hero}>
         <div className={styles.tagScatterWrap}><TagScatter /></div>
         <div className={styles.heroInner}>
-          <div className={styles.heroGrid}>
-            <header className={styles.header}>
-              <h1 className={styles.logo}>
-                <span className={styles.logoAccent}>GUILD</span>ELINE
-                <span className={styles.srOnly}> — 스팀 취향 게임 추천</span>
-              </h1>
-              <h2 className={styles.headline}>내 플레이 기록이 곧 취향이다</h2>
-              <p className={styles.heroStat}><span ref={statRef}>{new Intl.NumberFormat('ko-KR').format(82816)}</span>개 Steam 게임 중에서 골라드립니다</p>
-              <a href="#recommend-form" className={styles.heroCta}>지금 시작하기 <span className={styles.ctaArrow} aria-hidden="true">↓</span></a>
-            </header>
-            <div className={styles.heroSample}>
-              <p className={styles.previewLabel}>추천 예시</p>
-              <div className={styles.sampleCard}>
-                <Image
-                  unoptimized
-                  src="https://cdn.akamai.steamstatic.com/steam/apps/1145360/header.jpg"
-                  alt="Hades 게임 썸네일"
-                  width={460}
-                  height={215}
-                  className={styles.sampleThumb}
-                />
-                <div className={styles.sampleBody}>
-                  <span className={styles.sampleBadge}>예시</span>
-                  <p className={styles.sampleName}>Hades</p>
-                  <p className={styles.sampleReason}>
-                    <span className={styles.sampleReasonLabel}>왜 나한테 맞냐면</span>
-                    <br />
-                    로그라이크와 액션을 즐기는 취향에 딱 맞아요. 매 플레이마다 새로운 전략이 펼쳐지고, 깊이 있는 스토리까지 즐길 수 있어요.
-                  </p>
-                  <div className={styles.sampleMeta}>
-                    <span className={styles.samplePrice}>₩22,500</span>
-                    <span className={styles.sampleScore}>메타크리틱&nbsp;93점</span>
-                  </div>
-                </div>
+          <header className={styles.header}>
+            <h1 className={styles.logo}>
+              <span className={styles.logoAccent}>GUILD</span>ELINE
+              <span className={styles.srOnly}> — 스팀 취향 게임 추천</span>
+            </h1>
+            <h2 className={styles.headline}>내 플레이 기록이 곧 취향이다</h2>
+            <p className={styles.heroStat}><span ref={statRef}>{new Intl.NumberFormat('ko-KR').format(82816)}</span>개 Steam 게임 중에서 골라드립니다</p>
+            <a href="#recommend-form" className={styles.heroCta}>지금 시작하기 <span className={styles.ctaArrow} aria-hidden="true">↓</span></a>
+          </header>
+        </div>
+      </section>
+
+      {/* ── Sample card ── */}
+      <section ref={sampleRevealRef} className={`${styles.sampleSection}${sampleRevealed ? ` ${styles.sampleSectionRevealed}` : ''}`}>
+        <div className={styles.inner}>
+          <p className={styles.previewLabel}>추천 예시</p>
+          <div className={styles.sampleCard}>
+            <Image
+              unoptimized
+              src="https://cdn.akamai.steamstatic.com/steam/apps/1145360/header.jpg"
+              alt="Hades 게임 썸네일"
+              width={460}
+              height={215}
+              className={styles.sampleThumb}
+            />
+            <div className={styles.sampleBody}>
+              <span className={styles.sampleBadge}>예시</span>
+              <p className={styles.sampleName}>Hades</p>
+              <p className={styles.sampleReason}>
+                <span className={styles.sampleReasonLabel}>왜 나한테 맞냐면</span>
+                <br />
+                로그라이크와 액션을 즐기는 취향에 딱 맞아요. 매 플레이마다 새로운 전략이 펼쳐지고, 깊이 있는 스토리까지 즐길 수 있어요.
+              </p>
+              <div className={styles.sampleMeta}>
+                <span className={styles.samplePrice}>₩22,500</span>
+                <span className={styles.sampleScore}>메타크리틱&nbsp;93점</span>
               </div>
             </div>
           </div>

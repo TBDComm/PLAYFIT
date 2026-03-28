@@ -50,7 +50,6 @@
 
 .header {
   margin-bottom: 0;
-  min-width: 0;
 }
 
 .logo {
@@ -347,7 +346,6 @@
   .headline   { animation: heroFadeUp 0.7s ease both 80ms }
   .heroStat   { animation: heroFadeUp 0.7s ease both 140ms }
   .heroCta    { animation: heroFadeUp 0.7s ease both 200ms }
-  .heroSample { animation: heroFadeUp 0.7s ease both 250ms }
 
   .ctaArrow { display: inline-block; animation: arrowBounce 1.4s ease-in-out 0.9s infinite }
 
@@ -544,11 +542,6 @@
 }
 
 @media (max-width: 768px) {
-  .heroGrid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-
   .heroInner {
     padding: 0 1.5rem;
   }
@@ -590,23 +583,6 @@
   z-index: 1;
 }
 
-.heroGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: start;
-}
-
-.heroSample {
-  min-width: 0;
-}
-
-/* Only apply in 2-column range — single-column mobile should use full logo size */
-@media (min-width: 769px) {
-  .heroGrid .logo {
-    font-size: clamp(2.5rem, 5vw, 4rem);
-  }
-}
 
 .hero {
   position: relative;
@@ -665,7 +641,22 @@
   scroll-margin-top: 5rem;
 }
 
-/* ===== Sample result card (inside hero) ===== */
+/* ===== Sample section ===== */
+
+.sampleSection {
+  width: 100%;
+  padding: 2.5rem 1.5rem;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+.sampleSectionRevealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* ===== Sample result card ===== */
 
 .sampleCard {
   display: flex;
