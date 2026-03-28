@@ -50,6 +50,7 @@
 
 .header {
   margin-bottom: 0;
+  min-width: 0;
 }
 
 .logo {
@@ -598,6 +599,10 @@
 
 .heroSample {
   min-width: 0;
+}
+
+.heroGrid .logo {
+  font-size: clamp(2.5rem, 5vw, 4rem);
 }
 
 .hero {
