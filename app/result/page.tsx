@@ -71,9 +71,11 @@ export default function ResultPage() {
       catch { return [] }
     })()
 
+    const feedbackHeaders: Record<string, string> = { 'Content-Type': 'application/json' }
+    if (accessToken) feedbackHeaders['Authorization'] = `Bearer ${accessToken}`
     fetch('/api/feedback', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: feedbackHeaders,
       body: JSON.stringify({
         game_id: String(card.appid),
         game_name: card.name,

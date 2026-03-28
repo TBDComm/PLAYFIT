@@ -13,39 +13,48 @@ function getServiceSupabase() {
   )
 }
 
+async function getUserId(request: NextRequest): Promise<string | null> {
+  // Prefer explicit Bearer token (sent by result page when logged in)
+  const token = request.headers.get('Authorization')?.replace('Bearer ', '')
+  if (token) {
+    const service = getServiceSupabase()
+    const { data: { user } } = await service.auth.getUser(token)
+    return user?.id ?? null
+  }
+
+  // Fallback: cookie-based session (anon / Steam-only users)
+  const response = NextResponse.json({})
+  const supabaseAuth = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll: () => request.cookies.getAll(),
+        setAll: (cookies) => {
+          cookies.forEach(({ name, value, options }) => {
+            response.cookies.set(name, value, options)
+          })
+        },
+      },
+    }
+  )
+  const { data: { session } } = await supabaseAuth.auth.getSession()
+  return session?.user?.id ?? null
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const response = NextResponse.json({})
-
-    const supabaseAuth = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll: () => request.cookies.getAll(),
-          setAll: (cookies) => {
-            cookies.forEach(({ name, value, options }) => {
-              response.cookies.set(name, value, options)
-            })
-          },
-        },
-      }
-    )
-
-    // Start session and body parse in parallel
-    const sessionPromise = supabaseAuth.auth.getSession()
-    const bodyPromise = request.json() as Promise<{
-      game_id?: unknown
-      game_name?: unknown
-      steam_id?: unknown
-      play_profile?: unknown
-      rating?: unknown
-      tag_snapshot?: unknown
-    }>
-
-    const [{ data: { session } }, body] = await Promise.all([sessionPromise, bodyPromise])
-
-    const userId = session?.user?.id ?? null
+    const [userId, body] = await Promise.all([
+      getUserId(request),
+      request.json() as Promise<{
+        game_id?: unknown
+        game_name?: unknown
+        steam_id?: unknown
+        play_profile?: unknown
+        rating?: unknown
+        tag_snapshot?: unknown
+      }>,
+    ])
 
     const game_id = typeof body.game_id === 'string' ? body.game_id : ''
     const game_name = typeof body.game_name === 'string' ? body.game_name : ''
