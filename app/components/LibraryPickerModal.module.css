@@ -113,9 +113,9 @@
 .gameRow {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.65rem;
   width: 100%;
-  padding: 0.5rem 1.25rem;
+  padding: 0.4rem 1rem;
   background: transparent;
   border: none;
   color: var(--text-primary);
@@ -144,10 +144,26 @@
   cursor: not-allowed;
 }
 
+.thumb {
+  width: 80px;
+  height: 30px;
+  object-fit: cover;
+  border-radius: 3px;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.gameRowSelected .thumb {
+  opacity: 1;
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
 .checkbox {
   font-size: 0.9rem;
   flex-shrink: 0;
   width: 1rem;
+  margin-left: auto;
 }
 
 .gameName {

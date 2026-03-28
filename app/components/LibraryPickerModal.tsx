@@ -124,13 +124,20 @@ export default function LibraryPickerModal({ steamId, externalLoading, onClose, 
                 onClick={() => toggleGame(game.appid)}
                 disabled={isDisabled}
               >
-                <span className={styles.checkbox} aria-hidden="true">
-                  {isSelected ? '☑' : '☐'}
-                </span>
+                <img
+                  src={`https://cdn.akamai.steamstatic.com/steam/apps/${game.appid}/capsule_sm_120.jpg`}
+                  alt=""
+                  aria-hidden="true"
+                  className={styles.thumb}
+                  onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+                />
                 <span className={styles.gameName}>{game.name}</span>
                 {game.playtime_hours > 0 && (
                   <span className={styles.playtime}>{game.playtime_hours}h</span>
                 )}
+                <span className={styles.checkbox} aria-hidden="true">
+                  {isSelected ? '☑' : '☐'}
+                </span>
               </button>
             )
           })}
