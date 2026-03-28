@@ -32,7 +32,7 @@ export default function LoadingOverlay({ message }: Props) {
           <span className={styles.accent}>GUILD</span>ELINE
         </p>
 
-        {/* Radar sweep */}
+        {/* Radar */}
         <div className={styles.radar} aria-hidden="true">
           <svg className={styles.radarSvg} viewBox="0 0 72 72" fill="none">
             <circle cx="36" cy="36" r="33" className={styles.radarRing} />
@@ -41,8 +41,6 @@ export default function LoadingOverlay({ message }: Props) {
             <line x1="36" y1="3" x2="36" y2="69" className={styles.radarCross} />
             <circle cx="36" cy="36" r="2" className={styles.radarDot} />
           </svg>
-          <div className={styles.radarTrail} />
-          <div className={styles.radarLine} />
         </div>
 
         {/* Terminal log */}
