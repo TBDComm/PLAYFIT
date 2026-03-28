@@ -92,6 +92,7 @@ _2026-03-21 to 2026-03-27 entries → HANDOVER-archive.md §Minor Changes Log_
 - 2026-03-28 bug fix: feedback/route.ts used anon key client for user_tag_weights upsert — RLS silently blocked writes; switched to service role client
 - 2026-03-28 bug fix: settings page infinite load — restructured to server page.tsx (runtime=edge, dynamic ssr:false) + SettingsClient.tsx; `export const runtime` is ignored in 'use client' files
 - 2026-03-28 bug fix: tag weights not saved — feedback fetch had no Authorization header; userId was null server-side (cookie auth unreliable on CF Pages). feedback route now uses Bearer token first, cookie fallback for anon
+- 2026-03-28 bug fix: tag-weights GET now merges user_id + steam_id rows (historical data written by steam_id was invisible); fixed empty state message (feedback not recommendations creates weights)
 - 2026-03-28 /settings page: Steam re-link + tag weight bar graph editor (GET/PUT /api/tag-weights)
 - 2026-03-28 Header: added "내 설정" link → /settings; removed "Steam 연동됨" text (status visible in settings)
 

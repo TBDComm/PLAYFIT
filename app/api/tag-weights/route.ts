@@ -22,14 +22,46 @@ export async function GET(req: Request) {
   const auth = await getUser(req)
   if (!auth) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { data, error } = await auth.supabase
-    .from('user_tag_weights')
-    .select('tag, weight')
-    .eq('user_id', auth.user.id)
-    .order('weight', { ascending: false })
+  const { user, supabase } = auth
 
-  if (error) return Response.json({ error: 'DB error' }, { status: 500 })
-  return Response.json({ weights: data ?? [] })
+  // Get steam_id linked to this account (may be null)
+  const profileResult = await supabase
+    .from('user_profiles')
+    .select('steam_id')
+    .eq('id', user.id)
+    .maybeSingle()
+
+  const steamId = profileResult.data?.steam_id ?? null
+
+  // Fetch by user_id and (if linked) by steam_id in parallel
+  const [byUserId, bySteamId] = await Promise.all([
+    supabase
+      .from('user_tag_weights')
+      .select('tag, weight')
+      .eq('user_id', user.id),
+    steamId
+      ? supabase
+          .from('user_tag_weights')
+          .select('tag, weight')
+          .eq('steam_id', steamId)
+          .is('user_id', null)  // only rows not already claimed by a user_id
+      : Promise.resolve({ data: [] }),
+  ])
+
+  // Merge: user_id rows win for the same tag
+  const merged = new Map<string, number>()
+  for (const row of (bySteamId.data ?? [])) {
+    merged.set(row.tag, row.weight)
+  }
+  for (const row of (byUserId.data ?? [])) {
+    merged.set(row.tag, row.weight)  // overwrites steam_id entry for same tag
+  }
+
+  const weights = Array.from(merged.entries())
+    .map(([tag, weight]) => ({ tag, weight }))
+    .sort((a, b) => b.weight - a.weight)
+
+  return Response.json({ weights })
 }
 
 export async function PUT(req: Request) {

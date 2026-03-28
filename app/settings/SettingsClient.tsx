@@ -346,7 +346,7 @@ export default function SettingsClient() {
 
           {weightsReady && weights.length === 0 && !weightsLoading && (
             <p className={styles.emptyMsg}>
-              아직 추천을 받아본 기록이 없어요. 추천을 받으면 취향 가중치가 쌓여요.
+              아직 피드백 기록이 없어요. 추천 결과에서 👍/👎을 누르면 취향 가중치가 쌓여요.
             </p>
           )}
 
