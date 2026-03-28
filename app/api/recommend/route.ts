@@ -2,7 +2,7 @@ export const runtime = 'edge'
 
 import { createServerClient } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
-import { getGameDetails, sleep } from '@/lib/steam'
+import { getGameDetails } from '@/lib/steam'
 import { getRecommendations } from '@/lib/claude'
 import { isDbReady, getTagsForGames, getUserTagWeights, scoreCandidates } from '@/lib/supabase'
 import type { ErrorCode, PlayHistory, RecommendationCard } from '@/types'
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
     const excludeAppIds = (ownedAppIds.length > 0 ? ownedAppIds : playedAppIds).map(String)
     const scored = await scoreCandidates(tagProfile, userTagWeights, excludeAppIds, 40)
 
-    // Fetch real-time prices for top candidates, apply filters (200ms delay per rate limit)
+    // Fetch real-time prices for top candidates in parallel, then apply filters
     interface FilteredCandidate {
       appid: number
       name: string
@@ -112,13 +112,15 @@ export async function POST(request: NextRequest) {
       metacritic_score?: number
       top_tags: string[]
     }
+    
+    const detailsPromises = scored.map(s => getGameDetails(Number(s.appid)))
+    const detailsResults = await Promise.all(detailsPromises)
+
     const candidates: FilteredCandidate[] = []
-
-    for (const s of scored) {
+    for (let i = 0; i < scored.length; i++) {
       if (candidates.length >= 20) break
-
-      const details = await getGameDetails(Number(s.appid))
-      await sleep(200)
+      const details = detailsResults[i]
+      const s = scored[i]
 
       if (!details) continue
       if (freeOnly && !details.is_free) continue
