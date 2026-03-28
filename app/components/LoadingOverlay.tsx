@@ -13,6 +13,9 @@ interface Props {
   message: string
 }
 
+// Progress mapped to real stage completions — never goes backward
+const STAGE_PROGRESS = ['0%', '28%', '60%', '85%'] as const
+
 export default function LoadingOverlay({ message }: Props) {
   const [revealed, setRevealed] = useState(0)
 
@@ -41,6 +44,14 @@ export default function LoadingOverlay({ message }: Props) {
             <line x1="36" y1="3" x2="36" y2="69" className={styles.radarCross} />
             <circle cx="36" cy="36" r="2" className={styles.radarDot} />
           </svg>
+        </div>
+
+        {/* Stage-driven progress gauge */}
+        <div className={styles.progressTrack} aria-hidden="true">
+          <div
+            className={styles.progressFill}
+            style={{ width: STAGE_PROGRESS[revealed] }}
+          />
         </div>
 
         {/* Terminal log */}

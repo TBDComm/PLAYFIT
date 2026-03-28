@@ -81,6 +81,41 @@
 }
 
 
+/* ── Progress gauge (parallelogram, state-driven) ── */
+
+.progressTrack {
+  position: relative;
+  width: 200px;
+  height: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transform: skewX(-20deg);
+}
+
+.progressTrack::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to right,
+    transparent 0px,
+    transparent 17px,
+    var(--bg) 17px,
+    var(--bg) 19px
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+.progressFill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow), 0 0 20px rgba(200, 241, 53, 0.15);
+  transition: width 0.5s ease-out;
+}
+
 /* ── Terminal log ── */
 
 .terminal {
@@ -135,7 +170,7 @@
   box-shadow: 0 0 6px var(--accent-glow);
   transform: scaleX(0);
   transform-origin: left center;
-  animation: barFill 3s ease-in-out infinite;
+  animation: barFill 0.85s ease-out forwards;
 }
 
 @keyframes termSlideIn {
@@ -144,9 +179,8 @@
 }
 
 @keyframes barFill {
-  0%  { transform: scaleX(0); }
-  70% { transform: scaleX(0.8); }
-  100%{ transform: scaleX(0.8); }
+  0%   { transform: scaleX(0); }
+  100% { transform: scaleX(0.9); }
 }
 
 /* ── Reduced motion ── */
@@ -155,4 +189,5 @@
   .wordmark    { animation: none; }
   .termLine    { animation: none; }
   .termBarFill { animation: none; transform: scaleX(0.6); }
+  .progressFill { transition: none; }
 }
