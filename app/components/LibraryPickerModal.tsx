@@ -128,6 +128,7 @@ export default function LibraryPickerModal({ steamId, externalLoading, onClose, 
                   src={`https://cdn.akamai.steamstatic.com/steam/apps/${game.appid}/capsule_sm_120.jpg`}
                   alt=""
                   aria-hidden="true"
+                  loading="lazy"
                   className={styles.thumb}
                   onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
                 />
