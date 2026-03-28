@@ -334,7 +334,7 @@ export default function SettingsPage() {
           {!weightsReady && (
             <div className={styles.weightsSkeletonList}>
               {[80, 65, 55, 45, 40].map((w) => (
-                <div key={w} className={styles.weightsSkeletonRow} style={{ '--bar-w': `${w}%` } as React.CSSProperties} />
+                <div key={w} className={styles.weightsSkeletonRow} style={{ width: `${w}%` }} />
               ))}
             </div>
           )}

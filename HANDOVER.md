@@ -88,6 +88,7 @@ _2026-03-21 to 2026-03-27 entries → HANDOVER-archive.md §Minor Changes Log_
 - 2026-03-28 settings: UX audit fixes — linkForm hidden during loading, weightsReady skeleton, save/reload error feedback
 - 2026-03-28 Header: hamburger menu button (X animation) + dropdown (email, Steam status, 내 설정, 로그아웃)
 - 2026-03-28 settings: supabase module-level → useMemo (fixes blank page bug)
+- 2026-03-28 crash fix: remove unused useRouter from Header; remove CSS custom property inline style (→ plain width) in settings skeleton
 - 2026-03-28 /settings page: Steam re-link + tag weight bar graph editor (GET/PUT /api/tag-weights)
 - 2026-03-28 Header: added "내 설정" link → /settings; removed "Steam 연동됨" text (status visible in settings)
 

@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
 import { trackEvent } from '@/lib/analytics'
@@ -57,7 +56,6 @@ function Toast({ message }: { message: string }) {
 }
 
 export default function Header() {
-  const router = useRouter()
   const [session, setSession] = useState<Session | null>(null)
   const [steamId, setSteamId] = useState<string | null>(null)
   const [showLoginModal, setShowLoginModal] = useState(false)
