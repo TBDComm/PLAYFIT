@@ -601,8 +601,11 @@
   min-width: 0;
 }
 
-.heroGrid .logo {
-  font-size: clamp(2.5rem, 5vw, 4rem);
+/* Only apply in 2-column range — single-column mobile should use full logo size */
+@media (min-width: 769px) {
+  .heroGrid .logo {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+  }
 }
 
 .hero {
