@@ -347,7 +347,7 @@
   .heroStat { animation: heroFadeUp 0.7s ease both 140ms }
   .heroCta  { animation: heroFadeUp 0.7s ease both 200ms }
 
-  .ctaArrow { display: inline-block; animation: arrowBounce 1.4s ease-in-out infinite }
+  .ctaArrow { display: inline-block; animation: arrowBounce 1.4s ease-in-out 0.9s infinite }
 
   .tagScatterWrap { animation: opacityIn 0.8s ease both 100ms }
 
@@ -651,7 +651,6 @@
   overflow: hidden;
   max-width: 560px;
   margin-top: 1.25rem;
-  transition: border-color 0.15s ease;
 }
 
 .sampleThumb {
@@ -660,6 +659,7 @@
   object-fit: cover;
   display: block;
   align-self: stretch;
+  background: var(--bg-elevated);
 }
 
 .sampleBody {

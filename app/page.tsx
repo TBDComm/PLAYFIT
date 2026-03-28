@@ -696,7 +696,7 @@ export default function Home() {
         <div className={styles.inner}>
           <p className={styles.previewLabel}>AI 추천 예시</p>
           <p className={styles.previewTitle}>이런 추천을 받을 수 있어요</p>
-          <p className={styles.sampleNote}>실제 추천은 내 Steam 플레이 기록을 분석해 달라져요</p>
+          <p className={styles.sampleNote}>실제 추천은 내 플레이 기록을 분석해 달라져요</p>
           <div className={styles.sampleCard}>
             <Image
               unoptimized
@@ -720,7 +720,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <a href="#recommend-form" className={styles.sampleCta}>내 취향으로 추천받기 →</a>
+          <a href="#recommend-form" className={styles.sampleCta}>내 취향으로 추천받기 <span aria-hidden="true">→</span></a>
         </div>
       </section>
 
