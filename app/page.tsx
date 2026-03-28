@@ -504,11 +504,11 @@ export default function Home() {
                 <span className={styles.srOnly}> — 스팀 취향 게임 추천</span>
               </h1>
               <h2 className={styles.headline}>내 플레이 기록이 곧 취향이다</h2>
-              <p className={styles.heroStat}><span ref={statRef}>{new Intl.NumberFormat('ko-KR').format(82816)}</span>개 Steam 게임 중에서 AI가 골라드립니다</p>
+              <p className={styles.heroStat}><span ref={statRef}>{new Intl.NumberFormat('ko-KR').format(82816)}</span>개 Steam 게임 중에서 골라드립니다</p>
               <a href="#recommend-form" className={styles.heroCta}>지금 시작하기 <span className={styles.ctaArrow} aria-hidden="true">↓</span></a>
             </header>
             <div className={styles.heroSample}>
-              <p className={styles.previewLabel}>AI 추천 예시</p>
+              <p className={styles.previewLabel}>추천 예시</p>
               <div className={styles.sampleCard}>
                 <Image
                   unoptimized

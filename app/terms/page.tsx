@@ -19,7 +19,7 @@ export default function TermsPage() {
 
       <h2>1. 서비스 소개</h2>
       <p>
-        Guildeline(이하 &ldquo;서비스&rdquo;)은 Steam 플레이 기록과 예산을 바탕으로 AI가 게임을 추천해 주는
+        Guildeline(이하 &ldquo;서비스&rdquo;)은 Steam 플레이 기록과 예산을 바탕으로 게임을 추천해 주는
         서비스입니다. Guildeline은 Valve Corporation 및 Steam과 무관한 독립 서비스입니다.
       </p>
 
@@ -34,7 +34,7 @@ export default function TermsPage() {
 
       <h2>3. 추천 결과의 한계</h2>
       <p>
-        Guildeline의 게임 추천은 AI 모델을 통해 생성되며, 참고용 정보입니다.
+        Guildeline의 게임 추천은 알고리즘을 통해 생성되며, 참고용 정보입니다.
         추천 결과의 정확성이나 적합성을 보증하지 않습니다.
         최종 구매 결정은 이용자 본인의 판단에 따라 이루어져야 합니다.
       </p>

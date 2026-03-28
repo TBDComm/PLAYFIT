@@ -40,7 +40,7 @@ export default function OgImage() {
 
         {/* Description */}
         <div style={{ fontSize: 28, color: '#71717A', lineHeight: 1.5 }}>
-          82,816개 게임 분석 · AI 태그 취향 매칭 · 예산 맞춤 추천
+          82,816개 게임 분석 · 태그 취향 매칭 · 예산 맞춤 추천
         </div>
 
         {/* URL — bottom right */}

@@ -44,7 +44,7 @@ export default function PrivacyPage() {
         <li>Google Analytics 4 — 서비스 이용 통계</li>
         <li>Google AdSense — 광고 서비스 (향후 적용 예정)</li>
         <li>Supabase — 사용자 인증 및 데이터 저장 (EU 표준 계약 조항 준수)</li>
-        <li>Anthropic Claude API — AI 게임 추천 생성 (입력 데이터는 모델 학습에 사용되지 않습니다)</li>
+        <li>Anthropic Claude API — 게임 추천 생성 (입력 데이터는 모델 학습에 사용되지 않습니다)</li>
       </ul>
 
       <h2>4. 개인정보 보관 및 삭제</h2>

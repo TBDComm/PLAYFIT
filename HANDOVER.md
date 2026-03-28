@@ -78,6 +78,8 @@ Next action: [exactly what to do next to resume]
 
 _2026-03-21 to 2026-03-27 entries → HANDOVER-archive.md §Minor Changes Log_
 
+- 2026-03-28 Remove all "AI" wording: layout meta, page.tsx heroStat/previewLabel, about, opengraph-image, terms, privacy, 2 blog posts
+
 ---
 
 ## ── COMPLETED STEPS ──────────────────────────────────────

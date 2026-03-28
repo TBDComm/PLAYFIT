@@ -6,7 +6,7 @@ export const runtime = 'edge'
 
 export const metadata: Metadata = {
   title: '서비스 소개 — Guildeline',
-  description: 'Guildeline은 Steam 플레이 기록과 예산을 바탕으로 AI가 게임을 추천해 주는 서비스입니다. 서비스 운영 주체와 목적을 소개합니다.',
+  description: 'Guildeline은 Steam 플레이 기록과 예산을 바탕으로 게임을 추천해 주는 서비스입니다. 서비스 운영 주체와 목적을 소개합니다.',
   alternates: { canonical: '/about' },
 }
 
@@ -17,11 +17,11 @@ export default function AboutPage() {
         <span className={styles.backLogoAccent}>GUILD</span>ELINE
       </Link>
       <h1>서비스 소개</h1>
-      <p className={styles.updated}>Guildeline — AI 게임 추천 서비스</p>
+      <p className={styles.updated}>Guildeline — 게임 추천 서비스</p>
 
       <h2>무엇을 하는 서비스인가요?</h2>
       <p>
-        Guildeline은 Steam 플레이 기록을 분석해 취향에 맞는 게임을 AI가 추천해 주는 서비스입니다.
+        Guildeline은 Steam 플레이 기록을 분석해 취향에 맞는 게임을 추천해 주는 서비스입니다.
         장르, 플레이 시간, 선호 태그를 종합해 예산 범위 내에서 실제로 좋아할 만한 게임을 찾아드립니다.
       </p>
       <p>
@@ -34,7 +34,7 @@ export default function AboutPage() {
         다음에 뭘 사야 할지 알고 싶다&rdquo;는 단순한 문제의식에서 출발했습니다.
       </p>
       <p>
-        Steam Web API, Claude AI, Supabase를 조합해 만들어졌으며,
+        Steam Web API, Claude, Supabase를 조합해 만들어졌으며,
         Valve Corporation 및 Steam과 무관한 독립 서비스입니다.
       </p>
 

@@ -25,7 +25,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: '내 스팀 취향에 맞는 게임 추천 | Guildeline',
-  description: '82,816개 Steam 게임을 분석해 내 플레이 기록과 예산에 맞는 게임을 AI가 추천합니다. 태그 기반 취향 분석으로 다음 플레이할 게임을 지금 찾아보세요.',
+  description: '82,816개 Steam 게임을 분석해 내 플레이 기록과 예산에 맞는 게임을 추천합니다. 태그 기반 취향 분석으로 다음 플레이할 게임을 지금 찾아보세요.',
   icons: {
     icon: '/guildeline-logo.png',
     apple: '/guildeline-logo.png',
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: '내 스팀 취향에 맞는 게임 추천 | Guildeline',
-    description: '82,816개 Steam 게임을 분석해 내 플레이 기록과 예산에 맞는 게임을 AI가 추천합니다. 태그 기반 취향 분석으로 다음 플레이할 게임을 지금 찾아보세요.',
+    description: '82,816개 Steam 게임을 분석해 내 플레이 기록과 예산에 맞는 게임을 추천합니다. 태그 기반 취향 분석으로 다음 플레이할 게임을 지금 찾아보세요.',
     url: '/',
     siteName: 'Guildeline',
     type: 'website',
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: '내 스팀 취향에 맞는 게임 추천 | Guildeline',
-    description: '82,816개 Steam 게임을 분석해 내 플레이 기록과 예산에 맞는 게임을 AI가 추천합니다. 태그 기반 취향 분석으로 다음 플레이할 게임을 지금 찾아보세요.',
+    description: '82,816개 Steam 게임을 분석해 내 플레이 기록과 예산에 맞는 게임을 추천합니다. 태그 기반 취향 분석으로 다음 플레이할 게임을 지금 찾아보세요.',
     images: ['/opengraph-image'],
   },
 }
