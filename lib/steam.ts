@@ -78,6 +78,25 @@ export function parseSteamUrl(url: string): ParsedUrl {
   return { type: 'invalid' }
 }
 
+export type LibraryGame = { appid: number; name: string; playtime_hours: number }
+
+export async function getAllLibraryGames(steamId: string): Promise<LibraryGame[] | 'PRIVATE_PROFILE'> {
+  const key = process.env.STEAM_API_KEY
+  const res = await fetch(
+    `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${key}&steamid=${steamId}&include_appinfo=true&include_played_free_games=true`
+  )
+  const data = await res.json() as { response: { games?: SteamGame[] } }
+  const games = data.response?.games
+  if (!games || games.length === 0) return 'PRIVATE_PROFILE'
+  return games
+    .sort((a, b) => b.playtime_forever - a.playtime_forever)
+    .map(g => ({
+      appid: g.appid,
+      name: g.name,
+      playtime_hours: Math.round(g.playtime_forever / 60 * 10) / 10,
+    }))
+}
+
 export async function resolveVanityUrl(vanity: string): Promise<string | null> {
   const key = process.env.STEAM_API_KEY
   const res = await fetch(

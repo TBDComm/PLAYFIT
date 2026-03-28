@@ -7,9 +7,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import type { RecommendationCard, ErrorCode, SavedGame } from '@/types'
+import type { LibraryGame } from '@/lib/steam'
 import { trackEvent } from '@/lib/analytics'
 import JsonLd from './components/JsonLd'
 import LoadingOverlay from './components/LoadingOverlay'
+import LibraryPickerModal from './components/LibraryPickerModal'
 import PageLoading from './components/PageLoading'
 import TagScatter from './components/TagScatter'
 import styles from './page.module.css'
@@ -508,6 +510,54 @@ export default function Home() {
     ? !!url.trim()
     : manualGames.some(g => g.name.trim() && g.appid !== null && g.playtime.trim())
 
+  // Library picker — only available when Steam is linked
+  const [showLibraryPicker, setShowLibraryPicker] = useState(false)
+  const steamId = url.match(/\/profiles\/(\d+)/)?.[1] ?? null
+  const canUsePicker = (authState === 'steam' || authState === 'linked') && steamId !== null
+
+  async function handleLibraryConfirm(games: LibraryGame[]) {
+    setShowLibraryPicker(false)
+    setError(null)
+    setLoading(true)
+    try {
+      const budgetValue = !freeOnly && budget.trim() ? Number(budget) : undefined
+      const res = await fetch('/api/recommend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          manualGames: games.map(g => ({ appid: g.appid, name: g.name, playtime_hours: g.playtime_hours })),
+          budget: budgetValue,
+          freeOnly,
+        }),
+      })
+      const data = await res.json() as {
+        recommendations?: RecommendationCard[]
+        error?: ErrorCode
+        filters?: { budget?: number; freeOnly?: boolean }
+      }
+      if (!res.ok || data.error) {
+        if (data.error === 'NO_GAMES_IN_BUDGET') {
+          if (freeOnly) setError('현재 무료 게임 중 추천 가능한 게임이 없어요')
+          else setError('예산 내 추천 가능한 게임이 없어요. 예산을 높여보세요')
+        } else {
+          setError(ERROR_MESSAGES[data.error ?? 'GENERAL_ERROR'])
+        }
+        return
+      }
+      sessionStorage.setItem('playfit_recommendations', JSON.stringify(data.recommendations))
+      sessionStorage.setItem('playfit_steam_id', steamId ?? '')
+      sessionStorage.setItem('playfit_play_profile', JSON.stringify(
+        games.slice(0, 5).map(g => ({ name: g.name, playtime_hours: g.playtime_hours }))
+      ))
+      trackEvent('recommendation_generated', { mode: 'library_pick' })
+      router.push('/result')
+    } catch {
+      setError(ERROR_MESSAGES.GENERAL_ERROR)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <main className={styles.page}>
       {authState === 'loading' && (
@@ -516,6 +566,14 @@ export default function Home() {
       {loading && (
         <LoadingOverlay
           message={mode === 'manual' ? '취향 분석 중…' : '플레이 기록 분석 중…'}
+        />
+      )}
+      {showLibraryPicker && steamId && (
+        <LibraryPickerModal
+          steamId={steamId}
+          externalLoading={loading}
+          onClose={() => setShowLibraryPicker(false)}
+          onConfirm={handleLibraryConfirm}
         />
       )}
       <JsonLd data={homeJsonLd} />
@@ -547,6 +605,14 @@ export default function Home() {
             {mode === 'steam' && authState === 'steam' ? (
               <div className={styles.inputWrapper}>
                 <p className={styles.steamAuthNotice}>Steam 계정이 연동되어 있어요</p>
+                <button
+                  type="button"
+                  className={styles.modeToggle}
+                  onClick={() => setShowLibraryPicker(true)}
+                  disabled={loading}
+                >
+                  또는 라이브러리에서 직접 선택 →
+                </button>
               </div>
             ) : mode === 'steam' ? (
               <div className={styles.inputWrapper}>
@@ -568,6 +634,16 @@ export default function Home() {
                   />
                   {urlValid && <span className={styles.urlValidIcon} aria-hidden="true">✓</span>}
                 </div>
+                {canUsePicker && (
+                  <button
+                    type="button"
+                    className={styles.modeToggle}
+                    onClick={() => setShowLibraryPicker(true)}
+                    disabled={loading}
+                  >
+                    또는 라이브러리에서 직접 선택 →
+                  </button>
+                )}
                 <button
                   type="button"
                   className={styles.modeToggle}
