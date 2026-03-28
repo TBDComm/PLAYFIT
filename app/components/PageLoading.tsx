@@ -7,7 +7,7 @@ export default function PageLoading() {
         <p className={styles.wordmark} aria-hidden="true">
           <span className={styles.accent}>GUILD</span>ELINE
         </p>
-        <div className={styles.radar} aria-label="페이지 로딩 중" role="status">
+        <div className={styles.radar} role="status" aria-label="페이지 로딩 중">
           <svg className={styles.radarSvg} viewBox="0 0 72 72" fill="none">
             <circle cx="36" cy="36" r="33" className={styles.radarRing} />
             <circle cx="36" cy="36" r="18" className={styles.radarRingInner} />
@@ -17,6 +17,9 @@ export default function PageLoading() {
           </svg>
           <div className={styles.radarTrail} />
           <div className={styles.radarLine} />
+        </div>
+        <div className={styles.progressTrack} aria-hidden="true">
+          <div className={styles.progressFill} />
         </div>
       </div>
     </div>

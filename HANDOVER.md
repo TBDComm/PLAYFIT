@@ -105,6 +105,7 @@ _2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log 2026-03-28_
 
 | Date | Change | Files |
 |------|--------|-------|
+| 2026-03-28 | Add home loading screen + progress bar gauge to PageLoading | app/loading.tsx, PageLoading.tsx, PageLoading.module.css |
 
 ---
 
