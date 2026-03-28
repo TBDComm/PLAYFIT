@@ -167,6 +167,7 @@ export default function Home() {
     // Reliable path: covers expired/refreshing tokens (fires after refresh completes)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'INITIAL_SESSION') onceSteam(session)
+      else if (event === 'TOKEN_REFRESHED') { loaded = false; onceSteam(session) }
       else if (event === 'SIGNED_OUT') { loaded = false; setAuthState('anon'); setUrl('') }
     })
 

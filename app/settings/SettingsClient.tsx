@@ -126,7 +126,7 @@ export default function SettingsClient() {
 
     // Reliable path: covers expired/refreshing tokens
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
+      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
         setSessionToken(session?.access_token ?? null)
         setUserId(session?.user.id ?? null)
         setAuthReady(true)
