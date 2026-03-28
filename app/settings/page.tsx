@@ -104,10 +104,12 @@ export default function SettingsPage() {
 
   // Tag weights state
   const [weights, setWeights] = useState<TagWeight[]>([])
+  const [weightsReady, setWeightsReady] = useState(false)
   const [weightsLoading, setWeightsLoading] = useState(false)
   const [weightsDirty, setWeightsDirty] = useState(false)
   const [weightsSaving, setWeightsSaving] = useState(false)
   const [weightsSaved, setWeightsSaved] = useState(false)
+  const [weightsSaveError, setWeightsSaveError] = useState(false)
 
   // Load session
   useEffect(() => {
@@ -143,6 +145,7 @@ export default function SettingsPage() {
         const json = await weightsRes.json() as { weights: TagWeight[] }
         setWeights(json.weights)
       }
+      setWeightsReady(true)
     })
   }, [userId, sessionToken])
 
@@ -194,6 +197,7 @@ export default function SettingsPage() {
   const handleSaveWeights = async () => {
     if (!sessionToken || !weightsDirty) return
     setWeightsSaving(true)
+    setWeightsSaveError(false)
     try {
       const res = await fetch('/api/tag-weights', {
         method: 'PUT',
@@ -207,7 +211,11 @@ export default function SettingsPage() {
         setWeightsDirty(false)
         setWeightsSaved(true)
         setTimeout(() => setWeightsSaved(false), 2500)
+      } else {
+        setWeightsSaveError(true)
       }
+    } catch {
+      setWeightsSaveError(true)
     } finally {
       setWeightsSaving(false)
     }
@@ -224,6 +232,7 @@ export default function SettingsPage() {
         const json = await res.json() as { weights: TagWeight[] }
         setWeights(json.weights)
         setWeightsDirty(false)
+        setWeightsSaveError(false)
       }
     } finally {
       setWeightsLoading(false)
@@ -270,6 +279,7 @@ export default function SettingsPage() {
             </div>
           )}
 
+          {steamState !== 'loading' && (
           <div className={styles.linkForm}>
             <label htmlFor="steam-url-settings" className={styles.linkLabel}>
               {steamState === 'linked' ? 'Steam 계정 재연동' : 'Steam 프로필 URL 입력'}
@@ -301,6 +311,7 @@ export default function SettingsPage() {
               {linkSuccess && <p className={styles.successMsg}>Steam 계정이 연동되었어요!</p>}
             </div>
           </div>
+          )}
         </section>
 
         {/* ── Tag weights section ── */}
@@ -320,13 +331,21 @@ export default function SettingsPage() {
             추천 결과에 영향을 주는 태그별 가중치입니다. 숫자를 클릭해 직접 수정하세요 (0.1 ~ 3.0).
           </p>
 
-          {weights.length === 0 && !weightsLoading && (
+          {!weightsReady && (
+            <div className={styles.weightsSkeletonList}>
+              {[80, 65, 55, 45, 40].map((w) => (
+                <div key={w} className={styles.weightsSkeletonRow} style={{ '--bar-w': `${w}%` } as React.CSSProperties} />
+              ))}
+            </div>
+          )}
+
+          {weightsReady && weights.length === 0 && !weightsLoading && (
             <p className={styles.emptyMsg}>
               아직 추천을 받아본 기록이 없어요. 추천을 받으면 취향 가중치가 쌓여요.
             </p>
           )}
 
-          {weights.length > 0 && (
+          {weightsReady && weights.length > 0 && (
             <>
               <div className={styles.weightList}>
                 {weights.map((w) => (
@@ -337,6 +356,11 @@ export default function SettingsPage() {
                     onChange={handleWeightChange}
                   />
                 ))}
+              </div>
+              <div aria-live="polite" aria-atomic="true">
+                {weightsSaveError && (
+                  <p className={styles.errorMsg}>저장에 실패했어요. 다시 시도해주세요.</p>
+                )}
               </div>
               <div className={styles.saveRow}>
                 <span aria-live="polite" aria-atomic="true" className={styles.savedNote}>

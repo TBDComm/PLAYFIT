@@ -275,6 +275,28 @@
   appearance: textfield;
 }
 
+/* ── Weights skeleton ── */
+
+.weightsSkeletonList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.weightsSkeletonRow {
+  height: 20px;
+  background: linear-gradient(90deg, var(--bg-elevated) var(--bar-w, 70%), var(--bg-surface) var(--bar-w, 70%));
+  border-radius: var(--radius);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .weightsSkeletonRow {
+    animation: none;
+  }
+}
+
 /* ── Save row ── */
 
 .saveRow {
