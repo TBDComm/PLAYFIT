@@ -84,6 +84,7 @@ _Pre-2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log_
 | 2026-03-28 | bug(tag-weights GET): merge `user_id`+`steam_id` rows; fix empty state msg; parallelize profile+user_id queries | `api/tag-weights/route.ts`, `SettingsClient.tsx` |
 | 2026-03-28 | bug(auth): `getSession`→`onAuthStateChange(INITIAL_SESSION)` in home+settings; double-call guard; `SettingsWrapper` loading skeleton | `page.tsx`, `SettingsClient.tsx`, `SettingsWrapper.tsx` |
 | 2026-03-28 | bug(recommend): `getUserTagWeights` used anon key singleton → RLS blocked reads → weights always `{}` → fixed to `serviceSupabase` | `lib/supabase.ts` |
+| 2026-03-28 | bug(feedback): feedback INSERT used anon key → RLS blocked → 500 returned early → weight upsert never ran → settings always empty → fixed to `serviceSupabase` | `app/api/feedback/route.ts` |
 
 ---
 

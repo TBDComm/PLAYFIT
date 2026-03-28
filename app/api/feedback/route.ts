@@ -3,7 +3,6 @@ export const runtime = 'edge'
 import { createClient } from '@supabase/supabase-js'
 import { createServerClient } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
 import type { FeedbackRating } from '@/types'
 
 function getServiceSupabase() {
@@ -78,7 +77,7 @@ export async function POST(request: NextRequest) {
 
     // Insert feedback and fetch current weights in parallel
     const [insertResult, existingWeights] = await Promise.all([
-      supabase.from('feedback').insert({
+      serviceSupabase.from('feedback').insert({
         game_id,
         game_name,
         user_id: userId,
