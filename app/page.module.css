@@ -669,8 +669,7 @@
 
 .sampleCard {
   display: flex;
-  flex-direction: row;
-  align-items: stretch;
+  flex-direction: column;
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -679,11 +678,9 @@
 }
 
 .sampleThumb {
-  width: 36%;
-  flex-shrink: 0;
-  object-fit: cover;
+  width: 100%;
+  height: auto;
   display: block;
-  align-self: stretch;
   background: var(--bg-elevated);
 }
 
