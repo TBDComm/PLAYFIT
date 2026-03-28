@@ -515,35 +515,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Sample card ── */}
-      <section ref={sampleRevealRef} className={`${styles.sampleSection}${sampleRevealed ? ` ${styles.sampleSectionRevealed}` : ''}`}>
-        <div className={styles.inner}>
-          <p className={styles.previewLabel}>추천 예시</p>
-          <div className={styles.sampleCard}>
-            <Image
-              unoptimized
-              src="https://cdn.akamai.steamstatic.com/steam/apps/1145360/header.jpg"
-              alt="Hades 게임 썸네일"
-              width={460}
-              height={215}
-              className={styles.sampleThumb}
-            />
-            <div className={styles.sampleBody}>
-              <p className={styles.sampleName}>Hades</p>
-              <p className={styles.sampleReason}>
-                <span className={styles.sampleReasonLabel}>왜 나한테 맞냐면</span>
-                <br />
-                로그라이크와 액션을 즐기는 취향에 딱 맞아요. 매 플레이마다 새로운 전략이 펼쳐지고, 깊이 있는 스토리까지 즐길 수 있어요.
-              </p>
-              <div className={styles.sampleMeta}>
-                <span className={styles.samplePrice}>₩22,500</span>
-                <span className={styles.sampleScore}>메타크리틱&nbsp;93점</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ── Form ── */}
       <section ref={formRevealRef} className={`${styles.formSection}${formRevealed ? ` ${styles.formSectionRevealed}` : ''}`}>
         <div className={styles.inner}>
@@ -720,6 +691,35 @@ export default function Home() {
         </div>
       </section>
 
+
+      {/* ── Sample card ── */}
+      <section ref={sampleRevealRef} className={`${styles.sampleSection}${sampleRevealed ? ` ${styles.sampleSectionRevealed}` : ''}`}>
+        <div className={styles.inner}>
+          <p className={styles.previewLabel}>추천 예시</p>
+          <div className={styles.sampleCard}>
+            <Image
+              unoptimized
+              src="https://cdn.akamai.steamstatic.com/steam/apps/1145360/header.jpg"
+              alt="Hades 게임 썸네일"
+              width={460}
+              height={215}
+              className={styles.sampleThumb}
+            />
+            <div className={styles.sampleBody}>
+              <p className={styles.sampleName}>Hades</p>
+              <p className={styles.sampleReason}>
+                <span className={styles.sampleReasonLabel}>왜 나한테 맞냐면</span>
+                <br />
+                로그라이크와 액션을 즐기는 취향에 딱 맞아요. 매 플레이마다 새로운 전략이 펼쳐지고, 깊이 있는 스토리까지 즐길 수 있어요.
+              </p>
+              <div className={styles.sampleMeta}>
+                <span className={styles.samplePrice}>₩22,500</span>
+                <span className={styles.sampleScore}>메타크리틱&nbsp;93점</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* ── Preview ── */}
       <section ref={previewRevealRef} className={`${styles.previewSection}${previewRevealed ? ` ${styles.previewSectionRevealed}` : ''}`}>

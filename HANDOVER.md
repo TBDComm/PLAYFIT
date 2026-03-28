@@ -63,6 +63,7 @@ Next action: [exactly what to do next to resume]
 | S2 | Sample result card (Hades, between form+preview), heroCta ↓ bounce, previewTitle copy fix | ✅ 2026-03-27 |
 | S3 | Hero 2-col layout (1100px heroInner): sample card moves into hero right column. Desktop: side-by-side. Mobile: stacked below CTA. Standalone sampleSection removed. | ✅ 2026-03-28 |
 | S3-fix | Logo overflow in heroGrid + mobile regression: override scoped to `@media (min-width: 769px)` — 2-column range only; mobile restores full `clamp(3rem,10vw,5rem)` | ✅ 2026-03-28 |
+| S4 | Move sampleSection below formSection: Hero → Form → Sample → Preview | ✅ 2026-03-28 |
 
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ✅ · NEXT_PUBLIC_ADSENSE_CLIENT_ID ⏳ (pending AdSense approval — add to CF Pages when Publisher ID received)
 
@@ -80,6 +81,7 @@ _2026-03-21 to 2026-03-27 entries → HANDOVER-archive.md §Minor Changes Log_
 
 - 2026-03-28 Remove all "AI" wording: layout meta, page.tsx heroStat/previewLabel, about, opengraph-image, terms, privacy, 2 blog posts
 - 2026-03-28 sampleCard: moved to sampleSection (below hero, above form); layout matches result page card (row, 30% thumb, no badge); mobile ≤480px column
+- 2026-03-28 sampleSection moved below formSection: order is now Hero → Form → Sample → Preview
 
 ---
 
