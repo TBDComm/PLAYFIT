@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
-import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
+import { createBrowserClient } from '@supabase/ssr'
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
 import { trackEvent } from '@/lib/analytics'
 import styles from './Header.module.css'

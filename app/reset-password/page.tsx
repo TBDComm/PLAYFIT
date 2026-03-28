@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
+import { createBrowserClient } from '@supabase/ssr'
 import type { AuthChangeEvent } from '@supabase/supabase-js'
 import styles from './page.module.css'
 import GuildelineMark from '@/app/components/GuildelineMark'

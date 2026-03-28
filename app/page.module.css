@@ -905,6 +905,7 @@
   gap: 0.625rem;
   margin-top: 0.875rem;
   overflow-x: auto;
+  overscroll-behavior-x: contain;
   padding-bottom: 0.375rem;
   padding-inline-end: 1.5rem;
   /* Hide scrollbar */

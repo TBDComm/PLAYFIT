@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
-import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
+import { createBrowserClient } from '@supabase/ssr'
 import type { ErrorCode } from '@/types'
 import type { LibraryGame } from '@/lib/steam'
 import { trackEvent } from '@/lib/analytics'
