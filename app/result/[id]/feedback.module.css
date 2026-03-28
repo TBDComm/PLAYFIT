@@ -1,0 +1,46 @@
+.feedbackContainer {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.feedbackButton {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 0.4rem 0.65rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  touch-action: manipulation;
+}
+
+.feedbackButton:hover:not(:disabled) {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
+.feedbackButton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.feedbackButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.selectedUp {
+  color: var(--success);
+  border-color: var(--success);
+  background: var(--bg-elevated);
+}
+
+.selectedDown {
+  color: var(--error);
+  border-color: var(--error);
+  background: var(--bg-elevated);
+}

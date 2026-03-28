@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
-import type { RecommendationCard, ErrorCode } from '@/types'
+import type { ErrorCode } from '@/types'
 import type { LibraryGame } from '@/lib/steam'
 import { trackEvent } from '@/lib/analytics'
 import LoadingOverlay from './LoadingOverlay'
@@ -47,7 +47,6 @@ export default function RecommendationForm() {
   const [freeOnly, setFreeOnly] = useState(false)
   const [loading, setLoading] = useState(false)
   const loadingMsgRef = useRef<string>('플레이 기록 분석 중…')
-  const urlValid = /steamcommunity\.com\/(id|profiles)\//.test(url)
   const [error, setError] = useState<string | null>(null)
   const [dropdowns, setDropdowns] = useState<Array<SearchResult[] | null>>(Array(5).fill(null))
   const [rowErrors, setRowErrors] = useState<Array<string | null>>(Array(5).fill(null))
@@ -168,47 +167,17 @@ export default function RecommendationForm() {
     e.preventDefault()
     if (authState === 'loading') return
     setError(null)
-    loadingMsgRef.current = mode === 'manual' ? '취향 분석 중…' : '플레이 기록 분석 중…'
+    loadingMsgRef.current = '취향 분석 중…'
     setLoading(true)
 
     try {
       const budgetValue = !freeOnly && budget.trim() ? Number(budget) : undefined
+      let requestBody: object
+      let analyticsMode: string
 
       if (mode === 'steam') {
-        const steamRes = await fetch('/api/steam', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: url.trim() }),
-        })
-        const steamData = await steamRes.json() as { steamId?: string; playHistory?: unknown; ownedAppIds?: number[]; error?: ErrorCode }
-
-        if (!steamRes.ok || steamData.error) {
-          setError(ERROR_MESSAGES[steamData.error ?? 'GENERAL_ERROR'])
-          return
-        }
-
-        const recommendRes = await fetch('/api/recommend', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ steamId: steamData.steamId, playHistory: steamData.playHistory, ownedAppIds: steamData.ownedAppIds, budget: budgetValue, freeOnly }),
-        })
-        const recommendData = await recommendRes.json() as { recommendations?: RecommendationCard[]; error?: ErrorCode; filters?: { budget?: number; freeOnly?: boolean } }
-
-        if (!recommendRes.ok || recommendData.error) {
-          if (recommendData.error === 'NO_GAMES_IN_BUDGET') {
-            if (recommendData.filters?.freeOnly) setError('현재 무료 게임 중 추천 가능한 게임이 없어요')
-            else setError('예산 내 추천 가능한 게임이 없어요. 예산을 높여보세요')
-          } else {
-            setError(ERROR_MESSAGES[recommendData.error ?? 'GENERAL_ERROR'])
-          }
-          return
-        }
-
-        sessionStorage.setItem('playfit_recommendations', JSON.stringify(recommendData.recommendations))
-        sessionStorage.setItem('playfit_steam_id', steamData.steamId ?? '')
-        sessionStorage.setItem('playfit_play_profile', JSON.stringify((steamData.playHistory as { name: string; playtime_hours: number }[] ?? []).slice(0, 5)))
-        trackEvent('recommendation_generated', { mode: 'steam' })
-        router.push('/result')
+        requestBody = { url: url.trim(), budget: budgetValue, freeOnly }
+        analyticsMode = 'steam'
       } else {
         const newRowErrors: Array<string | null> = Array(5).fill(null)
         let hasRowError = false
@@ -222,46 +191,47 @@ export default function RecommendationForm() {
         if (hasRowError) {
           setRowErrors(newRowErrors)
           setLoading(false)
-          const firstErrorIdx = newRowErrors.findIndex(e => e !== null)
-          if (firstErrorIdx >= 0) nameInputRefs.current[firstErrorIdx]?.focus()
           return
         }
-
         const filledGames = manualGames.filter(g => g.name.trim() && g.appid !== null && g.playtime.trim())
         if (filledGames.length === 0) {
           setError('게임을 최소 1개 이상 입력해주세요')
+          setLoading(false)
           return
         }
-
-        const recommendRes = await fetch('/api/recommend', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ manualGames: filledGames.map(g => ({ appid: g.appid, name: g.name.trim(), playtime_hours: parseFloat(g.playtime) || 0 })), budget: budgetValue, freeOnly }),
-        })
-        const recommendData = await recommendRes.json() as { recommendations?: RecommendationCard[]; error?: ErrorCode; filters?: { budget?: number; freeOnly?: boolean } }
-
-        if (!recommendRes.ok || recommendData.error) {
-          if (recommendData.error === 'NO_GAMES_IN_BUDGET') {
-            if (freeOnly) setError('현재 무료 게임 중 추천 가능한 게임이 없어요')
-            else setError('예산 내 추천 가능한 게임이 없어요. 예산을 높여보세요')
-          } else {
-            setError(ERROR_MESSAGES[recommendData.error ?? 'GENERAL_ERROR'])
-          }
-          return
-        }
-
-        sessionStorage.setItem('playfit_recommendations', JSON.stringify(recommendData.recommendations))
-        sessionStorage.setItem('playfit_steam_id', '')
-        sessionStorage.setItem('playfit_play_profile', JSON.stringify(filledGames.slice(0, 5).map(g => ({ name: g.name.trim(), playtime_hours: parseFloat(g.playtime) || 0 })))
-        trackEvent('recommendation_generated', { mode: 'manual' })
-        router.push('/result')
+        requestBody = { manualGames: filledGames.map(g => ({ appid: g.appid, name: g.name.trim(), playtime_hours: parseFloat(g.playtime) || 0 })), budget: budgetValue, freeOnly }
+        analyticsMode = 'manual'
       }
+
+      const res = await fetch('/api/generate-recommendation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody),
+      })
+
+      const data = await res.json() as { id?: string; error?: ErrorCode; filters?: { budget?: number; freeOnly?: boolean } }
+
+      if (!res.ok || data.error) {
+        if (data.error === 'NO_GAMES_IN_BUDGET') {
+            if (data.filters?.freeOnly) setError('현재 무료 게임 중 추천 가능한 게임이 없어요')
+            else setError('예산 내 추천 가능한 게임이 없어요. 예산을 높여보세요')
+        } else {
+            setError(ERROR_MESSAGES[data.error ?? 'GENERAL_ERROR'])
+        }
+        return
+      }
+
+      trackEvent('recommendation_generated', { mode: analyticsMode })
+      router.push(`/result/${data.id}`)
+
     } catch {
       setError(ERROR_MESSAGES.GENERAL_ERROR)
     } finally {
       setLoading(false)
     }
   }
+
+  const urlValid = /steamcommunity\.com\/(id|profiles)\//.test(url)
 
   const canSubmit = mode === 'steam'
     ? !!url.trim()
@@ -278,26 +248,23 @@ export default function RecommendationForm() {
     setLoading(true)
     try {
       const budgetValue = !freeOnly && budget.trim() ? Number(budget) : undefined
-      const res = await fetch('/api/recommend', {
+      const res = await fetch('/api/generate-recommendation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ manualGames: games.map(g => ({ appid: g.appid, name: g.name, playtime_hours: g.playtime_hours })), budget: budgetValue, freeOnly }),
       })
-      const data = await res.json() as { recommendations?: RecommendationCard[]; error?: ErrorCode; filters?: { budget?: number; freeOnly?: boolean } }
+      const data = await res.json() as { id?: string; error?: ErrorCode; filters?: { budget?: number; freeOnly?: boolean } }
       if (!res.ok || data.error) {
         if (data.error === 'NO_GAMES_IN_BUDGET') {
-          if (freeOnly) setError('현재 무료 게임 중 추천 가능한 게임이 없어요')
+          if (data.filters?.freeOnly) setError('현재 무료 게임 중 추천 가능한 게임이 없어요')
           else setError('예산 내 추천 가능한 게임이 없어요. 예산을 높여보세요')
         } else {
           setError(ERROR_MESSAGES[data.error ?? 'GENERAL_ERROR'])
         }
         return
       }
-      sessionStorage.setItem('playfit_recommendations', JSON.stringify(data.recommendations))
-      sessionStorage.setItem('playfit_steam_id', steamId ?? '')
-      sessionStorage.setItem('playfit_play_profile', JSON.stringify(games.slice(0, 5).map(g => ({ name: g.name, playtime_hours: g.playtime_hours)))))
       trackEvent('recommendation_generated', { mode: 'library_pick' })
-      router.push('/result')
+      router.push(`/result/${data.id}`)
     } catch {
       setError(ERROR_MESSAGES.GENERAL_ERROR)
     } finally {
@@ -419,7 +386,7 @@ export default function RecommendationForm() {
 
             <button type="submit" className={`${styles.button}${loading ? ` ${styles.buttonLoading}` : ''}`} disabled={loading || !canSubmit}>
               {loading
-                ? (mode === 'manual' ? '취향 분석 중…' : '플레이 기록 분석 중…')
+                ? '취향 분석 중…'
                 : authState === 'steam' ? '내 게임 추천받기' : '내 게임 찾기'
               }
             </button>

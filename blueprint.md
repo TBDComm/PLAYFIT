@@ -1,45 +1,53 @@
-# Guildeline Performance Improvement Blueprint
 
-## 1. Overview
+# Playfit: AI 게임 추천기 블루프린트
 
-This document outlines a plan to diagnose and resolve performance bottlenecks in the Guildeline application. The primary user complaint is excessive loading times across the site. The root cause appears to be slow data fetching from external APIs (Steam) and on-demand, compute-intensive recommendation logic, without adequate caching or modern data loading strategies.
+## 1. 애플리케이션 개요
 
-Our goal is to transform the user experience from slow and frustrating to fast and responsive by implementing caching, streaming, and architectural optimizations.
+**Playfit**은 사용자의 Steam 플레이 기록을 기반으로 AI가 맞춤형 게임을 추천해주는 웹 서비스입니다. 사용자는 Steam 프로필 URL을 입력하거나, 직접 플레이한 게임 목록을 제공하여 자신의 취향에 맞는 새로운 게임을 발견할 수 있습니다.
 
-## 2. Current Architecture Analysis
+### 핵심 기능:
+- **데이터 기반 취향 분석**: Steam API를 통해 사용자의 게임 라이브러리, 플레이 시간을 수집하고, 게임 태그를 기반으로 사용자의 취향 프로필을 구축합니다.
+- **AI 기반 추천**: Claude AI 모델을 활용하여, 분석된 사용자 취향 프로필과 방대한 게임 데이터베이스를 비교하여 개인화된 추천 목록을 생성합니다.
+- **동적 결과 제공**: 생성된 모든 추천 결과는 고유한 URL을 통해 저장되고 제공되므로, 사용자는 언제든지 결과를 다시 확인하거나 다른 사람과 공유할 수 있습니다.
+- **지속적인 학습**: 사용자는 추천된 각 게임에 대해 "좋아요/싫어요" 피드백을 남길 수 있으며, 이 데이터는 향후 추천 알고리즘을 더욱 정교하게 만드는 데 사용됩니다.
 
-- **Framework:** Next.js with App Router
-- **Backend:** Next.js API Routes, Supabase (for user data/sessions), external Steam API, external Claude API.
-- **Core Feature:** Steam game recommendation based on user library analysis.
-- **Primary Bottleneck:** The recommendation generation process (`/api/recommend`) is slow. It involves fetching large amounts of data from the Steam API and performing real-time analysis for every request. Other pages also suffer from unoptimized data fetching.
+## 2. 아키텍처 및 구현 현황
 
-## 3. Improvement Plan
+이 문서는 가장 최근에 진행된 대규모 아키텍처 리팩토링 이후의 상태를 기준으로 작성되었습니다.
 
-### Step 1: Analyze Core Logic and Dependencies
-- **Action:** Read `package.json` to identify key libraries.
-- **Action:** Analyze the main recommendation API route (`app/api/recommend/route.ts`) to understand the data flow and business logic.
-- **Action:** Analyze related library files (`lib/steam.ts`, `lib/claude.ts`) to pinpoint slow external API interactions.
+### 백엔드 (통합 API)
+- **단일 엔드포인트**: 기존에 분산되어 있던 API들을 통합하여, 추천 생성의 모든 과정을 처리하는 단일 API 엔드포인트(`app/api/generate-recommendation/route.ts`)를 구축했습니다.
+- **효율적인 프로세스**: 이 엔드포인트는 Steam 데이터 조회, 사용자 프로필 분석, 후보 게임 점수화, AI 추천 생성, 데이터베이스 저장을 하나의 트랜잭션처럼 처리하며, `Promise.all` 등을 활용해 작업을 병렬화하여 성능을 극대화했습니다.
+- **코드베이스 정리**: 더 이상 사용되지 않는 레거시 API 파일들(`/api/steam`, `/api/recommend`, `/api/result`)은 모두 삭제하여 코드의 복잡성을 줄였습니다.
 
-### Step 2: Implement Caching & Streaming (Immediate Wins)
-- **Caching API Responses:**
-    - **Target:** All external API calls, especially to the Steam API.
-    - **Method:** Wrap data fetching functions in `lib/` with React's `cache()` function. This will memoize requests on the server within a request-response lifecycle, preventing redundant API calls for the same data. For more persistent caching, a time-based revalidation strategy will be used.
-- **Streaming UI with Suspense:**
-    - **Target:** Pages that wait for slow data, like the main page (`app/page.tsx`) and the results page (`app/result/page.tsx`).
-    - **Method:** Wrap the data-dependent components in `<Suspense>` with a loading fallback component (e.g., a skeleton loader). This will allow the server to stream the initial UI instantly while the slower data loads in the background, dramatically improving perceived performance.
-- **Converting `page.tsx`:**
-    - **Target:** The main `page.tsx`.
-    - **Method:** Convert the main component to an `async` component to enable server-side data fetching and Suspense.
+### 프론트엔드 (Next.js & React Server Components)
+- **관심사 분리**: 메인 입력 폼(`RecommendationForm.tsx`)의 역할을 사용자 입력 수집 및 단일 API 호출로 명확히 한정하여, 클라이언트 측의 복잡한 상태 관리를 제거하고 서버에 위임했습니다.
+- **동적 라우팅**: 추천 결과 페이지는 이제 `app/result/[id]/page.tsx` 동적 라우트로 구현됩니다. 이를 통해 `sessionStorage`에 대한 의존성을 제거하고, 모든 추천 결과를 영구적이고 공유 가능한 형태로 제공합니다.
+- **서버 중심 렌더링**: 결과 페이지는 서버 컴포넌트로 구현되어, URL의 `id`를 기반으로 서버에서 직접 데이터를 조회하고 렌더링합니다. 이는 초기 로딩 성능을 개선하고 클라이언트의 부담을 줄입니다.
 
-### Step 3: Architectural Enhancements (Long-Term Stability)
-- **Static Site Generation (SSG) for Content:**
-    - **Target:** Blog posts (`app/blog/[slug]/page.tsx`) and other static content pages.
-    - **Method:** Ensure these pages are rendered at build time using SSG. They are currently dynamic, which is unnecessary. This will make them load instantly from a CDN.
-- **Moving API Logic to the Edge:**
-    - **Target:** The recommendation API (`app/api/recommend/route.ts`).
-    - **Method:** Add `export const runtime = 'edge'` to the route file. This moves the serverless function to the Edge, which has lower latency for users globally. This requires ensuring all dependent libraries (like database clients) are edge-compatible.
-- **Background Data Sync (Advanced):**
-    - **Target:** User Steam library data.
-    - **Method:** Instead of fetching the entire library on each recommendation, fetch it once when the user links their account and store it in Supabase. Use a background job (e.g., a cron job via GitHub Actions or Vercel Cron Jobs) to periodically sync the library, so the data is always fresh and ready for fast lookups.
+### 데이터베이스 (Supabase)
+- **`recommendation_sets`**: 생성된 각 추천 목록을 저장하는 테이블입니다. 사용자의 취향 태그, 예산, 최종 추천 카드 목록(`cards`) 등이 포함됩니다. 이 테이블은 동적 결과 페이지의 핵심 데이터 소스입니다.
+- **`feedback`**: 사용자가 각 추천 게임에 대해 남긴 "좋아요/싫어요" 피드백을 저장하는 테이블입니다. 이 데이터는 추천 알고리즘의 점진적 개선을 위해 수집됩니다.
 
-This plan will be executed step-by-step to monitor improvements and ensure stability.
+### 디자인 및 UX
+- **모던 UI/UX**: 결과 페이지는 시각적 계층 구조, 반응형 레이아웃, 부드러운 애니메이션, 일관된 색상 팔레트 등 `frontend-design.md` 및 `web-design-guidelines.md` 원칙에 따라 새롭게 디자인되었습니다.
+- **피드백 시스템**: 사용자가 직관적으로 피드백을 남길 수 있도록 각 추천 카드에 `FeedbackButtons` 컴포넌트를 배치했습니다.
+
+## 3. 개발 계획
+
+### 현재 작업
+- **주제**: 대규모 아키텍처 리팩토링
+- **상태**: **완료**
+- **수행된 작업**:
+    1.  [x] 백엔드 로직을 단일 통합 API로 통합
+    2.  [x] 사용되지 않는 레거시 API 파일 제거
+    3.  [x] 프론트엔드 폼이 새로운 통합 API를 사용하도록 리팩토링
+    4.  [x] 정적 결과 페이지를 데이터베이스 ID 기반의 동적 라우트로 전환
+    5.  [x] 결과 페이지에 피드백 시스템 구현 및 UI/UX 개선
+
+## 4. 향후 발전 방향
+
+- **피드백 기반 알고리즘 고도화**: 수집된 `feedback` 데이터를 분석하여, 사용자가 '싫어요'한 게임의 특성을 다음 추천에서 제외하거나, '좋아요'한 게임의 특성에 가중치를 부여하는 등 추천 알고리즘 v2를 개발합니다.
+- **콘텐츠 확장**: 코드베이스에서 발견된 `content/blog/steam-genre-guide-action.tsx`와 같은 콘텐츠를 실제 블로그나 가이드 섹션으로 발전시켜, 사용자 유입을 늘리고 서비스의 전문성을 강화합니다.
+- **사용자 프로필**: 사용자가 자신의 과거 추천 기록과 피드백 내역을 확인할 수 있는 개인 프로필 페이지를 구축합니다.
+- **테스트 자동화**: Vitest와 React Testing Library를 사용하여 주요 기능에 대한 단위/통합 테스트를 작성하고, CI/CD 파이프라인에 통합하여 애플리케이션의 안정성을 확보합니다.

@@ -74,10 +74,10 @@ type ParsedUrl =
   | { type: 'invalid' }
 
 export function parseSteamUrl(url: string): ParsedUrl {
-  const profileMatch = url.match(/\/profiles\/(\d+)/
+  const profileMatch = url.match(/\/profiles\/(\d+)/)
   if (profileMatch) return { type: 'steamid', steamId: profileMatch[1] }
 
-  const vanityMatch = url.match(/\/id\/(\w+)/
+  const vanityMatch = url.match(/\/id\/(\w+)/)
   if (vanityMatch) return { type: 'vanity', vanity: vanityMatch[1] }
 
   return { type: 'invalid' }
