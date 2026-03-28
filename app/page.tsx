@@ -529,7 +529,6 @@ export default function Home() {
               className={styles.sampleThumb}
             />
             <div className={styles.sampleBody}>
-              <span className={styles.sampleBadge}>예시</span>
               <p className={styles.sampleName}>Hades</p>
               <p className={styles.sampleReason}>
                 <span className={styles.sampleReasonLabel}>왜 나한테 맞냐면</span>

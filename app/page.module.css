@@ -660,24 +660,33 @@
 
 .sampleCard {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: stretch;
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
   margin-top: 0.75rem;
+  transition: border-color 0.15s ease;
+}
+
+.sampleCard:hover {
+  border-color: var(--text-muted);
 }
 
 .sampleThumb {
-  width: 100%;
-  height: auto;
+  width: 30%;
+  flex-shrink: 0;
+  object-fit: cover;
   display: block;
+  align-self: stretch;
   background: var(--bg-elevated);
 }
 
 .sampleBody {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
   padding: 0.875rem 1rem;
 }
 
@@ -1148,6 +1157,16 @@
 
   .previewGrid {
     grid-template-columns: repeat(4, 1fr);
+  }
+
+  .sampleCard {
+    flex-direction: column;
+  }
+
+  .sampleThumb {
+    width: 100%;
+    aspect-ratio: 460 / 215;
+    align-self: auto;
   }
 
 }
