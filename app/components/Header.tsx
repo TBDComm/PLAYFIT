@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
 import { trackEvent } from '@/lib/analytics'
@@ -56,6 +57,7 @@ function Toast({ message }: { message: string }) {
 }
 
 export default function Header() {
+  const router = useRouter()
   const [session, setSession] = useState<Session | null>(null)
   const [steamId, setSteamId] = useState<string | null>(null)
   const [showLoginModal, setShowLoginModal] = useState(false)
@@ -72,6 +74,9 @@ export default function Header() {
   const [linkLoading, setLinkLoading] = useState(false)
   const [linkError, setLinkError] = useState<string | null>(null)
   const [toast, setToast] = useState<string | null>(null)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuBtnRef = useRef<HTMLButtonElement>(null)
+  const menuDropdownRef = useRef<HTMLDivElement>(null)
   const supabase = useMemo(() => createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -84,6 +89,7 @@ export default function Header() {
   const isSteamUser = session?.user?.email?.endsWith('@steam.playfit') ?? false
   const showLinkBtn = session !== null && !isSteamUser && steamId === null
   const showOAuth = loginView === 'login' || loginView === 'signup'
+  const userEmail = session?.user?.email ?? ''
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -128,6 +134,27 @@ export default function Header() {
     window.addEventListener('guildeline:open-login', handler)
     return () => window.removeEventListener('guildeline:open-login', handler)
   }, [])
+
+  // Close hamburger menu on Escape or outside click
+  useEffect(() => {
+    if (!menuOpen) return
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMenuOpen(false)
+    }
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        menuBtnRef.current?.contains(e.target as Node) ||
+        menuDropdownRef.current?.contains(e.target as Node)
+      ) return
+      setMenuOpen(false)
+    }
+    document.addEventListener('keydown', handleKey)
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('keydown', handleKey)
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [menuOpen])
 
   // Render Google Sign-In button via GIS renderButton (avoids FedCM dependency)
   useEffect(() => {
@@ -208,8 +235,8 @@ export default function Header() {
   }
 
   const handleLogout = async () => {
+    setMenuOpen(false)
     setLogoutLoading(true)
-    // Server-side signout: same @supabase/ssr package that set the cookie clears it
     await fetch('/api/auth/signout', { method: 'POST' })
     window.location.href = '/'
   }
@@ -321,17 +348,70 @@ export default function Header() {
       {toast && <Toast message={toast} />}
       <div className={styles.authFloat}>
         {session ? (
-          <>
-            {showLinkBtn && (
-              <button onClick={() => setShowLinkPopup(true)} className={styles.steamLinkBtn}>
-                Steam 연동
-              </button>
-            )}
-            <Link href="/settings" className={styles.settingsLink}>내 설정</Link>
-            <button onClick={handleLogout} className={styles.logoutBtn} disabled={logoutLoading}>
-              {logoutLoading ? '로그아웃 중…' : '로그아웃'}
+          <div className={styles.menuWrap}>
+            <button
+              ref={menuBtnRef}
+              className={styles.menuBtn}
+              onClick={() => setMenuOpen(o => !o)}
+              aria-label="메뉴 열기"
+              aria-expanded={menuOpen}
+              aria-haspopup="menu"
+            >
+              <span className={`${styles.menuBar} ${menuOpen ? styles.menuBarOpen1 : ''}`} />
+              <span className={`${styles.menuBar} ${menuOpen ? styles.menuBarOpen2 : ''}`} />
+              <span className={`${styles.menuBar} ${menuOpen ? styles.menuBarOpen3 : ''}`} />
             </button>
-          </>
+
+            {menuOpen && (
+              <div
+                ref={menuDropdownRef}
+                className={styles.dropdown}
+                role="menu"
+              >
+                {/* User info */}
+                <div className={styles.dropdownUser}>
+                  {isSteamUser ? (
+                    <span className={styles.dropdownEmail}>Steam 로그인</span>
+                  ) : (
+                    <span className={styles.dropdownEmail}>{userEmail}</span>
+                  )}
+                  {steamId ? (
+                    <span className={styles.dropdownSteamBadge}>Steam 연동됨</span>
+                  ) : (
+                    <button
+                      className={styles.dropdownSteamLink}
+                      onClick={() => { setMenuOpen(false); setShowLinkPopup(true) }}
+                      role="menuitem"
+                    >
+                      Steam 연동하기
+                    </button>
+                  )}
+                </div>
+
+                <div className={styles.dropdownDivider} />
+
+                <Link
+                  href="/settings"
+                  className={styles.dropdownItem}
+                  role="menuitem"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  내 설정
+                </Link>
+
+                <div className={styles.dropdownDivider} />
+
+                <button
+                  className={`${styles.dropdownItem} ${styles.dropdownLogout}`}
+                  onClick={handleLogout}
+                  disabled={logoutLoading}
+                  role="menuitem"
+                >
+                  {logoutLoading ? '로그아웃 중…' : '로그아웃'}
+                </button>
+              </div>
+            )}
+          </div>
         ) : (
           <button onClick={() => setShowLoginModal(true)} className={styles.loginBtn}>
             로그인

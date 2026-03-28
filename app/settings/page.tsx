@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import styles from './page.module.css'
 
@@ -9,11 +9,6 @@ type SteamState = 'loading' | 'linked' | 'unlinked'
 
 const MAX_WEIGHT = 3.0
 const MIN_WEIGHT = 0.1
-
-const supabase = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
 
 // ── Tag weight row — defined outside to prevent remount on every render ──
 function WeightRow({
@@ -90,6 +85,11 @@ function WeightRow({
 }
 
 export default function SettingsPage() {
+  const supabase = useMemo(() => createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  ), [])
+
   const [sessionToken, setSessionToken] = useState<string | null>(null)
   const [userId, setUserId] = useState<string | null>(null)
   const [authReady, setAuthReady] = useState(false)
