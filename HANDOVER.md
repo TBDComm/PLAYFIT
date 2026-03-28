@@ -89,6 +89,7 @@ _Pre-2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log_
 | 2026-03-28 | feat(ux): PageLoading on all pages while auth loading (home/result/settings) | `app/page.tsx`, `app/result/page.tsx`, `app/settings/SettingsClient.tsx` |
 | 2026-03-28 | fix(home): early-return loading broke IntersectionObserver+count-up (refs null) → replaced with fixed overlay so DOM always mounts | `app/page.tsx`, `app/page.module.css` |
 | 2026-03-28 | feat(home): library picker — Steam-linked users can pick up to 5 games from their library; modal with search + playtime display | `lib/steam.ts`, `app/api/steam/library/route.ts`, `app/components/LibraryPickerModal.tsx`, `app/components/LibraryPickerModal.module.css`, `app/page.tsx` |
+| 2026-03-28 | fix(library-picker): loading message wrong (was "플레이 기록" for library picks); body scroll not locked; "0개" button text; max-5 count label | `app/page.tsx`, `app/components/LibraryPickerModal.tsx`, `app/components/LibraryPickerModal.module.css` |
 
 ---
 

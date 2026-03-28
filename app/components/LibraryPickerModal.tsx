@@ -22,6 +22,12 @@ export default function LibraryPickerModal({ steamId, externalLoading, onClose, 
 
   useEffect(() => { setMounted(true) }, [])
 
+  // Lock body scroll while modal is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = '' }
+  }, [])
+
   useEffect(() => {
     fetch(`/api/steam/library?steamId=${steamId}`)
       .then(r => r.json())
@@ -76,7 +82,9 @@ export default function LibraryPickerModal({ steamId, externalLoading, onClose, 
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <div className={styles.header}>
           <span className={styles.title}>라이브러리에서 선택</span>
-          <span className={styles.count}>{selected.size} / 5 선택</span>
+          <span className={`${styles.count}${selected.size >= 5 ? ` ${styles.countFull}` : ''}`}>
+            {selected.size >= 5 ? '최대 선택 완료' : `${selected.size} / 5 선택`}
+          </span>
           <button className={styles.closeBtn} onClick={onClose} aria-label="닫기">✕</button>
         </div>
 
@@ -135,7 +143,7 @@ export default function LibraryPickerModal({ steamId, externalLoading, onClose, 
             onClick={handleConfirm}
             disabled={selected.size === 0 || externalLoading}
           >
-            {externalLoading ? '분석 중…' : `${selected.size}개 게임으로 추천받기`}
+            {externalLoading ? '분석 중…' : selected.size === 0 ? '게임을 선택해 주세요' : `${selected.size}개 게임으로 추천받기`}
           </button>
         </div>
       </div>

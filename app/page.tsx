@@ -115,6 +115,7 @@ export default function Home() {
   const [budget, setBudget] = useState('')
   const [freeOnly, setFreeOnly] = useState(false)
   const [loading, setLoading] = useState(false)
+  const loadingMsgRef = useRef<string>('플레이 기록 분석 중…')
   const statRef = useRef<HTMLSpanElement>(null)
   const urlValid = /steamcommunity\.com\/(id|profiles)\//.test(url)
   const [error, setError] = useState<string | null>(null)
@@ -376,6 +377,7 @@ export default function Home() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError(null)
+    loadingMsgRef.current = mode === 'manual' ? '취향 분석 중…' : '플레이 기록 분석 중…'
     setLoading(true)
 
     try {
@@ -518,6 +520,7 @@ export default function Home() {
   async function handleLibraryConfirm(games: LibraryGame[]) {
     setShowLibraryPicker(false)
     setError(null)
+    loadingMsgRef.current = '취향 분석 중…'
     setLoading(true)
     try {
       const budgetValue = !freeOnly && budget.trim() ? Number(budget) : undefined
@@ -564,9 +567,7 @@ export default function Home() {
         <div className={styles.authLoadingOverlay}><PageLoading /></div>
       )}
       {loading && (
-        <LoadingOverlay
-          message={mode === 'manual' ? '취향 분석 중…' : '플레이 기록 분석 중…'}
-        />
+        <LoadingOverlay message={loadingMsgRef.current} />
       )}
       {showLibraryPicker && steamId && (
         <LibraryPickerModal
