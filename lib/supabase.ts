@@ -6,6 +6,12 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
+// Service role client — bypasses RLS for server-side reads (e.g. user_tag_weights)
+const serviceSupabase = createClient(
+  supabaseUrl,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
+
 export async function isDbReady(): Promise<boolean> {
   const { count, error } = await supabase
     .from('games_cache')
@@ -36,7 +42,7 @@ export async function getUserTagWeights(
   by: 'user_id' | 'steam_id' = 'steam_id'
 ): Promise<Record<string, number>> {
   if (!id) return {}
-  const { data } = await supabase
+  const { data } = await serviceSupabase
     .from('user_tag_weights')
     .select('tag, weight')
     .eq(by, id)
