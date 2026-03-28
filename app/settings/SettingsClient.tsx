@@ -111,17 +111,33 @@ export default function SettingsClient() {
   const [weightsSaved, setWeightsSaved] = useState(false)
   const [weightsSaveError, setWeightsSaveError] = useState(false)
 
-  // Load session
+  // Load session — onAuthStateChange is more reliable than getSession alone:
+  // getSession can return null when the access token is expired mid-refresh.
+  // INITIAL_SESSION fires after the refresh completes with the real session.
   useEffect(() => {
+    // Fast path: grab immediately if token is fresh
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         setSessionToken(session.access_token)
         setUserId(session.user.id)
+        setAuthReady(true)
       }
-      setAuthReady(true)
-    }).catch(() => {
-      setAuthReady(true)
+    }).catch(() => { /* ignore, onAuthStateChange below will handle it */ })
+
+    // Reliable path: covers expired/refreshing tokens
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
+        setSessionToken(session?.access_token ?? null)
+        setUserId(session?.user.id ?? null)
+        setAuthReady(true)
+      } else if (event === 'SIGNED_OUT') {
+        setSessionToken(null)
+        setUserId(null)
+        setAuthReady(true)
+      }
     })
+
+    return () => subscription.unsubscribe()
   }, [supabase])
 
   // Load steam_id and tag weights in parallel once we have userId/token

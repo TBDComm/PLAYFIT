@@ -135,7 +135,7 @@ export default function Home() {
   const panelHideTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    async function loadSteam(session: { user: { id: string; email?: string } } | null) {
       if (!session) { setAuthState('anon'); return }
       const { data } = await supabase
         .from('user_profiles').select('steam_id').eq('id', session.user.id).maybeSingle()
@@ -150,7 +150,20 @@ export default function Home() {
       } else {
         setAuthState('unlinked_auth')
       }
+    }
+
+    // Fast path: use cached session if immediately available
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) loadSteam(session)
     })
+
+    // Reliable path: covers expired/refreshing tokens (fires after refresh completes)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'INITIAL_SESSION') loadSteam(session)
+      else if (event === 'SIGNED_OUT') { setAuthState('anon'); setUrl('') }
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   useEffect(() => {
