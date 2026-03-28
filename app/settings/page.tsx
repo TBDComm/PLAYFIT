@@ -1,5 +1,7 @@
 'use client'
 
+export const runtime = 'edge'
+
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import styles from './page.module.css'
@@ -118,6 +120,8 @@ export default function SettingsPage() {
         setSessionToken(session.access_token)
         setUserId(session.user.id)
       }
+      setAuthReady(true)
+    }).catch(() => {
       setAuthReady(true)
     })
   }, [])
