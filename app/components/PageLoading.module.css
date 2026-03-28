@@ -94,23 +94,31 @@
 }
 
 .progressFill {
-  height: 100%;
-  width: 0%;
-  background: var(--accent);
-  box-shadow: 0 0 10px var(--accent-glow), 0 0 20px rgba(200, 241, 53, 0.15);
-  animation: loadProgress 1.5s cubic-bezier(0.1, 0.4, 0.3, 1) forwards;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    transparent          0%,
+    rgba(200,241,53,.10) 20%,
+    rgba(200,241,53,.55) 44%,
+    var(--accent)        54%,
+    rgba(200,241,53,.55) 64%,
+    rgba(200,241,53,.10) 80%,
+    transparent          100%
+  );
+  animation: phosphorScan 2.4s ease-in-out infinite;
 }
 
-@keyframes loadProgress {
-  0%   { width: 0% }
-  40%  { width: 60% }
-  70%  { width: 78% }
-  90%  { width: 85% }
-  100% { width: 85% }
+@keyframes phosphorScan {
+  0%   { transform: translateX(-100%); opacity: 1; }
+  55%  { transform: translateX(200%);  opacity: 1; }
+  56%  { transform: translateX(-100%); opacity: 0; }
+  99%  { transform: translateX(-100%); opacity: 0; }
+  100% { transform: translateX(-100%); opacity: 1; }
 }
 
 /* ── Reduced motion ── */
 
 @media (prefers-reduced-motion: reduce) {
-  .progressFill { animation: none; width: 70%; }
+  .progressFill { animation: none; opacity: 0.35; }
 }

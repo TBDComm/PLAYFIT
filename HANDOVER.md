@@ -110,6 +110,7 @@ _2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log 2026-03-28_
 | 2026-03-28 | PageLoading: remove radar sweep, parallelogram HUD gauge (stall 85%) | PageLoading.tsx, PageLoading.module.css |
 | 2026-03-28 | LoadingOverlay: remove radar sweep, parallelogram terminal bars, fix overlay-backdrop variable | LoadingOverlay.tsx, LoadingOverlay.module.css |
 | 2026-03-28 | Loading gauge UX: state-driven macro bar in LoadingOverlay, termBar forwards, PageLoading 1.5s | LoadingOverlay.tsx/css, PageLoading.module.css |
+| 2026-03-28 | PageLoading: fake progress → indeterminate phosphor scan (infinite, no false progress) | PageLoading.module.css |
 
 ---
 
