@@ -189,6 +189,11 @@ export default function RecommendationForm() {
     e.preventDefault()
     if (authState === 'loading') return
     setError(null)
+    // Client-side validation — avoid unnecessary API round-trip
+    if (mode === 'steam' && !urlValid) {
+      setError(ERROR_MESSAGES.INVALID_URL)
+      return
+    }
     loadingMsgRef.current = '취향 분석 중…'
     setLoading(true)
 
@@ -272,6 +277,7 @@ export default function RecommendationForm() {
             {mode === 'steam' && authState === 'steam' ? (
               <div className={styles.inputWrapper}>
                 <p className={styles.steamAuthNotice}>Steam 계정이 연동되어 있어요</p>
+                <p className={styles.manualNotice}>연동된 계정의 플레이 기록으로 바로 취향을 분석해요</p>
                 <button type="button" className={styles.modeToggle} onClick={() => setShowLibraryPicker(true)} disabled={loading}>
                   또는 라이브러리에서 직접 선택 →
                 </button>
@@ -301,7 +307,7 @@ export default function RecommendationForm() {
             ) : (
               <div className={styles.inputWrapper}>
                 <span className={styles.label}>플레이한 게임 입력 (최대 5개)</span>
-                <p className={styles.manualNotice}>게임 이름은 영문으로 정확히 입력해야 분석이 가능해요 (예: Elden Ring, Stardew Valley)</p>
+                <p className={styles.manualNotice}>검색창에 이름을 입력하면 드롭다운에서 게임을 선택할 수 있어요</p>
                 <div className={styles.manualRows} role="group" aria-label="게임 목록">
                   {manualGames.map((g, i) => (
                     <div key={i}>
@@ -365,7 +371,7 @@ export default function RecommendationForm() {
               </label>
             </div>
 
-            <button type="submit" className={`${styles.button}${loading ? ` ${styles.buttonLoading}` : ''}`} disabled={loading || !canSubmit}>
+            <button type="submit" className={`${styles.button}${loading ? ` ${styles.buttonLoading}` : ''}`} disabled={loading || !canSubmit || authState === 'loading'}>
               {loading
                 ? '취향 분석 중…'
                 : authState === 'steam' ? '내 게임 추천받기' : '내 게임 찾기'
