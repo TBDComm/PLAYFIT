@@ -108,8 +108,9 @@ export default function RecommendationForm() {
       },
       { threshold: 0.08, rootMargin: '0px 0px -32px 0px' }
     )
-    if (formRevealRef.current) obs.observe(formRevealRef.current)
-    return () => { if (formRevealRef.current) obs.unobserve(formRevealRef.current) }
+    const el = formRevealRef.current
+    if (el) obs.observe(el)
+    return () => { if (el) obs.unobserve(el) }
   }, [])
 
   function updateManualGame(idx: number, field: 'playtime', value: string) {

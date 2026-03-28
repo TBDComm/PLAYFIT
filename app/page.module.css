@@ -359,19 +359,17 @@
 
   .tagScatterWrap { animation: opacityIn 0.8s ease both 100ms }
 
-  .formSection,
-  .previewSection {
+  .formSection {
     opacity: 0;
     transform: translateY(16px);
     transition: opacity 0.55s ease, transform 0.55s ease;
   }
-  .formSectionRevealed,
-  .previewSectionRevealed {
+  .formSectionRevealed {
     opacity: 1;
     transform: none;
   }
 
-  .previewSectionRevealed .previewTile {
+  .previewSection .previewTile {
     animation: tileFadeUp 0.5s ease backwards;
   }
 
@@ -655,14 +653,6 @@
 .sampleSection {
   width: 100%;
   padding: 2.5rem 1.5rem;
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.55s ease, transform 0.55s ease;
-}
-
-.sampleSectionRevealed {
-  opacity: 1;
-  transform: none;
 }
 
 /* ===== Sample result card ===== */

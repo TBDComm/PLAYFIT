@@ -99,7 +99,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
   animation: fadeIn 0.5s ease-out forwards;
   animation-delay: calc(var(--animation-order, 0) * 80ms);
   opacity: 0;

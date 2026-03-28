@@ -1,21 +1,13 @@
-import { createClient } from '@supabase/supabase-js'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 import { parseSteamUrl, resolveVanityUrl, getOwnedGames, getGameDetails } from '@/lib/steam'
 import { getRecommendations } from '@/lib/claude'
-import { isDbReady, getTagsForGames, getUserTagWeights, scoreCandidates } from '@/lib/supabase'
+import { isDbReady, getTagsForGames, getUserTagWeights, scoreCandidates, serviceSupabase } from '@/lib/supabase'
 import type { ErrorCode, PlayHistory, RecommendationCard } from '@/types'
 
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
-
-function getServiceSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
-}
 
 export async function POST(request: NextRequest) {
   const [cookieStore, body] = await Promise.all([
@@ -159,7 +151,7 @@ export async function POST(request: NextRequest) {
 
     // --- Final Step: Save to DB and return ID ---
     // Use service role to allow anonymous users to INSERT (anon key blocked by RLS)
-    const { data: dbData, error: dbError } = await getServiceSupabase()
+    const { data: dbData, error: dbError } = await serviceSupabase
       .from('recommendation_sets')
       .insert({
         user_id: userId,

@@ -6,7 +6,10 @@ export default function ScrollToTopButton() {
   return (
     <button
       className={styles.scrollToTop}
-      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      onClick={() => {
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' })
+      }}
     >
       맨 위로 올라가기
     </button>
