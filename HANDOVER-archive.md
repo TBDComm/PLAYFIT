@@ -1,5 +1,36 @@
 # HANDOVER Archive
 
+## Minor Changes Log — 2026-03-28
+
+| Date | Change | Files |
+|------|--------|-------|
+| 2026-03-28 | Remove all "AI" wording from meta/pages/blog | `layout.tsx`, `page.tsx`, `about`, `opengraph-image`, `terms`, `privacy`, 2 blog posts |
+| 2026-03-28 | bug(feedback): anon key → service role for `user_tag_weights` upsert | `api/feedback/route.ts` |
+| 2026-03-28 | bug(settings): server page + `SettingsWrapper`(dynamic ssr:false) + `SettingsClient`; `runtime=edge` ignored in `'use client'` files | `settings/` |
+| 2026-03-28 | bug(feedback): add Authorization header; `getUserId()` bearer-first auth | `api/feedback/route.ts`, `result/page.tsx` |
+| 2026-03-28 | bug(tag-weights GET): merge `user_id`+`steam_id` rows; fix empty state msg; parallelize profile+user_id queries | `api/tag-weights/route.ts`, `SettingsClient.tsx` |
+| 2026-03-28 | bug(auth): `getSession`→`onAuthStateChange(INITIAL_SESSION)` in home+settings; double-call guard; `SettingsWrapper` loading skeleton | `page.tsx`, `SettingsClient.tsx`, `SettingsWrapper.tsx` |
+| 2026-03-28 | bug(recommend): `getUserTagWeights` anon key singleton → RLS blocked → `serviceSupabase` | `lib/supabase.ts` |
+| 2026-03-28 | bug(feedback): feedback INSERT anon key → RLS blocked → `serviceSupabase` | `app/api/feedback/route.ts` |
+| 2026-03-28 | bug(auth): `TOKEN_REFRESHED` not handled in home+settings | `app/page.tsx`, `app/settings/SettingsClient.tsx` |
+| 2026-03-28 | feat(ux): PageLoading on all pages while auth loading | `app/page.tsx`, `app/result/page.tsx`, `app/settings/SettingsClient.tsx` |
+| 2026-03-28 | fix(home): early-return loading broke IntersectionObserver refs → fixed overlay | `app/page.tsx`, `app/page.module.css` |
+| 2026-03-28 | feat(home): library picker modal — Steam-linked users pick up to 5 games | `lib/steam.ts`, `api/steam/library/route.ts`, `LibraryPickerModal.tsx/.css` |
+| 2026-03-28 | fix(library-picker): loading message, body scroll, "0개" button, max-5 label; thumbnails lazy; 7 guideline violations | `page.tsx`, `LibraryPickerModal.tsx/.css` |
+| 2026-03-28 | fix(guidelines): Gemini review — CSS variables, handleUnsave parallel, overscroll, aria-labels | `globals.css`, `page.module.css`, `SavedGames.tsx` |
+| 2026-03-28 | refactor(supabase): createBrowserClient @supabase/auth-helpers-nextjs → @supabase/ssr | `FeedbackButtons.tsx`, `RecommendationForm.tsx`, `Header.tsx`, `SavedGames.tsx`, `SettingsClient.tsx`, `reset-password/page.tsx` |
+| 2026-03-28 | fix(styles): overscroll-behavior-x savedStrip; hardcoded hex → CSS vars in LibraryPickerModal, result page | `page.module.css`, `LibraryPickerModal.module.css`, `result/[id]/page.module.css`, `globals.css` |
+| 2026-03-28 | fix(guidelines): 6 violations — supabase module scope, serviceSupabase, aria-label+role=dialog, box-shadow transition | `FeedbackButtons.tsx`, `api/tag-weights/route.ts`, `LibraryPickerModal.tsx`, `SettingsClient.tsx`, `result/[id]/page.module.css` |
+| 2026-03-28 | fix(guidelines): sampleSection/previewSection invisible, stale ref, ScrollToTopButton reduced-motion, unused import | `page.module.css`, `result/[id]/page.module.css`, `RecommendationForm.tsx`, `ScrollToTopButton.tsx`, `SavedGames.tsx` |
+| 2026-03-28 | feat(result): Gemini refactor — sessionStorage→DB-persisted results, `/result/[id]` route, `recommendation_sets` table, library picker integration | `RecommendationForm.tsx`, `page.module.css`, `result/[id]/` (new), `api/generate-recommendation/` (new); deleted old result+recommend+steam routes |
+| 2026-03-28 | fix(result): params→Promise<{id}>, cookies()+json() parallel, service-role INSERT | `result/[id]/page.tsx`, `api/generate-recommendation/route.ts` |
+| 2026-03-28 | refactor(code-quality): globals.css variables, serviceSupabase centralized, callApi helper, Array.isArray guards | `globals.css`, `Header.module.css`, `reset-password/page.module.css`, `settings/page.module.css`, `games/[appid]/page.module.css`, `lib/supabase.ts`, `api/feedback/route.ts`, `package.json`, `RecommendationForm.tsx`, `result/[id]/page.tsx` |
+| 2026-03-28 | ux(home): 5 improvements — auth-loading submit disabled, steam subtitle, URL validation, manual notice, sample card order | `RecommendationForm.tsx`, `page.tsx` |
+| 2026-03-28 | fix(saved-games): wrap in savedSection (padding/bg/border-top); skeleton pulse animation; savedGamesSkeleton updated | `SavedGames.tsx`, `page.module.css` |
+| 2026-03-28 | fix(design): 7-point audit — CSS variables (accent-faint/trace/overlay-backdrop), border-radius var(--radius), LoadingOverlay rgba→vars, LibraryPickerModal backdrop var | `globals.css`, `LoadingOverlay.module.css`, `LibraryPickerModal.module.css`, `page.module.css`, `SavedGames.tsx`, `Header.module.css` |
+
+---
+
 ## Minor Changes Log — 2026-03-21 to 2026-03-27
 
 | Date | Change | Files |
