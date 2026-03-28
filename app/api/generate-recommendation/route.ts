@@ -18,7 +18,10 @@ function getServiceSupabase() {
 }
 
 export async function POST(request: NextRequest) {
-  const cookieStore = await cookies()
+  const [cookieStore, body] = await Promise.all([
+    cookies(),
+    request.json() as Promise<{ url?: unknown; manualGames?: unknown; budget?: unknown; freeOnly?: unknown }>,
+  ])
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -29,12 +32,6 @@ export async function POST(request: NextRequest) {
       },
     }
   )
-  const body = (await request.json()) as {
-    url?: unknown
-    manualGames?: unknown
-    budget?: unknown
-    freeOnly?: unknown
-  }
 
   try {
     const [{ data: { session } }, dbReady] = await Promise.all([

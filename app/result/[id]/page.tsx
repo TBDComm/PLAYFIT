@@ -12,7 +12,7 @@ import styles from './page.module.css'
 import type { RecommendationCard } from '@/types'
 
 interface ResultPageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export const metadata: Metadata = {
@@ -44,7 +44,8 @@ async function getRecommendationSet(id: string) {
 }
 
 export default async function ResultPage({ params }: ResultPageProps) {
-  const result = await getRecommendationSet(params.id)
+  const { id } = await params
+  const result = await getRecommendationSet(id)
   if (!result) notFound()
 
   const { cards, tags, created_at, budget_krw, steam_id } = result
