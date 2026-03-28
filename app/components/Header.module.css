@@ -291,7 +291,7 @@
 .card {
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -368,7 +368,7 @@
 .steamBtn {
   width: 100%;
   padding: 10px 16px;
-  border-radius: 6px;
+  border-radius: var(--radius);
   font-size: 0.9375rem;
   font-weight: 500;
   display: flex;
@@ -393,7 +393,7 @@
   padding: 15px 20px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius);
   text-align: center;
   font-size: 0.875rem;
   color: var(--text-secondary);
@@ -425,7 +425,7 @@
   padding: 8px 12px;
   background: var(--bg-surface);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius);
   color: var(--text-primary);
   font-size: 0.9375rem;
   transition: border-color 150ms, box-shadow 150ms;
@@ -441,7 +441,7 @@
 .primaryBtn {
   width: 100%;
   padding: 9px 16px;
-  border-radius: 6px;
+  border-radius: var(--radius);
   font-size: 0.9375rem;
   font-weight: 600;
   background: var(--github-green);

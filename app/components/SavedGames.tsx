@@ -116,7 +116,7 @@ export default function SavedGames() {
 
       {authState === 'loading' && (
         <div className={styles.savedStrip}>
-          {[...Array(4)].map((_, i) => <div key={i} className={styles.savedPlaceholder} />)}
+          {[...Array(4)].map((_, i) => <div key={i} className={`${styles.savedPlaceholder} ${styles.savedPlaceholderSkeleton}`} />)}
         </div>
       )}
 

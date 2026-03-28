@@ -41,6 +41,8 @@
 
   /* Accent hover + tints */
   --accent-hover: #d4f54a;
+  --accent-faint: rgba(200, 241, 53, 0.04);
+  --accent-trace: rgba(200, 241, 53, 0.18);
   --accent-soft:  rgba(200, 241, 53, 0.15);
   --accent-low:   rgba(200, 241, 53, 0.25);
   --accent-mid:   rgba(200, 241, 53, 0.30);
@@ -58,6 +60,7 @@
   --overlay-lg:       rgba(0, 0, 0, 0.65);
   --overlay-xl:       rgba(0, 0, 0, 0.78);
   --overlay-gradient: rgba(0, 0, 0, 0.88);
+  --overlay-backdrop: rgba(9, 9, 11, 0.85);
 
   /* Box-shadow tints */
   --shadow-sm: rgba(0, 0, 0, 0.50);

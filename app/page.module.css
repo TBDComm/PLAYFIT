@@ -315,7 +315,7 @@
 .steamAuthNotice {
   font-size: 0.875rem;
   color: var(--accent);
-  padding: 10px 0;
+  padding: 0.625rem 0;
 }
 
 .manualNotice {
@@ -922,6 +922,21 @@
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+}
+
+/* Loading skeleton variant — pulse animation */
+@media (prefers-reduced-motion: no-preference) {
+  .savedPlaceholderSkeleton {
+    animation: savedSkelPulse 1.4s ease-in-out infinite;
+  }
+  .savedPlaceholderSkeleton:nth-child(2) { animation-delay: 0.12s; }
+  .savedPlaceholderSkeleton:nth-child(3) { animation-delay: 0.24s; }
+  .savedPlaceholderSkeleton:nth-child(4) { animation-delay: 0.36s; }
+}
+
+@keyframes savedSkelPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
 }
 
 /* Portrait card — fixed 120px, panel is a floating portal overlay */

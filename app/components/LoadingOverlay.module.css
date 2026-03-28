@@ -89,8 +89,8 @@
     from 0deg,
     transparent 0%,
     transparent 55%,
-    rgba(200, 241, 53, 0.04) 75%,
-    rgba(200, 241, 53, 0.18) 100%
+    var(--accent-faint) 75%,
+    var(--accent-trace) 100%
   );
   animation: sweep 2.5s linear infinite;
 }
@@ -102,7 +102,7 @@
   left: 50%;
   width: calc(50% - 5px);
   height: 1px;
-  background: linear-gradient(to right, rgba(200, 241, 53, 0.3), var(--accent));
+  background: linear-gradient(to right, var(--accent-mid), var(--accent));
   transform-origin: left center;
   animation: sweep 2.5s linear infinite;
 }
