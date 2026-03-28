@@ -65,67 +65,52 @@
   opacity: 0.7;
 }
 
-.radarTrail {
-  position: absolute;
-  inset: 3px;
-  border-radius: 50%;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0%,
-    transparent 55%,
-    rgba(200, 241, 53, 0.04) 75%,
-    rgba(200, 241, 53, 0.18) 100%
-  );
-  animation: sweep 2.5s linear infinite;
-}
-
-.radarLine {
-  position: absolute;
-  top: calc(50% - 0.5px);
-  left: 50%;
-  width: calc(50% - 5px);
-  height: 1px;
-  background: linear-gradient(to right, rgba(200, 241, 53, 0.3), var(--accent));
-  transform-origin: left center;
-  animation: sweep 2.5s linear infinite;
-}
-
-@keyframes sweep {
-  from { transform: rotate(-90deg); }
-  to   { transform: rotate(270deg); }
-}
-
-/* ── Progress bar ── */
+/* ── Progress gauge (parallelogram) ── */
 
 .progressTrack {
-  width: 72px;
-  height: 2px;
-  background: var(--border);
-  border-radius: 1px;
+  position: relative;
+  width: 200px;
+  height: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
   overflow: hidden;
+  transform: skewX(-20deg);
+}
+
+/* Segment dividers — HUD block style */
+.progressTrack::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to right,
+    transparent 0px,
+    transparent 17px,
+    var(--bg) 17px,
+    var(--bg) 19px
+  );
+  z-index: 1;
+  pointer-events: none;
 }
 
 .progressFill {
   height: 100%;
   width: 0%;
   background: var(--accent);
-  border-radius: 1px;
-  box-shadow: 0 0 6px var(--accent-glow);
+  box-shadow: 0 0 10px var(--accent-glow), 0 0 20px rgba(200, 241, 53, 0.15);
   animation: loadProgress 5s cubic-bezier(0.1, 0.4, 0.3, 1) forwards;
 }
 
 @keyframes loadProgress {
   0%   { width: 0% }
-  40%  { width: 65% }
-  70%  { width: 82% }
-  90%  { width: 90% }
-  100% { width: 93% }
+  40%  { width: 60% }
+  70%  { width: 78% }
+  90%  { width: 85% }
+  100% { width: 85% }
 }
 
 /* ── Reduced motion ── */
 
 @media (prefers-reduced-motion: reduce) {
-  .radarTrail,
-  .radarLine { animation: none; }
   .progressFill { animation: none; width: 70%; }
 }

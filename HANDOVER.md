@@ -107,6 +107,7 @@ _2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log 2026-03-28_
 |------|--------|-------|
 | 2026-03-28 | Add home loading screen + progress bar gauge to PageLoading | app/loading.tsx, PageLoading.tsx, PageLoading.module.css |
 | 2026-03-28 | Result page: horizontal compact card list + color-coded Metacritic + tag line nowrap | result/[id]/page.tsx, page.module.css |
+| 2026-03-28 | PageLoading: remove radar sweep, parallelogram HUD gauge (stall 85%) | PageLoading.tsx, PageLoading.module.css |
 
 ---
 
