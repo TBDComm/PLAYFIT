@@ -708,7 +708,7 @@ export default function Home() {
             />
             <div className={styles.sampleBody}>
               <span className={styles.sampleBadge}>예시</span>
-              <h3 className={styles.sampleName}>Hades</h3>
+              <p className={styles.sampleName}>Hades</p>
               <p className={styles.sampleReason}>
                 <span className={styles.sampleReasonLabel}>왜 나한테 맞냐면</span>
                 <br />

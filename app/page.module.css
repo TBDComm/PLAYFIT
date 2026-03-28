@@ -654,10 +654,6 @@
   transition: border-color 0.15s ease;
 }
 
-.sampleCard:hover {
-  border-color: var(--text-muted);
-}
-
 .sampleThumb {
   width: 36%;
   flex-shrink: 0;
@@ -674,7 +670,7 @@
 
 .sampleBadge {
   display: inline-block;
-  font-size: 0.5875rem;
+  font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
