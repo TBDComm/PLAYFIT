@@ -90,7 +90,7 @@ _2026-03-21 to 2026-03-27 entries → HANDOVER-archive.md §Minor Changes Log_
 - 2026-03-28 settings: supabase module-level → useMemo (fixes blank page bug)
 - 2026-03-28 crash fix: remove unused useRouter from Header; remove CSS custom property inline style (→ plain width) in settings skeleton
 - 2026-03-28 bug fix: feedback/route.ts used anon key client for user_tag_weights upsert — RLS silently blocked writes; switched to service role client
-- 2026-03-28 bug fix: settings page infinite load — added `export const runtime = 'edge'` + getSession() catch handler
+- 2026-03-28 bug fix: settings page infinite load — restructured to server page.tsx (runtime=edge, dynamic ssr:false) + SettingsClient.tsx; `export const runtime` is ignored in 'use client' files
 - 2026-03-28 /settings page: Steam re-link + tag weight bar graph editor (GET/PUT /api/tag-weights)
 - 2026-03-28 Header: added "내 설정" link → /settings; removed "Steam 연동됨" text (status visible in settings)
 
