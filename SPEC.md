@@ -233,6 +233,20 @@ CE-4 covers silent failure feedback handling. No separate work.
 
 ---
 
+### CE-16 — Skeleton UI on page transitions
+
+**Background:** Currently `app/loading.tsx` shows a full-page centered loading screen (wordmark + radar + phosphor scan). Skeleton UI shows the page layout with placeholder shapes before content loads — reduces perceived wait time and lets users see structure immediately.
+
+**Scope:**
+- Replace `app/loading.tsx` full-page approach with per-page skeleton layouts
+- Pages: `/` (home), `/genre`, `/blog`, `/games/[appid]`
+- The phosphor scan gauge moves to a fixed top bar (NProgress style) over the skeleton, or is removed
+- `PageLoading` component retired or repurposed
+
+**Decision deferred:** CE-series must be complete first. Skeleton per page is significant scope.
+
+---
+
 ### CE-15 — Steam linking: add value proposition copy in dropdown
 
 **Problem:** `Header.tsx:379-385` — "Steam 연동하기" button in dropdown has no context. Users don't know what they gain from linking.

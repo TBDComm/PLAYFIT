@@ -71,6 +71,7 @@ Next action: [exactly what to do next to resume]
 | CE-13 | Saved games: image load failure fallback | ⏳ |
 | CE-14 | Result cards: reduce animation stagger 80ms → 40ms | ⏳ |
 | CE-15 | Steam linking: add value proposition copy in dropdown | ⏳ |
+| CE-16 | Skeleton UI on page transitions (deferred, post CE-series) | ⏳ |
 
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ✅ · NEXT_PUBLIC_ADSENSE_CLIENT_ID ⏳
 
