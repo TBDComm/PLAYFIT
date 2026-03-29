@@ -101,9 +101,9 @@ export default async function ResultPage({ params }: ResultPageProps) {
               <Image
                 src={`https://cdn.akamai.steamstatic.com/steam/apps/${card.appid}/header.jpg`}
                 alt={`${card.name} 게임 표지`}
-                fill
-                sizes="(max-width: 480px) 100vw, 240px"
-                style={{ objectFit: 'cover' }}
+                width={460}
+                height={215}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                 priority={index < 3}
                 unoptimized
               />
