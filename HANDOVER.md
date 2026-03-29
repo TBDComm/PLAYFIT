@@ -123,6 +123,7 @@ _2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log 2026-03-28_
 | 2026-03-29 | result page: thumbnail fixed width (220px) + natural aspect ratio (no crop); remove "왜 나한테 맞냐면" label | result/[id]/page.tsx, page.module.css |
 | 2026-03-29 | result page: card hover → accent border + lime glow; heroSubtitle tags nowrap confirmed | result/[id]/page.module.css |
 | 2026-03-29 | result page: thumbnail fill+stretch restored (240px wide), fills card height on left | result/[id]/page.tsx, page.module.css |
+| 2026-03-29 | result page: card layout more spacious (padding/spacing up), feedback buttons bottom-right | result/[id]/page.module.css |
 | 2026-03-29 | fix: add res.ok guards to getOwnedGames, getAllLibraryGames, resolveVanityUrl | lib/steam.ts |
 | 2026-03-29 | fix: price caching in games_cache — DB-first lookup, Steam only for cache misses | lib/supabase.ts, generate-recommendation/route.ts |
 | 2026-03-29 | fix: cap Steam fetches at 15 — CF Workers free plan 50 subrequest/invocation limit | generate-recommendation/route.ts |
