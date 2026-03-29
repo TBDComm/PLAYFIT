@@ -119,6 +119,7 @@ _2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log 2026-03-28_
 | 2026-03-29 | remove dead code: showLinkBtn unused variable in Header | Header.tsx |
 | 2026-03-29 | fix: getGameDetails throws on Steam rate-limit — add res.ok guard | lib/steam.ts |
 | 2026-03-29 | fix: add candidates.length===0 guard + diagnostic logs + Supabase error → JSON | generate-recommendation/route.ts |
+| 2026-03-29 | restore: result page horizontal compact layout (ed94977) — 477f2f2 restore went too far back to grid | result/[id]/page.tsx, page.module.css |
 | 2026-03-29 | fix: add res.ok guards to getOwnedGames, getAllLibraryGames, resolveVanityUrl | lib/steam.ts |
 | 2026-03-29 | fix: price caching in games_cache — DB-first lookup, Steam only for cache misses | lib/supabase.ts, generate-recommendation/route.ts |
 | 2026-03-29 | fix: cap Steam fetches at 15 — CF Workers free plan 50 subrequest/invocation limit | generate-recommendation/route.ts |
