@@ -134,6 +134,7 @@ _2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log 2026-03-28_
 | 2026-03-29 | ux: feedback buttons → right-side column, +/- square buttons, hint label vertical text | result/[id]/FeedbackButtons.tsx, feedback.module.css, page.tsx, page.module.css |
 | 2026-03-29 | fix: feedback.module.css prefers-reduced-motion + hint font 0.6→0.65rem | result/[id]/feedback.module.css |
 | 2026-03-29 | ux: feedback buttons fill column (flex:1, width:80px), hint label removed | result/[id]/FeedbackButtons.tsx, feedback.module.css |
+| 2026-03-29 | ux: feedback notice above results + footer feedback box with accent border | result/[id]/page.tsx, page.module.css |
 
 ---
 

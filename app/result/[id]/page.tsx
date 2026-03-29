@@ -90,6 +90,10 @@ export default async function ResultPage({ params }: ResultPageProps) {
         )}
       </section>
 
+      <p className={styles.feedbackHint}>
+        카드 오른쪽 버튼으로 피드백을 남기면 다음 추천이 더 정확해져요.
+      </p>
+
       <ul className={styles.resultsContainer}>
         {typedCards.map((card, index) => (
           <li
@@ -143,11 +147,13 @@ export default async function ResultPage({ params }: ResultPageProps) {
       </ul>
 
       <footer className={styles.footer}>
-        <p>추천 결과가 마음에 드시나요?</p>
-        <p className={styles.footerNotice}>
-          각 게임에 대한 <strong>좋아요/싫어요</strong> 피드백을 남겨주시면
-          다음 추천이 더 정확해집니다.
-        </p>
+        <div className={styles.footerFeedbackBox}>
+          <p className={styles.footerFeedbackTitle}>피드백이 추천을 바꿔요</p>
+          <p className={styles.footerFeedbackDesc}>
+            카드 오른쪽 <strong>+ / −</strong> 버튼으로 남긴 피드백은
+            계정 가중치에 반영되어 다음 추천을 더 정확하게 만들어요.
+          </p>
+        </div>
         <ScrollToTopButton />
       </footer>
     </main>
