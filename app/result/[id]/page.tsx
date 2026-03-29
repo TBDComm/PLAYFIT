@@ -106,6 +106,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
             </div>
             <div className={styles.cardBody}>
               <h2 className={styles.cardName}>{card.name}</h2>
+              <hr className={styles.cardDivider} />
               <div className={styles.meta}>
                 {card.is_free ? (
                   <span className={`${styles.price} ${styles.free}`}>무료</span>
@@ -118,7 +119,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
                 )}
                 {card.metacritic_score != null && (
                   <span className={`${styles.score} ${getScoreClass(card.metacritic_score, styles)}`}>
-                    메타크리틱&nbsp;{card.metacritic_score}
+                    MC&nbsp;{card.metacritic_score}
                   </span>
                 )}
               </div>
