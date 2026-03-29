@@ -113,7 +113,7 @@ _2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log 2026-03-28_
 | 2026-03-28 | Loading gauge UX: state-driven macro bar in LoadingOverlay, termBar forwards, PageLoading 1.5s | LoadingOverlay.tsx/css, PageLoading.module.css |
 | 2026-03-28 | PageLoading: fake progress → indeterminate phosphor scan (infinite, no false progress) | PageLoading.module.css |
 | 2026-03-29 | LoadingOverlay: radar SVG → logo outline glow via rotating drop-shadow offset | LoadingOverlay.tsx, LoadingOverlay.module.css |
-| 2026-03-29 | Result page: rollback to pre-ed94977 (grid cards, image overlay, accent storeLink button) | result/[id]/page.tsx, page.module.css |
+| 2026-03-29 | Result page: restore ed94977 layout (horizontal cards, thumbnail, color-coded metacritic) | result/[id]/page.tsx, page.module.css |
 
 ---
 
