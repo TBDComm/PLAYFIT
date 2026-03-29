@@ -223,6 +223,6 @@ export async function POST(request: NextRequest) {
   } catch (e: unknown) {
     const err = e as Error
     console.error('[generate-recommendation] GENERAL_ERROR:', err.message, err.stack)
-    return NextResponse.json({ error: 'GENERAL_ERROR' satisfies ErrorCode }, { status: 500 })
+    return NextResponse.json({ error: 'GENERAL_ERROR' satisfies ErrorCode, _debug: err.message }, { status: 500 })
   }
 }
