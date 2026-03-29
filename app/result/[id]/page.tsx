@@ -11,12 +11,6 @@ import FeedbackButtons from './FeedbackButtons'
 import styles from './page.module.css'
 import type { RecommendationCard } from '@/types'
 
-function getScoreClass(score: number, styles: Record<string, string>): string {
-  if (score >= 80) return styles.scoreHigh
-  if (score >= 60) return styles.scoreMid
-  return styles.scoreLow
-}
-
 interface ResultPageProps {
   params: Promise<{ id: string }>
 }
@@ -90,27 +84,28 @@ export default async function ResultPage({ params }: ResultPageProps) {
         )}
       </section>
 
-      <ul className={styles.resultsContainer}>
+      <div className={styles.resultsContainer}>
         {typedCards.map((card, index) => (
-          <li
+          <div
             key={card.appid}
             className={styles.card}
             style={{ '--animation-order': index } as React.CSSProperties}
           >
-            <div className={styles.thumbnailWrap}>
+            <div className={styles.cardImageContainer}>
               <Image
                 src={`https://cdn.akamai.steamstatic.com/steam/apps/${card.appid}/header.jpg`}
                 alt={`${card.name} 게임 표지`}
                 fill
-                sizes="(max-width: 480px) 100vw, 26vw"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 style={{ objectFit: 'cover' }}
                 priority={index < 3}
                 unoptimized
               />
+              <div className={styles.cardImageOverlay} />
             </div>
-            <div className={styles.cardBody}>
-              <h2 className={styles.cardName}>{card.name}</h2>
-              <div className={styles.meta}>
+            <div className={styles.cardContent}>
+              <h2 className={styles.cardTitle}>{card.name}</h2>
+              <div className={styles.cardMeta}>
                 {card.is_free ? (
                   <span className={`${styles.price} ${styles.free}`}>무료</span>
                 ) : (
@@ -121,13 +116,10 @@ export default async function ResultPage({ params }: ResultPageProps) {
                   </span>
                 )}
                 {card.metacritic_score != null && (
-                  <span className={`${styles.score} ${getScoreClass(card.metacritic_score, styles)}`}>
-                    메타크리틱&nbsp;{card.metacritic_score}
-                  </span>
+                  <span className={styles.metacritic}>{card.metacritic_score}</span>
                 )}
               </div>
-              <p className={styles.reasonLabel}>왜 나한테 맞냐면</p>
-              <p className={styles.reason}>{card.reason}</p>
+              <p className={styles.cardReason}>{card.reason}</p>
               <div className={styles.cardTags}>
                 {(card.tag_snapshot ?? []).map((tag: string) => (
                   <span key={tag} className={styles.tag}>{tag}</span>
@@ -140,7 +132,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
                   rel="noopener noreferrer"
                   className={styles.storeLink}
                 >
-                  Steam에서 보기 →
+                  스토어에서 보기
                 </a>
                 <FeedbackButtons
                   appId={card.appid}
@@ -149,9 +141,9 @@ export default async function ResultPage({ params }: ResultPageProps) {
                 />
               </div>
             </div>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
 
       <footer className={styles.footer}>
         <p>추천 결과가 마음에 드시나요?</p>

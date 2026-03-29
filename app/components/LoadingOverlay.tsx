@@ -35,15 +35,10 @@ export default function LoadingOverlay({ message }: Props) {
           <span className={styles.accent}>GUILD</span>ELINE
         </p>
 
-        {/* Radar */}
-        <div className={styles.radar} aria-hidden="true">
-          <svg className={styles.radarSvg} viewBox="0 0 72 72" fill="none">
-            <circle cx="36" cy="36" r="33" className={styles.radarRing} />
-            <circle cx="36" cy="36" r="18" className={styles.radarRingInner} />
-            <line x1="3" y1="36" x2="69" y2="36" className={styles.radarCross} />
-            <line x1="36" y1="3" x2="36" y2="69" className={styles.radarCross} />
-            <circle cx="36" cy="36" r="2" className={styles.radarDot} />
-          </svg>
+        {/* Icon with rotating glow */}
+        <div className={styles.iconWrap} aria-hidden="true">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/guildeline-logo.png" alt="" className={styles.iconImg} />
         </div>
 
         {/* Stage-driven progress gauge */}

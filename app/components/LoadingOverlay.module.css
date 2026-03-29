@@ -42,42 +42,46 @@
   100% { transform: translateX(0); opacity: 1; }
 }
 
-/* ── Radar ── */
+/* ── Icon with rotating clockwise glow ── */
 
-.radar {
+.iconWrap {
   position: relative;
   width: 72px;
   height: 72px;
+  z-index: 0;
 }
 
-.radarSvg {
+.iconWrap::before {
+  content: '';
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  inset: -8px;
+  border-radius: 20px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    transparent 65%,
+    var(--accent) 82%,
+    var(--accent) 90%,
+    transparent 100%
+  );
+  animation: iconGlowSpin 2s linear infinite;
+  filter: blur(7px);
+  z-index: -1;
 }
 
-.radarRing {
-  stroke: var(--accent);
-  stroke-width: 0.75;
-  opacity: 0.25;
+.iconImg {
+  position: relative;
+  z-index: 1;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: var(--bg-elevated);
 }
 
-.radarRingInner {
-  stroke: var(--accent);
-  stroke-width: 0.5;
-  opacity: 0.15;
-}
-
-.radarCross {
-  stroke: var(--accent);
-  stroke-width: 0.5;
-  opacity: 0.12;
-}
-
-.radarDot {
-  fill: var(--accent);
-  opacity: 0.7;
+@keyframes iconGlowSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
 
