@@ -35,9 +35,8 @@ export default function LoadingOverlay({ message }: Props) {
           <span className={styles.accent}>GUILD</span>ELINE
         </p>
 
-        {/* Icon with orbiting glow */}
+        {/* Icon — outline glow orbits via drop-shadow offset rotation */}
         <div className={styles.iconWrap} aria-hidden="true">
-          <div className={styles.glowOrbit} />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/guildeline-logo.png" alt="" className={styles.iconImg} />
         </div>

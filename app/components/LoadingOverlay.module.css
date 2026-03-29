@@ -42,64 +42,52 @@
   100% { transform: translateX(0); opacity: 1; }
 }
 
-/* ── Icon with orbiting clockwise glow ── */
+/* ── Icon — outline glow via rotating drop-shadow offset ── */
 
 .iconWrap {
-  position: relative;
   width: 72px;
   height: 72px;
 }
 
-/* Spinning container — carries the glow dot around the icon */
-.glowOrbit {
-  position: absolute;
-  inset: 0;
-  animation: orbitSpin 2.2s linear infinite;
-  pointer-events: none;
-}
-
-/* Bright orbiting light point */
-.glowOrbit::before {
-  content: '';
-  position: absolute;
-  top: -16px;
-  left: 50%;
-  width: 32px;
-  height: 32px;
-  margin-left: -16px;
-  border-radius: 50%;
-  background: var(--accent);
-  filter: blur(12px);
-  opacity: 0.95;
-}
-
-/* Soft trailing bloom */
-.glowOrbit::after {
-  content: '';
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  width: 48px;
-  height: 24px;
-  margin-left: -40px;
-  border-radius: 50%;
-  background: var(--accent);
-  filter: blur(20px);
-  opacity: 0.25;
-}
-
-/* Logo — transparent background preserved, ambient glow */
+/*
+ * drop-shadow respects the PNG alpha channel — offset direction rotates
+ * clockwise so the bright point travels around the logo's own outline.
+ * Constant base glow keeps the outline visible at all phases.
+ */
 .iconImg {
-  position: relative;
   width: 72px;
   height: 72px;
   object-fit: contain;
-  filter: drop-shadow(0 0 10px var(--accent)) drop-shadow(0 0 3px var(--accent));
+  animation: outlineGlow 2.2s linear infinite;
+  will-change: filter;
 }
 
-@keyframes orbitSpin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+@keyframes outlineGlow {
+  /*  top  */
+  0%   { filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(0px -9px 10px var(--accent)); }
+  /*  top-right  */
+  12%  { filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(6px -6px 10px var(--accent)); }
+  /*  right  */
+  25%  { filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(9px 0px 10px var(--accent)); }
+  /*  bottom-right  */
+  37%  { filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(6px 6px 10px var(--accent)); }
+  /*  bottom  */
+  50%  { filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(0px 9px 10px var(--accent)); }
+  /*  bottom-left  */
+  62%  { filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(-6px 6px 10px var(--accent)); }
+  /*  left  */
+  75%  { filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(-9px 0px 10px var(--accent)); }
+  /*  top-left  */
+  87%  { filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(-6px -6px 10px var(--accent)); }
+  /*  top (loop)  */
+  100% { filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(0px -9px 10px var(--accent)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iconImg {
+    animation: none;
+    filter: drop-shadow(0 0 6px var(--accent));
+  }
 }
 
 
