@@ -101,9 +101,9 @@ export default async function ResultPage({ params }: ResultPageProps) {
               <Image
                 src={`https://cdn.akamai.steamstatic.com/steam/apps/${card.appid}/header.jpg`}
                 alt={`${card.name} 게임 표지`}
-                fill
-                sizes="(max-width: 480px) 100vw, 26vw"
-                style={{ objectFit: 'cover' }}
+                width={460}
+                height={215}
+                style={{ width: '100%', height: 'auto', display: 'block' }}
                 priority={index < 3}
                 unoptimized
               />
@@ -126,7 +126,6 @@ export default async function ResultPage({ params }: ResultPageProps) {
                   </span>
                 )}
               </div>
-              <p className={styles.reasonLabel}>왜 나한테 맞냐면</p>
               <p className={styles.reason}>{card.reason}</p>
               <div className={styles.cardTags}>
                 {(card.tag_snapshot ?? []).map((tag: string) => (
