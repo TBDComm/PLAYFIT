@@ -3,8 +3,8 @@ import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 import { parseSteamUrl, resolveVanityUrl, getOwnedGames, getGameDetails } from '@/lib/steam'
 import { getRecommendations } from '@/lib/claude'
-import { isDbReady, getTagsForGames, getUserTagWeights, scoreCandidates, serviceSupabase } from '@/lib/supabase'
-import type { ErrorCode, PlayHistory, RecommendationCard } from '@/types'
+import { isDbReady, getTagsForGames, getUserTagWeights, scoreCandidates, serviceSupabase, getGamePriceCache, upsertGamePriceCache } from '@/lib/supabase'
+import type { ErrorCode, GameDetails, PlayHistory, RecommendationCard } from '@/types'
 
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
@@ -105,25 +105,68 @@ export async function POST(request: NextRequest) {
     const scored = await scoreCandidates(tagProfile, userTagWeights, excludeAppIds, 80)
     console.log('[rec] scored candidates:', scored.length)
 
-    // Fetch all 80 candidates in parallel — same latency as before but
-    // 2× the pool, so null returns (missing KR pricing / transient Steam errors)
-    // have far less chance of exhausting all candidates.
-    const detailsResults = await Promise.all(scored.map(s => getGameDetails(Number(s.appid))))
-    const nullCount = detailsResults.filter(d => d === null).length
-    console.log('[rec] game details: total', detailsResults.length, 'null', nullCount)
+    // Check games_cache for already-cached prices — avoids hitting Steam for known games
+    const scoredAppids = scored.map(s => s.appid)
+    const priceCache = await getGamePriceCache(scoredAppids)
 
-    const candidates = detailsResults
-      .map((details, i) => ({ details, score: scored[i] }))
-      .filter(({ details }) => {
-        if (!details) return false
-        if (freeOnly && !details.is_free) return false
-        if (!freeOnly && budget !== undefined && !details.is_free && details.price_krw > budget) return false
-        return true
+    const PRICE_TTL_MS = 24 * 60 * 60 * 1000
+    const now = Date.now()
+
+    const needsFetch = scored
+      .filter(s => {
+        const cached = priceCache.get(s.appid)
+        if (!cached) return true
+        if (cached.price_updated_at === null) return true
+        return now - new Date(cached.price_updated_at).getTime() > PRICE_TTL_MS
       })
-      .map(({ details, score }) => ({
-        ...details!,
-        top_tags: Object.entries(score.tags ?? {}).sort(([, a], [, b]) => b - a).slice(0, 3).map(([tag]) => tag),
-      }))
+      .map(s => s.appid)
+    console.log('[rec] price cache: hit', scored.length - needsFetch.length, 'miss', needsFetch.length)
+
+    // Fetch from Steam only for uncached/stale games
+    const fetchedDetails = needsFetch.length > 0
+      ? await Promise.all(needsFetch.map(id => getGameDetails(Number(id))))
+      : []
+
+    // Upsert fresh prices back to DB (fire-and-forget — don't block response)
+    void Promise.all(
+      needsFetch.map((id, i) => {
+        const d = fetchedDetails[i]
+        if (!d) return Promise.resolve()
+        return upsertGamePriceCache(d.appid, d.price_krw, d.is_free, d.metacritic_score)
+      })
+    )
+
+    // Build unified detail map: freshly fetched takes priority over cache
+    const detailMap = new Map<string, GameDetails>()
+    for (let i = 0; i < needsFetch.length; i++) {
+      const d = fetchedDetails[i]
+      if (d) detailMap.set(String(d.appid), d)
+    }
+    for (const [id, cached] of priceCache) {
+      if (!detailMap.has(id) && cached.price_updated_at !== null) {
+        const name = scored.find(s => s.appid === id)?.name ?? ''
+        detailMap.set(id, {
+          appid: Number(id),
+          name,
+          price_krw: cached.price_krw ?? 0,
+          is_free: cached.is_free,
+          metacritic_score: cached.metacritic_score ?? undefined,
+        })
+      }
+    }
+
+    const candidates = scored
+      .map(s => {
+        const details = detailMap.get(s.appid)
+        if (!details) return null
+        if (freeOnly && !details.is_free) return null
+        if (!freeOnly && budget !== undefined && !details.is_free && details.price_krw > budget) return null
+        return {
+          ...details,
+          top_tags: Object.entries(s.tags ?? {}).sort(([, a], [, b]) => b - a).slice(0, 3).map(([tag]) => tag),
+        }
+      })
+      .filter((c): c is NonNullable<typeof c> => c !== null)
       .slice(0, 20)
     console.log('[rec] filtered candidates:', candidates.length)
 

@@ -56,6 +56,45 @@ export async function getUserTagWeights(
   return weights
 }
 
+export interface GamePriceCacheRow {
+  appid: string
+  price_krw: number | null
+  is_free: boolean
+  metacritic_score: number | null
+  price_updated_at: string | null
+}
+
+export async function getGamePriceCache(
+  appids: string[]
+): Promise<Map<string, GamePriceCacheRow>> {
+  const { data } = await serviceSupabase
+    .from('games_cache')
+    .select('appid, price_krw, is_free, metacritic_score, price_updated_at')
+    .in('appid', appids)
+  const map = new Map<string, GamePriceCacheRow>()
+  if (data) {
+    for (const row of data) map.set(row.appid, row as GamePriceCacheRow)
+  }
+  return map
+}
+
+export async function upsertGamePriceCache(
+  appid: number,
+  price_krw: number,
+  is_free: boolean,
+  metacritic_score: number | undefined
+): Promise<void> {
+  await serviceSupabase
+    .from('games_cache')
+    .update({
+      price_krw,
+      is_free,
+      metacritic_score: metacritic_score ?? null,
+      price_updated_at: new Date().toISOString(),
+    })
+    .eq('appid', String(appid))
+}
+
 export async function scoreCandidates(
   tagProfile: Record<string, number>,
   userTagWeights: Record<string, number>,
