@@ -4,6 +4,7 @@ import Script from 'next/script'
 import Header from './components/Header'
 import NavLogo from './components/NavLogo'
 import Footer from './components/Footer'
+import { AuthProvider } from './context/AuthContext'
 import './globals.css'
 
 // Space Grotesk: technical, characterful font (rules/frontend-design.md — Inter/Arial banned)
@@ -80,10 +81,12 @@ export default function RootLayout({
             </Script>
           </>
         )}
-        <Header />
-        <NavLogo />
-        {children}
-        <Footer />
+        <AuthProvider>
+          <Header />
+          <NavLogo />
+          {children}
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   )

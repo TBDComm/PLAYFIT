@@ -1,9 +1,8 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { createBrowserClient } from '@supabase/ssr'
-import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
+import { useAuth } from '@/app/context/AuthContext'
 import { trackEvent } from '@/lib/analytics'
 import styles from './Header.module.css'
 import GuildelineMark from './GuildelineMark'
@@ -56,8 +55,7 @@ function Toast({ message }: { message: string }) {
 }
 
 export default function Header() {
-  const [session, setSession] = useState<Session | null>(null)
-  const [steamId, setSteamId] = useState<string | null>(null)
+  const { session, steamId, setSteamId, supabase, authState } = useAuth()
   const [showLoginModal, setShowLoginModal] = useState(false)
   const [loginView, setLoginView] = useState<LoginView>('login')
   const [emailInput, setEmailInput] = useState('')
@@ -75,10 +73,6 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const menuBtnRef = useRef<HTMLButtonElement>(null)
   const menuDropdownRef = useRef<HTMLDivElement>(null)
-  const supabase = useMemo(() => createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  ), [])
   const loginModalRef = useRef<HTMLDivElement>(null)
   const linkPopupRef = useRef<HTMLDivElement>(null)
   const googleBtnRef = useRef<HTMLDivElement>(null)
@@ -89,42 +83,32 @@ export default function Header() {
   const showOAuth = loginView === 'login' || loginView === 'signup'
   const userEmail = session?.user?.email ?? ''
 
+  // Track previous settled user ID to detect sign-in vs. page-load session restore
+  const prevSessionUserIdRef = useRef<string | null | undefined>(undefined)
+
+  // Close login modal and show link popup only when user actively signs in (not on page refresh)
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      setSession(session)
-      if (session) {
-        const { data } = await supabase
-          .from('user_profiles').select('steam_id').eq('id', session.user.id).maybeSingle()
-        setSteamId(data?.steam_id ?? null)
-      }
-    })
+    if (authState === 'loading') return          // wait for steamId to be fetched
+    const currentId = session?.user?.id ?? null
+    if (prevSessionUserIdRef.current === undefined) {
+      prevSessionUserIdRef.current = currentId   // initial settled state — record only
+      return
+    }
+    const prev = prevSessionUserIdRef.current
+    prevSessionUserIdRef.current = currentId
+    if (currentId === prev) return               // no user change
+    if (prev !== null || currentId === null) return  // logout or unrelated change
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event: AuthChangeEvent, session: Session | null) => {
-        setSession(session)
-        if (event === 'SIGNED_IN' && session) {
-          setShowLoginModal(false)
-          setLoginView('login')
-          setEmailInput('')
-          setPasswordInput('')
-          setPasswordConfirm('')
-          setOtpInput('')
-          setAuthError(null)
-          const { data } = await supabase
-            .from('user_profiles').select('steam_id').eq('id', session.user.id).maybeSingle()
-          const sid = data?.steam_id ?? null
-          setSteamId(sid)
-          const isSteam = session.user.email?.endsWith('@steam.playfit') ?? false
-          if (!isSteam && sid === null) setShowLinkPopup(true)
-        }
-        if (event === 'SIGNED_OUT') {
-          setSteamId(null)
-        }
-      }
-    )
-
-    return () => subscription.unsubscribe()
-  }, [supabase])
+    // User just signed in and auth state has fully settled (steamId resolved)
+    setShowLoginModal(false)
+    setLoginView('login')
+    setEmailInput('')
+    setPasswordInput('')
+    setPasswordConfirm('')
+    setOtpInput('')
+    setAuthError(null)
+    if (authState === 'unlinked_auth') setShowLinkPopup(true)
+  }, [authState, session?.user?.id])
 
   // Open login modal from custom event (dispatched by home page anon CTA)
   useEffect(() => {

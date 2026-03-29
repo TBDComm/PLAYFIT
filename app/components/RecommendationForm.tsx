@@ -2,15 +2,14 @@
 
 import { useEffect, useState, useRef, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
-import { createBrowserClient } from '@supabase/ssr'
 import type { ErrorCode } from '@/types'
+import { useAuth } from '@/app/context/AuthContext'
 import type { LibraryGame } from '@/lib/steam'
 import { trackEvent } from '@/lib/analytics'
 import LoadingOverlay from './LoadingOverlay'
 import LibraryPickerModal from './LibraryPickerModal'
 import styles from '../page.module.css'
 
-type AuthState = 'loading' | 'steam' | 'linked' | 'unlinked_auth' | 'anon'
 type SearchResult = { appid: number; name: string }
 
 const ERROR_MESSAGES: Record<ErrorCode, string> = {
@@ -32,14 +31,9 @@ const EMPTY_MANUAL_GAMES: ManualGame[] = Array.from({ length: 5 }, () => ({
   playtime: '',
 }))
 
-const supabase = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
-
 export default function RecommendationForm() {
   const router = useRouter()
-  const [authState, setAuthState] = useState<AuthState>('loading')
+  const { authState, steamId: contextSteamId } = useAuth()
   const [mode, setMode] = useState<'steam' | 'manual'>('steam')
   const [url, setUrl] = useState('')
   const [manualGames, setManualGames] = useState<ManualGame[]>(EMPTY_MANUAL_GAMES)
@@ -56,44 +50,10 @@ export default function RecommendationForm() {
   const debounceRefs = useRef<Array<ReturnType<typeof setTimeout> | null>>(Array(5).fill(null))
   const searchGenRef = useRef<number[]>(Array(5).fill(0))
 
+  // Sync URL from context steamId — handles login, logout, and page refresh automatically
   useEffect(() => {
-    async function loadSteam(session: { user: { id: string; email?: string } } | null) {
-      if (!session) { setAuthState('anon'); return }
-      const { data } = await supabase
-        .from('user_profiles').select('steam_id').eq('id', session.user.id).maybeSingle()
-      const sid: string | null = data?.steam_id ?? null
-      const isSteam = session.user.email?.endsWith('@steam.playfit') ?? false
-      if (isSteam && sid) {
-        setUrl(`https://steamcommunity.com/profiles/${sid}`)
-        setAuthState('steam')
-      } else if (!isSteam && sid) {
-        setUrl(`https://steamcommunity.com/profiles/${sid}`)
-        setAuthState('linked')
-      } else {
-        setAuthState('unlinked_auth')
-      }
-    }
-
-    let loaded = false
-    function onceSteam(session: Parameters<typeof loadSteam>[0]) {
-      if (loaded) return
-      loaded = true
-      void loadSteam(session)
-    }
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) onceSteam(session)
-      else setAuthState('anon')
-    })
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'INITIAL_SESSION') onceSteam(session)
-      else if (event === 'TOKEN_REFRESHED') { loaded = false; onceSteam(session) }
-      else if (event === 'SIGNED_OUT') { loaded = false; setAuthState('anon'); setUrl('') }
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
+    setUrl(contextSteamId ? `https://steamcommunity.com/profiles/${contextSteamId}` : '')
+  }, [contextSteamId])
 
   useEffect(() => {
     const obs = new IntersectionObserver(
