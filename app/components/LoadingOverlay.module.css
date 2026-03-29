@@ -42,44 +42,62 @@
   100% { transform: translateX(0); opacity: 1; }
 }
 
-/* ── Icon with rotating clockwise glow ── */
+/* ── Icon with orbiting clockwise glow ── */
 
 .iconWrap {
   position: relative;
   width: 72px;
   height: 72px;
-  z-index: 0;
 }
 
-.iconWrap::before {
+/* Spinning container — carries the glow dot around the icon */
+.glowOrbit {
+  position: absolute;
+  inset: 0;
+  animation: orbitSpin 2.2s linear infinite;
+  pointer-events: none;
+}
+
+/* Bright orbiting light point */
+.glowOrbit::before {
   content: '';
   position: absolute;
-  inset: -8px;
-  border-radius: 20px;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0%,
-    transparent 65%,
-    var(--accent) 82%,
-    var(--accent) 90%,
-    transparent 100%
-  );
-  animation: iconGlowSpin 2s linear infinite;
-  filter: blur(7px);
-  z-index: -1;
+  top: -16px;
+  left: 50%;
+  width: 32px;
+  height: 32px;
+  margin-left: -16px;
+  border-radius: 50%;
+  background: var(--accent);
+  filter: blur(12px);
+  opacity: 0.95;
 }
 
+/* Soft trailing bloom */
+.glowOrbit::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 48px;
+  height: 24px;
+  margin-left: -40px;
+  border-radius: 50%;
+  background: var(--accent);
+  filter: blur(20px);
+  opacity: 0.25;
+}
+
+/* Logo — transparent background preserved, ambient glow */
 .iconImg {
   position: relative;
-  z-index: 1;
   width: 72px;
   height: 72px;
   object-fit: contain;
-  border-radius: 12px;
-  background: var(--bg-elevated);
+  filter: drop-shadow(0 0 10px var(--accent)) drop-shadow(0 0 3px var(--accent));
 }
 
-@keyframes iconGlowSpin {
+@keyframes orbitSpin {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
