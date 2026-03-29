@@ -79,7 +79,6 @@ export default function Header() {
 
   // Derived — no state needed
   const isSteamUser = session?.user?.email?.endsWith('@steam.playfit') ?? false
-  const showLinkBtn = session !== null && !isSteamUser && steamId === null
   const showOAuth = loginView === 'login' || loginView === 'signup'
   const userEmail = session?.user?.email ?? ''
 

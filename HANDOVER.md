@@ -116,6 +116,7 @@ _2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log 2026-03-28_
 | 2026-03-29 | Result page: restore pre-Gemini layout (grid, full-width image + overlay); feedback buttons → text labels | result/[id]/page.tsx, page.module.css, FeedbackButtons.tsx |
 | 2026-03-29 | fix: NO_GAMES_IN_BUDGET false positive — candidate pool 40→80 parallel (no latency increase) | generate-recommendation/route.ts |
 | 2026-03-29 | fix: Steam URL persistence — AuthContext (SIGNED_IN handling, single DB query, shared state) | app/context/AuthContext.tsx, layout.tsx, Header.tsx, RecommendationForm.tsx |
+| 2026-03-29 | remove dead code: showLinkBtn unused variable in Header | Header.tsx |
 
 ---
 
