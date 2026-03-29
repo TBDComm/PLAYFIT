@@ -52,17 +52,15 @@ export default function FeedbackButtons({ appId, gameName, steamId }: FeedbackBu
         onClick={() => handleFeedback('up')}
         className={`${styles.feedbackButton} ${feedback === 'up' ? styles.selectedUp : ''}`}
         disabled={sending || feedback !== null}
-        aria-label="잘 맞아요"
       >
-        ▲
+        잘 맞아요
       </button>
       <button
         onClick={() => handleFeedback('down')}
         className={`${styles.feedbackButton} ${feedback === 'down' ? styles.selectedDown : ''}`}
         disabled={sending || feedback !== null}
-        aria-label="아니에요"
       >
-        ▼
+        아니에요
       </button>
     </div>
   )

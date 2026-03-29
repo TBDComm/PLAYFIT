@@ -114,6 +114,7 @@ _2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log 2026-03-28_
 | 2026-03-28 | PageLoading: fake progress → indeterminate phosphor scan (infinite, no false progress) | PageLoading.module.css |
 | 2026-03-29 | LoadingOverlay: radar SVG → logo outline glow via rotating drop-shadow offset | LoadingOverlay.tsx, LoadingOverlay.module.css |
 | 2026-03-29 | Result page: restore ed94977 layout (horizontal cards, thumbnail, color-coded metacritic) | result/[id]/page.tsx, page.module.css |
+| 2026-03-29 | FeedbackButtons: ▲▼ → "잘 맞아요" / "아니에요" text labels | result/[id]/FeedbackButtons.tsx |
 
 ---
 
