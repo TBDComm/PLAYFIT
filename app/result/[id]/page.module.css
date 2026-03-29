@@ -223,15 +223,8 @@
   font-size: 0.75rem;
 }
 
-/* ── Card actions ── */
-.cardActions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: auto;
-}
-
 .storeLink {
+  margin-top: auto;
   display: inline-flex;
   align-items: center;
   font-size: 0.8125rem;

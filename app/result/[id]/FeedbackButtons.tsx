@@ -41,26 +41,31 @@ export default function FeedbackButtons({ appId, gameName, steamId }: FeedbackBu
           tag_snapshot: [],
         }),
       })
-    } catch { /* silent fail */ } finally {
+    } catch { /* 조용히 실패 */ } finally {
       setSending(false)
     }
   }
 
   return (
-    <div className={styles.feedbackContainer}>
+    <div className={styles.feedbackSide}>
+      <span className={styles.feedbackHint}>계정 가중치에 적용됩니다.</span>
       <button
         onClick={() => handleFeedback('up')}
-        className={`${styles.feedbackButton} ${feedback === 'up' ? styles.selectedUp : ''}`}
+        className={`${styles.feedbackBtn} ${styles.up} ${feedback === 'up' ? styles.selectedUp : ''}`}
         disabled={sending || feedback !== null}
+        aria-label="잘 맞아요"
       >
-        잘 맞아요
+        <span className={styles.sign}>+</span>
+        <span className={styles.label}>잘 맞아요</span>
       </button>
       <button
         onClick={() => handleFeedback('down')}
-        className={`${styles.feedbackButton} ${feedback === 'down' ? styles.selectedDown : ''}`}
+        className={`${styles.feedbackBtn} ${styles.down} ${feedback === 'down' ? styles.selectedDown : ''}`}
         disabled={sending || feedback !== null}
+        aria-label="안 맞아요"
       >
-        아니에요
+        <span className={styles.sign}>−</span>
+        <span className={styles.label}>안 맞아요</span>
       </button>
     </div>
   )

@@ -1,46 +1,122 @@
-.feedbackContainer {
+/* 카드 오른쪽 피드백 컬럼 */
+.feedbackSide {
   display: flex;
-  gap: 0.5rem;
-}
-
-.feedbackButton {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
-  padding: 0.4rem 0.65rem;
-  border-radius: var(--radius);
-  cursor: pointer;
-  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
-  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  gap: 0.5rem;
+  padding: 1rem 0.875rem;
+  border-left: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* 힌트 라벨 — 세로 텍스트 */
+.feedbackHint {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+}
+
+/* 정사각형 버튼 공통 */
+.feedbackBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  gap: 0.2rem;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
   touch-action: manipulation;
 }
 
-.feedbackButton:hover:not(:disabled) {
-  color: var(--text-primary);
-  border-color: var(--text-muted);
+.sign {
+  font-size: 1.375rem;
+  font-weight: 800;
+  line-height: 1;
 }
 
-.feedbackButton:focus-visible {
+.label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* + 잘 맞아요 (초록) */
+.up {
+  background: rgba(163, 230, 53, 0.07);
+  border: 1px solid rgba(163, 230, 53, 0.25);
+  color: var(--accent);
+}
+
+.up:hover:not(:disabled) {
+  background: rgba(163, 230, 53, 0.15);
+  border-color: var(--accent);
+  transform: scale(1.04);
+}
+
+/* - 안 맞아요 (빨강) */
+.down {
+  background: var(--error-dim);
+  border: 1px solid var(--error-border);
+  color: var(--error);
+}
+
+.down:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: var(--error);
+  transform: scale(1.04);
+}
+
+/* 선택된 상태 */
+.selectedUp {
+  background: rgba(163, 230, 53, 0.2);
+  border-color: var(--accent);
+}
+
+.selectedDown {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: var(--error);
+}
+
+.feedbackBtn:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.feedbackBtn:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-.feedbackButton:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
+/* 모바일: 가로 배치 */
+@media (max-width: 480px) {
+  .feedbackSide {
+    flex-direction: row;
+    justify-content: center;
+    padding: 0.875rem 1.5rem;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    gap: 0.75rem;
+  }
 
-.selectedUp {
-  color: var(--success);
-  border-color: var(--success);
-  background: var(--bg-elevated);
-}
+  .feedbackHint {
+    writing-mode: horizontal-tb;
+    transform: none;
+    font-size: 0.65rem;
+    margin-bottom: 0;
+    align-self: center;
+  }
 
-.selectedDown {
-  color: var(--error);
-  border-color: var(--error);
-  background: var(--bg-elevated);
+  .feedbackBtn {
+    width: 72px;
+    height: 72px;
+  }
 }

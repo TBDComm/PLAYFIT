@@ -124,22 +124,20 @@ export default async function ResultPage({ params }: ResultPageProps) {
                   <span key={tag} className={styles.tag}>{tag}</span>
                 ))}
               </div>
-              <div className={styles.cardActions}>
-                <a
-                  href={card.store_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.storeLink}
-                >
-                  Steam에서 보기 →
-                </a>
-                <FeedbackButtons
-                  appId={card.appid}
-                  gameName={card.name}
-                  steamId={steam_id as string | null}
-                />
-              </div>
+              <a
+                href={card.store_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.storeLink}
+              >
+                Steam에서 보기 →
+              </a>
             </div>
+            <FeedbackButtons
+              appId={card.appid}
+              gameName={card.name}
+              steamId={steam_id as string | null}
+            />
           </li>
         ))}
       </ul>
