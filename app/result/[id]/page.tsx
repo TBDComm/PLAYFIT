@@ -123,11 +123,13 @@ export default async function ResultPage({ params }: ResultPageProps) {
                   </span>
                 )}
               </div>
-              <p className={styles.reason}>{card.reason}</p>
-              <div className={styles.cardTags}>
-                {(card.tag_snapshot ?? []).map((tag: string) => (
-                  <span key={tag} className={styles.tag}>{tag}</span>
-                ))}
+              <div className={styles.cardMiddle}>
+                <p className={styles.reason}>{card.reason}</p>
+                <div className={styles.cardTags}>
+                  {(card.tag_snapshot ?? []).map((tag: string) => (
+                    <span key={tag} className={styles.tag}>{tag}</span>
+                  ))}
+                </div>
               </div>
               <a
                 href={card.store_url}
