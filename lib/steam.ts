@@ -15,6 +15,7 @@ export const getOwnedGames = cache(
       `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${key}&steamid=${steamId}&include_appinfo=true&include_played_free_games=true`,
       { next: { revalidate: 3600 } } // Cache for 1 hour
     )
+    if (!res.ok) throw new Error(`Steam GetOwnedGames error: ${res.status}`)
     const data = (await res.json()) as { response: { games?: SteamGame[] } }
     const games = data.response?.games
 
@@ -93,6 +94,7 @@ export const getAllLibraryGames = cache(
       `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${key}&steamid=${steamId}&include_appinfo=true&include_played_free_games=true`,
       { next: { revalidate: 3600 } } // Cache for 1 hour
     )
+    if (!res.ok) throw new Error(`Steam GetOwnedGames error: ${res.status}`)
     const data = (await res.json()) as { response: { games?: SteamGame[] } }
     const games = data.response?.games
     if (!games || games.length === 0) return 'PRIVATE_PROFILE'
@@ -114,6 +116,7 @@ export const resolveVanityUrl = cache(async (vanity: string): Promise<string | n
     )}`,
     { next: { revalidate: 86400 } } // Cache for 24 hours
   )
+  if (!res.ok) throw new Error(`Steam ResolveVanityURL error: ${res.status}`)
   const data = (await res.json()) as { response: { success: number; steamid?: string } }
   if (data.response?.success !== 1) return null
   return data.response.steamid ?? null
