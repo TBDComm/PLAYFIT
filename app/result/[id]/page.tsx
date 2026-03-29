@@ -4,10 +4,10 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import Image from 'next/image'
 import type { Metadata } from 'next'
 import ScrollToTopButton from './ScrollToTopButton'
 import FeedbackButtons from './FeedbackButtons'
+import ThumbnailImage from './ThumbnailImage'
 import styles from './page.module.css'
 import type { RecommendationCard } from '@/types'
 
@@ -98,15 +98,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
             style={{ '--animation-order': index } as React.CSSProperties}
           >
             <div className={styles.thumbnailWrap}>
-              <Image
-                src={`https://cdn.akamai.steamstatic.com/steam/apps/${card.appid}/header.jpg`}
-                alt={`${card.name} 게임 표지`}
-                width={460}
-                height={215}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                priority={index < 3}
-                unoptimized
-              />
+              <ThumbnailImage appid={card.appid} name={card.name} priority={index < 3} />
             </div>
             <div className={styles.cardBody}>
               <h2 className={styles.cardName}>{card.name}</h2>

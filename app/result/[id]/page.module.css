@@ -126,7 +126,7 @@
 .thumbnailWrap {
   flex-shrink: 0;
   align-self: stretch;
-  aspect-ratio: 460 / 215;
+  aspect-ratio: 2 / 3;
   overflow: hidden;
 }
 
@@ -311,7 +311,8 @@
   .card { flex-direction: column; }
   .thumbnailWrap {
     width: 100%;
-    aspect-ratio: 460 / 215;
+    height: 180px;
+    aspect-ratio: unset;
   }
   .cardBody { padding: 1.25rem 1.5rem; }
 }
