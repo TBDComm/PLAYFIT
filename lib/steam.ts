@@ -51,6 +51,7 @@ export const getGameDetails = cache(async (appid: number): Promise<GameDetails |
     `https://store.steampowered.com/api/appdetails?appids=${appid}&cc=kr&l=korean`,
     { next: { revalidate: 86400 } } // Cache for 24 hours
   )
+  if (!res.ok) return null  // Steam rate-limit or error — treat as missing, don't throw
   const data = (await res.json()) as AppDetailsResponse
   const entry = data[appid.toString()]
   if (!entry?.success || !entry.data) return null
