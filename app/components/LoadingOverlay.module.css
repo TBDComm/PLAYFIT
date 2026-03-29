@@ -63,30 +63,21 @@
 }
 
 @keyframes outlineGlow {
-  /*  top  */
-  0%   { filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(0px -9px 10px var(--accent)); }
-  /*  top-right  */
-  12%  { filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(6px -6px 10px var(--accent)); }
-  /*  right  */
-  25%  { filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(9px 0px 10px var(--accent)); }
-  /*  bottom-right  */
-  37%  { filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(6px 6px 10px var(--accent)); }
-  /*  bottom  */
-  50%  { filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(0px 9px 10px var(--accent)); }
-  /*  bottom-left  */
-  62%  { filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(-6px 6px 10px var(--accent)); }
-  /*  left  */
-  75%  { filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(-9px 0px 10px var(--accent)); }
-  /*  top-left  */
-  87%  { filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(-6px -6px 10px var(--accent)); }
-  /*  top (loop)  */
-  100% { filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(0px -9px 10px var(--accent)); }
+  0%   { filter: drop-shadow(0px -4px 3px var(--accent)); }
+  12%  { filter: drop-shadow(3px -3px 3px var(--accent)); }
+  25%  { filter: drop-shadow(4px 0px 3px var(--accent)); }
+  37%  { filter: drop-shadow(3px 3px 3px var(--accent)); }
+  50%  { filter: drop-shadow(0px 4px 3px var(--accent)); }
+  62%  { filter: drop-shadow(-3px 3px 3px var(--accent)); }
+  75%  { filter: drop-shadow(-4px 0px 3px var(--accent)); }
+  87%  { filter: drop-shadow(-3px -3px 3px var(--accent)); }
+  100% { filter: drop-shadow(0px -4px 3px var(--accent)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .iconImg {
     animation: none;
-    filter: drop-shadow(0 0 6px var(--accent));
+    filter: drop-shadow(0 0 2px var(--accent));
   }
 }
 
