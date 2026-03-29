@@ -104,30 +104,31 @@ export async function POST(request: NextRequest) {
     const excludeAppIds = (ownedAppIds.length > 0 ? ownedAppIds : playedAppIds).map(String)
     const scored = await scoreCandidates(tagProfile, userTagWeights, excludeAppIds, 80)
 
-    if (scored.length === 0) {
-      return NextResponse.json({ error: 'GENERAL_ERROR' satisfies ErrorCode }, { status: 500 })
+    // Process in batches of 10 to avoid Steam API rate-limit bursts.
+    // Continue until we have 25 valid candidates or exhaust the pool.
+    type ValidCandidate = { appid: number; name: string; price_krw: number; is_free: boolean; metacritic_score?: number; top_tags: string[] }
+    const validCandidates: ValidCandidate[] = []
+
+    for (let i = 0; i < scored.length && validCandidates.length < 25; i += 10) {
+      const slice = scored.slice(i, i + 10)
+      const details = await Promise.all(slice.map(s => getGameDetails(Number(s.appid))))
+      for (let j = 0; j < slice.length; j++) {
+        const d = details[j]
+        if (!d) continue
+        if (freeOnly && !d.is_free) continue
+        if (!freeOnly && budget !== undefined && !d.is_free && d.price_krw > budget) continue
+        validCandidates.push({
+          ...d,
+          top_tags: Object.entries(slice[j].tags ?? {}).sort(([, a], [, b]) => b - a).slice(0, 3).map(([tag]) => tag),
+        })
+      }
     }
-    
-    const detailsPromises = scored.map(s => getGameDetails(Number(s.appid)))
-    const detailsResults = await Promise.all(detailsPromises)
 
-    const candidates = detailsResults
-      .map((details, i) => ({ details, score: scored[i] }))
-      .filter(({ details }) => {
-          if (!details) return false
-          if (freeOnly && !details.is_free) return false
-          if (!freeOnly && budget !== undefined && !details.is_free && details.price_krw > budget) return false
-          return true
-      })
-      .map(({ details, score }) => ({
-        ...details!,
-        top_tags: Object.entries(score.tags ?? {}).sort(([, a], [, b]) => b - a).slice(0, 3).map(([tag]) => tag)
-      }))
-      .slice(0, 20)
-
-    if (candidates.length === 0) {
+    if (validCandidates.length === 0) {
       return NextResponse.json({ error: 'NO_GAMES_IN_BUDGET' satisfies ErrorCode, filters: { budget, freeOnly } }, { status: 400 })
     }
+
+    const candidates = validCandidates.slice(0, 20)
 
     const playHistoryForClaude = playHistory.map(g => ({
       name: g.name,
