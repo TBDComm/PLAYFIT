@@ -136,6 +136,7 @@ _2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log 2026-03-28_
 | 2026-03-29 | ux: feedback buttons fill column (flex:1, width:80px), hint label removed | result/[id]/FeedbackButtons.tsx, feedback.module.css |
 | 2026-03-29 | ux: feedback notice above results + footer feedback box with accent border | result/[id]/page.tsx, page.module.css |
 | 2026-03-29 | ux: card layout refinement — name 1.15rem, divider, reason 0.875rem/1.6, storeLink text-only, MC label | result/[id]/page.tsx, page.module.css |
+| 2026-03-29 | ux: storeLink color → Steam blue #66c0f4 | result/[id]/page.module.css |
 
 ---
 

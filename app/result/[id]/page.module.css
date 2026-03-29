@@ -243,7 +243,7 @@
   align-self: flex-start;
   font-size: 0.8rem;
   font-weight: 500;
-  color: var(--text-muted);
+  color: #66c0f4;
   text-decoration: none;
   transition: color 0.15s;
   background: none;
@@ -251,7 +251,7 @@
   padding: 0;
 }
 
-.storeLink:hover { color: var(--text-secondary); }
+.storeLink:hover { color: #a8d8f0; }
 
 .storeLink:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
