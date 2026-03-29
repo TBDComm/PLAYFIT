@@ -132,6 +132,7 @@ _2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log 2026-03-28_
 | 2026-03-29 | ux: storeLink → accent button style; heroSubtitle nowrap removed → text-wrap:pretty | result/[id]/page.module.css |
 | 2026-03-29 | ux: portrait thumbnail (library_600x900) + header.jpg fallback; thumbnailWrap aspect-ratio 2/3 | result/[id]/ThumbnailImage.tsx, page.tsx, page.module.css |
 | 2026-03-29 | ux: feedback buttons → right-side column, +/- square buttons, hint label vertical text | result/[id]/FeedbackButtons.tsx, feedback.module.css, page.tsx, page.module.css |
+| 2026-03-29 | fix: feedback.module.css prefers-reduced-motion + hint font 0.6→0.65rem | result/[id]/feedback.module.css |
 
 ---
 

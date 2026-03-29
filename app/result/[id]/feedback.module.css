@@ -12,7 +12,7 @@
 
 /* 힌트 라벨 — 세로 텍스트 */
 .feedbackHint {
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   color: var(--text-muted);
   writing-mode: vertical-rl;
   transform: rotate(180deg);
@@ -94,6 +94,16 @@
 .feedbackBtn:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feedbackBtn {
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .up:hover:not(:disabled),
+  .down:hover:not(:disabled) {
+    transform: none;
+  }
 }
 
 /* 모바일: 가로 배치 */
