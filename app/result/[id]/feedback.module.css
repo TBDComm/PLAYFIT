@@ -2,23 +2,10 @@
 .feedbackSide {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 1rem 0.875rem;
+  align-self: stretch;
   border-left: 1px solid var(--border);
   flex-shrink: 0;
-}
-
-/* 힌트 라벨 — 세로 텍스트 */
-.feedbackHint {
-  font-size: 0.65rem;
-  color: var(--text-muted);
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  letter-spacing: 0.05em;
-  margin-bottom: 0.25rem;
-  white-space: nowrap;
+  overflow: hidden;
 }
 
 /* 정사각형 버튼 공통 */
@@ -27,14 +14,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 64px;
-  height: 64px;
-  border-radius: var(--radius);
+  flex: 1;
+  width: 80px;
+  border-radius: 0;
   cursor: pointer;
   font-family: var(--font-sans);
   gap: 0.2rem;
   transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
   touch-action: manipulation;
+  border: none;
 }
 
 .sign {
@@ -52,26 +40,23 @@
 /* + 잘 맞아요 (초록) */
 .up {
   background: rgba(163, 230, 53, 0.07);
-  border: 1px solid rgba(163, 230, 53, 0.25);
   color: var(--accent);
+  border-bottom: 1px solid var(--border);
 }
 
 .up:hover:not(:disabled) {
   background: rgba(163, 230, 53, 0.15);
-  border-color: var(--accent);
   transform: scale(1.04);
 }
 
 /* - 안 맞아요 (빨강) */
 .down {
   background: var(--error-dim);
-  border: 1px solid var(--error-border);
   color: var(--error);
 }
 
 .down:hover:not(:disabled) {
   background: rgba(239, 68, 68, 0.15);
-  border-color: var(--error);
   transform: scale(1.04);
 }
 
@@ -110,23 +95,21 @@
 @media (max-width: 480px) {
   .feedbackSide {
     flex-direction: row;
-    justify-content: center;
-    padding: 0.875rem 1.5rem;
+    align-self: auto;
     border-left: none;
     border-top: 1px solid var(--border);
-    gap: 0.75rem;
-  }
-
-  .feedbackHint {
-    writing-mode: horizontal-tb;
-    transform: none;
-    font-size: 0.65rem;
-    margin-bottom: 0;
-    align-self: center;
   }
 
   .feedbackBtn {
-    width: 72px;
-    height: 72px;
+    flex: 1;
+    width: auto;
+    height: 64px;
+    border-radius: 0;
+    border: none;
+  }
+
+  .up {
+    border-bottom: none;
+    border-right: 1px solid var(--border);
   }
 }

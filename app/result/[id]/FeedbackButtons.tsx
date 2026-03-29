@@ -48,7 +48,6 @@ export default function FeedbackButtons({ appId, gameName, steamId }: FeedbackBu
 
   return (
     <div className={styles.feedbackSide}>
-      <span className={styles.feedbackHint}>계정 가중치에 적용됩니다.</span>
       <button
         onClick={() => handleFeedback('up')}
         className={`${styles.feedbackBtn} ${styles.up} ${feedback === 'up' ? styles.selectedUp : ''}`}
