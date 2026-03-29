@@ -58,9 +58,7 @@
   font-size: 1rem;
   color: var(--text-secondary);
   margin-bottom: 1.5rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-wrap: pretty;
 }
 
 .tagPill {
@@ -234,19 +232,23 @@
 }
 
 .storeLink {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--text-secondary);
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 1px;
-  transition: color 0.15s, border-color 0.15s;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-low);
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius);
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
   text-decoration: none;
 }
 
 .storeLink:hover {
-  color: var(--accent);
+  background: var(--accent-dim);
   border-color: var(--accent);
+  color: var(--accent);
 }
 
 .storeLink:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }

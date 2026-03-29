@@ -129,6 +129,7 @@ _2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log 2026-03-28_
 | 2026-03-29 | fix: price caching in games_cache — DB-first lookup, Steam only for cache misses | lib/supabase.ts, generate-recommendation/route.ts |
 | 2026-03-29 | fix: cap Steam fetches at 15 — CF Workers free plan 50 subrequest/invocation limit | generate-recommendation/route.ts |
 | 2026-03-29 | ux: result card body padding/spacing increase — cardBody 1.5rem 2rem, internal margins up | result/[id]/page.module.css |
+| 2026-03-29 | ux: storeLink → accent button style; heroSubtitle nowrap removed → text-wrap:pretty | result/[id]/page.module.css |
 
 ---
 
