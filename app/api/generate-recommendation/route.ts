@@ -103,11 +103,14 @@ export async function POST(request: NextRequest) {
 
     const excludeAppIds = (ownedAppIds.length > 0 ? ownedAppIds : playedAppIds).map(String)
     const scored = await scoreCandidates(tagProfile, userTagWeights, excludeAppIds, 80)
+    console.log('[rec] scored candidates:', scored.length)
 
     // Fetch all 80 candidates in parallel — same latency as before but
     // 2× the pool, so null returns (missing KR pricing / transient Steam errors)
     // have far less chance of exhausting all candidates.
     const detailsResults = await Promise.all(scored.map(s => getGameDetails(Number(s.appid))))
+    const nullCount = detailsResults.filter(d => d === null).length
+    console.log('[rec] game details: total', detailsResults.length, 'null', nullCount)
 
     const candidates = detailsResults
       .map((details, i) => ({ details, score: scored[i] }))
@@ -122,6 +125,11 @@ export async function POST(request: NextRequest) {
         top_tags: Object.entries(score.tags ?? {}).sort(([, a], [, b]) => b - a).slice(0, 3).map(([tag]) => tag),
       }))
       .slice(0, 20)
+    console.log('[rec] filtered candidates:', candidates.length)
+
+    if (candidates.length === 0) {
+      return NextResponse.json({ error: 'NO_GAMES_IN_BUDGET' satisfies ErrorCode, filters: { freeOnly, budget } }, { status: 400 })
+    }
 
     const playHistoryForClaude = playHistory.map(g => ({
       name: g.name,
@@ -130,6 +138,7 @@ export async function POST(request: NextRequest) {
     }))
 
     const claudeResult = await getRecommendations(playHistoryForClaude, candidates)
+    console.log('[rec] claude result:', claudeResult === 'AI_PARSE_FAILURE' ? 'PARSE_FAILURE' : `ok (${(claudeResult as unknown[]).length} items)`)
 
     if (claudeResult === 'AI_PARSE_FAILURE') {
       return NextResponse.json({ error: 'AI_PARSE_FAILURE' satisfies ErrorCode }, { status: 500 })
@@ -162,8 +171,8 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (dbError) {
-      console.error('[generate-recommendation] Supabase insertion error:', dbError)
-      return new NextResponse('Internal Server Error while saving result', { status: 500 })
+      console.error('[rec] Supabase insertion error:', dbError)
+      return NextResponse.json({ error: 'GENERAL_ERROR' satisfies ErrorCode }, { status: 500 })
     }
 
     return NextResponse.json({ id: dbData.id })

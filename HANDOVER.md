@@ -118,6 +118,7 @@ _2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log 2026-03-28_
 | 2026-03-29 | fix: Steam URL persistence — AuthContext (SIGNED_IN handling, single DB query, shared state) | app/context/AuthContext.tsx, layout.tsx, Header.tsx, RecommendationForm.tsx |
 | 2026-03-29 | remove dead code: showLinkBtn unused variable in Header | Header.tsx |
 | 2026-03-29 | fix: getGameDetails throws on Steam rate-limit — add res.ok guard | lib/steam.ts |
+| 2026-03-29 | fix: add candidates.length===0 guard + diagnostic logs + Supabase error → JSON | generate-recommendation/route.ts |
 
 ---
 
