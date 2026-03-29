@@ -112,6 +112,9 @@ export async function POST(request: NextRequest) {
     const PRICE_TTL_MS = 24 * 60 * 60 * 1000
     const now = Date.now()
 
+    // Cap at 15 Steam fetches — CF Workers free plan allows 50 subrequests/invocation.
+    // Fixed cost: ~8 (Supabase auth/tags/weights/score/priceCache/claude/insert) + 1 getOwnedGames
+    // Dynamic budget: 15 Steam fetches + 15 upserts = 30 → total ~39, safely under 50.
     const needsFetch = scored
       .filter(s => {
         const cached = priceCache.get(s.appid)
@@ -120,6 +123,7 @@ export async function POST(request: NextRequest) {
         return now - new Date(cached.price_updated_at).getTime() > PRICE_TTL_MS
       })
       .map(s => s.appid)
+      .slice(0, 15)
     console.log('[rec] price cache: hit', scored.length - needsFetch.length, 'miss', needsFetch.length)
 
     // Fetch from Steam only for uncached/stale games
@@ -223,6 +227,6 @@ export async function POST(request: NextRequest) {
   } catch (e: unknown) {
     const err = e as Error
     console.error('[generate-recommendation] GENERAL_ERROR:', err.message, err.stack)
-    return NextResponse.json({ error: 'GENERAL_ERROR' satisfies ErrorCode, _debug: err.message }, { status: 500 })
+    return NextResponse.json({ error: 'GENERAL_ERROR' satisfies ErrorCode }, { status: 500 })
   }
 }
