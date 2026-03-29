@@ -102,7 +102,11 @@ export async function POST(request: NextRequest) {
     const topTagsFromProfile = Object.entries(tagProfile).sort(([, a], [, b]) => b - a).slice(0, 10).map(([tag]) => tag)
 
     const excludeAppIds = (ownedAppIds.length > 0 ? ownedAppIds : playedAppIds).map(String)
-    const scored = await scoreCandidates(tagProfile, userTagWeights, excludeAppIds, 40)
+    const scored = await scoreCandidates(tagProfile, userTagWeights, excludeAppIds, 80)
+
+    if (scored.length === 0) {
+      return NextResponse.json({ error: 'GENERAL_ERROR' satisfies ErrorCode }, { status: 500 })
+    }
     
     const detailsPromises = scored.map(s => getGameDetails(Number(s.appid)))
     const detailsResults = await Promise.all(detailsPromises)

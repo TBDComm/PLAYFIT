@@ -114,6 +114,7 @@ _2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log 2026-03-28_
 | 2026-03-28 | PageLoading: fake progress → indeterminate phosphor scan (infinite, no false progress) | PageLoading.module.css |
 | 2026-03-29 | LoadingOverlay: radar SVG → logo outline glow via rotating drop-shadow offset | LoadingOverlay.tsx, LoadingOverlay.module.css |
 | 2026-03-29 | Result page: restore pre-Gemini layout (grid, full-width image + overlay); feedback buttons → text labels | result/[id]/page.tsx, page.module.css, FeedbackButtons.tsx |
+| 2026-03-29 | fix: NO_GAMES_IN_BUDGET false positive — pool 40→80, guard scored.length===0 | generate-recommendation/route.ts |
 
 ---
 
