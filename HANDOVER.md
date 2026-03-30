@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 133/200 lines — OK**
+📏 **File health: 134/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -116,6 +116,7 @@ _2026-03-29 entries (early) → HANDOVER-archive.md §Minor Changes Log 2026-03-
 | 2026-03-29 | ux: reason+tags → .cardMiddle (margin auto top/bottom) — vertically centered | result/[id]/page.tsx, page.module.css |
 | 2026-03-30 | fix: NO_GAMES_IN_BUDGET false positive — include price-unknown games in candidates (remove price_updated_at guard, add null check in budget filter) | types/index.ts, generate-recommendation/route.ts |
 | 2026-03-30 | fix(a11y): prefers-reduced-motion missing in LibraryPickerModal + legal.module.css; revert unnecessary NO_GAMES_IN_BUDGET else branch | LibraryPickerModal.module.css, legal.module.css, RecommendationForm.tsx |
+| 2026-03-30 | fix(algo): tagProfile 이중 voteCount 제거 (√playtime 전용) + scoreCandidates 후보 풀 80→300 | generate-recommendation/route.ts |
 
 ---
 

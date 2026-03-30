@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
       const tags = tagsMap.get(game.appid)
       if (!tags) continue
       for (const [tag, voteCount] of Object.entries(tags)) {
-        tagProfile[tag] = (tagProfile[tag] ?? 0) + voteCount * Math.sqrt(game.playtime_hours)
+        tagProfile[tag] = (tagProfile[tag] ?? 0) + Math.sqrt(game.playtime_hours)
       }
     }
 
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
     const topTagsFromProfile = Object.entries(tagProfile).sort(([, a], [, b]) => b - a).slice(0, 10).map(([tag]) => tag)
 
     const excludeAppIds = (ownedAppIds.length > 0 ? ownedAppIds : playedAppIds).map(String)
-    const scored = await scoreCandidates(tagProfile, userTagWeights, excludeAppIds, 80)
+    const scored = await scoreCandidates(tagProfile, userTagWeights, excludeAppIds, 300)
     console.log('[rec] scored candidates:', scored.length)
 
     // Check games_cache for already-cached prices — avoids hitting Steam for known games
@@ -115,6 +115,7 @@ export async function POST(request: NextRequest) {
     // Cap at 15 Steam fetches — CF Workers free plan allows 50 subrequests/invocation.
     // Fixed cost: ~8 (Supabase auth/tags/weights/score/priceCache/claude/insert) + 1 getOwnedGames
     // Dynamic budget: 15 Steam fetches + 15 upserts = 30 → total ~39, safely under 50.
+    // scoreCandidates pool=300: DB always scores all games, only LIMIT differs — no extra subrequest.
     const needsFetch = scored
       .filter(s => {
         const cached = priceCache.get(s.appid)
