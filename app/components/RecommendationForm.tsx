@@ -135,8 +135,7 @@ export default function RecommendationForm() {
     if (!res.ok || data.error) {
       if (data.error === 'NO_GAMES_IN_BUDGET') {
         if (data.filters?.freeOnly) setError('현재 무료 게임 중 추천 가능한 게임이 없어요')
-        else if (data.filters?.budget) setError('예산 내 추천 가능한 게임이 없어요. 예산을 높여보세요')
-        else setError('추천 가능한 게임을 찾지 못했어요. 잠시 후 다시 시도해주세요')
+        else setError('예산 내 추천 가능한 게임이 없어요. 예산을 높여보세요')
       } else {
         setError(ERROR_MESSAGES[data.error ?? 'GENERAL_ERROR'])
       }

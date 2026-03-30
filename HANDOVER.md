@@ -115,7 +115,7 @@ _2026-03-29 entries (early) → HANDOVER-archive.md §Minor Changes Log 2026-03-
 | 2026-03-29 | ux: storeLink color → Steam blue #66c0f4 | result/[id]/page.module.css |
 | 2026-03-29 | ux: reason+tags → .cardMiddle (margin auto top/bottom) — vertically centered | result/[id]/page.tsx, page.module.css |
 | 2026-03-30 | fix: NO_GAMES_IN_BUDGET false positive — include price-unknown games in candidates (remove price_updated_at guard, add null check in budget filter) | types/index.ts, generate-recommendation/route.ts |
-| 2026-03-30 | fix(a11y): prefers-reduced-motion missing in LibraryPickerModal + legal.module.css; NO_GAMES_IN_BUDGET error msg when budget not set | LibraryPickerModal.module.css, legal.module.css, RecommendationForm.tsx |
+| 2026-03-30 | fix(a11y): prefers-reduced-motion missing in LibraryPickerModal + legal.module.css; revert unnecessary NO_GAMES_IN_BUDGET else branch | LibraryPickerModal.module.css, legal.module.css, RecommendationForm.tsx |
 
 ---
 
