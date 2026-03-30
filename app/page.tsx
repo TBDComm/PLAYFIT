@@ -80,7 +80,7 @@ export default async function Home() {
               </p>
               <div className={styles.sampleMeta}>
                 <span className={styles.samplePrice}>₩22,500</span>
-                <span className={styles.sampleScore}>메타크리틱&nbsp;93점</span>
+                <span className={styles.sampleScore}>MC&nbsp;93</span>
               </div>
             </div>
           </div>

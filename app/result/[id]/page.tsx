@@ -110,12 +110,19 @@ export default async function ResultPage({ params }: ResultPageProps) {
               <div className={styles.meta}>
                 {card.is_free ? (
                   <span className={`${styles.price} ${styles.free}`}>무료</span>
-                ) : (
+                ) : card.price_krw != null ? (
                   <span className={styles.price}>
-                    {card.price_krw != null
-                      ? `₩${new Intl.NumberFormat('ko-KR').format(card.price_krw)}`
-                      : '가격 정보 없음'}
+                    ₩{new Intl.NumberFormat('ko-KR').format(card.price_krw)}
                   </span>
+                ) : (
+                  <a
+                    href={card.store_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.priceUnknown}
+                  >
+                    가격 정보 없음
+                  </a>
                 )}
                 {card.metacritic_score != null && (
                   <span className={`${styles.score} ${getScoreClass(card.metacritic_score, styles)}`}>

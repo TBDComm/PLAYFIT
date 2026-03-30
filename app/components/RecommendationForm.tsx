@@ -297,7 +297,7 @@ export default function RecommendationForm() {
                         </div>
                         <input
                           type="number" name={`game-playtime-${i}`} className={`${styles.input} ${styles.inputNarrow}`}
-                          placeholder="시간…" value={g.playtime} onChange={e => updateManualGame(i, 'playtime', e.target.value)}
+                          placeholder="예: 50…" value={g.playtime} onChange={e => updateManualGame(i, 'playtime', e.target.value)}
                           autoComplete="off" inputMode="decimal" min={0} disabled={loading} aria-label={`게임 ${i + 1} 플레이 시간 (시간)`}
                         />
                       </div>
