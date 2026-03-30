@@ -18,6 +18,12 @@
   opacity: 1;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .backLogo {
+    transition: none;
+  }
+}
+
 .backLogoAccent {
   color: var(--accent);
 }

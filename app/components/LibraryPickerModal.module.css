@@ -234,3 +234,12 @@
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .closeBtn,
+  .searchInput,
+  .gameRow,
+  .confirmBtn {
+    transition: none;
+  }
+}
