@@ -747,6 +747,13 @@
   border: 1px solid var(--accent-low);
 }
 
+.scoreLabelShort { display: none; }
+
+@media (max-width: 768px) {
+  .scoreLabelFull { display: none; }
+  .scoreLabelShort { display: inline; }
+}
+
 /* ===== Preview section ===== */
 
 .previewSection {

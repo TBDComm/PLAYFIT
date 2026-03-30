@@ -203,7 +203,9 @@ export default function SavedGames() {
             )}
             {hoveredPanel.game.metacritic_score !== null && (
               <span className={styles.savedCardPanelScore}>
-                Metacritic Score&nbsp;{hoveredPanel.game.metacritic_score}
+                <span className={styles.scoreLabelFull}>Metacritic Score</span>
+                <span className={styles.scoreLabelShort}>MC</span>
+                &nbsp;{hoveredPanel.game.metacritic_score}
               </span>
             )}
           </div>

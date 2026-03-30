@@ -221,6 +221,13 @@
   border: 1px solid var(--error-border);
 }
 
+.scoreLabelShort { display: none; }
+
+@media (max-width: 768px) {
+  .scoreLabelFull { display: none; }
+  .scoreLabelShort { display: inline; }
+}
+
 /* ── 중앙 그룹 (reason + tags) ── */
 .cardMiddle {
   display: flex;

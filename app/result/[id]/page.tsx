@@ -126,7 +126,9 @@ export default async function ResultPage({ params }: ResultPageProps) {
                 )}
                 {card.metacritic_score != null && (
                   <span className={`${styles.score} ${getScoreClass(card.metacritic_score, styles)}`}>
-                    Metacritic Score&nbsp;{card.metacritic_score}
+                    <span className={styles.scoreLabelFull}>Metacritic Score</span>
+                    <span className={styles.scoreLabelShort}>MC</span>
+                    &nbsp;{card.metacritic_score}
                   </span>
                 )}
               </div>
