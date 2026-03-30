@@ -193,6 +193,7 @@
 }
 
 .priceUnknown:hover { color: var(--text-primary); }
+.priceUnknown:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 .score {
   font-size: 0.8125rem;
@@ -332,7 +333,7 @@
 
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
-  .storeLink { transition: none; }
+  .storeLink, .priceUnknown { transition: none; }
 }
 
 /* ── Responsive ── */
