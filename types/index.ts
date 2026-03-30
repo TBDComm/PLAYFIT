@@ -18,7 +18,7 @@ export interface PlayHistory {
 export interface GameDetails {
   appid: number
   name: string
-  price_krw: number
+  price_krw: number | null
   is_free: boolean
   metacritic_score?: number
 }
@@ -48,7 +48,7 @@ export interface RecommendationCard {
   appid: number
   name: string
   reason: string
-  price_krw: number
+  price_krw: number | null
   is_free: boolean
   metacritic_score?: number
   store_url: string

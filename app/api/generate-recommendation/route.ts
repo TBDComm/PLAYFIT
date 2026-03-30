@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
       needsFetch.map((id, i) => {
         const d = fetchedDetails[i]
         if (!d) return Promise.resolve()
-        return upsertGamePriceCache(d.appid, d.price_krw, d.is_free, d.metacritic_score)
+        return upsertGamePriceCache(d.appid, d.price_krw ?? 0, d.is_free, d.metacritic_score)
       })
     )
 
@@ -147,12 +147,12 @@ export async function POST(request: NextRequest) {
       if (d) detailMap.set(String(d.appid), d)
     }
     for (const [id, cached] of priceCache) {
-      if (!detailMap.has(id) && cached.price_updated_at !== null) {
+      if (!detailMap.has(id)) {
         const name = scored.find(s => s.appid === id)?.name ?? ''
         detailMap.set(id, {
           appid: Number(id),
           name,
-          price_krw: cached.price_krw ?? 0,
+          price_krw: cached.price_krw,  // null이면 예산 필터 통과 (가격 미조회 = 제외 불가)
           is_free: cached.is_free,
           metacritic_score: cached.metacritic_score ?? undefined,
         })
@@ -164,7 +164,7 @@ export async function POST(request: NextRequest) {
         const details = detailMap.get(s.appid)
         if (!details) return null
         if (freeOnly && !details.is_free) return null
-        if (!freeOnly && budget !== undefined && !details.is_free && details.price_krw > budget) return null
+        if (!freeOnly && budget !== undefined && !details.is_free && details.price_krw !== null && details.price_krw > budget) return null
         return {
           ...details,
           top_tags: Object.entries(s.tags ?? {}).sort(([, a], [, b]) => b - a).slice(0, 3).map(([tag]) => tag),
