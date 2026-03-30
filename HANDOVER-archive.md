@@ -28,6 +28,38 @@
 | 2026-03-28 | ux(home): 5 improvements — auth-loading submit disabled, steam subtitle, URL validation, manual notice, sample card order | `RecommendationForm.tsx`, `page.tsx` |
 | 2026-03-28 | fix(saved-games): wrap in savedSection (padding/bg/border-top); skeleton pulse animation; savedGamesSkeleton updated | `SavedGames.tsx`, `page.module.css` |
 | 2026-03-28 | fix(design): 7-point audit — CSS variables (accent-faint/trace/overlay-backdrop), border-radius var(--radius), LoadingOverlay rgba→vars, LibraryPickerModal backdrop var | `globals.css`, `LoadingOverlay.module.css`, `LibraryPickerModal.module.css`, `page.module.css`, `SavedGames.tsx`, `Header.module.css` |
+| 2026-03-28 | Add home loading screen + progress bar gauge to PageLoading | `app/loading.tsx`, `PageLoading.tsx`, `PageLoading.module.css` |
+| 2026-03-28 | Result page: horizontal compact card list + color-coded Metacritic + tag line nowrap | `result/[id]/page.tsx`, `page.module.css` |
+| 2026-03-28 | PageLoading: remove radar sweep, parallelogram HUD gauge (stall 85%) | `PageLoading.tsx`, `PageLoading.module.css` |
+| 2026-03-28 | LoadingOverlay: remove radar sweep, parallelogram terminal bars, fix overlay-backdrop variable | `LoadingOverlay.tsx`, `LoadingOverlay.module.css` |
+| 2026-03-28 | Loading gauge UX: state-driven macro bar in LoadingOverlay, termBar forwards, PageLoading 1.5s | `LoadingOverlay.tsx/css`, `PageLoading.module.css` |
+| 2026-03-28 | PageLoading: fake progress → indeterminate phosphor scan (infinite, no false progress) | `PageLoading.module.css` |
+
+---
+
+## Minor Changes Log — 2026-03-29
+
+| Date | Change | Files |
+|------|--------|-------|
+| 2026-03-29 | LoadingOverlay: radar SVG → logo outline glow via rotating drop-shadow offset | `LoadingOverlay.tsx`, `LoadingOverlay.module.css` |
+| 2026-03-29 | Result page: restore pre-Gemini layout (grid, full-width image + overlay); feedback buttons → text labels | `result/[id]/page.tsx`, `page.module.css`, `FeedbackButtons.tsx` |
+| 2026-03-29 | fix: NO_GAMES_IN_BUDGET false positive — candidate pool 40→80 parallel (no latency increase) | `generate-recommendation/route.ts` |
+| 2026-03-29 | fix: Steam URL persistence — AuthContext (SIGNED_IN handling, single DB query, shared state) | `app/context/AuthContext.tsx`, `layout.tsx`, `Header.tsx`, `RecommendationForm.tsx` |
+| 2026-03-29 | remove dead code: showLinkBtn unused variable in Header | `Header.tsx` |
+| 2026-03-29 | fix: getGameDetails throws on Steam rate-limit — add res.ok guard | `lib/steam.ts` |
+| 2026-03-29 | fix: add candidates.length===0 guard + diagnostic logs + Supabase error → JSON | `generate-recommendation/route.ts` |
+| 2026-03-29 | restore: result page horizontal compact layout (ed94977) — 477f2f2 restore went too far back to grid | `result/[id]/page.tsx`, `page.module.css` |
+| 2026-03-29 | result page: thumbnail fixed width (220px) + natural aspect ratio (no crop); remove "왜 나한테 맞냐면" label | `result/[id]/page.tsx`, `page.module.css` |
+| 2026-03-29 | result page: card hover → accent border + lime glow; heroSubtitle tags nowrap confirmed | `result/[id]/page.module.css` |
+| 2026-03-29 | result page: thumbnail fill+stretch restored (240px wide), fills card height on left | `result/[id]/page.tsx`, `page.module.css` |
+| 2026-03-29 | result page: card layout more spacious (padding/spacing up), feedback buttons bottom-right | `result/[id]/page.module.css` |
+| 2026-03-29 | result page: thumbnail width/height explicit (no fill), align-self:stretch + aspect-ratio:460/215 → auto-width, no crop | `result/[id]/page.tsx`, `page.module.css` |
+| 2026-03-29 | fix: add res.ok guards to getOwnedGames, getAllLibraryGames, resolveVanityUrl | `lib/steam.ts` |
+| 2026-03-29 | fix: price caching in games_cache — DB-first lookup, Steam only for cache misses | `lib/supabase.ts`, `generate-recommendation/route.ts` |
+| 2026-03-29 | fix: cap Steam fetches at 15 — CF Workers free plan 50 subrequest/invocation limit | `generate-recommendation/route.ts` |
+| 2026-03-29 | ux: result card body padding/spacing increase — cardBody 1.5rem 2rem, internal margins up | `result/[id]/page.module.css` |
+| 2026-03-29 | ux: storeLink → accent button style; heroSubtitle nowrap removed → text-wrap:pretty | `result/[id]/page.module.css` |
+| 2026-03-29 | ux: portrait thumbnail (library_600x900) + header.jpg fallback; thumbnailWrap aspect-ratio 2/3 | `result/[id]/ThumbnailImage.tsx`, `page.tsx`, `page.module.css` |
 
 ---
 
