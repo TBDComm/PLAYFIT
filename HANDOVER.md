@@ -118,6 +118,7 @@ _2026-03-29 entries (early) → HANDOVER-archive.md §Minor Changes Log 2026-03-
 | 2026-03-30 | fix(a11y): prefers-reduced-motion missing in LibraryPickerModal + legal.module.css; revert unnecessary NO_GAMES_IN_BUDGET else branch | LibraryPickerModal.module.css, legal.module.css, RecommendationForm.tsx |
 | 2026-03-30 | fix(algo): tagProfile 이중 voteCount 제거 (√playtime 전용) + scoreCandidates 후보 풀 80→300 | generate-recommendation/route.ts |
 | 2026-03-30 | ux: price-unknown → Steam link; playtime placeholder 예: 50…; home MC label 통일 | result/[id]/page.tsx, page.module.css, RecommendationForm.tsx, page.tsx |
+| 2026-03-30 | ux: Metacritic label → "Metacritic Score XX" (전체 통일: result, home, SavedGames) | result/[id]/page.tsx, page.tsx, SavedGames.tsx |
 
 ---
 
