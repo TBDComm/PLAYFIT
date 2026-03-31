@@ -43,6 +43,7 @@ export default function RecommendationForm() {
   const loadingMsgRef = useRef<string>('플레이 기록 분석 중…')
   const [error, setError] = useState<string | null>(null)
   const [dropdowns, setDropdowns] = useState<Array<SearchResult[] | null>>(Array(5).fill(null))
+  const [activeIdxs, setActiveIdxs] = useState<number[]>(Array(5).fill(-1))
   const [rowErrors, setRowErrors] = useState<Array<string | null>>(Array(5).fill(null))
   const [formRevealed, setFormRevealed] = useState(false)
   const formRevealRef = useRef<HTMLElement>(null)
@@ -80,6 +81,7 @@ export default function RecommendationForm() {
   function handleNameChange(idx: number, value: string) {
     setManualGames(prev => prev.map((g, i) => i === idx ? { ...g, name: value, appid: null } : g))
     setRowErrors(prev => prev.map((e, i) => i === idx ? null : e))
+    setActiveIdxs(prev => prev.map((v, i) => i === idx ? -1 : v))
     if (!value.trim()) {
       setDropdowns(prev => prev.map((d, i) => i === idx ? null : d))
       if (debounceRefs.current[idx]) clearTimeout(debounceRefs.current[idx]!)
@@ -104,12 +106,15 @@ export default function RecommendationForm() {
     trackEvent('search_used', { game_name: name })
     setManualGames(prev => prev.map((g, i) => i === idx ? { ...g, appid, name } : g))
     setDropdowns(prev => prev.map((d, i) => i === idx ? null : d))
+    setActiveIdxs(prev => prev.map((v, i) => i === idx ? -1 : v))
     setRowErrors(prev => prev.map((e, i) => i === idx ? null : e))
+    nameInputRefs.current[idx]?.focus()
   }
 
   function handleNameBlur(idx: number) {
     setTimeout(() => {
       setDropdowns(prev => prev.map((d, i) => i === idx ? null : d))
+      setActiveIdxs(prev => prev.map((v, i) => i === idx ? -1 : v))
     }, 150)
     const game = manualGames[idx]
     if (game.name.trim() && game.appid === null) {
@@ -117,10 +122,38 @@ export default function RecommendationForm() {
     }
   }
 
+  function handleNameKeyDown(idx: number, e: React.KeyboardEvent<HTMLInputElement>) {
+    const items = dropdowns[idx]
+    if (!items?.length) return
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setActiveIdxs(prev => prev.map((v, i) => i === idx ? Math.min(v + 1, items.length - 1) : v))
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setActiveIdxs(prev => prev.map((v, i) => i === idx ? Math.max(v - 1, -1) : v))
+    } else if (e.key === 'Enter') {
+      e.preventDefault()
+      const active = activeIdxs[idx]
+      if (active >= 0 && items[active]) selectGame(idx, items[active].appid, items[active].name)
+    } else if (e.key === 'Escape') {
+      setDropdowns(prev => prev.map((d, i) => i === idx ? null : d))
+      setActiveIdxs(prev => prev.map((v, i) => i === idx ? -1 : v))
+    }
+  }
+
+  // 키보드로 이동한 항목이 드롭다운 뷰포트 밖에 있으면 스크롤
+  useEffect(() => {
+    activeIdxs.forEach((active, idx) => {
+      if (active < 0) return
+      document.getElementById(`game-option-${idx}-${active}`)?.scrollIntoView({ block: 'nearest' })
+    })
+  }, [activeIdxs])
+
   function switchMode(next: 'steam' | 'manual') {
     setMode(next)
     setError(null)
     setDropdowns(Array(5).fill(null))
+    setActiveIdxs(Array(5).fill(-1))
     setRowErrors(Array(5).fill(null))
   }
 
@@ -278,16 +311,21 @@ export default function RecommendationForm() {
                             ref={el => { nameInputRefs.current[i] = el }}
                             type="text" name={`game-name-${i}`} className={styles.input}
                             placeholder="게임 이름 검색…" value={g.name} onChange={e => handleNameChange(i, e.target.value)}
-                            onBlur={() => handleNameBlur(i)} autoComplete="off" spellCheck={false} disabled={loading}
+                            onBlur={() => handleNameBlur(i)} onKeyDown={e => handleNameKeyDown(i, e)}
+                            autoComplete="off" spellCheck={false} disabled={loading}
                             aria-label={`게임 ${i + 1} 이름`} aria-autocomplete="list" aria-expanded={!!dropdowns[i]?.length}
                             aria-haspopup="listbox" aria-controls={`game-dropdown-${i}`} role="combobox"
+                            aria-activedescendant={activeIdxs[i] >= 0 ? `game-option-${i}-${activeIdxs[i]}` : undefined}
                           />
                           {!!dropdowns[i]?.length && (
                             <div id={`game-dropdown-${i}`} className={styles.dropdown} role="listbox" aria-label={`게임 ${i + 1} 검색 결과`}>
-                              {dropdowns[i]!.map(item => (
+                              {dropdowns[i]!.map((item, j) => (
                                 <button
-                                  key={item.appid} type="button" className={styles.dropdownItem} role="option"
-                                  aria-selected={false} onMouseDown={() => selectGame(i, item.appid, item.name)}
+                                  key={item.appid} id={`game-option-${i}-${j}`}
+                                  type="button" role="option"
+                                  className={`${styles.dropdownItem}${activeIdxs[i] === j ? ` ${styles.dropdownItemActive}` : ''}`}
+                                  aria-selected={activeIdxs[i] === j}
+                                  onMouseDown={() => selectGame(i, item.appid, item.name)}
                                 >
                                   {item.name}
                                 </button>

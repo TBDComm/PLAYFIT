@@ -381,7 +381,8 @@
     transform: none;
   }
   .buttonLoading { animation: none }
-  .dropdownItem {
+  .dropdownItem,
+  .dropdownItemActive {
     transition: none;
   }
   .previewTileImg,
@@ -501,7 +502,8 @@
   transition: background-color 0.1s ease;
 }
 
-.dropdownItem:hover {
+.dropdownItem:hover,
+.dropdownItemActive {
   background-color: var(--bg-elevated);
 }
 

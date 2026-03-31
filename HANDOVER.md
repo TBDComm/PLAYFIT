@@ -126,6 +126,7 @@ _2026-03-29 entries (early) → HANDOVER-archive.md §Minor Changes Log 2026-03-
 | 2026-03-31 | CE-1: SavedGames touch tap-toggle panel; document click listener (scroll unblocked); savedCardKbdUnsave stopPropagation | SavedGames.tsx, page.module.css |
 | 2026-03-31 | CE-2: canUsePicker — unlinked_auth + valid URL 허용 | RecommendationForm.tsx |
 | 2026-03-31 | CE-3: LibraryPickerModal fetch — 10s timeout + AbortController + 다시 시도 버튼 | LibraryPickerModal.tsx, LibraryPickerModal.module.css |
+| 2026-03-31 | ux: manual game dropdown 키보드 내비게이션 (ArrowUp/Down/Enter/Escape + scrollIntoView) | RecommendationForm.tsx, page.module.css |
 
 ---
 
