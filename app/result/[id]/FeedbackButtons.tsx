@@ -47,25 +47,37 @@ export default function FeedbackButtons({ appId, gameName, steamId }: FeedbackBu
   }
 
   return (
-    <div className={styles.feedbackSide}>
-      <button
-        onClick={() => handleFeedback('up')}
-        className={`${styles.feedbackBtn} ${styles.up} ${feedback === 'up' ? styles.selectedUp : ''}`}
-        disabled={sending || feedback !== null}
-        aria-label="잘 맞아요"
-      >
-        <span className={styles.sign}>+</span>
-        <span className={styles.label}>잘 맞아요</span>
-      </button>
-      <button
-        onClick={() => handleFeedback('down')}
-        className={`${styles.feedbackBtn} ${styles.down} ${feedback === 'down' ? styles.selectedDown : ''}`}
-        disabled={sending || feedback !== null}
-        aria-label="안 맞아요"
-      >
-        <span className={styles.sign}>−</span>
-        <span className={styles.label}>안 맞아요</span>
-      </button>
+    <div
+      className={`${styles.feedbackSide}${feedback !== null ? ` ${styles.confirmedSide}` : ''}`}
+      aria-live="polite"
+    >
+      {feedback !== null ? (
+        <>
+          <span className={styles.confirmedCheck} aria-hidden="true">✓</span>
+          <span className={styles.confirmedText}>반영됐어요</span>
+        </>
+      ) : (
+        <>
+          <button
+            onClick={() => handleFeedback('up')}
+            className={`${styles.feedbackBtn} ${styles.up}`}
+            disabled={sending}
+            aria-label="잘 맞아요"
+          >
+            <span className={styles.sign}>+</span>
+            <span className={styles.label}>잘 맞아요</span>
+          </button>
+          <button
+            onClick={() => handleFeedback('down')}
+            className={`${styles.feedbackBtn} ${styles.down}`}
+            disabled={sending}
+            aria-label="안 맞아요"
+          >
+            <span className={styles.sign}>−</span>
+            <span className={styles.label}>안 맞아요</span>
+          </button>
+        </>
+      )}
     </div>
   )
 }

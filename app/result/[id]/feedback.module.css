@@ -60,20 +60,37 @@
   transform: scale(1.04);
 }
 
-/* 선택된 상태 */
-.selectedUp {
-  background: rgba(163, 230, 53, 0.2);
-  border-color: var(--accent);
+/* 피드백 완료 상태 */
+.confirmedSide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  animation: fadeConfirm 0.2s ease-out;
 }
 
-.selectedDown {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: var(--error);
+.confirmedCheck {
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--text-muted);
+}
+
+.confirmedText {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+@keyframes fadeConfirm {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 .feedbackBtn:disabled {
   cursor: default;
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
 .feedbackBtn:focus-visible {
@@ -88,6 +105,9 @@
   .up:hover:not(:disabled),
   .down:hover:not(:disabled) {
     transform: none;
+  }
+  .confirmedSide {
+    animation: none;
   }
 }
 

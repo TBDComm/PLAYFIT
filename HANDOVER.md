@@ -122,6 +122,7 @@ _2026-03-29 entries (early) → HANDOVER-archive.md §Minor Changes Log 2026-03-
 | 2026-03-30 | fix(a11y): priceUnknown — :focus-visible + prefers-reduced-motion 누락 수정 | result/[id]/page.module.css |
 | 2026-03-30 | ux: playtime placeholder "예: 50시간"; Metacritic 반응형 (≤768px → MC XX) | RecommendationForm.tsx, result/[id]/page.tsx+css, page.tsx+css, SavedGames.tsx |
 | 2026-03-31 | ux: result footer — row layout (feedback box left, scroll-to-top right), mobile stacks column | result/[id]/page.module.css |
+| 2026-03-31 | ux: feedback buttons — confirmed state replaces both buttons with ✓ + "반영됐어요" (grey, fade-in) | result/[id]/FeedbackButtons.tsx, feedback.module.css |
 
 ---
 
