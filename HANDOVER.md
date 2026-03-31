@@ -123,7 +123,7 @@ _2026-03-29 entries (early) → HANDOVER-archive.md §Minor Changes Log 2026-03-
 | 2026-03-30 | ux: playtime placeholder "예: 50시간"; Metacritic 반응형 (≤768px → MC XX) | RecommendationForm.tsx, result/[id]/page.tsx+css, page.tsx+css, SavedGames.tsx |
 | 2026-03-31 | ux: result footer — row layout (feedback box left, scroll-to-top right), mobile stacks column | result/[id]/page.module.css |
 | 2026-03-31 | ux: feedback buttons — confirmed state replaces both buttons with ✓ + "반영됐어요" (grey, fade-in) | result/[id]/FeedbackButtons.tsx, feedback.module.css |
-| 2026-03-31 | CE-1: SavedGames touch tap-toggle panel; document click listener (scroll unblocked) | SavedGames.tsx, page.module.css |
+| 2026-03-31 | CE-1: SavedGames touch tap-toggle panel; document click listener (scroll unblocked); savedCardKbdUnsave stopPropagation | SavedGames.tsx, page.module.css |
 | 2026-03-31 | CE-2: canUsePicker — unlinked_auth + valid URL 허용 | RecommendationForm.tsx |
 | 2026-03-31 | CE-3: LibraryPickerModal fetch — 10s timeout + AbortController + 다시 시도 버튼 | LibraryPickerModal.tsx, LibraryPickerModal.module.css |
 

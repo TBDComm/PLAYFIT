@@ -211,7 +211,7 @@ export default function SavedGames() {
                 </div>
                 <button
                   className={styles.savedCardKbdUnsave}
-                  onClick={() => handleUnsave(game.appid)}
+                  onClick={(e) => { e.stopPropagation(); handleUnsave(game.appid) }}
                   onFocus={(e) => { const li = e.currentTarget.closest('li') as HTMLElement | null; if (li) handleCardEnter(game, li) }}
                   onBlur={handleCardLeave}
                   aria-label={`${game.name} 저장 취소`}
