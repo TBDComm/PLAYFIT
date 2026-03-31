@@ -953,6 +953,7 @@
   height: 180px;
   overflow: hidden;
   border-radius: var(--radius);
+  touch-action: manipulation;
   background: var(--bg-surface);
   border: 1px solid var(--border);
   position: relative;
