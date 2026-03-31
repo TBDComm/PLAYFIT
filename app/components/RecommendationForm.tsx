@@ -200,7 +200,7 @@ export default function RecommendationForm() {
 
   const [showLibraryPicker, setShowLibraryPicker] = useState(false)
   const steamId = url.match(/\/profiles\/(\d+)/)?.[1] ?? null
-  const canUsePicker = (authState === 'steam' || authState === 'linked') && steamId !== null
+  const canUsePicker = authState !== 'anon' && authState !== 'loading' && steamId !== null
 
   async function handleLibraryConfirm(games: LibraryGame[]) {
     setShowLibraryPicker(false)

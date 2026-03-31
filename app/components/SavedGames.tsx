@@ -26,6 +26,10 @@ export default function SavedGames() {
   const panelLeaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const panelHideTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  // 터치 탭-토글 상태
+  const [touchActiveAppid, setTouchActiveAppid] = useState<string | null>(null)
+  const lastPointerType = useRef<string>('')
+
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setAuthState(session ? 'authed' : 'anon')
@@ -106,6 +110,17 @@ export default function SavedGames() {
     hoveredPanelRef.current = null
     setHoveredPanel(null)
     setPanelVisible(false)
+    setTouchActiveAppid(null)
+  }
+
+  // 터치 탭: 같은 카드면 닫기, 다른 카드면 열기
+  function handleCardTap(game: SavedGame, el: HTMLLIElement) {
+    if (touchActiveAppid === game.appid) {
+      dismissPanel()
+    } else {
+      setTouchActiveAppid(game.appid)
+      handleCardEnter(game, el)
+    }
   }
 
   return (
@@ -151,8 +166,20 @@ export default function SavedGames() {
             <li
               key={game.appid}
               className={`${styles.savedCard}${hoveredPanel?.game.appid === game.appid ? ` ${styles.savedCardActive}` : ''}${hoveredPanel && hoveredPanel.game.appid !== game.appid ? ` ${styles.savedCardDimmed}` : ''}`}
-              onMouseEnter={(e) => handleCardEnter(game, e.currentTarget)}
-              onMouseLeave={handleCardLeave}
+              aria-expanded={touchActiveAppid === game.appid}
+              onPointerDown={(e) => { lastPointerType.current = e.pointerType }}
+              onMouseEnter={(e) => {
+                if (lastPointerType.current === 'touch') return
+                handleCardEnter(game, e.currentTarget)
+              }}
+              onMouseLeave={() => {
+                if (lastPointerType.current === 'touch') return
+                handleCardLeave()
+              }}
+              onClick={(e) => {
+                if (lastPointerType.current !== 'touch') return
+                handleCardTap(game, e.currentTarget)
+              }}
             >
               <div className={styles.savedCardImgWrap}>
                 {!failedSavedImages.has(game.appid) && (
@@ -182,6 +209,15 @@ export default function SavedGames() {
             </li>
           ))}
         </ul>
+      )}
+
+      {touchActiveAppid !== null && typeof document !== 'undefined' && createPortal(
+        <div
+          className={styles.savedTouchBackdrop}
+          onClick={dismissPanel}
+          aria-hidden="true"
+        />,
+        document.body
       )}
 
       {hoveredPanel && typeof document !== 'undefined' && createPortal(

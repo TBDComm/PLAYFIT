@@ -18,7 +18,9 @@ export default function LibraryPickerModal({ steamId, externalLoading, onClose, 
   const [fetchError, setFetchError] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState<Set<number>>(new Set())
+  const [retryCount, setRetryCount] = useState(0)
   const searchRef = useRef<HTMLInputElement>(null)
+  const abortRef = useRef<AbortController | null>(null)
 
   useEffect(() => { setMounted(true) }, [])
 
@@ -29,14 +31,33 @@ export default function LibraryPickerModal({ steamId, externalLoading, onClose, 
   }, [])
 
   useEffect(() => {
-    fetch(`/api/steam/library?steamId=${steamId}`)
+    // 이전 요청 취소 후 새 컨트롤러 생성
+    if (abortRef.current) abortRef.current.abort()
+    const controller = new AbortController()
+    abortRef.current = controller
+
+    setGames(null)
+    setFetchError(null)
+
+    const timeoutId = setTimeout(() => controller.abort(), 10000)
+
+    fetch(`/api/steam/library?steamId=${steamId}`, { signal: controller.signal })
       .then(r => r.json())
       .then((data: { games?: LibraryGame[]; error?: string }) => {
+        clearTimeout(timeoutId)
         if (data.error) setFetchError('라이브러리를 불러올 수 없어요')
         else setGames(data.games ?? [])
       })
-      .catch(() => setFetchError('라이브러리를 불러올 수 없어요'))
-  }, [steamId])
+      .catch(() => {
+        clearTimeout(timeoutId)
+        setFetchError('라이브러리를 불러올 수 없어요')
+      })
+
+    return () => {
+      clearTimeout(timeoutId)
+      controller.abort()
+    }
+  }, [steamId, retryCount])
 
   useEffect(() => {
     if (games !== null) searchRef.current?.focus()
@@ -111,7 +132,16 @@ export default function LibraryPickerModal({ steamId, externalLoading, onClose, 
             <p className={styles.statusMsg}>라이브러리 불러오는 중…</p>
           )}
           {fetchError && (
-            <p className={styles.statusMsg}>{fetchError}</p>
+            <>
+              <p className={styles.statusMsg}>{fetchError}</p>
+              <button
+                type="button"
+                className={styles.retryBtn}
+                onClick={() => setRetryCount(c => c + 1)}
+              >
+                다시 시도
+              </button>
+            </>
           )}
           {games !== null && filtered.length === 0 && (
             <p className={styles.statusMsg}>검색 결과가 없어요</p>

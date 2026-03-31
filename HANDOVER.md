@@ -57,10 +57,10 @@ Next action: [exactly what to do next to resume]
 | C1–C13 | SEO, legal, GA4, architecture, game/genre/blog, AdSense | ✅ 2026-03-18–20 |
 | FT1–FT7 | Preview strip, genre/blog UX, save system | ✅ 2026-03-21–23 |
 | S1–S5 + bugfixes | Home polish, settings page, auth bugs, library picker | ✅ 2026-03-27–28 |
-| **CE-1** | **Mobile: Saved Games touch panel** | **▶ NEXT** |
-| CE-2 | Library picker: show for unlinked_auth + valid URL | ⏳ |
-| CE-3 | Library picker: fetch timeout + retry button | ⏳ |
-| CE-4 | Feedback buttons: vote change + error on failure (resolves CE-7) | ⏳ |
+| CE-1 | Mobile: Saved Games touch panel | ✅ 2026-03-31 |
+| CE-2 | Library picker: show for unlinked_auth + valid URL | ✅ 2026-03-31 |
+| CE-3 | Library picker: fetch timeout + retry button | ✅ 2026-03-31 |
+| **CE-4** | **Feedback buttons: vote change + error on failure (resolves CE-7)** | **▶ NEXT** |
 | CE-5 | Result page: save toggle on each card | ⏳ |
 | CE-6 | Steam link popup: remove auto-trigger + add benefit copy | ⏳ |
 | CE-8 | /games/[appid]: back navigation | ⏳ |
@@ -79,24 +79,24 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: CE-1 — Mobile: Saved Games touch panel ──
+## ── ACTIVE STEP: CE-4 — Feedback buttons: vote change + error ──
 
-**Full spec** → `SPEC.md §CE-1` (copied inline below)
+**Problem 1:** `result/[id]/FeedbackButtons.tsx:54` — after any vote, both buttons disabled permanently. No vote change possible.
+**Problem 2:** API failure silently disables buttons — user has no idea if vote was recorded.
 
-**Problem:** `SavedGames.tsx:65-100` — floating detail panel activates on `mouseenter` only. Touch users cannot see game details (reason, price, Metacritic) or unsave.
-
-**Files:** `app/components/SavedGames.tsx`, `app/page.module.css`
+**Files:** `app/result/[id]/FeedbackButtons.tsx`
 
 **Spec:**
-- On card interaction: if `event.pointerType === 'touch'` → tap-toggle behavior; if mouse → existing hover unchanged
-- On tap: open panel (same `handleCardEnter` logic). Stays open until: tap outside, tap another card, or tap "저장 취소"
-- Add transparent backdrop `<div>` (position fixed, inset 0, z below panel) rendered when panel is open on touch → `onClick` dismisses
-- Add `aria-expanded` on each card toggled by touch state
-- Desktop hover: unchanged
+- State: `feedback: 'up' | 'down' | null` (existing), `sending: boolean`, `error: string | null`
+- After successful vote: buttons remain **enabled**. Selected button gets visual "active" class (accent border/bg). Clicking the other button sends a new vote (API upserts — idempotent).
+- Clicking already-selected button: no-op
+- On API failure: set `error = '저장 실패. 다시 시도해주세요'`, show below buttons, re-enable buttons, revert `feedback` state to previous
+- Loading (sending): disable both buttons + reduce opacity to 0.5
+- This resolves CE-7 (silent failure) — no separate CE-7 step needed
 
-**Out of scope:** Redesigning panel layout for mobile.
+**Out of scope:** Changing feedback API route logic.
 
-**After completing:** clear lock → add Completed Step → set CE-2 as Active Step (copy spec from SPEC.md §CE-2)
+**After completing:** clear lock → add Completed Step → set CE-5 as Active Step (copy spec from SPEC.md §CE-5)
 
 ---
 
@@ -123,6 +123,9 @@ _2026-03-29 entries (early) → HANDOVER-archive.md §Minor Changes Log 2026-03-
 | 2026-03-30 | ux: playtime placeholder "예: 50시간"; Metacritic 반응형 (≤768px → MC XX) | RecommendationForm.tsx, result/[id]/page.tsx+css, page.tsx+css, SavedGames.tsx |
 | 2026-03-31 | ux: result footer — row layout (feedback box left, scroll-to-top right), mobile stacks column | result/[id]/page.module.css |
 | 2026-03-31 | ux: feedback buttons — confirmed state replaces both buttons with ✓ + "반영됐어요" (grey, fade-in) | result/[id]/FeedbackButtons.tsx, feedback.module.css |
+| 2026-03-31 | CE-1: SavedGames touch tap-toggle panel + transparent backdrop | SavedGames.tsx, page.module.css |
+| 2026-03-31 | CE-2: canUsePicker — unlinked_auth + valid URL 허용 | RecommendationForm.tsx |
+| 2026-03-31 | CE-3: LibraryPickerModal fetch — 10s timeout + AbortController + 다시 시도 버튼 | LibraryPickerModal.tsx, LibraryPickerModal.module.css |
 
 ---
 

@@ -112,8 +112,30 @@
 .statusMsg {
   color: var(--text-secondary);
   font-size: 0.85rem;
-  padding: 1.5rem 1.25rem;
+  padding: 1.5rem 1.25rem 0.5rem;
   text-align: center;
+}
+
+.retryBtn {
+  display: block;
+  margin: 0 auto 1.5rem;
+  padding: 0.4rem 1.1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.retryBtn:hover {
+  border-color: var(--accent);
+}
+
+.retryBtn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .gameRow {
@@ -239,7 +261,8 @@
   .closeBtn,
   .searchInput,
   .gameRow,
-  .confirmBtn {
+  .confirmBtn,
+  .retryBtn {
     transition: none;
   }
 }
