@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import Image from 'next/image'
 import { createBrowserClient } from '@supabase/ssr'
@@ -104,14 +104,14 @@ export default function SavedGames() {
     if (hoveredPanelRef.current) setPanelVisible(true)
   }
 
-  function dismissPanel() {
+  const dismissPanel = useCallback(() => {
     if (panelLeaveTimer.current) clearTimeout(panelLeaveTimer.current)
     if (panelHideTimer.current) clearTimeout(panelHideTimer.current)
     hoveredPanelRef.current = null
     setHoveredPanel(null)
     setPanelVisible(false)
     setTouchActiveAppid(null)
-  }
+  }, [])
 
   // 터치 탭: 같은 카드면 닫기, 다른 카드면 열기
   function handleCardTap(game: SavedGame, el: HTMLLIElement) {
@@ -122,6 +122,18 @@ export default function SavedGames() {
       handleCardEnter(game, el)
     }
   }
+
+  // 패널 외부 클릭 시 dismiss — scroll은 click을 발생시키지 않으므로 스크롤 차단 없음
+  useEffect(() => {
+    if (touchActiveAppid === null) return
+    function handleOutsideClick(e: MouseEvent) {
+      const target = e.target as Element
+      if (target.closest?.('[data-saved-card]') || target.closest?.('[data-saved-panel]')) return
+      dismissPanel()
+    }
+    document.addEventListener('click', handleOutsideClick)
+    return () => document.removeEventListener('click', handleOutsideClick)
+  }, [touchActiveAppid, dismissPanel])
 
   return (
     <section className={styles.savedSection}>
@@ -165,6 +177,7 @@ export default function SavedGames() {
           {savedGames.map(game => (
             <li
               key={game.appid}
+              data-saved-card
               className={`${styles.savedCard}${hoveredPanel?.game.appid === game.appid ? ` ${styles.savedCardActive}` : ''}${hoveredPanel && hoveredPanel.game.appid !== game.appid ? ` ${styles.savedCardDimmed}` : ''}`}
               aria-expanded={touchActiveAppid === game.appid}
               onPointerDown={(e) => { lastPointerType.current = e.pointerType }}
@@ -211,17 +224,9 @@ export default function SavedGames() {
         </ul>
       )}
 
-      {touchActiveAppid !== null && typeof document !== 'undefined' && createPortal(
-        <div
-          className={styles.savedTouchBackdrop}
-          onClick={dismissPanel}
-          aria-hidden="true"
-        />,
-        document.body
-      )}
-
       {hoveredPanel && typeof document !== 'undefined' && createPortal(
         <div
+          data-saved-panel
           className={`${styles.savedFloatingPanel}${panelVisible ? ` ${styles.savedFloatingPanelVisible}` : ''}`}
           style={{ top: hoveredPanel.top, left: hoveredPanel.left }}
           onMouseEnter={cancelPanelLeave}
