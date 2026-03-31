@@ -116,11 +116,11 @@ _2026-03-29 entries (early) → HANDOVER-archive.md §Minor Changes Log 2026-03-
 | 2026-03-29 | ux: reason+tags → .cardMiddle (margin auto top/bottom) — vertically centered | result/[id]/page.tsx, page.module.css |
 | 2026-03-30 | fix: NO_GAMES_IN_BUDGET false positive — include price-unknown games in candidates (remove price_updated_at guard, add null check in budget filter) | types/index.ts, generate-recommendation/route.ts |
 | 2026-03-30 | fix(a11y): prefers-reduced-motion missing in LibraryPickerModal + legal.module.css; revert unnecessary NO_GAMES_IN_BUDGET else branch | LibraryPickerModal.module.css, legal.module.css, RecommendationForm.tsx |
-| 2026-03-30 | fix(algo): tagProfile 이중 voteCount 제거 (√playtime 전용) + scoreCandidates 후보 풀 80→300 | generate-recommendation/route.ts |
-| 2026-03-30 | ux: price-unknown → Steam link; playtime placeholder 예: 50…; home MC label 통일 | result/[id]/page.tsx, page.module.css, RecommendationForm.tsx, page.tsx |
-| 2026-03-30 | ux: Metacritic label → "Metacritic Score XX" (전체 통일: result, home, SavedGames) | result/[id]/page.tsx, page.tsx, SavedGames.tsx |
-| 2026-03-30 | fix(a11y): priceUnknown — :focus-visible + prefers-reduced-motion 누락 수정 | result/[id]/page.module.css |
-| 2026-03-30 | ux: playtime placeholder "예: 50시간"; Metacritic 반응형 (≤768px → MC XX) | RecommendationForm.tsx, result/[id]/page.tsx+css, page.tsx+css, SavedGames.tsx |
+| 2026-03-30 | fix(algo): tagProfile duplicate voteCount removed (√playtime only) + scoreCandidates candidate pool 80→300 | generate-recommendation/route.ts |
+| 2026-03-30 | ux: price-unknown → Steam link; playtime placeholder "예: 50…"; home MC label unified | result/[id]/page.tsx, page.module.css, RecommendationForm.tsx, page.tsx |
+| 2026-03-30 | ux: Metacritic label → "Metacritic Score XX" (unified across result, home, SavedGames) | result/[id]/page.tsx, page.tsx, SavedGames.tsx |
+| 2026-03-30 | fix(a11y): priceUnknown — :focus-visible + prefers-reduced-motion missing, fixed | result/[id]/page.module.css |
+| 2026-03-30 | ux: playtime placeholder "예: 50시간"; Metacritic responsive label (≤768px → MC XX) | RecommendationForm.tsx, result/[id]/page.tsx+css, page.tsx+css, SavedGames.tsx |
 | 2026-03-31 | ux: result footer — row layout (feedback box left, scroll-to-top right), mobile stacks column | result/[id]/page.module.css |
 | 2026-03-31 | ux: feedback buttons — confirmed state replaces both buttons with ✓ + "반영됐어요" (grey, fade-in) | result/[id]/FeedbackButtons.tsx, feedback.module.css |
 | 2026-03-31 | CE-1: SavedGames touch tap-toggle panel; document click listener (scroll unblocked); savedCardKbdUnsave stopPropagation | SavedGames.tsx, page.module.css |
