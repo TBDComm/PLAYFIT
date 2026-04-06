@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 145/200 lines — OK**
+📏 **File health: 147/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -60,8 +60,8 @@ Next action: [exactly what to do next to resume]
 | CE-1 | Mobile: Saved Games touch panel | ✅ 2026-03-31 |
 | CE-2 | Library picker: show for unlinked_auth + valid URL | ✅ 2026-03-31 |
 | CE-3 | Library picker: fetch timeout + retry button | ✅ 2026-03-31 |
-| **CE-4** | **Feedback buttons: vote change + error on failure (resolves CE-7)** | **▶ NEXT** |
-| CE-5 | Result page: save toggle on each card | ⏳ |
+| CE-4 | Feedback buttons: vote change + error on failure (resolves CE-7) | ✅ 2026-04-06 |
+| **CE-5** | **Result page: save toggle on each card** | **▶ NEXT** |
 | CE-6 | Steam link popup: remove auto-trigger + add benefit copy | ⏳ |
 | CE-8 | /games/[appid]: back navigation | ⏳ |
 | CE-9 | /genre page: recommendation CTA at bottom | ⏳ |
@@ -79,24 +79,26 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: CE-4 — Feedback buttons: vote change + error ──
+## ── ACTIVE STEP: CE-5 — Result page: save toggle on each card ──
 
-**Problem 1:** `result/[id]/FeedbackButtons.tsx:54` — after any vote, both buttons disabled permanently. No vote change possible.
-**Problem 2:** API failure silently disables buttons — user has no idea if vote was recorded.
+**Problem:** `result/[id]/page.tsx` — no save action on result cards. Users must navigate back to home to use Saved Games section.
 
-**Files:** `app/result/[id]/FeedbackButtons.tsx`
+**Files:** `app/result/[id]/page.tsx`, `app/result/[id]/page.module.css`, `app/result/[id]/SaveToggle.tsx` (new)
 
 **Spec:**
-- State: `feedback: 'up' | 'down' | null` (existing), `sending: boolean`, `error: string | null`
-- After successful vote: buttons remain **enabled**. Selected button gets visual "active" class (accent border/bg). Clicking the other button sends a new vote (API upserts — idempotent).
-- Clicking already-selected button: no-op
-- On API failure: set `error = '저장 실패. 다시 시도해주세요'`, show below buttons, re-enable buttons, revert `feedback` state to previous
-- Loading (sending): disable both buttons + reduce opacity to 0.5
-- This resolves CE-7 (silent failure) — no separate CE-7 step needed
+- Create `SaveToggle` client component (`app/result/[id]/SaveToggle.tsx`):
+  - Props: `appid: string`, `name: string`, `reason?: string`, `price_krw?: number | null`, `metacritic_score?: number | null`
+  - On mount: `supabase.auth.getSession()` → if authed, fetch `/api/saved-games` (GET) → check if this appid is saved → set initial state
+  - ★ (saved) / ☆ (not saved) toggle button, top-right of card, `position: absolute`
+  - Click when not authed: `window.dispatchEvent(new CustomEvent('guildeline:open-login'))`
+  - Click when authed: optimistic toggle + POST or DELETE `/api/saved-games`
+  - Reuse `createBrowserClient` from `@supabase/ssr` (module scope, not inside component)
+- In `result/[id]/page.tsx`: wrap card with `position: relative`, render `<SaveToggle>` inside each card
+- Style: `font-size: 1.125rem`, accent color when saved, `--text-muted` when not saved, `padding: 0.375rem`, `border-radius: var(--radius)`, hover background `var(--bg-hover)`
 
-**Out of scope:** Changing feedback API route logic.
+**Out of scope:** Syncing save state with SavedGames home section in real-time.
 
-**After completing:** clear lock → add Completed Step → set CE-5 as Active Step (copy spec from SPEC.md §CE-5)
+**After completing:** clear lock → add Completed Step → set CE-6 as Active Step (copy spec from SPEC.md §CE-6)
 
 ---
 
@@ -127,6 +129,7 @@ _2026-03-29 entries (early) → HANDOVER-archive.md §Minor Changes Log 2026-03-
 | 2026-03-31 | CE-2: canUsePicker — unlinked_auth + valid URL now allowed | RecommendationForm.tsx |
 | 2026-03-31 | CE-3: LibraryPickerModal fetch — 10s timeout + AbortController + 다시 시도 버튼 | LibraryPickerModal.tsx, LibraryPickerModal.module.css |
 | 2026-03-31 | ux: manual game dropdown keyboard navigation (ArrowUp/Down/Enter/Escape + scrollIntoView) | RecommendationForm.tsx, page.module.css |
+| 2026-04-06 | fix(CE-4): feedback buttons — vote change enabled, active state, API failure rollback + error msg | result/[id]/FeedbackButtons.tsx, feedback.module.css |
 
 ---
 

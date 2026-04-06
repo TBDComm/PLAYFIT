@@ -18,10 +18,14 @@ interface FeedbackButtonsProps {
 export default function FeedbackButtons({ appId, gameName, steamId }: FeedbackButtonsProps) {
   const [feedback, setFeedback] = useState<'up' | 'down' | null>(null)
   const [sending, setSending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   async function handleFeedback(vote: 'up' | 'down') {
-    if (sending || feedback !== null) return
+    // 이미 같은 버튼 선택 중 or 전송 중이면 no-op
+    if (sending || feedback === vote) return
+    const prev = feedback
     setFeedback(vote)
+    setError(null)
     setSending(true)
 
     try {
@@ -29,7 +33,7 @@ export default function FeedbackButtons({ appId, gameName, steamId }: FeedbackBu
       const headers: Record<string, string> = { 'Content-Type': 'application/json' }
       if (session?.access_token) headers['Authorization'] = `Bearer ${session.access_token}`
 
-      await fetch('/api/feedback', {
+      const res = await fetch('/api/feedback', {
         method: 'POST',
         headers,
         body: JSON.stringify({
@@ -41,43 +45,39 @@ export default function FeedbackButtons({ appId, gameName, steamId }: FeedbackBu
           tag_snapshot: [],
         }),
       })
-    } catch { /* 조용히 실패 */ } finally {
+      if (!res.ok) throw new Error('feedback API error')
+    } catch {
+      // 실패 시 이전 상태로 롤백 + 에러 메시지
+      setFeedback(prev)
+      setError('저장 실패. 다시 시도해주세요')
+    } finally {
       setSending(false)
     }
   }
 
   return (
-    <div
-      className={`${styles.feedbackSide}${feedback !== null ? ` ${styles.confirmedSide}` : ''}`}
-      aria-live="polite"
-    >
-      {feedback !== null ? (
-        <>
-          <span className={styles.confirmedCheck} aria-hidden="true">✓</span>
-          <span className={styles.confirmedText}>반영됐어요</span>
-        </>
-      ) : (
-        <>
-          <button
-            onClick={() => handleFeedback('up')}
-            className={`${styles.feedbackBtn} ${styles.up}`}
-            disabled={sending}
-            aria-label="잘 맞아요"
-          >
-            <span className={styles.sign}>+</span>
-            <span className={styles.label}>잘 맞아요</span>
-          </button>
-          <button
-            onClick={() => handleFeedback('down')}
-            className={`${styles.feedbackBtn} ${styles.down}`}
-            disabled={sending}
-            aria-label="안 맞아요"
-          >
-            <span className={styles.sign}>−</span>
-            <span className={styles.label}>안 맞아요</span>
-          </button>
-        </>
-      )}
+    <div className={styles.feedbackSide} aria-live="polite">
+      <button
+        onClick={() => handleFeedback('up')}
+        className={`${styles.feedbackBtn} ${styles.up}${feedback === 'up' ? ` ${styles.active}` : ''}`}
+        disabled={sending}
+        aria-label="잘 맞아요"
+        aria-pressed={feedback === 'up'}
+      >
+        <span className={styles.sign}>+</span>
+        <span className={styles.label}>잘 맞아요</span>
+      </button>
+      <button
+        onClick={() => handleFeedback('down')}
+        className={`${styles.feedbackBtn} ${styles.down}${feedback === 'down' ? ` ${styles.active}` : ''}`}
+        disabled={sending}
+        aria-label="안 맞아요"
+        aria-pressed={feedback === 'down'}
+      >
+        <span className={styles.sign}>−</span>
+        <span className={styles.label}>안 맞아요</span>
+      </button>
+      {error && <p className={styles.errorMsg}>{error}</p>}
     </div>
   )
 }
