@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import styles from './page.module.css'
 
@@ -29,22 +29,34 @@ export default function SaveToggle({
 }: SaveToggleProps) {
   const [saved, setSaved] = useState(initialSaved)
   const [pending, setPending] = useState(false)
+  const [hasError, setHasError] = useState(false)
+  // ref로 가드 — await 전에 동기적으로 설정해 더블클릭 레이스 컨디션 방지
+  const pendingRef = useRef(false)
+  const errorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // 언마운트 시 에러 타이머 정리
+  useEffect(() => () => {
+    if (errorTimerRef.current) clearTimeout(errorTimerRef.current)
+  }, [])
 
   async function handleToggle() {
-    if (pending) return
-
-    // 클릭 시점에 세션 확인 — 렌더 후 로그아웃 케이스 대응
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) {
-      window.dispatchEvent(new CustomEvent('guildeline:open-login'))
-      return
-    }
-
-    const nextSaved = !saved
-    setSaved(nextSaved) // 낙관적 업데이트
+    // pendingRef: 동기적 가드 (pending state 렌더 이전에도 즉시 차단)
+    if (pendingRef.current) return
+    pendingRef.current = true
     setPending(true)
+    setHasError(false)
 
     try {
+      // 클릭 시점에 세션 확인 — 렌더 후 로그아웃 케이스 대응
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        window.dispatchEvent(new CustomEvent('guildeline:open-login'))
+        return
+      }
+
+      const nextSaved = !saved
+      setSaved(nextSaved) // 낙관적 업데이트
+
       if (nextSaved) {
         const res = await fetch('/api/saved-games', {
           method: 'POST',
@@ -69,22 +81,32 @@ export default function SaveToggle({
         if (!res.ok) throw new Error('delete failed')
       }
     } catch {
-      // 실패 시 롤백 — functional setState로 stale closure 방지 (rerender-optimization §5.10)
-      setSaved(s => !s)
+      // 실패: 낙관적 업데이트 롤백 + 에러 메시지 2초 표시
+      setSaved(s => !s) // functional setState — stale closure 방지 (§5.10)
+      if (errorTimerRef.current) clearTimeout(errorTimerRef.current)
+      setHasError(true)
+      errorTimerRef.current = setTimeout(() => setHasError(false), 2000)
     } finally {
+      pendingRef.current = false
       setPending(false)
     }
   }
 
   return (
-    <button
-      className={`${styles.saveToggle}${saved ? ` ${styles.saveToggleSaved}` : ''}`}
-      onClick={handleToggle}
-      disabled={pending}
-      aria-label={saved ? `${name} 저장 취소` : `${name} 저장`}
-      aria-pressed={saved}
-    >
-      {saved ? '★' : '☆'}
-    </button>
+    // aria-live: 에러 메시지 변경 시 스크린리더에 알림
+    <span className={styles.saveToggleWrap} aria-live="polite">
+      <button
+        className={`${styles.saveToggle}${saved ? ` ${styles.saveToggleSaved}` : ''}${hasError ? ` ${styles.saveToggleHasErr}` : ''}`}
+        onClick={handleToggle}
+        disabled={pending}
+        aria-label={saved ? `${name} 저장 취소` : `${name} 저장`}
+        aria-pressed={saved}
+      >
+        {saved ? '★' : '☆'}
+      </button>
+      {hasError && (
+        <span className={styles.saveToggleErrMsg} aria-hidden="true">저장 실패</span>
+      )}
+    </span>
   )
 }
