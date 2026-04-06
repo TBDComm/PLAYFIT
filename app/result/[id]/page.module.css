@@ -146,6 +146,7 @@
   padding: 1.5rem 2rem;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .cardName {
@@ -156,6 +157,7 @@
   line-height: 1.3;
   margin-bottom: 0.75rem;
   text-wrap: balance;
+  padding-right: 2.25rem;
 }
 
 .cardDivider {
@@ -342,9 +344,45 @@
   outline-offset: 2px;
 }
 
+/* ── Save Toggle ── */
+.saveToggle {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  font-size: 1.125rem;
+  color: var(--text-muted);
+  background: var(--bg-surface);
+  border: none;
+  padding: 0.375rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  line-height: 1;
+  transition: background 0.15s, color 0.15s;
+  touch-action: manipulation;
+  z-index: 1;
+}
+
+.saveToggle:hover {
+  background: var(--bg-hover);
+}
+
+.saveToggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.saveToggleSaved {
+  color: var(--accent);
+}
+
+.saveToggle:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
-  .storeLink, .priceUnknown { transition: none; }
+  .storeLink, .priceUnknown, .saveToggle { transition: none; }
 }
 
 /* ── Responsive ── */

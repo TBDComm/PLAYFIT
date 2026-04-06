@@ -61,8 +61,8 @@ Next action: [exactly what to do next to resume]
 | CE-2 | Library picker: show for unlinked_auth + valid URL | ✅ 2026-03-31 |
 | CE-3 | Library picker: fetch timeout + retry button | ✅ 2026-03-31 |
 | CE-4 | Feedback buttons: vote change + error on failure (resolves CE-7) | ✅ 2026-04-06 |
-| **CE-5** | **Result page: save toggle on each card** | **▶ NEXT** |
-| CE-6 | Steam link popup: remove auto-trigger + add benefit copy | ⏳ |
+| CE-5 | Result page: save toggle on each card | ✅ 2026-04-06 |
+| **CE-6** | **Steam link popup: remove auto-trigger + add benefit copy** | **▶ NEXT** |
 | CE-8 | /games/[appid]: back navigation | ⏳ |
 | CE-9 | /genre page: recommendation CTA at bottom | ⏳ |
 | CE-10 | Remove "커뮤니티 기능 곧 출시" placeholder | ⏳ |
@@ -79,26 +79,21 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: CE-5 — Result page: save toggle on each card ──
+## ── ACTIVE STEP: CE-6 — Steam link popup: remove auto-trigger, add benefit copy ──
 
-**Problem:** `result/[id]/page.tsx` — no save action on result cards. Users must navigate back to home to use Saved Games section.
+**Problem:** `Header.tsx:118-119` — Steam link popup fires immediately after Google login before user sees home page. No explanation of benefits anywhere near the button.
 
-**Files:** `app/result/[id]/page.tsx`, `app/result/[id]/page.module.css`, `app/result/[id]/SaveToggle.tsx` (new)
+**Files:** `app/components/Header.tsx`, `app/components/Header.module.css`
 
 **Spec:**
-- Create `SaveToggle` client component (`app/result/[id]/SaveToggle.tsx`):
-  - Props: `appid: string`, `name: string`, `reason?: string`, `price_krw?: number | null`, `metacritic_score?: number | null`
-  - On mount: `supabase.auth.getSession()` → if authed, fetch `/api/saved-games` (GET) → check if this appid is saved → set initial state
-  - ★ (saved) / ☆ (not saved) toggle button, top-right of card, `position: absolute`
-  - Click when not authed: `window.dispatchEvent(new CustomEvent('guildeline:open-login'))`
-  - Click when authed: optimistic toggle + POST or DELETE `/api/saved-games`
-  - Reuse `createBrowserClient` from `@supabase/ssr` (module scope, not inside component)
-- In `result/[id]/page.tsx`: wrap card with `position: relative`, render `<SaveToggle>` inside each card
-- Style: `font-size: 1.125rem`, accent color when saved, `--text-muted` when not saved, `padding: 0.375rem`, `border-radius: var(--radius)`, hover background `var(--bg-hover)`
+- Remove the auto-popup on login: delete/comment out the `if (!steamLinked) setShowLinkPopup(true)` call (or equivalent) that fires in the `SIGNED_IN` handler
+- In the header dropdown, above the "Steam 연동하기" button: add `<p>` with copy: `"연동하면 플레이 기록 자동 분석 + 라이브러리 직접 선택"`
+- Style for new copy: `font-size: 0.75rem`, `color: var(--text-muted)`, `margin-bottom: 0.375rem`
+- The "Steam 연동하기" button and its modal remain fully functional — only the auto-trigger is removed
 
-**Out of scope:** Syncing save state with SavedGames home section in real-time.
+**Out of scope:** Changing the link modal or settings page.
 
-**After completing:** clear lock → add Completed Step → set CE-6 as Active Step (copy spec from SPEC.md §CE-6)
+**After completing:** clear lock → add Completed Step → set CE-8 as Active Step (copy spec from SPEC.md §CE-8)
 
 ---
 
@@ -131,6 +126,7 @@ _2026-03-29 entries (early) → HANDOVER-archive.md §Minor Changes Log 2026-03-
 | 2026-03-31 | ux: manual game dropdown keyboard navigation (ArrowUp/Down/Enter/Escape + scrollIntoView) | RecommendationForm.tsx, page.module.css |
 | 2026-04-06 | fix(CE-4): feedback buttons — vote change enabled, active state, API failure rollback + error msg | result/[id]/FeedbackButtons.tsx, feedback.module.css |
 | 2026-04-06 | ux(CE-4): success toast (1.5s auto-dismiss), error font 0.55→0.65rem, msgArea always-render (no layout jank) | result/[id]/FeedbackButtons.tsx, feedback.module.css |
+| 2026-04-06 | feat(CE-5): SaveToggle ★/☆ on result cards; server-side saved_games pre-fetch (rec + saved parallel); optimistic toggle + rollback | result/[id]/SaveToggle.tsx (new), page.tsx, page.module.css |
 
 ---
 

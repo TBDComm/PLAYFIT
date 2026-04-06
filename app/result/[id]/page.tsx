@@ -8,6 +8,7 @@ import type { Metadata } from 'next'
 import ScrollToTopButton from './ScrollToTopButton'
 import FeedbackButtons from './FeedbackButtons'
 import ThumbnailImage from './ThumbnailImage'
+import SaveToggle from './SaveToggle'
 import styles from './page.module.css'
 import type { RecommendationCard } from '@/types'
 
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
   description: '스팀 플레이 기록을 기반으로 찾아낸 맞춤 게임 추천 목록입니다.',
 }
 
-async function getRecommendationSet(id: string) {
+async function getPageData(id: string) {
   const cookieStore = await cookies()
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -39,21 +40,40 @@ async function getRecommendationSet(id: string) {
     }
   )
 
-  const { data, error } = await supabase
+  // rec 쿼리 즉시 시작
+  const recPromise = supabase
     .from('recommendation_sets')
     .select('*')
     .eq('id', id)
     .single()
 
-  if (error || !data) return null
-  return data
+  // getSession(): 쿠키에서 JWT 파싱 — 네트워크 호출 없음, 즉시 resolve
+  const { data: { session } } = await supabase.auth.getSession()
+
+  // saved_games 쿼리 시작 — recPromise와 병렬 실행 (async-parallel §1.2)
+  const savedPromise = session
+    ? supabase.from('saved_games').select('appid').eq('user_id', session.user.id)
+    : null
+
+  const [{ data: rec, error }, savedResult] = await Promise.all([
+    recPromise,
+    savedPromise ?? Promise.resolve(null),
+  ])
+
+  if (error || !rec) return null
+
+  const savedAppids = new Set<string>(
+    (savedResult?.data ?? []).map((s: { appid: string }) => s.appid)
+  )
+  return { rec, savedAppids }
 }
 
 export default async function ResultPage({ params }: ResultPageProps) {
   const { id } = await params
-  const result = await getRecommendationSet(id)
-  if (!result) notFound()
+  const pageData = await getPageData(id)
+  if (!pageData) notFound()
 
+  const { rec: result, savedAppids } = pageData
   const { created_at, budget_krw, steam_id } = result
   const typedCards: RecommendationCard[] = Array.isArray(result.cards) ? (result.cards as RecommendationCard[]) : []
   const typedTags: string[] = Array.isArray(result.tags) ? (result.tags as string[]) : []
@@ -105,6 +125,14 @@ export default async function ResultPage({ params }: ResultPageProps) {
               <ThumbnailImage appid={card.appid} name={card.name} priority={index < 3} />
             </div>
             <div className={styles.cardBody}>
+              <SaveToggle
+                appid={String(card.appid)}
+                name={card.name}
+                reason={card.reason}
+                price_krw={card.price_krw}
+                metacritic_score={card.metacritic_score}
+                initialSaved={savedAppids.has(String(card.appid))}
+              />
               <h2 className={styles.cardName}>{card.name}</h2>
               <hr className={styles.cardDivider} />
               <div className={styles.meta}>
