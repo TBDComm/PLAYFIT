@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 148/200 lines — OK**
+📏 **File health: 145/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -127,7 +127,7 @@ _2026-03-29 entries (early) → HANDOVER-archive.md §Minor Changes Log 2026-03-
 | 2026-04-06 | fix(CE-4): feedback buttons — vote change enabled, active state, API failure rollback + error msg | result/[id]/FeedbackButtons.tsx, feedback.module.css |
 | 2026-04-06 | ux(CE-4): success toast (1.5s auto-dismiss), error font 0.55→0.65rem, msgArea always-render (no layout jank) | result/[id]/FeedbackButtons.tsx, feedback.module.css |
 | 2026-04-06 | feat(CE-5): SaveToggle ★/☆ on result cards; server-side saved_games pre-fetch (rec + saved parallel); optimistic toggle + rollback | result/[id]/SaveToggle.tsx (new), page.tsx, page.module.css |
-| 2026-04-06 | fix(CE-5 UX): SaveToggle — pendingRef 더블클릭 가드, 에러 메시지 2s 표시, 탭 타겟 44px | result/[id]/SaveToggle.tsx, page.module.css |
+| 2026-04-06 | fix(CE-5 UX): SaveToggle — pendingRef double-click guard, error msg 2s display, touch target 44px | result/[id]/SaveToggle.tsx, page.module.css |
 
 ---
 
