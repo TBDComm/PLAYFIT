@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 147/200 lines — OK**
+📏 **File health: 148/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -130,6 +130,7 @@ _2026-03-29 entries (early) → HANDOVER-archive.md §Minor Changes Log 2026-03-
 | 2026-03-31 | CE-3: LibraryPickerModal fetch — 10s timeout + AbortController + 다시 시도 버튼 | LibraryPickerModal.tsx, LibraryPickerModal.module.css |
 | 2026-03-31 | ux: manual game dropdown keyboard navigation (ArrowUp/Down/Enter/Escape + scrollIntoView) | RecommendationForm.tsx, page.module.css |
 | 2026-04-06 | fix(CE-4): feedback buttons — vote change enabled, active state, API failure rollback + error msg | result/[id]/FeedbackButtons.tsx, feedback.module.css |
+| 2026-04-06 | ux(CE-4): success toast (1.5s auto-dismiss), error font 0.55→0.65rem, msgArea always-render (no layout jank) | result/[id]/FeedbackButtons.tsx, feedback.module.css |
 
 ---
 
