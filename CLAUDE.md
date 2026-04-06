@@ -75,7 +75,7 @@ Read the relevant rule file before writing code in that area.
 
 ## Coding Rules
 
-- Comments in English
+- Comments in Korean
 - TypeScript strict mode throughout
 - All API calls (Steam, Claude, Supabase) via Next.js API routes only — never expose keys to frontend
 - Always wrap Claude API response in try-catch + JSON.parse defense

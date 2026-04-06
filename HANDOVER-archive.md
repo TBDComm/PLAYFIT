@@ -63,6 +63,33 @@
 
 ---
 
+## Minor Changes Log — 2026-03-29 (late) to 2026-03-31
+
+| Date | Change | Files |
+|------|--------|-------|
+| 2026-03-29 | ux: feedback buttons → right-side column, +/- square buttons, hint label vertical text | result/[id]/FeedbackButtons.tsx, feedback.module.css, page.tsx, page.module.css |
+| 2026-03-29 | fix: feedback.module.css prefers-reduced-motion + hint font 0.6→0.65rem | result/[id]/feedback.module.css |
+| 2026-03-29 | ux: feedback buttons fill column (flex:1, width:80px), hint label removed | result/[id]/FeedbackButtons.tsx, feedback.module.css |
+| 2026-03-29 | ux: feedback notice above results + footer feedback box with accent border | result/[id]/page.tsx, page.module.css |
+| 2026-03-29 | ux: card layout refinement — name 1.15rem, divider, reason 0.875rem/1.6, storeLink text-only, MC label | result/[id]/page.tsx, page.module.css |
+| 2026-03-29 | ux: storeLink color → Steam blue #66c0f4 | result/[id]/page.module.css |
+| 2026-03-29 | ux: reason+tags → .cardMiddle (margin auto top/bottom) — vertically centered | result/[id]/page.tsx, page.module.css |
+| 2026-03-30 | fix: NO_GAMES_IN_BUDGET false positive — include price-unknown games in candidates (remove price_updated_at guard, add null check in budget filter) | types/index.ts, generate-recommendation/route.ts |
+| 2026-03-30 | fix(a11y): prefers-reduced-motion missing in LibraryPickerModal + legal.module.css; revert unnecessary NO_GAMES_IN_BUDGET else branch | LibraryPickerModal.module.css, legal.module.css, RecommendationForm.tsx |
+| 2026-03-30 | fix(algo): tagProfile duplicate voteCount removed (√playtime only) + scoreCandidates candidate pool 80→300 | generate-recommendation/route.ts |
+| 2026-03-30 | ux: price-unknown → Steam link; playtime placeholder "예: 50…"; home MC label unified | result/[id]/page.tsx, page.module.css, RecommendationForm.tsx, page.tsx |
+| 2026-03-30 | ux: Metacritic label → "Metacritic Score XX" (unified across result, home, SavedGames) | result/[id]/page.tsx, page.tsx, SavedGames.tsx |
+| 2026-03-30 | fix(a11y): priceUnknown — :focus-visible + prefers-reduced-motion missing, fixed | result/[id]/page.module.css |
+| 2026-03-30 | ux: playtime placeholder "예: 50시간"; Metacritic responsive label (≤768px → MC XX) | RecommendationForm.tsx, result/[id]/page.tsx+css, page.tsx+css, SavedGames.tsx |
+| 2026-03-31 | ux: result footer — row layout (feedback box left, scroll-to-top right), mobile stacks column | result/[id]/page.module.css |
+| 2026-03-31 | ux: feedback buttons — confirmed state replaces both buttons with ✓ + "반영됐어요" (grey, fade-in) | result/[id]/FeedbackButtons.tsx, feedback.module.css |
+| 2026-03-31 | CE-1: SavedGames touch tap-toggle panel; document click listener (scroll unblocked); savedCardKbdUnsave stopPropagation | SavedGames.tsx, page.module.css |
+| 2026-03-31 | CE-2: canUsePicker — unlinked_auth + valid URL now allowed | RecommendationForm.tsx |
+| 2026-03-31 | CE-3: LibraryPickerModal fetch — 10s timeout + AbortController + 다시 시도 버튼 | LibraryPickerModal.tsx, LibraryPickerModal.module.css |
+| 2026-03-31 | ux: manual game dropdown keyboard navigation (ArrowUp/Down/Enter/Escape + scrollIntoView) | RecommendationForm.tsx, page.module.css |
+
+---
+
 ## Minor Changes Log — 2026-03-21 to 2026-03-27
 
 | Date | Change | Files |
