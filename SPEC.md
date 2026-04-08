@@ -259,3 +259,139 @@ CE-4 covers silent failure feedback handling. No separate work.
 - No new CSS class needed if inline style or existing class fits — otherwise add `.steamLinkHint` to `Header.module.css`
 
 **Out of scope:** Changing the link modal or settings page copy.
+
+---
+
+### CE-17 — SaveToggle: error message disappears before user notices
+
+**Problem:** `app/result/[id]/SaveToggle.tsx` — save failure error clears via `setTimeout(..., 2000)`. If user is scrolling or not watching, they miss it and assume save succeeded.
+
+**Files:** `app/result/[id]/SaveToggle.tsx`
+
+**Spec:**
+- Remove the `setTimeout` that clears `errorMsg`
+- Instead, clear `errorMsg` at the start of the next save attempt (before the fetch)
+- Result: error stays visible until the user tries again
+
+**Out of scope:** Changing success state behavior; adding toast infrastructure.
+
+---
+
+### CE-18 — LibraryPickerModal: confirm button scrolls off screen
+
+**Problem:** `app/components/LibraryPickerModal.module.css` — modal uses `max-height: 80vh` with no sticky footer. On long game lists the confirm button scrolls out of view and users can't confirm without scrolling to the bottom.
+
+**Files:** `app/components/LibraryPickerModal.module.css`
+
+**Spec:**
+- Make the modal a flex column: `display: flex; flex-direction: column`
+- Game list gets `flex: 1; overflow-y: auto` (likely already set — verify)
+- Footer containing the confirm button gets `flex-shrink: 0` so it always stays visible at the bottom
+- No JS changes needed
+
+**Out of scope:** Changing modal width, height, or confirm button behavior.
+
+---
+
+### CE-19 — Header login modal: no focus trap
+
+**Problem:** `app/components/Header.tsx` — login modal has no focus trap. Pressing Tab from the last field lets focus escape to the page behind the modal.
+
+**Files:** `app/components/Header.tsx`
+
+**Spec:**
+- On `keydown` inside the modal overlay, intercept Tab and Shift+Tab
+- Collect all focusable elements inside the modal (inputs, buttons, links) via querySelectorAll
+- If Tab on last element → focus first element; if Shift+Tab on first element → focus last element
+- Attach listener when modal opens, remove when modal closes
+- Use the existing modal ref or add one to the modal container div
+
+**Out of scope:** Changing modal layout, adding skip links, or implementing a shared FocusTrap component.
+
+---
+
+### CE-20 — Header: password reset confirmation screen is a dead end
+
+**Problem:** `app/components/Header.tsx` — after submitting a password reset email, the "forgot-sent" view shows a confirmation message with no way to go back. User is stuck unless they close the modal entirely.
+
+**Files:** `app/components/Header.tsx`, `app/components/Header.module.css`
+
+**Spec:**
+- In the forgot-sent view, add a `<button>` below the confirmation text: `← 로그인으로 돌아가기`
+- On click: set `authView` back to `'signin'`
+- Style: text link style (no background, `color: var(--text-secondary)`, `font-size: 0.875rem`)
+
+**Out of scope:** Changing the reset email flow or adding a resend button.
+
+---
+
+### CE-21 — RecommendationForm: game search API failure is silent
+
+**Problem:** `app/components/RecommendationForm.tsx` — the autocomplete search `catch` block is empty. If `/api/search` fails (network error, timeout), the dropdown simply never appears and the user has no idea why.
+
+**Files:** `app/components/RecommendationForm.tsx`
+
+**Spec:**
+- In the catch block of the game search fetch, set a local error state per row (or a shared `searchError` state)
+- Show a small inline message below the input: `"게임 검색에 실패했어요. 잠시 후 다시 시도해주세요."` using existing `styles.fieldError` or similar class
+- Clear the error when user starts typing again (on next input change)
+
+**Out of scope:** Retry logic, caching search results.
+
+---
+
+### CE-22 — SavedGames: keyboard focus immediately closes panel
+
+**Problem:** `app/components/SavedGames.tsx` — `onFocus` on the save card opens the panel; `onBlur` closes it. When a keyboard user focuses the card, the panel opens and immediately closes because focus moves to the keyboard-only unsave button inside the panel (triggering blur on the card).
+
+**Files:** `app/components/SavedGames.tsx`
+
+**Spec:**
+- In the `onBlur` handler, check `event.relatedTarget` — if the related target is contained within the same card/panel element, do NOT close the panel
+- Use `cardRef.current?.contains(event.relatedTarget as Node)` to determine if focus stayed inside
+
+**Out of scope:** Changing mouse hover behavior or panel layout.
+
+---
+
+### CE-23 — SavedGames: skeleton loading has no accessible label
+
+**Problem:** `app/components/SavedGames.tsx` — loading skeleton shows 4 placeholder cards with no text. Screen readers get no feedback; sighted users can't distinguish loading from empty.
+
+**Files:** `app/components/SavedGames.tsx`
+
+**Spec:**
+- Wrap skeleton cards in a container with `aria-label="저장한 게임 불러오는 중"` and `aria-busy="true"`
+- Add a visually-hidden `<span>` (CSS `sr-only` pattern) with text `"저장한 게임을 불러오는 중입니다"` above the skeleton cards
+- Reuse or add `.srOnly` class: `position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0)`
+
+**Out of scope:** Changing skeleton card visual design.
+
+---
+
+### CE-24 — LibraryPickerModal: checkboxes are unicode symbols, not real inputs
+
+**Problem:** `app/components/LibraryPickerModal.tsx` — game selection uses ☑/☐ unicode characters rendered as text. Touch target is ~14px. Not keyboard accessible as a real checkbox.
+
+**Files:** `app/components/LibraryPickerModal.tsx`, `app/components/LibraryPickerModal.module.css`
+
+**Spec:**
+- Replace the unicode character rendering with a real `<input type="checkbox">` (visually hidden) + custom styled `<span>` indicator
+- The row `<button>` click already toggles selection — the checkbox is decorative; add `tabIndex={-1}` and `aria-hidden="true"` to it, keeping the row button as the accessible control
+- Minimum touch target for the row button: `min-height: 44px` (verify it already has this)
+
+**Out of scope:** Full checkbox redesign; changing selection logic.
+
+---
+
+### CE-25 — Header: hamburger menu button missing aria-label
+
+**Problem:** `app/components/Header.tsx` — mobile hamburger button contains only decorative `<span>` bar elements with no accessible label. Screen readers announce it as an unlabeled button.
+
+**Files:** `app/components/Header.tsx`
+
+**Spec:**
+- Add `aria-label={menuOpen ? '메뉴 닫기' : '메뉴 열기'}` to the hamburger `<button>` element
+- The existing `aria-expanded={menuOpen}` stays as-is
+
+**Out of scope:** Changing hamburger animation or menu layout.
