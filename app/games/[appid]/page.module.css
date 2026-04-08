@@ -15,12 +15,17 @@
 /* ── Back navigation ─────────────────────────────────────────────────────── */
 
 .backNav {
-  padding: 16px 24px 0;
+  padding: 12px 24px;
   max-width: 900px;
   margin: 0 auto;
 }
 
 .backLink {
+  /* 터치 타겟 44px 확보 */
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 4px;
   font-size: 0.875rem;
   color: var(--text-muted);
   text-decoration: none;
