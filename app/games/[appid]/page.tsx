@@ -219,6 +219,11 @@ export default async function GamePage({
     <main className={styles.page}>
       <JsonLd data={jsonLd} />
 
+      {/* ── Back navigation ───────────────────────────────────────────────── */}
+      <div className={styles.backNav}>
+        <Link href="/" className={styles.backLink}>← 홈으로</Link>
+      </div>
+
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <div className={styles.hero}>
         {/* Blurred background art */}

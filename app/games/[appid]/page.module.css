@@ -12,6 +12,26 @@
   padding: 48px 24px 80px;
 }
 
+/* ── Back navigation ─────────────────────────────────────────────────────── */
+
+.backNav {
+  padding: 16px 24px 0;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.backLink {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 150ms;
+}
+
+.backLink:hover,
+.backLink:focus-visible {
+  color: var(--accent);
+}
+
 /* ── Hero ────────────────────────────────────────────────────────────────── */
 
 .hero {

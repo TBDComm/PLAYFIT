@@ -63,8 +63,8 @@ Next action: [exactly what to do next to resume]
 | CE-4 | Feedback buttons: vote change + error on failure (resolves CE-7) | ✅ 2026-04-06 |
 | CE-5 | Result page: save toggle on each card | ✅ 2026-04-06 |
 | CE-6 | Steam header btn (unlinked_auth) + one-time popup on first login (localStorage) + benefit copy in dropdown | ✅ 2026-04-08 |
-| **CE-8** | **/games/[appid]: back navigation** | **▶ NEXT** |
-| CE-9 | /genre page: recommendation CTA at bottom | ⏳ |
+| CE-8 | /games/[appid]: back navigation | ✅ 2026-04-08 |
+| **CE-9** | **/genre page: recommendation CTA at bottom** | **▶ NEXT** |
 | CE-10 | Remove "커뮤니티 기능 곧 출시" placeholder | ⏳ |
 | CE-11 | Anon Steam URL mode: "feedback won't save" notice | ⏳ |
 | CE-12 | Unify submit button text | ⏳ |
@@ -79,20 +79,21 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: CE-8 — /games/[appid]: back navigation ──
+## ── ACTIVE STEP: CE-9 — /genre page: recommendation CTA at bottom ──
 
-**Problem:** `games/[appid]/page.tsx` — no back button. Mobile users rely entirely on browser gestures.
+**Problem:** `genre/page.tsx` — genre browsing ends with no next action. No path to the recommender.
 
-**Files:** `app/games/[appid]/page.tsx`, `app/games/[appid]/page.module.css`
+**Files:** `app/genre/page.tsx`, `app/genre/page.module.css` (if needed)
 
 **Spec:**
-- Add `<Link href="/">← 홈으로</Link>` at the top of the page, above the hero section
-- Style: same as result page "← 다시 추천받기" pattern — `font-size: 0.875rem`, `color: var(--text-muted)`, hover → `var(--accent)`, `text-decoration: none`
-- Place inside the existing page container, before the hero `<section>`
+- Add a CTA block at the bottom of the genre list page (after the full genre list)
+- Heading: `"내 취향에 맞는 게임을 추천받아보세요"`
+- Link: `<Link href="/#recommend-form">추천 받기 →</Link>`
+- Style: reuse `previewCta` pattern from `page.module.css` or add equivalent local class; centered, muted text with accent hover
 
-**Out of scope:** Implementing browser-history-aware back (router.back()) — static Link to `/` is sufficient.
+**Out of scope:** Adding CTAs to individual `/genre/[slug]` pages.
 
-**After completing:** clear lock → add Completed Step → set CE-9 as Active Step (copy spec from SPEC.md §CE-9)
+**After completing:** clear lock → add Completed Step → set CE-10 as Active Step (copy spec from SPEC.md §CE-10)
 
 ---
 
@@ -110,6 +111,7 @@ _2026-03-29 (late) – 2026-03-31 entries → HANDOVER-archive.md §Minor Change
 | 2026-04-06 | fix(CE-5 UX): SaveToggle — pendingRef double-click guard, error msg 2s display, touch target 44px | result/[id]/SaveToggle.tsx, page.module.css |
 | 2026-04-08 | feat(CE-6): remove Steam link popup auto-trigger; add benefit hint copy in dropdown | Header.tsx, Header.module.css |
 | 2026-04-08 | feat(CE-6 rev): Steam header btn (unlinked_auth only) + one-time popup logic restored via localStorage; CE-15 resolved | Header.tsx, Header.module.css |
+| 2026-04-08 | feat(CE-8): ← 홈으로 back link above hero; .backNav + .backLink CSS | games/[appid]/page.tsx, page.module.css |
 
 ---
 
