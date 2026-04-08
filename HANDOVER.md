@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 127/200 lines — OK**
+📏 **File health: 128/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -71,6 +71,7 @@ Next action: [exactly what to do next to resume]
 | CE-13 | Saved games: image load failure fallback | ⏳ |
 | CE-14 | Result cards: reduce animation stagger 80ms → 40ms | ⏳ |
 | CE-15 | Steam linking: add value proposition copy in dropdown | ⏳ |
+| CE-15 | Steam linking: value proposition copy in dropdown | ✅ 2026-04-08 (CE-6으로 완료) |
 | CE-16 | Skeleton UI on page transitions (deferred, post CE-series) | ⏳ |
 
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ✅ · NEXT_PUBLIC_ADSENSE_CLIENT_ID ⏳
@@ -108,7 +109,8 @@ _2026-03-29 (late) – 2026-03-31 entries → HANDOVER-archive.md §Minor Change
 | 2026-04-06 | ux(CE-4): success toast (1.5s auto-dismiss), error font 0.55→0.65rem, msgArea always-render (no layout jank) | result/[id]/FeedbackButtons.tsx, feedback.module.css |
 | 2026-04-06 | feat(CE-5): SaveToggle ★/☆ on result cards; server-side saved_games pre-fetch (rec + saved parallel); optimistic toggle + rollback | result/[id]/SaveToggle.tsx (new), page.tsx, page.module.css |
 | 2026-04-06 | fix(CE-5 UX): SaveToggle — pendingRef double-click guard, error msg 2s display, touch target 44px | result/[id]/SaveToggle.tsx, page.module.css |
-| 2026-04-08 | feat(CE-6): remove Steam link popup auto-trigger on login; add benefit hint copy above Steam link button in dropdown | Header.tsx, Header.module.css |
+| 2026-04-08 | feat(CE-6): remove Steam link popup auto-trigger; add benefit hint copy in dropdown | Header.tsx, Header.module.css |
+| 2026-04-08 | feat(CE-6 rev): Steam header btn (unlinked_auth only) + localStorage 1회 팝업 복원; CE-15 완료 처리 | Header.tsx, Header.module.css |
 
 ---
 

@@ -31,6 +31,33 @@
 
 .menuWrap {
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Steam 연동 헤더 버튼 (unlinked_auth 상태에서만 노출) ── */
+
+.steamHeaderBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 36px;
+  padding: 0 11px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--accent);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 150ms, color 150ms;
+}
+
+.steamHeaderBtn:hover,
+.steamHeaderBtn:focus-visible {
+  background: var(--accent-dim);
 }
 
 .menuBtn {
