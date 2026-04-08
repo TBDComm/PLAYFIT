@@ -109,7 +109,7 @@ _2026-03-29 (late) – 2026-03-31 entries → HANDOVER-archive.md §Minor Change
 | 2026-04-06 | fix(CE-5 UX): SaveToggle — pendingRef double-click guard, error msg 2s display, touch target 44px | result/[id]/SaveToggle.tsx, page.module.css |
 | 2026-04-08 | feat(CE-6): remove Steam link popup auto-trigger; add benefit hint copy in dropdown | Header.tsx, Header.module.css |
 | 2026-04-08 | feat(CE-6 rev): Steam header btn (unlinked_auth only) + one-time popup logic restored via localStorage; CE-15 resolved | Header.tsx, Header.module.css |
-| 2026-04-08 | feat(CE-8): ← 홈으로 back link above hero; .backNav + .backLink CSS | games/[appid]/page.tsx, page.module.css |
+| 2026-04-08 | feat(CE-8): ← 홈으로 back link inside hero (above Breadcrumb); .backLink CSS | games/[appid]/page.tsx, page.module.css |
 | 2026-04-08 | feat(CE-9): recommendation CTA at bottom of /genre; .ctaSection + .ctaLink | genre/page.tsx, genre/page.module.css |
 
 ---
