@@ -296,6 +296,9 @@ export default function RecommendationForm() {
                 <button type="button" className={styles.modeToggle} onClick={() => switchMode('manual')} disabled={loading}>
                   스팀 계정 없이 추천받기 →
                 </button>
+                {(authState === 'anon' || authState === 'unlinked_auth') && (
+                  <p className={styles.manualNotice}>스팀 계정 없이는 피드백이 저장되지 않아요.</p>
+                )}
               </div>
             ) : (
               <div className={styles.inputWrapper}>

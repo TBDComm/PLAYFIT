@@ -66,8 +66,8 @@ Next action: [exactly what to do next to resume]
 | CE-8 | /games/[appid]: back nav — Breadcrumb sufficient, no separate link added | ✅ 2026-04-08 |
 | CE-9 | /genre page: recommendation CTA at bottom | ✅ 2026-04-08 |
 | CE-10 | Remove "커뮤니티 기능 곧 출시" placeholder | ✅ 2026-04-08 |
-| **CE-11** | **Anon Steam URL mode: "feedback won't save" notice** | **▶ NEXT** |
-| CE-12 | Unify submit button text | ⏳ |
+| CE-11 | Anon Steam URL mode: "feedback won't save" notice | ✅ 2026-04-08 |
+| **CE-12** | **Unify submit button text** | **▶ NEXT** |
 | CE-13 | Saved games: image load failure fallback | ⏳ |
 | CE-14 | Result cards: reduce animation stagger 80ms → 40ms | ⏳ |
 | CE-15 | Steam linking: value proposition copy in dropdown | ✅ 2026-04-08 (resolved by CE-6) |
@@ -88,20 +88,19 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: CE-11 — Anon Steam URL mode: "feedback won't save" notice ──
+## ── ACTIVE STEP: CE-12 — Unify submit button text ──
 
-**Problem:** `RecommendationForm.tsx:351-352` — "피드백이 저장되지 않아요" notice only shown in manual mode. Anonymous users submitting via Steam URL get no such warning.
+**Problem:** `RecommendationForm.tsx` — "내 게임 찾기" (anon) vs "내 게임 추천받기" (Steam-linked). Same function, different copy creates inconsistent expectations.
 
 **Files:** `app/components/RecommendationForm.tsx`
 
 **Spec:**
-- In the Steam URL input block (the `mode === 'steam'` branch that is NOT `authState === 'steam'`):
-  - When `authState === 'anon'` or `authState === 'unlinked_auth'`: render `<p className={styles.manualNotice}>스팀 계정 없이는 피드백이 저장되지 않아요.</p>` below the URL input
-- Reuse existing `styles.manualNotice` class — no new CSS needed
+- Replace ternary `authState === 'steam' ? '내 게임 추천받기' : '내 게임 찾기'` with single string: `'게임 추천받기'`
+- Loading state text `'취향 분석 중…'` unchanged
 
-**Out of scope:** Implementing save functionality for anonymous users; changing auth flow.
+**Out of scope:** Changing any other copy in the form.
 
-**After completing:** clear lock → add Completed Step entry → set CE-12 as Active Step (copy spec from SPEC.md §CE-12)
+**After completing:** clear lock → add Completed Step entry → set CE-13 as Active Step (copy spec from SPEC.md §CE-13)
 
 ---
 
@@ -119,6 +118,7 @@ _2026-04-06 entries (CE-4, CE-5) → HANDOVER-archive.md §Minor Changes Log 202
 | 2026-04-08 | refactor(CE-8): remove ← 홈으로 back link — Breadcrumb already provides home nav | games/[appid]/page.tsx, page.module.css |
 | 2026-04-08 | feat(CE-9): recommendation CTA at bottom of /genre (inside genres>0 branch) | genre/page.tsx, genre/page.module.css |
 | 2026-04-08 | ux(CE-10): remove "커뮤니티 기능 곧 출시" placeholder section + CSS classes | games/[appid]/page.tsx, page.module.css |
+| 2026-04-08 | ux(CE-11): add "피드백 저장 안 됨" notice in Steam URL mode for anon/unlinked_auth | RecommendationForm.tsx |
 
 ---
 
