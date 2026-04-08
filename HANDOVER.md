@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 128/200 lines — OK**
+📏 **File health: 127/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -90,6 +90,8 @@ Next action: [exactly what to do next to resume]
   - When `authState === 'anon'` or `authState === 'unlinked_auth'`: render `<p className={styles.manualNotice}>스팀 계정 없이는 피드백이 저장되지 않아요.</p>` below the URL input
 - Reuse existing `styles.manualNotice` class — no new CSS needed
 
+**Out of scope:** Implementing save functionality for anonymous users; changing auth flow.
+
 **After completing:** clear lock → add Completed Step entry → set CE-12 as Active Step (copy spec from SPEC.md §CE-12)
 
 ---
@@ -99,13 +101,10 @@ Next action: [exactly what to do next to resume]
 _2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log 2026-03-28_
 _2026-03-29 entries (early) → HANDOVER-archive.md §Minor Changes Log 2026-03-29_
 _2026-03-29 (late) – 2026-03-31 entries → HANDOVER-archive.md §Minor Changes Log 2026-03-29 (late) to 2026-03-31_
+_2026-04-06 entries (CE-4, CE-5) → HANDOVER-archive.md §Minor Changes Log 2026-04-06_
 
 | Date | Change | Files |
 |------|--------|-------|
-| 2026-04-06 | fix(CE-4): feedback buttons — vote change enabled, active state, API failure rollback + error msg | result/[id]/FeedbackButtons.tsx, feedback.module.css |
-| 2026-04-06 | ux(CE-4): success toast (1.5s auto-dismiss), error font 0.55→0.65rem, msgArea always-render (no layout jank) | result/[id]/FeedbackButtons.tsx, feedback.module.css |
-| 2026-04-06 | feat(CE-5): SaveToggle ★/☆ on result cards; server-side saved_games pre-fetch (rec + saved parallel); optimistic toggle + rollback | result/[id]/SaveToggle.tsx (new), page.tsx, page.module.css |
-| 2026-04-06 | fix(CE-5 UX): SaveToggle — pendingRef double-click guard, error msg 2s display, touch target 44px | result/[id]/SaveToggle.tsx, page.module.css |
 | 2026-04-08 | feat(CE-6): remove Steam link popup auto-trigger; add benefit hint copy in dropdown | Header.tsx, Header.module.css |
 | 2026-04-08 | feat(CE-6 rev): Steam header btn (unlinked_auth only) + one-time popup logic restored via localStorage; CE-15 resolved | Header.tsx, Header.module.css |
 | 2026-04-08 | refactor(CE-8): remove ← 홈으로 back link — Breadcrumb already provides home nav | games/[appid]/page.tsx, page.module.css |
