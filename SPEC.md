@@ -277,19 +277,9 @@ CE-4 covers silent failure feedback handling. No separate work.
 
 ---
 
-### CE-18 — LibraryPickerModal: confirm button scrolls off screen
+### CE-18 — (Resolved — LibraryPickerModal already has sticky footer layout)
 
-**Problem:** `app/components/LibraryPickerModal.module.css` — modal uses `max-height: 80vh` with no sticky footer. On long game lists the confirm button scrolls out of view and users can't confirm without scrolling to the bottom.
-
-**Files:** `app/components/LibraryPickerModal.module.css`
-
-**Spec:**
-- Make the modal a flex column: `display: flex; flex-direction: column`
-- Game list gets `flex: 1; overflow-y: auto` (likely already set — verify)
-- Footer containing the confirm button gets `flex-shrink: 0` so it always stays visible at the bottom
-- No JS changes needed
-
-**Out of scope:** Changing modal width, height, or confirm button behavior.
+Modal already has `display: flex; flex-direction: column`, list `flex: 1; overflow-y: auto`, footer `flex-shrink: 0`. No action needed.
 
 ---
 
@@ -310,18 +300,9 @@ CE-4 covers silent failure feedback handling. No separate work.
 
 ---
 
-### CE-20 — Header: password reset confirmation screen is a dead end
+### CE-20 — (Resolved — Header.tsx:673-675 already has back button for forgot-sent view)
 
-**Problem:** `app/components/Header.tsx` — after submitting a password reset email, the "forgot-sent" view shows a confirmation message with no way to go back. User is stuck unless they close the modal entirely.
-
-**Files:** `app/components/Header.tsx`, `app/components/Header.module.css`
-
-**Spec:**
-- In the forgot-sent view, add a `<button>` below the confirmation text: `← 로그인으로 돌아가기`
-- On click: set `authView` back to `'signin'`
-- Style: text link style (no background, `color: var(--text-secondary)`, `font-size: 0.875rem`)
-
-**Out of scope:** Changing the reset email flow or adding a resend button.
+`← 로그인으로` button already rendered for `verify | forgot | forgot-sent` states. No action needed.
 
 ---
 
@@ -369,29 +350,19 @@ CE-4 covers silent failure feedback handling. No separate work.
 
 ---
 
-### CE-24 — LibraryPickerModal: checkboxes are unicode symbols, not real inputs
+### CE-24 — LibraryPickerModal: game row button touch target below 44px
 
-**Problem:** `app/components/LibraryPickerModal.tsx` — game selection uses ☑/☐ unicode characters rendered as text. Touch target is ~14px. Not keyboard accessible as a real checkbox.
+**Problem:** `app/components/LibraryPickerModal.module.css` — `.gameRow` has `padding: 0.4rem 1rem` giving ~30px row height, below the 44px touch target minimum. (Checkbox symbol ☑/☐ already has `aria-hidden="true"` — accessibility is correct, only touch target needs fixing.)
 
-**Files:** `app/components/LibraryPickerModal.tsx`, `app/components/LibraryPickerModal.module.css`
+**Files:** `app/components/LibraryPickerModal.module.css`
 
 **Spec:**
-- Replace the unicode character rendering with a real `<input type="checkbox">` (visually hidden) + custom styled `<span>` indicator
-- The row `<button>` click already toggles selection — the checkbox is decorative; add `tabIndex={-1}` and `aria-hidden="true"` to it, keeping the row button as the accessible control
-- Minimum touch target for the row button: `min-height: 44px` (verify it already has this)
+- Add `min-height: 44px` to `.gameRow`
 
-**Out of scope:** Full checkbox redesign; changing selection logic.
+**Out of scope:** Replacing unicode checkbox symbol; changing selection logic.
 
 ---
 
-### CE-25 — Header: hamburger menu button missing aria-label
+### CE-25 — (Resolved — Header.tsx:353 already has aria-label="메뉴 열기")
 
-**Problem:** `app/components/Header.tsx` — mobile hamburger button contains only decorative `<span>` bar elements with no accessible label. Screen readers announce it as an unlabeled button.
-
-**Files:** `app/components/Header.tsx`
-
-**Spec:**
-- Add `aria-label={menuOpen ? '메뉴 닫기' : '메뉴 열기'}` to the hamburger `<button>` element
-- The existing `aria-expanded={menuOpen}` stays as-is
-
-**Out of scope:** Changing hamburger animation or menu layout.
+No action needed.

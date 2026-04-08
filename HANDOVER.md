@@ -73,14 +73,14 @@ Next action: [exactly what to do next to resume]
 | CE-15 | Steam linking: value proposition copy in dropdown | ✅ 2026-04-08 (resolved by CE-6) |
 | CE-16 | Skeleton UI on page transitions (deferred, post CE-series) | ⏳ |
 | CE-17 | SaveToggle: error message not persistent (disappears after 2s) | ⏳ |
-| CE-18 | LibraryPickerModal: confirm button scrolls off screen | ⏳ |
+| CE-18 | LibraryPickerModal: confirm button scrolls off screen | ✅ already implemented |
 | CE-19 | Header login modal: no focus trap | ⏳ |
-| CE-20 | Header: password reset confirmation dead end | ⏳ |
+| CE-20 | Header: password reset confirmation dead end | ✅ already implemented |
 | CE-21 | RecommendationForm: game search API silent fail | ⏳ |
 | CE-22 | SavedGames: keyboard focus-blur immediately closes panel | ⏳ |
 | CE-23 | SavedGames: skeleton loading no accessible label | ⏳ |
-| CE-24 | LibraryPickerModal: checkbox is unicode, not real input | ⏳ |
-| CE-25 | Header: hamburger button missing aria-label | ⏳ |
+| CE-24 | LibraryPickerModal: game row touch target below 44px | ⏳ |
+| CE-25 | Header: hamburger button missing aria-label | ✅ already implemented |
 
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ✅ · NEXT_PUBLIC_ADSENSE_CLIENT_ID ⏳
 
