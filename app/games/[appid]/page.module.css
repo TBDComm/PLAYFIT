@@ -12,13 +12,7 @@
   padding: 48px 24px 80px;
 }
 
-/* ── Back navigation ─────────────────────────────────────────────────────── */
-
-.backNav {
-  padding: 12px 24px;
-  max-width: 900px;
-  margin: 0 auto;
-}
+/* ── Back navigation (히어로 내부) ───────────────────────────────────────── */
 
 .backLink {
   /* 터치 타겟 44px 확보 */
@@ -26,8 +20,10 @@
   align-items: center;
   min-height: 44px;
   padding: 0 4px;
+  margin-bottom: 4px;
   font-size: 0.875rem;
-  color: var(--text-muted);
+  /* 히어로 다크 배경에 맞는 색상 */
+  color: var(--white-muted);
   text-decoration: none;
   transition: color 150ms;
 }
