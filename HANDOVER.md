@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 126/200 lines — OK**
+📏 **File health: 127/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -62,8 +62,8 @@ Next action: [exactly what to do next to resume]
 | CE-3 | Library picker: fetch timeout + retry button | ✅ 2026-03-31 |
 | CE-4 | Feedback buttons: vote change + error on failure (resolves CE-7) | ✅ 2026-04-06 |
 | CE-5 | Result page: save toggle on each card | ✅ 2026-04-06 |
-| **CE-6** | **Steam link popup: remove auto-trigger + add benefit copy** | **▶ NEXT** |
-| CE-8 | /games/[appid]: back navigation | ⏳ |
+| CE-6 | Steam link popup: remove auto-trigger + add benefit copy | ✅ 2026-04-08 |
+| **CE-8** | **/games/[appid]: back navigation** | **▶ NEXT** |
 | CE-9 | /genre page: recommendation CTA at bottom | ⏳ |
 | CE-10 | Remove "커뮤니티 기능 곧 출시" placeholder | ⏳ |
 | CE-11 | Anon Steam URL mode: "feedback won't save" notice | ⏳ |
@@ -79,21 +79,20 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: CE-6 — Steam link popup: remove auto-trigger, add benefit copy ──
+## ── ACTIVE STEP: CE-8 — /games/[appid]: back navigation ──
 
-**Problem:** `Header.tsx:118-119` — Steam link popup fires immediately after Google login before user sees home page. No explanation of benefits anywhere near the button.
+**Problem:** `games/[appid]/page.tsx` — no back button. Mobile users rely entirely on browser gestures.
 
-**Files:** `app/components/Header.tsx`, `app/components/Header.module.css`
+**Files:** `app/games/[appid]/page.tsx`, `app/games/[appid]/page.module.css`
 
 **Spec:**
-- Remove the auto-popup on login: delete/comment out the `if (!steamLinked) setShowLinkPopup(true)` call (or equivalent) that fires in the `SIGNED_IN` handler
-- In the header dropdown, above the "Steam 연동하기" button: add `<p>` with copy: `"연동하면 플레이 기록 자동 분석 + 라이브러리 직접 선택"`
-- Style for new copy: `font-size: 0.75rem`, `color: var(--text-muted)`, `margin-bottom: 0.375rem`
-- The "Steam 연동하기" button and its modal remain fully functional — only the auto-trigger is removed
+- Add `<Link href="/">← 홈으로</Link>` at the top of the page, above the hero section
+- Style: same as result page "← 다시 추천받기" pattern — `font-size: 0.875rem`, `color: var(--text-muted)`, hover → `var(--accent)`, `text-decoration: none`
+- Place inside the existing page container, before the hero `<section>`
 
-**Out of scope:** Changing the link modal or settings page.
+**Out of scope:** Implementing browser-history-aware back (router.back()) — static Link to `/` is sufficient.
 
-**After completing:** clear lock → add Completed Step → set CE-8 as Active Step (copy spec from SPEC.md §CE-8)
+**After completing:** clear lock → add Completed Step → set CE-9 as Active Step (copy spec from SPEC.md §CE-9)
 
 ---
 
@@ -109,6 +108,7 @@ _2026-03-29 (late) – 2026-03-31 entries → HANDOVER-archive.md §Minor Change
 | 2026-04-06 | ux(CE-4): success toast (1.5s auto-dismiss), error font 0.55→0.65rem, msgArea always-render (no layout jank) | result/[id]/FeedbackButtons.tsx, feedback.module.css |
 | 2026-04-06 | feat(CE-5): SaveToggle ★/☆ on result cards; server-side saved_games pre-fetch (rec + saved parallel); optimistic toggle + rollback | result/[id]/SaveToggle.tsx (new), page.tsx, page.module.css |
 | 2026-04-06 | fix(CE-5 UX): SaveToggle — pendingRef double-click guard, error msg 2s display, touch target 44px | result/[id]/SaveToggle.tsx, page.module.css |
+| 2026-04-08 | feat(CE-6): remove Steam link popup auto-trigger on login; add benefit hint copy above Steam link button in dropdown | Header.tsx, Header.module.css |
 
 ---
 

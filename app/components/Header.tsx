@@ -98,7 +98,7 @@ export default function Header() {
     if (currentId === prev) return               // no user change
     if (prev !== null || currentId === null) return  // logout or unrelated change
 
-    // User just signed in and auth state has fully settled (steamId resolved)
+    // 로그인 직후 자동으로 팝업을 띄우지 않음 — 사용자가 직접 드롭다운에서 연동
     setShowLoginModal(false)
     setLoginView('login')
     setEmailInput('')
@@ -106,7 +106,6 @@ export default function Header() {
     setPasswordConfirm('')
     setOtpInput('')
     setAuthError(null)
-    if (authState === 'unlinked_auth') setShowLinkPopup(true)
   }, [authState, session?.user?.id])
 
   // Open login modal from custom event (dispatched by home page anon CTA)
@@ -359,13 +358,16 @@ export default function Header() {
                   {steamId ? (
                     <span className={styles.dropdownSteamBadge}>Steam 연동됨</span>
                   ) : (
-                    <button
-                      className={styles.dropdownSteamLink}
-                      onClick={() => { setMenuOpen(false); setShowLinkPopup(true) }}
-                      role="menuitem"
-                    >
-                      Steam 연동하기
-                    </button>
+                    <>
+                      <p className={styles.dropdownSteamHint}>연동하면 플레이 기록 자동 분석 + 라이브러리 직접 선택</p>
+                      <button
+                        className={styles.dropdownSteamLink}
+                        onClick={() => { setMenuOpen(false); setShowLinkPopup(true) }}
+                        role="menuitem"
+                      >
+                        Steam 연동하기
+                      </button>
+                    </>
                   )}
                 </div>
 
