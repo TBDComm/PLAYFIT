@@ -357,14 +357,6 @@ export default async function GamePage({
         {/* Ad — after similar games list */}
         <AdUnit slot="0000000000" format="auto" minHeight={250} className={styles.adUnit} />
 
-        {/* Community placeholder — D-series hook */}
-        <section className={styles.communitySection} aria-labelledby="community-heading">
-          <h2 id="community-heading" className={styles.sectionTitle}>이 게임을 좋아하는 Guildeline 유저</h2>
-          <p className={styles.communityPlaceholder}>
-            커뮤니티 기능은 곧 출시됩니다. 비슷한 취향을 가진 유저들과 함께할 수 있어요.
-          </p>
-        </section>
-
         {/* CTA */}
         <div className={styles.ctaSection}>
           <Link href="/" className={styles.ctaLink}>

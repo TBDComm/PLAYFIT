@@ -65,8 +65,8 @@ Next action: [exactly what to do next to resume]
 | CE-6 | Steam header btn (unlinked_auth) + one-time popup on first login (localStorage) + benefit copy in dropdown | ✅ 2026-04-08 |
 | CE-8 | /games/[appid]: back nav — Breadcrumb sufficient, no separate link added | ✅ 2026-04-08 |
 | CE-9 | /genre page: recommendation CTA at bottom | ✅ 2026-04-08 |
-| **CE-10** | **Remove "커뮤니티 기능 곧 출시" placeholder** | **▶ NEXT** |
-| CE-11 | Anon Steam URL mode: "feedback won't save" notice | ⏳ |
+| CE-10 | Remove "커뮤니티 기능 곧 출시" placeholder | ✅ 2026-04-08 |
+| **CE-11** | **Anon Steam URL mode: "feedback won't save" notice** | **▶ NEXT** |
 | CE-12 | Unify submit button text | ⏳ |
 | CE-13 | Saved games: image load failure fallback | ⏳ |
 | CE-14 | Result cards: reduce animation stagger 80ms → 40ms | ⏳ |
@@ -79,19 +79,18 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: CE-10 — Remove "커뮤니티 기능 곧 출시" placeholder ──
+## ── ACTIVE STEP: CE-11 — Anon Steam URL mode: "feedback won't save" notice ──
 
-**Problem:** `games/[appid]/page.tsx:362–365` — "커뮤니티 기능은 곧 출시됩니다" section signals incompleteness to users.
+**Problem:** `RecommendationForm.tsx:351-352` — "피드백이 저장되지 않아요" notice only shown in manual mode. Anonymous users submitting via Steam URL get no such warning.
 
-**Files:** `app/games/[appid]/page.tsx`, `app/games/[appid]/page.module.css`
+**Files:** `app/components/RecommendationForm.tsx`
 
 **Spec:**
-- Delete the community section JSX block entirely
-- Remove corresponding CSS class(es) if they become unused after deletion
+- In the Steam URL input block (the `mode === 'steam'` branch that is NOT `authState === 'steam'`):
+  - When `authState === 'anon'` or `authState === 'unlinked_auth'`: render `<p className={styles.manualNotice}>스팀 계정 없이는 피드백이 저장되지 않아요.</p>` below the URL input
+- Reuse existing `styles.manualNotice` class — no new CSS needed
 
-**Out of scope:** Implementing community features.
-
-**After completing:** clear lock → add Completed Step → set CE-11 as Active Step (copy spec from SPEC.md §CE-11)
+**After completing:** clear lock → add Completed Step entry → set CE-12 as Active Step (copy spec from SPEC.md §CE-12)
 
 ---
 
@@ -111,6 +110,7 @@ _2026-03-29 (late) – 2026-03-31 entries → HANDOVER-archive.md §Minor Change
 | 2026-04-08 | feat(CE-6 rev): Steam header btn (unlinked_auth only) + one-time popup logic restored via localStorage; CE-15 resolved | Header.tsx, Header.module.css |
 | 2026-04-08 | refactor(CE-8): remove ← 홈으로 back link — Breadcrumb already provides home nav | games/[appid]/page.tsx, page.module.css |
 | 2026-04-08 | feat(CE-9): recommendation CTA at bottom of /genre (inside genres>0 branch) | genre/page.tsx, genre/page.module.css |
+| 2026-04-08 | ux(CE-10): remove "커뮤니티 기능 곧 출시" placeholder section + CSS classes | games/[appid]/page.tsx, page.module.css |
 
 ---
 

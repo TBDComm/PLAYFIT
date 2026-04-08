@@ -301,22 +301,6 @@
   margin-bottom: 48px;
 }
 
-/* ── Community placeholder ────────────────────────────────────────────────── */
-
-.communitySection {
-  margin-bottom: 48px;
-  padding: 24px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-}
-
-.communityPlaceholder {
-  font-size: 0.9375rem;
-  color: var(--text-muted);
-  line-height: 1.6;
-}
-
 /* ── CTA ──────────────────────────────────────────────────────────────────── */
 
 .ctaSection {
