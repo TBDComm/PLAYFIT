@@ -63,7 +63,7 @@ Next action: [exactly what to do next to resume]
 | CE-4 | Feedback buttons: vote change + error on failure (resolves CE-7) | ✅ 2026-04-06 |
 | CE-5 | Result page: save toggle on each card | ✅ 2026-04-06 |
 | CE-6 | Steam header btn (unlinked_auth) + one-time popup on first login (localStorage) + benefit copy in dropdown | ✅ 2026-04-08 |
-| CE-8 | /games/[appid]: back navigation | ✅ 2026-04-08 |
+| CE-8 | /games/[appid]: back nav — Breadcrumb sufficient, no separate link added | ✅ 2026-04-08 |
 | CE-9 | /genre page: recommendation CTA at bottom | ✅ 2026-04-08 |
 | **CE-10** | **Remove "커뮤니티 기능 곧 출시" placeholder** | **▶ NEXT** |
 | CE-11 | Anon Steam URL mode: "feedback won't save" notice | ⏳ |
