@@ -127,6 +127,12 @@ export default async function GenrePage() {
             )}
           </>
         )}
+
+        {/* ── Recommendation CTA ──────────────────────────────────────── */}
+        <div className={styles.ctaSection}>
+          <p className={styles.ctaHeading}>내 취향에 맞는 게임을 추천받아보세요</p>
+          <Link href="/#recommend-form" className={styles.ctaLink}>추천 받기 →</Link>
+        </div>
       </div>
     </main>
   )

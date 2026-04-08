@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 129/200 lines — OK**
+📏 **File health: 128/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -64,8 +64,8 @@ Next action: [exactly what to do next to resume]
 | CE-5 | Result page: save toggle on each card | ✅ 2026-04-06 |
 | CE-6 | Steam header btn (unlinked_auth) + one-time popup on first login (localStorage) + benefit copy in dropdown | ✅ 2026-04-08 |
 | CE-8 | /games/[appid]: back navigation | ✅ 2026-04-08 |
-| **CE-9** | **/genre page: recommendation CTA at bottom** | **▶ NEXT** |
-| CE-10 | Remove "커뮤니티 기능 곧 출시" placeholder | ⏳ |
+| CE-9 | /genre page: recommendation CTA at bottom | ✅ 2026-04-08 |
+| **CE-10** | **Remove "커뮤니티 기능 곧 출시" placeholder** | **▶ NEXT** |
 | CE-11 | Anon Steam URL mode: "feedback won't save" notice | ⏳ |
 | CE-12 | Unify submit button text | ⏳ |
 | CE-13 | Saved games: image load failure fallback | ⏳ |
@@ -79,21 +79,19 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: CE-9 — /genre page: recommendation CTA at bottom ──
+## ── ACTIVE STEP: CE-10 — Remove "커뮤니티 기능 곧 출시" placeholder ──
 
-**Problem:** `genre/page.tsx` — genre browsing ends with no next action. No path to the recommender.
+**Problem:** `games/[appid]/page.tsx:362–365` — "커뮤니티 기능은 곧 출시됩니다" section signals incompleteness to users.
 
-**Files:** `app/genre/page.tsx`, `app/genre/page.module.css` (if needed)
+**Files:** `app/games/[appid]/page.tsx`, `app/games/[appid]/page.module.css`
 
 **Spec:**
-- Add a CTA block at the bottom of the genre list page (after the full genre list)
-- Heading: `"내 취향에 맞는 게임을 추천받아보세요"`
-- Link: `<Link href="/#recommend-form">추천 받기 →</Link>`
-- Style: reuse `previewCta` pattern from `page.module.css` or add equivalent local class; centered, muted text with accent hover
+- Delete the community section JSX block entirely
+- Remove corresponding CSS class(es) if they become unused after deletion
 
-**Out of scope:** Adding CTAs to individual `/genre/[slug]` pages.
+**Out of scope:** Implementing community features.
 
-**After completing:** clear lock → add Completed Step → set CE-10 as Active Step (copy spec from SPEC.md §CE-10)
+**After completing:** clear lock → add Completed Step → set CE-11 as Active Step (copy spec from SPEC.md §CE-11)
 
 ---
 
@@ -112,6 +110,7 @@ _2026-03-29 (late) – 2026-03-31 entries → HANDOVER-archive.md §Minor Change
 | 2026-04-08 | feat(CE-6): remove Steam link popup auto-trigger; add benefit hint copy in dropdown | Header.tsx, Header.module.css |
 | 2026-04-08 | feat(CE-6 rev): Steam header btn (unlinked_auth only) + one-time popup logic restored via localStorage; CE-15 resolved | Header.tsx, Header.module.css |
 | 2026-04-08 | feat(CE-8): ← 홈으로 back link above hero; .backNav + .backLink CSS | games/[appid]/page.tsx, page.module.css |
+| 2026-04-08 | feat(CE-9): recommendation CTA at bottom of /genre; .ctaSection + .ctaLink | genre/page.tsx, genre/page.module.css |
 
 ---
 
