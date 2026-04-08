@@ -231,9 +231,6 @@ export default async function GamePage({
         </div>
 
         <div className={styles.heroInner}>
-          {/* ── Back navigation (히어로 내부 최상단) ──────────────────────── */}
-          <Link href="/" className={styles.backLink}>← 홈으로</Link>
-
           <Breadcrumb
             items={[
               { label: '홈', href: '/' },

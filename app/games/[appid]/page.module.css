@@ -12,33 +12,6 @@
   padding: 48px 24px 80px;
 }
 
-/* ── Back navigation (히어로 내부) ───────────────────────────────────────── */
-
-.backLink {
-  /* 터치 타겟 44px 확보 */
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: 0 4px;
-  margin-bottom: 4px;
-  font-size: 0.875rem;
-  /* 히어로 다크 배경에 맞는 색상 */
-  color: var(--white-muted);
-  text-decoration: none;
-  transition: color 150ms;
-}
-
-.backLink:hover {
-  color: var(--accent);
-}
-
-.backLink:focus-visible {
-  color: var(--accent);
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  border-radius: 2px;
-}
-
 /* ── Hero ────────────────────────────────────────────────────────────────── */
 
 .hero {
@@ -397,8 +370,7 @@
   .steamBtn,
   .gameCard,
   .gameThumb,
-  .ctaLink,
-  .backLink {
+  .ctaLink {
     transition: none;
   }
 
