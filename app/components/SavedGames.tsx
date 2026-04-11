@@ -195,7 +195,11 @@ export default function SavedGames() {
               }}
             >
               <div className={styles.savedCardImgWrap}>
-                {!failedSavedImages.has(game.appid) && (
+                {failedSavedImages.has(game.appid) ? (
+                  <div className={styles.savedCardFallback}>
+                    <span>{game.name}</span>
+                  </div>
+                ) : (
                   <Image
                     unoptimized
                     src={`https://cdn.akamai.steamstatic.com/steam/apps/${game.appid}/library_600x900.jpg`}

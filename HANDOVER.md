@@ -68,7 +68,7 @@ Next action: [exactly what to do next to resume]
 | CE-10 | Remove "커뮤니티 기능 곧 출시" placeholder | ✅ 2026-04-08 |
 | CE-11 | Anon Steam URL mode: "feedback won't save" notice | ✅ 2026-04-08 |
 | CE-12 | Unify submit button text | ✅ 2026-04-11 |
-| **CE-13** | **Saved games: image load failure fallback** | **▶ NEXT** |
+| CE-13 | Saved games: image load failure fallback | ✅ 2026-04-11 |
 | CE-14 | Result cards: reduce animation stagger 80ms → 40ms | ⏳ |
 | CE-15 | Steam linking: value proposition copy in dropdown | ✅ 2026-04-08 (resolved by CE-6) |
 | CE-16 | Skeleton UI on page transitions (deferred, post CE-series) | ⏳ |
@@ -94,21 +94,19 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: CE-13 — Saved games: image load failure fallback ──
+## ── ACTIVE STEP: CE-14 — Result cards: reduce animation stagger delay ──
 
-**Problem:** `SavedGames.tsx:197-211` — `onError` hides the image but leaves an empty card. Game name not shown as fallback.
+**Problem:** `result/[id]/page.module.css:103-105` — `calc(var(--animation-order, 0) * 80ms)`. Card 10 appears 800ms after card 1. Feels sluggish.
 
-**Files:** `app/components/SavedGames.tsx`, `app/page.module.css`
+**Files:** `app/result/[id]/page.module.css`
 
 **Spec:**
-- When `failedSavedImages.has(game.appid)`: render `<div className={styles.savedCardFallback}>` instead of `<Image>`
-  - Show `<span>{game.name}</span>` centered in the card
-- Add `.savedCardFallback` CSS: `width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 0.5rem; text-align: center; font-size: 0.6875rem; color: var(--text-muted); line-height: 1.4;`
-- The `.savedCardOverlay` (game name gradient) must not be hidden when panel opens on fallback cards — add `.savedCardFallback ~ .savedCardOverlay { opacity: 1; }` **immediately after** `.savedCardActive .savedCardOverlay { opacity: 0; }` at `page.module.css:977` (same specificity 0,2,0 — source order decides)
+- Change multiplier from `80ms` to `40ms`
+- Single line change only
 
-**Out of scope:** Changing non-fallback card layout or other image handling.
+**Out of scope:** Changing animation type, duration, or easing.
 
-**After completing:** clear lock → add Completed Step entry → set CE-14 as Active Step (copy spec from SPEC.md §CE-14)
+**After completing:** clear lock → add Completed Step entry → set CE-16 as Active Step (copy spec from SPEC.md §CE-16)
 
 ---
 
@@ -128,6 +126,7 @@ _2026-04-06 entries (CE-4, CE-5) → HANDOVER-archive.md §Minor Changes Log 202
 | 2026-04-08 | ux(CE-10): remove "커뮤니티 기능 곧 출시" placeholder section + CSS classes | games/[appid]/page.tsx, page.module.css |
 | 2026-04-08 | ux(CE-11): add "피드백 저장 안 됨" notice in Steam URL mode for anon/unlinked_auth | RecommendationForm.tsx |
 | 2026-04-11 | ux(CE-12): unify submit button text → '게임 추천받기' | RecommendationForm.tsx |
+| 2026-04-11 | ux(CE-13): saved games image fallback — show game name when image fails | SavedGames.tsx, page.module.css |
 
 ---
 

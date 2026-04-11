@@ -978,6 +978,25 @@
   opacity: 0;
 }
 
+/* 폴백 카드는 오버레이(이름 그라디언트)를 항상 표시 */
+.savedCardFallback ~ .savedCardOverlay {
+  opacity: 1;
+}
+
+/* 이미지 로드 실패 시 폴백: 게임 이름 중앙 표시 */
+.savedCardFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
 /* Image fills the card */
 .savedCardImgWrap {
   position: relative;
