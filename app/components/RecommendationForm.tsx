@@ -364,7 +364,7 @@ export default function RecommendationForm() {
                     </div>
                   ))}
                 </div>
-                {searchError && <p className={styles.rowError}>{searchError}</p>}
+                {searchError && <p className={styles.rowError} role="alert">{searchError}</p>}
                 {!canSubmit && manualGames.some(g => g.name.trim() && g.appid !== null) && (
                   <p className={styles.manualNotice}>이름과 플레이 시간을 모두 입력해야 추천받을 수 있어요</p>
                 )}

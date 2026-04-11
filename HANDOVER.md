@@ -96,9 +96,9 @@ Next action: [exactly what to do next to resume]
 
 ## ── ACTIVE STEP: CE-16 — Skeleton UI on page transitions (deferred) ──
 
-CE-19 ~ CE-31 전체 완료 (2026-04-11). CE-16은 CE-series 이후로 연기된 상태.
+CE-19 ~ CE-31 all complete (2026-04-11). CE-16 deferred until post-CE-series.
 
-**Next non-deferred work:** 새 CE 항목이 추가되거나 다른 작업 지시가 있을 때까지 대기.
+**Next non-deferred work:** await new CE items or other instruction.
 
 ---
 
