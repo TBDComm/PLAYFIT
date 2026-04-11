@@ -366,3 +366,96 @@ Modal already has `display: flex; flex-direction: column`, list `flex: 1; overfl
 ### CE-25 — (Resolved — Header.tsx:353 already has aria-label="메뉴 열기")
 
 No action needed.
+
+---
+
+### CE-26 — RecommendationForm: submit button enables on any URL text
+
+**Problem:** `app/components/RecommendationForm.tsx:230` — `canSubmit` for steam mode uses `!!url.trim()`, not `urlValid`. The submit button activates as soon as any text is typed (e.g., "abc"), and the user only discovers the URL is invalid after clicking submit.
+
+**Files:** `app/components/RecommendationForm.tsx`
+
+**Spec:**
+- Change steam-mode branch of `canSubmit` from `!!url.trim()` to `urlValid`
+- Result: `const canSubmit = mode === 'steam' ? urlValid : manualGames.some(...)`
+- For `authState === 'steam'`, the URL is set programmatically from `contextSteamId` and will always be valid — no regression.
+
+**Out of scope:** Changing the ✓ icon, URL validation logic, or error message copy.
+
+---
+
+### CE-27 — RecommendationForm: focus not moved to error on submit failure
+
+**Problem:** `app/components/RecommendationForm.tsx:383` — after a submit error, focus stays on the submit button. Keyboard users may not see the error message at the bottom. `web-design-guidelines.md` requires: "focus the first error on submit".
+
+**Files:** `app/components/RecommendationForm.tsx`
+
+**Spec:**
+- Add `const errorRef = useRef<HTMLParagraphElement>(null)` 
+- After any `setError(...)` call in `handleSubmit` (not in `callApi`), call `setTimeout(() => errorRef.current?.focus(), 0)` — setTimeout needed because state update is async
+- Add `ref={errorRef}` and `tabIndex={-1}` to the error `<p>` at line 383
+- `tabIndex={-1}` makes the element programmatically focusable without adding it to tab order
+
+**Out of scope:** Changing error styling or inline row errors.
+
+---
+
+### CE-28 — RecommendationForm: manual mode submit blocked with no explanation
+
+**Problem:** `app/components/RecommendationForm.tsx:231` — in manual mode, the submit button is disabled if any filled game row is missing playtime. The user sees the button is greyed out but has no indication why.
+
+**Files:** `app/components/RecommendationForm.tsx`
+
+**Spec:**
+- Below the manual game rows (after the `</div>` closing `manualRows`), show a conditional hint:
+  - Condition: `mode === 'manual' && !canSubmit && manualGames.some(g => g.name.trim() && g.appid !== null)`
+  - Text: `"이름과 플레이 시간을 모두 입력해야 추천받을 수 있어요"`
+  - Use existing `styles.manualNotice` class
+
+**Out of scope:** Changing canSubmit logic or row-level validation.
+
+---
+
+### CE-29 — RecommendationForm: linked Steam account not identified
+
+**Problem:** `app/components/RecommendationForm.tsx:271–277` — when `authState === 'steam'`, only "Steam 계정이 연동되어 있어요" is shown. The user cannot verify which account is connected without leaving the page.
+
+**Files:** `app/components/RecommendationForm.tsx`
+
+**Spec:**
+- In the steam-linked block (line 272), add a line below `.manualNotice` showing the Steam profile URL as a link:
+  - Text: `"연동 계정: steamcommunity.com/profiles/{steamId}"`
+  - Render as `<a href={url} target="_blank" rel="noopener noreferrer" className={styles.manualNotice}>` (truncate with CSS if too long)
+  - `url` is already set from contextSteamId in this state
+
+**Out of scope:** Fetching Steam username or avatar, changing the layout.
+
+---
+
+### CE-30 — RecommendationForm: budget placeholder text is redundant
+
+**Problem:** `app/components/RecommendationForm.tsx:362` — the budget input has label "예산 (선택)" and placeholder "예산 입력 (예: 10000)…". "예산 입력" duplicates the label text and adds noise.
+
+**Files:** `app/components/RecommendationForm.tsx`
+
+**Spec:**
+- Change placeholder from `"예산 입력 (예: 10000)…"` to `"예: 20000"`
+
+**Out of scope:** Changing the label, input type, or any other copy.
+
+---
+
+### CE-31 — RecommendationForm: search result count not announced to screen readers
+
+**Problem:** `app/components/RecommendationForm.tsx:323` — when the game search dropdown appears, screen reader users receive no announcement of how many results are available. The `aria-expanded` attribute updates correctly, but no count or summary is announced.
+
+**Files:** `app/components/RecommendationForm.tsx`
+
+**Spec:**
+- Add a visually-hidden `aria-live="polite"` element inside the form (rendered once, outside the map)
+- When `dropdowns[idx]` changes to a non-null array, update its text content: `"{n}개의 게임이 검색되었어요"` (or `"검색 결과 없음"` for empty)
+- Use a `useEffect` on `dropdowns` to update a `useState<string>` used as the live region text
+- Render: `<span className={styles.srOnly} aria-live="polite" aria-atomic="true">{liveText}</span>`
+- `.srOnly` is already defined in `page.module.css:7–17`
+
+**Out of scope:** Changing dropdown visual design or keyboard navigation.

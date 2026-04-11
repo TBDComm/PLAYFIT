@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 136/200 lines — OK**
+📏 **File health: 145/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -81,6 +81,12 @@ Next action: [exactly what to do next to resume]
 | CE-23 | SavedGames: skeleton loading no accessible label | ⏳ |
 | CE-24 | LibraryPickerModal: game row touch target below 44px | ⏳ |
 | CE-25 | Header: hamburger button missing aria-label | ✅ already implemented |
+| CE-26 | RecommendationForm: submit button enables on any URL text | ⏳ |
+| CE-27 | RecommendationForm: focus not moved to error on submit failure | ⏳ |
+| CE-28 | RecommendationForm: manual mode submit blocked with no explanation | ⏳ |
+| CE-29 | RecommendationForm: linked Steam account not identified | ⏳ |
+| CE-30 | RecommendationForm: budget placeholder text is redundant | ⏳ |
+| CE-31 | RecommendationForm: search result count not announced | ⏳ |
 
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ✅ · NEXT_PUBLIC_ADSENSE_CLIENT_ID ⏳
 
