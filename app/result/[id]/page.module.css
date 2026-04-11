@@ -113,7 +113,7 @@
   align-items: stretch;
   transition: border-color 0.15s, box-shadow 0.15s;
   animation: fadeIn 0.4s ease-out forwards;
-  animation-delay: calc(var(--animation-order, 0) * 80ms);
+  animation-delay: calc(var(--animation-order, 0) * 40ms);
   opacity: 0;
 }
 

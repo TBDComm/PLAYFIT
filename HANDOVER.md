@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 144/200 lines — OK**
+📏 **File health: 146/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -69,7 +69,7 @@ Next action: [exactly what to do next to resume]
 | CE-11 | Anon Steam URL mode: "feedback won't save" notice | ✅ 2026-04-08 |
 | CE-12 | Unify submit button text | ✅ 2026-04-11 |
 | CE-13 | Saved games: image load failure fallback | ✅ 2026-04-11 |
-| CE-14 | Result cards: reduce animation stagger 80ms → 40ms | ⏳ |
+| CE-14 | Result cards: reduce animation stagger 80ms → 40ms | ✅ 2026-04-11 |
 | CE-15 | Steam linking: value proposition copy in dropdown | ✅ 2026-04-08 (resolved by CE-6) |
 | CE-16 | Skeleton UI on page transitions (deferred, post CE-series) | ⏳ |
 | CE-17 | SaveToggle: error message not persistent (disappears after 2s) | ⏳ |
@@ -94,19 +94,20 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: CE-14 — Result cards: reduce animation stagger delay ──
+## ── ACTIVE STEP: CE-17 — SaveToggle: error message disappears before user notices ──
 
-**Problem:** `result/[id]/page.module.css:103-105` — `calc(var(--animation-order, 0) * 80ms)`. Card 10 appears 800ms after card 1. Feels sluggish.
+**Problem:** `app/result/[id]/SaveToggle.tsx` — save failure error clears via `setTimeout(..., 2000)`. User may miss it and assume save succeeded.
 
-**Files:** `app/result/[id]/page.module.css`
+**Files:** `app/result/[id]/SaveToggle.tsx`
 
 **Spec:**
-- Change multiplier from `80ms` to `40ms`
-- Single line change only
+- Remove the `setTimeout` that clears `errorMsg`
+- Instead, clear `errorMsg` at the start of the next save attempt (before the fetch)
+- Result: error stays visible until the user tries again
 
-**Out of scope:** Changing animation type, duration, or easing.
+**Out of scope:** Changing success state behavior; adding toast infrastructure.
 
-**After completing:** clear lock → add Completed Step entry → set CE-17 as Active Step (copy spec from SPEC.md §CE-17)
+**After completing:** clear lock → add Completed Step entry → set CE-19 as Active Step (copy spec from SPEC.md §CE-19)
 
 ---
 
@@ -127,6 +128,7 @@ _2026-04-06 entries (CE-4, CE-5) → HANDOVER-archive.md §Minor Changes Log 202
 | 2026-04-08 | ux(CE-11): add "피드백 저장 안 됨" notice in Steam URL mode for anon/unlinked_auth | RecommendationForm.tsx |
 | 2026-04-11 | ux(CE-12): unify submit button text → '게임 추천받기' | RecommendationForm.tsx |
 | 2026-04-11 | ux(CE-13): saved games image fallback — show game name when image fails | SavedGames.tsx, page.module.css |
+| 2026-04-11 | ux(CE-14): result card stagger delay 80ms → 40ms | result/[id]/page.module.css |
 
 ---
 
