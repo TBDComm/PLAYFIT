@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 145/200 lines — OK**
+📏 **File health: 144/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -106,7 +106,7 @@ Next action: [exactly what to do next to resume]
 
 **Out of scope:** Changing animation type, duration, or easing.
 
-**After completing:** clear lock → add Completed Step entry → set CE-16 as Active Step (copy spec from SPEC.md §CE-16)
+**After completing:** clear lock → add Completed Step entry → set CE-17 as Active Step (copy spec from SPEC.md §CE-17)
 
 ---
 

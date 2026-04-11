@@ -995,6 +995,8 @@
   font-size: 0.6875rem;
   color: var(--text-muted);
   line-height: 1.4;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* Image fills the card */
