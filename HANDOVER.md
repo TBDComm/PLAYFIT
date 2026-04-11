@@ -71,7 +71,7 @@ Next action: [exactly what to do next to resume]
 | CE-13 | Saved games: image load failure fallback | ✅ 2026-04-11 |
 | CE-14 | Result cards: reduce animation stagger 80ms → 40ms | ✅ 2026-04-11 |
 | CE-15 | Steam linking: value proposition copy in dropdown | ✅ 2026-04-08 (resolved by CE-6) |
-| CE-16 | Skeleton UI on page transitions (deferred, post CE-series) | ⏳ |
+| CE-16 | Skeleton UI on page transitions (scoped to /result/[id]) | ✅ 2026-04-11 |
 | CE-17 | SaveToggle: error message not persistent (disappears after 2s) | ✅ 2026-04-11 |
 | CE-18 | LibraryPickerModal: confirm button scrolls off screen | ✅ already implemented |
 | CE-19 | Header login modal: no focus trap | ✅ 2026-04-11 |
@@ -94,11 +94,11 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: CE-16 — Skeleton UI on page transitions (deferred) ──
+## ── ACTIVE STEP: (none) ──
 
-CE-19 ~ CE-31 all complete (2026-04-11). CE-16 deferred until post-CE-series.
+All CE items complete (2026-04-11). CE-16 scoped to /result/[id] — loading.tsx + loading.module.css.
 
-**Next non-deferred work:** await new CE items or other instruction.
+**Next work:** await new instructions.
 
 ---
 
@@ -126,6 +126,7 @@ _2026-04-08 entries (CE-6,8,9,10,11) → HANDOVER-archive.md §Minor Changes Log
 | 2026-04-11 | a11y(CE-27): error element gets focus via useEffect + errorRef | RecommendationForm.tsx |
 | 2026-04-11 | ux(CE-28): manual mode shows hint when submit blocked | RecommendationForm.tsx |
 | 2026-04-11 | ux(CE-29): linked Steam account ID link shown; (CE-30): budget placeholder simplified | RecommendationForm.tsx, page.module.css |
+| 2026-04-11 | ux(CE-16): /result/[id] skeleton loading UI — shimmer cards matching real layout, prefers-reduced-motion | result/[id]/loading.tsx, loading.module.css |
 
 ---
 

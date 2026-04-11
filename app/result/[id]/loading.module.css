@@ -1,0 +1,235 @@
+/* =====================================================
+   GUILDELINE — Result Page Skeleton (/result/[id]/loading)
+   실제 페이지 레이아웃과 1:1 매핑 — 구조 변경 시 함께 수정
+   ===================================================== */
+
+/* ── 시머 애니메이션 ── */
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* 뼈대 공통: 배경 + 시머 */
+.bone {
+  background: linear-gradient(
+    90deg,
+    var(--bg-elevated) 25%,
+    var(--border)      50%,
+    var(--bg-elevated) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bone {
+    animation: none;
+    background: var(--bg-elevated);
+  }
+}
+
+/* ── 페이지 래퍼 ── */
+.main {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg);
+  padding: 2rem;
+  overflow-x: hidden;
+}
+
+/* ── Header ── */
+.header {
+  max-width: 900px;
+  margin: 0 auto 3rem auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.backLinkBone {
+  width: 100px;
+  height: 1rem;
+}
+
+.dateBone {
+  width: 72px;
+  height: 0.9rem;
+}
+
+/* ── Summary section ── */
+.summarySection {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 3rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.titleBone {
+  width: 320px;
+  max-width: 80%;
+  height: 3rem;
+  border-radius: var(--radius);
+}
+
+.subtitleBone {
+  width: 260px;
+  max-width: 65%;
+  height: 1rem;
+}
+
+.tagRow {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.tagBone {
+  width: 64px;
+  height: 1.5rem;
+  border-radius: 999px;
+}
+
+/* ── Feedback hint ── */
+.hintBone {
+  max-width: 900px;
+  margin: 0 auto 1.25rem auto;
+  width: 280px;
+  height: 0.85rem;
+  display: block;
+}
+
+/* ── Cards list ── */
+.cardList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 900px;
+  margin: 0 auto;
+  list-style: none;
+}
+
+/* ── 카드 ── */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+/* 썸네일 영역 — 실제와 동일한 aspect-ratio */
+.thumbBone {
+  flex-shrink: 0;
+  align-self: stretch;
+  aspect-ratio: 2 / 3;
+  border-radius: 0;
+  /* 배경은 .bone 상속 */
+}
+
+/* 카드 바디 */
+.cardBody {
+  flex: 1;
+  min-width: 0;
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.nameBone {
+  width: 55%;
+  height: 1.15rem;
+}
+
+.dividerBone {
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+  animation: none; /* 구분선은 시머 불필요 */
+  border-radius: 0;
+}
+
+.metaRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.priceBone {
+  width: 64px;
+  height: 1rem;
+}
+
+.scoreBone {
+  width: 80px;
+  height: 1.4rem;
+  border-radius: 4px;
+}
+
+.reasonWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  flex: 1;
+}
+
+.reasonLine {
+  height: 0.85rem;
+}
+.reasonLine:nth-child(1) { width: 95%; }
+.reasonLine:nth-child(2) { width: 88%; }
+.reasonLine:nth-child(3) { width: 60%; }
+
+.tagRowCard {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.tagBoneCard {
+  height: 1.4rem;
+  border-radius: 999px;
+}
+.tagBoneCard:nth-child(1) { width: 56px; }
+.tagBoneCard:nth-child(2) { width: 72px; }
+.tagBoneCard:nth-child(3) { width: 48px; }
+
+.storeLinkBone {
+  width: 100px;
+  height: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+/* ── 피드백 버튼 사이드바 자리 ── */
+.feedbackSide {
+  flex-shrink: 0;
+  width: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 0.5rem;
+  border-left: 1px solid var(--border);
+}
+
+.fbBone {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+/* ── 반응형 ── */
+@media (max-width: 600px) {
+  .main { padding: 1.25rem 1rem; }
+  .titleBone { height: 2rem; }
+  .thumbBone { aspect-ratio: 1 / 1; max-width: 80px; }
+  .cardBody { padding: 1rem 1.25rem; }
+  .reasonLine:nth-child(3) { display: none; }
+  .feedbackSide { display: none; }
+}
