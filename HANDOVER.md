@@ -96,7 +96,7 @@ Next action: [exactly what to do next to resume]
 
 ## ── ACTIVE STEP: CE-13 — Saved games: image load failure fallback ──
 
-**Problem:** `SavedGames.tsx:158-167` — `onError` hides the image but leaves an empty card. Game name not shown as fallback.
+**Problem:** `SavedGames.tsx:197-211` — `onError` hides the image but leaves an empty card. Game name not shown as fallback.
 
 **Files:** `app/components/SavedGames.tsx`, `app/page.module.css`
 
@@ -104,7 +104,7 @@ Next action: [exactly what to do next to resume]
 - When `failedSavedImages.has(game.appid)`: render `<div className={styles.savedCardFallback}>` instead of `<Image>`
   - Show `<span>{game.name}</span>` centered in the card
 - Add `.savedCardFallback` CSS: `width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 0.5rem; text-align: center; font-size: 0.6875rem; color: var(--text-muted); line-height: 1.4;`
-- The `.savedCardOverlay` (game name gradient) should remain visible at full opacity for fallback cards — add `.savedCardFallback ~ .savedCardOverlay { opacity: 1; }` or apply a modifier class
+- The `.savedCardOverlay` (game name gradient) must not be hidden when panel opens on fallback cards — add `.savedCardFallback ~ .savedCardOverlay { opacity: 1; }` **immediately after** `.savedCardActive .savedCardOverlay { opacity: 0; }` at `page.module.css:977` (same specificity 0,2,0 — source order decides)
 
 **Out of scope:** Changing non-fallback card layout or other image handling.
 
