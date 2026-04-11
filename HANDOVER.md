@@ -67,8 +67,8 @@ Next action: [exactly what to do next to resume]
 | CE-9 | /genre page: recommendation CTA at bottom | ✅ 2026-04-08 |
 | CE-10 | Remove "커뮤니티 기능 곧 출시" placeholder | ✅ 2026-04-08 |
 | CE-11 | Anon Steam URL mode: "feedback won't save" notice | ✅ 2026-04-08 |
-| **CE-12** | **Unify submit button text** | **▶ NEXT** |
-| CE-13 | Saved games: image load failure fallback | ⏳ |
+| CE-12 | Unify submit button text | ✅ 2026-04-11 |
+| **CE-13** | **Saved games: image load failure fallback** | **▶ NEXT** |
 | CE-14 | Result cards: reduce animation stagger 80ms → 40ms | ⏳ |
 | CE-15 | Steam linking: value proposition copy in dropdown | ✅ 2026-04-08 (resolved by CE-6) |
 | CE-16 | Skeleton UI on page transitions (deferred, post CE-series) | ⏳ |
@@ -88,19 +88,21 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: CE-12 — Unify submit button text ──
+## ── ACTIVE STEP: CE-13 — Saved games: image load failure fallback ──
 
-**Problem:** `RecommendationForm.tsx` — "내 게임 찾기" (anon) vs "내 게임 추천받기" (Steam-linked). Same function, different copy creates inconsistent expectations.
+**Problem:** `SavedGames.tsx:158-167` — `onError` hides the image but leaves an empty card. Game name not shown as fallback.
 
-**Files:** `app/components/RecommendationForm.tsx`
+**Files:** `app/components/SavedGames.tsx`, `app/page.module.css`
 
 **Spec:**
-- Replace ternary `authState === 'steam' ? '내 게임 추천받기' : '내 게임 찾기'` with single string: `'게임 추천받기'`
-- Loading state text `'취향 분석 중…'` unchanged
+- When `failedSavedImages.has(game.appid)`: render `<div className={styles.savedCardFallback}>` instead of `<Image>`
+  - Show `<span>{game.name}</span>` centered in the card
+- Add `.savedCardFallback` CSS: `width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 0.5rem; text-align: center; font-size: 0.6875rem; color: var(--text-muted); line-height: 1.4;`
+- The `.savedCardOverlay` (game name gradient) should remain visible at full opacity for fallback cards — add `.savedCardFallback ~ .savedCardOverlay { opacity: 1; }` or apply a modifier class
 
-**Out of scope:** Changing any other copy in the form.
+**Out of scope:** Changing non-fallback card layout or other image handling.
 
-**After completing:** clear lock → add Completed Step entry → set CE-13 as Active Step (copy spec from SPEC.md §CE-13)
+**After completing:** clear lock → add Completed Step entry → set CE-14 as Active Step (copy spec from SPEC.md §CE-14)
 
 ---
 
@@ -119,6 +121,7 @@ _2026-04-06 entries (CE-4, CE-5) → HANDOVER-archive.md §Minor Changes Log 202
 | 2026-04-08 | feat(CE-9): recommendation CTA at bottom of /genre (inside genres>0 branch) | genre/page.tsx, genre/page.module.css |
 | 2026-04-08 | ux(CE-10): remove "커뮤니티 기능 곧 출시" placeholder section + CSS classes | games/[appid]/page.tsx, page.module.css |
 | 2026-04-08 | ux(CE-11): add "피드백 저장 안 됨" notice in Steam URL mode for anon/unlinked_auth | RecommendationForm.tsx |
+| 2026-04-11 | ux(CE-12): unify submit button text → '게임 추천받기' | RecommendationForm.tsx |
 
 ---
 

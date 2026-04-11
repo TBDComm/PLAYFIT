@@ -375,7 +375,7 @@ export default function RecommendationForm() {
             <button type="submit" className={`${styles.button}${loading ? ` ${styles.buttonLoading}` : ''}`} disabled={loading || !canSubmit || authState === 'loading'}>
               {loading
                 ? '취향 분석 중…'
-                : authState === 'steam' ? '내 게임 추천받기' : '내 게임 찾기'
+                : '게임 추천받기'
               }
             </button>
           </form>
