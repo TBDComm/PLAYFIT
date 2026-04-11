@@ -165,6 +165,7 @@ export default function RecommendationForm() {
   function switchMode(next: 'steam' | 'manual') {
     setMode(next)
     setError(null)
+    setSearchError(null)
     setDropdowns(Array(5).fill(null))
     setActiveIdxs(Array(5).fill(-1))
     setRowErrors(Array(5).fill(null))

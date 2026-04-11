@@ -338,3 +338,15 @@ Apply for AdSense AFTER FT-series is fully complete. When approval email arrives
 ## Step 1 — 2026-03-11 — Next.js 15 App Router init
 - Files: `package.json`, `tsconfig.json`, `next.config.js`, `.env.local`, `.eslintrc.json`, `app/layout.tsx`, `app/globals.css`, `app/page.tsx`, `types/index.ts`
 - Decisions: Space Grotesk font (Inter/Arial banned) · accent `#c8f135` phosphor lime (purple banned) · bg `#09090b` · all shared types in `types/index.ts`
+
+
+## Minor Changes Log — 2026-04-08
+
+| Date | Change | Files |
+|------|--------|-------|
+| 2026-04-08 | feat(CE-6): remove Steam link popup auto-trigger; add benefit hint copy in dropdown | Header.tsx, Header.module.css |
+| 2026-04-08 | feat(CE-6 rev): Steam header btn (unlinked_auth only) + one-time popup logic restored via localStorage; CE-15 resolved | Header.tsx, Header.module.css |
+| 2026-04-08 | refactor(CE-8): remove ← 홈으로 back link — Breadcrumb already provides home nav | games/[appid]/page.tsx, page.module.css |
+| 2026-04-08 | feat(CE-9): recommendation CTA at bottom of /genre (inside genres>0 branch) | genre/page.tsx, genre/page.module.css |
+| 2026-04-08 | ux(CE-10): remove "커뮤니티 기능 곧 출시" placeholder section + CSS classes | games/[appid]/page.tsx, page.module.css |
+| 2026-04-08 | ux(CE-11): add "피드백 저장 안 됨" notice in Steam URL mode for anon/unlinked_auth | RecommendationForm.tsx |

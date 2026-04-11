@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 148/200 lines — OK**
+📏 **File health: 143/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -108,15 +108,10 @@ _2026-03-28 entries → HANDOVER-archive.md §Minor Changes Log 2026-03-28_
 _2026-03-29 entries (early) → HANDOVER-archive.md §Minor Changes Log 2026-03-29_
 _2026-03-29 (late) – 2026-03-31 entries → HANDOVER-archive.md §Minor Changes Log 2026-03-29 (late) to 2026-03-31_
 _2026-04-06 entries (CE-4, CE-5) → HANDOVER-archive.md §Minor Changes Log 2026-04-06_
+_2026-04-08 entries (CE-6,8,9,10,11) → HANDOVER-archive.md §Minor Changes Log 2026-04-08_
 
 | Date | Change | Files |
 |------|--------|-------|
-| 2026-04-08 | feat(CE-6): remove Steam link popup auto-trigger; add benefit hint copy in dropdown | Header.tsx, Header.module.css |
-| 2026-04-08 | feat(CE-6 rev): Steam header btn (unlinked_auth only) + one-time popup logic restored via localStorage; CE-15 resolved | Header.tsx, Header.module.css |
-| 2026-04-08 | refactor(CE-8): remove ← 홈으로 back link — Breadcrumb already provides home nav | games/[appid]/page.tsx, page.module.css |
-| 2026-04-08 | feat(CE-9): recommendation CTA at bottom of /genre (inside genres>0 branch) | genre/page.tsx, genre/page.module.css |
-| 2026-04-08 | ux(CE-10): remove "커뮤니티 기능 곧 출시" placeholder section + CSS classes | games/[appid]/page.tsx, page.module.css |
-| 2026-04-08 | ux(CE-11): add "피드백 저장 안 됨" notice in Steam URL mode for anon/unlinked_auth | RecommendationForm.tsx |
 | 2026-04-11 | ux(CE-12): unify submit button text → '게임 추천받기' | RecommendationForm.tsx |
 | 2026-04-11 | ux(CE-13): saved games image fallback — show game name when image fails | SavedGames.tsx, page.module.css |
 | 2026-04-11 | ux(CE-14): result card stagger delay 80ms → 40ms | result/[id]/page.module.css |
