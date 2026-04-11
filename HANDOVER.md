@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 146/200 lines — OK**
+📏 **File health: 147/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -129,6 +129,7 @@ _2026-04-06 entries (CE-4, CE-5) → HANDOVER-archive.md §Minor Changes Log 202
 | 2026-04-11 | ux(CE-12): unify submit button text → '게임 추천받기' | RecommendationForm.tsx |
 | 2026-04-11 | ux(CE-13): saved games image fallback — show game name when image fails | SavedGames.tsx, page.module.css |
 | 2026-04-11 | ux(CE-14): result card stagger delay 80ms → 40ms | result/[id]/page.module.css |
+| 2026-04-11 | ux(CE-13 polish): fallback — stripe bg, text-secondary, line-clamp, overlay display:none | page.module.css |
 
 ---
 

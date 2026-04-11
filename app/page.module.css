@@ -978,25 +978,41 @@
   opacity: 0;
 }
 
-/* 폴백 카드는 오버레이(이름 그라디언트)를 항상 표시 */
+/* 폴백 카드: 오버레이 완전 숨김 — 이름 중복 제거 + hover 특이도 충돌 근본 해결 */
 .savedCardFallback ~ .savedCardOverlay {
-  opacity: 1;
+  display: none;
 }
 
-/* 이미지 로드 실패 시 폴백: 게임 이름 중앙 표시 */
+/* 이미지 로드 실패 시 폴백 — Letterboxd/GOG 누락 이미지 패턴 참고 */
+/* 대각선 스트라이프로 "이미지 없음" 상태를 명확히 전달, 이름은 단일 표시 */
 .savedCardFallback {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem;
+  padding: 0.75rem 0.5rem;
   text-align: center;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--bg-surface) 0px,
+    var(--bg-surface) 4px,
+    var(--bg-hover) 4px,
+    var(--bg-hover) 8px
+  );
+}
+
+.savedCardFallback span {
   font-size: 0.6875rem;
-  color: var(--text-muted);
+  font-weight: 600;
+  color: var(--text-secondary);
   line-height: 1.4;
   overflow-wrap: break-word;
   word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Image fills the card */
