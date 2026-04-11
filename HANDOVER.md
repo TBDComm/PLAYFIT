@@ -117,7 +117,7 @@ _2026-04-08 entries (CE-6,8,9,10,11) → HANDOVER-archive.md §Minor Changes Log
 | 2026-04-11 | ux(CE-14): result card stagger delay 80ms → 40ms | result/[id]/page.module.css |
 | 2026-04-11 | ux(CE-13 polish): fallback — stripe bg, text-secondary, line-clamp, overlay display:none | page.module.css |
 | 2026-04-11 | fix(CE-17): SaveToggle error stays until next attempt — remove setTimeout, errorTimerRef, useEffect cleanup | SaveToggle.tsx |
-| 2026-04-11 | a11y(CE-19): login modal focus trap — Tab/Shift+Tab intercept via querySelectorAll | Header.tsx |
+| 2026-04-11 | a11y(CE-19): login modal focus trap — Tab/Shift+Tab intercept via querySelectorAll; iframe added for Google GIS button | Header.tsx |
 | 2026-04-11 | ux(CE-21): game search API error shown inline; (CE-31): result count announced via aria-live | RecommendationForm.tsx |
 | 2026-04-11 | a11y(CE-22): SavedGames onBlur checks relatedTarget to keep panel open on keyboard nav | SavedGames.tsx |
 | 2026-04-11 | a11y(CE-23): skeleton wrapped with aria-busy + srOnly loading text | SavedGames.tsx |
