@@ -1,5 +1,43 @@
 # HANDOVER Archive
 
+Session logs and minor-change rationale removed from HANDOVER.md. **Use `Read(offset, limit)` with the ranges below — never read this whole file.**
+
+---
+
+## Section Index (jump to line range)
+
+**Minor Changes Logs (chronological, but shelved in non-chronological order due to append history):**
+
+| Date range | Lines |
+|------------|-------|
+| 2026-03-11 → 2026-03-14 (Step 1 → A5) | 295–380 |
+| 2026-03-15 | 279–294 |
+| 2026-03-16 (B-series: B3, B1+B2, B7, B6, B5, B4) | 241–278 |
+| 2026-03-18 (B fixes + C1/C2) | 218–240 |
+| 2026-03-18~20 (C-series UI + fixes) | 203–216 |
+| 2026-03-20 (FT1–5, domain rename, C12–C13) | 187–201 |
+| 2026-03-21 → 2026-03-27 | 142–171 |
+| 2026-03-28 | 41–76 |
+| 2026-03-29 → 2026-03-31 | 78–129 |
+| 2026-04-06 (CE-4, CE-5) | 131–140 |
+| 2026-04-08 (CE-6, CE-8~11) | 381–392 |
+| 2026-04-11 (CE-12~CE-31) | 394–end |
+
+**Other reference:**
+
+| Section | Lines |
+|---------|-------|
+| AdSense Activation Checklist | 173–185 |
+| B8–B10 E2E manual test checklists | 252–255 |
+| Step 1 → Step 10 early build notes | 327–380 |
+
+**Common lookups:**
+- Debugging an auth/Steam bug → jump to B-series (lines 203–239) + B4-link spec (235–240)
+- Debugging an old CE implementation → **prefer `SPEC_archive.md §Phase CE` (has per-step line index)**
+- AdSense enablement → 135–147
+
+---
+
 ## Minor Changes Log — 2026-03-28
 
 | Date | Change | Files |
@@ -350,3 +388,25 @@ Apply for AdSense AFTER FT-series is fully complete. When approval email arrives
 | 2026-04-08 | feat(CE-9): recommendation CTA at bottom of /genre (inside genres>0 branch) | genre/page.tsx, genre/page.module.css |
 | 2026-04-08 | ux(CE-10): remove "커뮤니티 기능 곧 출시" placeholder section + CSS classes | games/[appid]/page.tsx, page.module.css |
 | 2026-04-08 | ux(CE-11): add "피드백 저장 안 됨" notice in Steam URL mode for anon/unlinked_auth | RecommendationForm.tsx |
+
+---
+
+## Minor Changes Log 2026-04-11 (CE-12~CE-31)
+
+| Date | Change | Files |
+|------|--------|-------|
+| 2026-04-11 | ux(CE-12): unify submit button text → '게임 추천받기' | RecommendationForm.tsx |
+| 2026-04-11 | ux(CE-13): saved games image fallback — show game name when image fails | SavedGames.tsx, page.module.css |
+| 2026-04-11 | ux(CE-14): result card stagger delay 80ms → 40ms | result/[id]/page.module.css |
+| 2026-04-11 | ux(CE-13 polish): fallback — stripe bg, text-secondary, line-clamp, overlay display:none | page.module.css |
+| 2026-04-11 | fix(CE-17): SaveToggle error stays until next attempt — remove setTimeout, errorTimerRef, useEffect cleanup | SaveToggle.tsx |
+| 2026-04-11 | a11y(CE-19): login modal focus trap — Tab/Shift+Tab intercept via querySelectorAll; iframe added for Google GIS button | Header.tsx |
+| 2026-04-11 | ux(CE-21): game search API error shown inline; (CE-31): result count announced via aria-live | RecommendationForm.tsx |
+| 2026-04-11 | a11y(CE-22): SavedGames onBlur checks relatedTarget to keep panel open on keyboard nav | SavedGames.tsx |
+| 2026-04-11 | a11y(CE-23): skeleton wrapped with aria-busy + srOnly loading text | SavedGames.tsx |
+| 2026-04-11 | ux(CE-24): gameRow min-height 44px touch target | LibraryPickerModal.module.css |
+| 2026-04-11 | ux(CE-26): canSubmit steam mode uses urlValid not !!url.trim() | RecommendationForm.tsx |
+| 2026-04-11 | a11y(CE-27): error element gets focus via useEffect + errorRef | RecommendationForm.tsx |
+| 2026-04-11 | ux(CE-28): manual mode shows hint when submit blocked | RecommendationForm.tsx |
+| 2026-04-11 | ux(CE-29): linked Steam account ID link shown; (CE-30): budget placeholder simplified | RecommendationForm.tsx, page.module.css |
+| 2026-04-11 | ux(CE-16): /result/[id] skeleton loading UI — shimmer cards matching real layout, prefers-reduced-motion | result/[id]/loading.tsx, loading.module.css |

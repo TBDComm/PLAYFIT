@@ -132,13 +132,12 @@ Trigger: file reaches 180 lines, OR a completed step entry is more than 3 steps 
 
 ---
 
-## 6. Active Step Transition Protocol
+## 6. Active Step Lifecycle Protocol
 
-When moving to a new step (after completing the previous one):
-
-1. Read the relevant section from `SPEC.md`
-2. Copy the **full spec** for that step into the ACTIVE STEP section of `HANDOVER.md`
-3. Future sessions will have the spec inline — no need to open `SPEC.md`
+**Starting a step:**
+1. Use the Section Index at the top of `SPEC.md` to find the line range for the step. Read only that range via `Read(offset, limit)` — never the whole file.
+2. Copy the **full spec** for that step into the ACTIVE STEP section of `HANDOVER.md`.
+3. Future sessions have the spec inline — no need to re-open `SPEC.md`.
 
 **Active Step must always contain:**
 - Prerequisites / blockers
@@ -146,6 +145,15 @@ When moving to a new step (after completing the previous one):
 - Logic spec (precise, no vague language)
 - Scope boundary (what this step does NOT include)
 - "After completing" instruction
+
+**Completing a step — MANDATORY cleanup (prevents stale ACTIVE STEP content from bloating every future session read):**
+1. Move the step row in Current Status to ✅ with the date
+2. **Remove the inlined spec from ACTIVE STEP** — replace with a one-line pointer: `Previous step [N] complete → see SPEC_archive.md §[Phase]`
+3. Fill in the next ACTIVE STEP (either the next step's inlined spec, or a short "(none — awaiting instructions)" block)
+4. Add a Minor Changes Log entry
+5. Clear the In-Progress Lock
+
+**Why this matters:** a 50-line inlined spec for a completed step costs ~500 tokens every single session until someone notices. This cleanup step must not be skipped.
 
 ---
 
