@@ -45,6 +45,9 @@ export default function RecommendationForm() {
   const [dropdowns, setDropdowns] = useState<Array<SearchResult[] | null>>(Array(5).fill(null))
   const [activeIdxs, setActiveIdxs] = useState<number[]>(Array(5).fill(-1))
   const [rowErrors, setRowErrors] = useState<Array<string | null>>(Array(5).fill(null))
+  const [searchError, setSearchError] = useState<string | null>(null)
+  const [searchLiveText, setSearchLiveText] = useState('')
+  const errorRef = useRef<HTMLParagraphElement>(null)
   const [formRevealed, setFormRevealed] = useState(false)
   const formRevealRef = useRef<HTMLElement>(null)
   const nameInputRefs = useRef<Array<HTMLInputElement | null>>(Array(5).fill(null))
@@ -55,6 +58,11 @@ export default function RecommendationForm() {
   useEffect(() => {
     setUrl(contextSteamId ? `https://steamcommunity.com/profiles/${contextSteamId}` : '')
   }, [contextSteamId])
+
+  // CE-27: error 발생 시 에러 요소로 포커스 이동 — setError 호출 경로가 여럿이라 useEffect로 통합
+  useEffect(() => {
+    if (error) errorRef.current?.focus()
+  }, [error])
 
   useEffect(() => {
     const obs = new IntersectionObserver(
@@ -82,6 +90,7 @@ export default function RecommendationForm() {
     setManualGames(prev => prev.map((g, i) => i === idx ? { ...g, name: value, appid: null } : g))
     setRowErrors(prev => prev.map((e, i) => i === idx ? null : e))
     setActiveIdxs(prev => prev.map((v, i) => i === idx ? -1 : v))
+    setSearchError(null) // CE-21: 입력 변경 시 검색 에러 초기화
     if (!value.trim()) {
       setDropdowns(prev => prev.map((d, i) => i === idx ? null : d))
       if (debounceRefs.current[idx]) clearTimeout(debounceRefs.current[idx]!)
@@ -90,6 +99,7 @@ export default function RecommendationForm() {
     }
     if (debounceRefs.current[idx]) clearTimeout(debounceRefs.current[idx]!)
     const gen = ++searchGenRef.current[idx]
+    setSearchLiveText('') // CE-31: 검색 시작 시 이전 결과 수 초기화
     debounceRefs.current[idx] = setTimeout(() => { void fetchSearch(idx, value, gen) }, 150)
   }
 
@@ -99,7 +109,10 @@ export default function RecommendationForm() {
       const data = await res.json() as SearchResult[]
       if (gen !== searchGenRef.current[idx]) return
       setDropdowns(prev => prev.map((d, i) => i === idx ? data : d))
-    } catch { /* silent fail */ }
+      setSearchLiveText(data.length > 0 ? `게임 ${data.length}개 검색됨` : '검색 결과 없음') // CE-31
+    } catch {
+      setSearchError('게임 검색에 실패했어요. 잠시 후 다시 시도해주세요.') // CE-21
+    }
   }
 
   function selectGame(idx: number, appid: number, name: string) {
@@ -228,7 +241,7 @@ export default function RecommendationForm() {
   const urlValid = /steamcommunity\.com\/(id|profiles)\//.test(url)
 
   const canSubmit = mode === 'steam'
-    ? !!url.trim()
+    ? urlValid
     : manualGames.some(g => g.name.trim() && g.appid !== null && g.playtime.trim())
 
   const [showLibraryPicker, setShowLibraryPicker] = useState(false)
@@ -267,10 +280,15 @@ export default function RecommendationForm() {
       <section ref={formRevealRef} className={`${styles.formSection}${formRevealed ? ` ${styles.formSectionRevealed}` : ''}`}>
         <div className={styles.inner}>
           <form id="recommend-form" className={styles.form} onSubmit={handleSubmit} noValidate>
+            {/* CE-31: 검색 결과 수 스크린 리더 공지 */}
+            <span className={styles.srOnly} aria-live="polite" aria-atomic="true">{searchLiveText}</span>
             {mode === 'steam' && authState === 'steam' ? (
               <div className={styles.inputWrapper}>
                 <p className={styles.steamAuthNotice}>Steam 계정이 연동되어 있어요</p>
                 <p className={styles.manualNotice}>연동된 계정의 플레이 기록으로 바로 취향을 분석해요</p>
+                <a href={url} target="_blank" rel="noopener noreferrer" className={styles.steamAccountLink}>
+                  연동 계정 ID: {steamId}
+                </a>
                 <button type="button" className={styles.modeToggle} onClick={() => setShowLibraryPicker(true)} disabled={loading}>
                   또는 라이브러리에서 직접 선택 →
                 </button>
@@ -346,6 +364,10 @@ export default function RecommendationForm() {
                     </div>
                   ))}
                 </div>
+                {searchError && <p className={styles.rowError}>{searchError}</p>}
+                {!canSubmit && manualGames.some(g => g.name.trim() && g.appid !== null) && (
+                  <p className={styles.manualNotice}>이름과 플레이 시간을 모두 입력해야 추천받을 수 있어요</p>
+                )}
                 <button type="button" className={styles.modeToggle} onClick={() => switchMode('steam')} disabled={loading}>
                   ← 스팀 계정으로 추천받기
                 </button>
@@ -359,7 +381,7 @@ export default function RecommendationForm() {
               <label className={styles.label} htmlFor="budget">예산 (선택)</label>
               <input
                 id="budget" name="budget" type="number" inputMode="numeric" className={styles.input}
-                placeholder="예산 입력 (예: 10000)…" value={budget} onChange={e => setBudget(e.target.value)}
+                placeholder="예: 20000" value={budget} onChange={e => setBudget(e.target.value)}
                 autoComplete="off" min={0} disabled={loading || freeOnly}
               />
               <label className={`${styles.toggleRow}${loading ? ` ${styles.toggleRowDisabled}` : ''}`}>
@@ -381,7 +403,7 @@ export default function RecommendationForm() {
           </form>
 
           {error && (
-            <p className={styles.error} role="alert">{error}</p>
+            <p ref={errorRef} tabIndex={-1} className={styles.error} role="alert">{error}</p>
           )}
         </div>
       </section>

@@ -318,6 +318,16 @@
   padding: 0.625rem 0;
 }
 
+.steamAccountLink {
+  display: block;
+  margin-top: 0.375rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.steamAccountLink:hover { color: var(--accent); }
+
 .manualNotice {
   margin-top: 0.625rem;
   font-size: 0.75rem;

@@ -163,7 +163,7 @@ export default function Header() {
     })
   }, [showLoginModal, showOAuth, supabase])
 
-  // Close login modal on Escape; focus first input on open
+  // Close login modal on Escape; focus first input on open; focus trap (Tab/Shift+Tab)
   useEffect(() => {
     if (!showLoginModal) return
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -176,6 +176,24 @@ export default function Header() {
         setOtpInput('')
         setAuthError(null)
         setAuthLoading(false)
+      }
+      if (e.key === 'Tab') {
+        const modal = loginModalRef.current
+        if (!modal) return
+        // querySelectorAll은 이벤트 시점에 실행 — loginView 변경 시에도 항상 현재 DOM 반영
+        const focusable = Array.from(
+          modal.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          )
+        ).filter(el => el.offsetParent !== null) // display:none 요소 제외
+        if (focusable.length === 0) return
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+        if (e.shiftKey) {
+          if (document.activeElement === first) { e.preventDefault(); last.focus() }
+        } else {
+          if (document.activeElement === last) { e.preventDefault(); first.focus() }
+        }
       }
     }
     document.addEventListener('keydown', handleKeyDown)

@@ -143,6 +143,7 @@
   align-items: center;
   gap: 0.65rem;
   width: 100%;
+  min-height: 44px;
   padding: 0.4rem 1rem;
   background: transparent;
   border: none;

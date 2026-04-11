@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 147/200 lines — OK**
+📏 **File health: 148/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see rules/handover-rules.md §5)._
 
 ---
@@ -74,19 +74,19 @@ Next action: [exactly what to do next to resume]
 | CE-16 | Skeleton UI on page transitions (deferred, post CE-series) | ⏳ |
 | CE-17 | SaveToggle: error message not persistent (disappears after 2s) | ✅ 2026-04-11 |
 | CE-18 | LibraryPickerModal: confirm button scrolls off screen | ✅ already implemented |
-| CE-19 | Header login modal: no focus trap | ⏳ |
+| CE-19 | Header login modal: no focus trap | ✅ 2026-04-11 |
 | CE-20 | Header: password reset confirmation dead end | ✅ already implemented |
-| CE-21 | RecommendationForm: game search API silent fail | ⏳ |
-| CE-22 | SavedGames: keyboard focus-blur immediately closes panel | ⏳ |
-| CE-23 | SavedGames: skeleton loading no accessible label | ⏳ |
-| CE-24 | LibraryPickerModal: game row touch target below 44px | ⏳ |
+| CE-21 | RecommendationForm: game search API silent fail | ✅ 2026-04-11 |
+| CE-22 | SavedGames: keyboard focus-blur immediately closes panel | ✅ 2026-04-11 |
+| CE-23 | SavedGames: skeleton loading no accessible label | ✅ 2026-04-11 |
+| CE-24 | LibraryPickerModal: game row touch target below 44px | ✅ 2026-04-11 |
 | CE-25 | Header: hamburger button missing aria-label | ✅ already implemented |
-| CE-26 | RecommendationForm: submit button enables on any URL text | ⏳ |
-| CE-27 | RecommendationForm: focus not moved to error on submit failure | ⏳ |
-| CE-28 | RecommendationForm: manual mode submit blocked with no explanation | ⏳ |
-| CE-29 | RecommendationForm: linked Steam account not identified | ⏳ |
-| CE-30 | RecommendationForm: budget placeholder text is redundant | ⏳ |
-| CE-31 | RecommendationForm: search result count not announced | ⏳ |
+| CE-26 | RecommendationForm: submit button enables on any URL text | ✅ 2026-04-11 |
+| CE-27 | RecommendationForm: focus not moved to error on submit failure | ✅ 2026-04-11 |
+| CE-28 | RecommendationForm: manual mode submit blocked with no explanation | ✅ 2026-04-11 |
+| CE-29 | RecommendationForm: linked Steam account not identified | ✅ 2026-04-11 |
+| CE-30 | RecommendationForm: budget placeholder text is redundant | ✅ 2026-04-11 |
+| CE-31 | RecommendationForm: search result count not announced | ✅ 2026-04-11 |
 
 **Env vars:** STEAM_API_KEY ✅ · ANTHROPIC_API_KEY ✅ · NEXT_PUBLIC_SUPABASE_URL ✅ · NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ · NEXT_PUBLIC_BASE_URL ✅ · SUPABASE_SERVICE_ROLE_KEY ✅ · NEXT_PUBLIC_GOOGLE_CLIENT_ID ✅ · NEXT_PUBLIC_GA_MEASUREMENT_ID ✅ · NEXT_PUBLIC_ADSENSE_CLIENT_ID ⏳
 
@@ -94,22 +94,11 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: CE-19 — Header login modal: no focus trap ──
+## ── ACTIVE STEP: CE-16 — Skeleton UI on page transitions (deferred) ──
 
-**Problem:** `app/components/Header.tsx` — login modal has no focus trap. Pressing Tab from the last field lets focus escape to the page behind the modal.
+CE-19 ~ CE-31 전체 완료 (2026-04-11). CE-16은 CE-series 이후로 연기된 상태.
 
-**Files:** `app/components/Header.tsx`
-
-**Spec:**
-- On `keydown` inside the modal overlay, intercept Tab and Shift+Tab
-- Collect all focusable elements inside the modal (inputs, buttons, links) via querySelectorAll
-- If Tab on last element → focus first element; if Shift+Tab on first element → focus last element
-- Attach listener when modal opens, remove when modal closes
-- Use the existing modal ref or add one to the modal container div
-
-**Out of scope:** Changing modal layout, adding skip links, or implementing a shared FocusTrap component.
-
-**After completing:** clear lock → add Completed Step entry → set CE-21 as Active Step (copy spec from SPEC.md §CE-21)
+**Next non-deferred work:** 새 CE 항목이 추가되거나 다른 작업 지시가 있을 때까지 대기.
 
 ---
 
@@ -133,6 +122,15 @@ _2026-04-06 entries (CE-4, CE-5) → HANDOVER-archive.md §Minor Changes Log 202
 | 2026-04-11 | ux(CE-14): result card stagger delay 80ms → 40ms | result/[id]/page.module.css |
 | 2026-04-11 | ux(CE-13 polish): fallback — stripe bg, text-secondary, line-clamp, overlay display:none | page.module.css |
 | 2026-04-11 | fix(CE-17): SaveToggle error stays until next attempt — remove setTimeout, errorTimerRef, useEffect cleanup | SaveToggle.tsx |
+| 2026-04-11 | a11y(CE-19): login modal focus trap — Tab/Shift+Tab intercept via querySelectorAll | Header.tsx |
+| 2026-04-11 | ux(CE-21): game search API error shown inline; (CE-31): result count announced via aria-live | RecommendationForm.tsx |
+| 2026-04-11 | a11y(CE-22): SavedGames onBlur checks relatedTarget to keep panel open on keyboard nav | SavedGames.tsx |
+| 2026-04-11 | a11y(CE-23): skeleton wrapped with aria-busy + srOnly loading text | SavedGames.tsx |
+| 2026-04-11 | ux(CE-24): gameRow min-height 44px touch target | LibraryPickerModal.module.css |
+| 2026-04-11 | ux(CE-26): canSubmit steam mode uses urlValid not !!url.trim() | RecommendationForm.tsx |
+| 2026-04-11 | a11y(CE-27): error element gets focus via useEffect + errorRef | RecommendationForm.tsx |
+| 2026-04-11 | ux(CE-28): manual mode shows hint when submit blocked | RecommendationForm.tsx |
+| 2026-04-11 | ux(CE-29): linked Steam account ID link shown; (CE-30): budget placeholder simplified | RecommendationForm.tsx, page.module.css |
 
 ---
 

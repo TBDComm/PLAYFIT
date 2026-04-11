@@ -142,8 +142,11 @@ export default function SavedGames() {
       <p className={styles.previewTitle}>내가 저장한 게임</p>
 
       {authState === 'loading' && (
-        <div className={styles.savedStrip}>
-          {[...Array(4)].map((_, i) => <div key={i} className={`${styles.savedPlaceholder} ${styles.savedPlaceholderSkeleton}`} />)}
+        <div aria-label="저장한 게임 불러오는 중" aria-busy="true">
+          <span className={styles.srOnly}>저장한 게임을 불러오는 중입니다</span>
+          <div className={styles.savedStrip}>
+            {[...Array(4)].map((_, i) => <div key={i} className={`${styles.savedPlaceholder} ${styles.savedPlaceholderSkeleton}`} />)}
+          </div>
         </div>
       )}
 
@@ -217,7 +220,11 @@ export default function SavedGames() {
                   className={styles.savedCardKbdUnsave}
                   onClick={(e) => { e.stopPropagation(); handleUnsave(game.appid) }}
                   onFocus={(e) => { const li = e.currentTarget.closest('li') as HTMLElement | null; if (li) handleCardEnter(game, li) }}
-                  onBlur={handleCardLeave}
+                  onBlur={(e) => {
+                    // CE-22: 포커스가 같은 카드 내에 머물면 패널 유지
+                    const card = e.currentTarget.closest('[data-saved-card]') as HTMLElement | null
+                    if (!card?.contains(e.relatedTarget as Node)) handleCardLeave()
+                  }}
                   aria-label={`${game.name} 저장 취소`}
                 >
                   저장 취소
