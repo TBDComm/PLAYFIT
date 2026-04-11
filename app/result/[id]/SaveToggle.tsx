@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import styles from './page.module.css'
 
@@ -32,12 +32,6 @@ export default function SaveToggle({
   const [hasError, setHasError] = useState(false)
   // ref로 가드 — await 전에 동기적으로 설정해 더블클릭 레이스 컨디션 방지
   const pendingRef = useRef(false)
-  const errorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  // 언마운트 시 에러 타이머 정리
-  useEffect(() => () => {
-    if (errorTimerRef.current) clearTimeout(errorTimerRef.current)
-  }, [])
 
   async function handleToggle() {
     // pendingRef: 동기적 가드 (pending state 렌더 이전에도 즉시 차단)
@@ -81,11 +75,9 @@ export default function SaveToggle({
         if (!res.ok) throw new Error('delete failed')
       }
     } catch {
-      // 실패: 낙관적 업데이트 롤백 + 에러 메시지 2초 표시
+      // 실패: 낙관적 업데이트 롤백 + 에러 메시지 유지 (다음 시도 시 handleToggle 첫줄에서 초기화)
       setSaved(s => !s) // functional setState — stale closure 방지 (§5.10)
-      if (errorTimerRef.current) clearTimeout(errorTimerRef.current)
       setHasError(true)
-      errorTimerRef.current = setTimeout(() => setHasError(false), 2000)
     } finally {
       pendingRef.current = false
       setPending(false)

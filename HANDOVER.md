@@ -72,7 +72,7 @@ Next action: [exactly what to do next to resume]
 | CE-14 | Result cards: reduce animation stagger 80ms → 40ms | ✅ 2026-04-11 |
 | CE-15 | Steam linking: value proposition copy in dropdown | ✅ 2026-04-08 (resolved by CE-6) |
 | CE-16 | Skeleton UI on page transitions (deferred, post CE-series) | ⏳ |
-| CE-17 | SaveToggle: error message not persistent (disappears after 2s) | ⏳ |
+| CE-17 | SaveToggle: error message not persistent (disappears after 2s) | ✅ 2026-04-11 |
 | CE-18 | LibraryPickerModal: confirm button scrolls off screen | ✅ already implemented |
 | CE-19 | Header login modal: no focus trap | ⏳ |
 | CE-20 | Header: password reset confirmation dead end | ✅ already implemented |
@@ -94,20 +94,22 @@ Next action: [exactly what to do next to resume]
 
 ---
 
-## ── ACTIVE STEP: CE-17 — SaveToggle: error message disappears before user notices ──
+## ── ACTIVE STEP: CE-19 — Header login modal: no focus trap ──
 
-**Problem:** `app/result/[id]/SaveToggle.tsx` — save failure error clears via `setTimeout(..., 2000)`. User may miss it and assume save succeeded.
+**Problem:** `app/components/Header.tsx` — login modal has no focus trap. Pressing Tab from the last field lets focus escape to the page behind the modal.
 
-**Files:** `app/result/[id]/SaveToggle.tsx`
+**Files:** `app/components/Header.tsx`
 
 **Spec:**
-- Remove the `setTimeout` that clears `errorMsg`
-- Instead, clear `errorMsg` at the start of the next save attempt (before the fetch)
-- Result: error stays visible until the user tries again
+- On `keydown` inside the modal overlay, intercept Tab and Shift+Tab
+- Collect all focusable elements inside the modal (inputs, buttons, links) via querySelectorAll
+- If Tab on last element → focus first element; if Shift+Tab on first element → focus last element
+- Attach listener when modal opens, remove when modal closes
+- Use the existing modal ref or add one to the modal container div
 
-**Out of scope:** Changing success state behavior; adding toast infrastructure.
+**Out of scope:** Changing modal layout, adding skip links, or implementing a shared FocusTrap component.
 
-**After completing:** clear lock → add Completed Step entry → set CE-19 as Active Step (copy spec from SPEC.md §CE-19)
+**After completing:** clear lock → add Completed Step entry → set CE-21 as Active Step (copy spec from SPEC.md §CE-21)
 
 ---
 
@@ -130,6 +132,7 @@ _2026-04-06 entries (CE-4, CE-5) → HANDOVER-archive.md §Minor Changes Log 202
 | 2026-04-11 | ux(CE-13): saved games image fallback — show game name when image fails | SavedGames.tsx, page.module.css |
 | 2026-04-11 | ux(CE-14): result card stagger delay 80ms → 40ms | result/[id]/page.module.css |
 | 2026-04-11 | ux(CE-13 polish): fallback — stripe bg, text-secondary, line-clamp, overlay display:none | page.module.css |
+| 2026-04-11 | fix(CE-17): SaveToggle error stays until next attempt — remove setTimeout, errorTimerRef, useEffect cleanup | SaveToggle.tsx |
 
 ---
 
