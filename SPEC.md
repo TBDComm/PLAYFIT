@@ -388,11 +388,18 @@ No action needed.
 
 **Problem:** `app/components/RecommendationForm.tsx:383` — after a submit error, focus stays on the submit button. Keyboard users may not see the error message at the bottom. `web-design-guidelines.md` requires: "focus the first error on submit".
 
+**Context:** `setError` is called in multiple places — `handleSubmit` directly (lines 187, 213, 222) AND inside `callApi` (lines 170–173). Patching only `handleSubmit` would miss the most common error path (API returning an error code). Use `useEffect` to catch all cases.
+
 **Files:** `app/components/RecommendationForm.tsx`
 
 **Spec:**
-- Add `const errorRef = useRef<HTMLParagraphElement>(null)` 
-- After any `setError(...)` call in `handleSubmit` (not in `callApi`), call `setTimeout(() => errorRef.current?.focus(), 0)` — setTimeout needed because state update is async
+- Add `const errorRef = useRef<HTMLParagraphElement>(null)`
+- Add a `useEffect` that fires when `error` transitions from `null` to a non-null string:
+  ```ts
+  useEffect(() => {
+    if (error) errorRef.current?.focus()
+  }, [error])
+  ```
 - Add `ref={errorRef}` and `tabIndex={-1}` to the error `<p>` at line 383
 - `tabIndex={-1}` makes the element programmatically focusable without adding it to tab order
 
@@ -420,13 +427,34 @@ No action needed.
 
 **Problem:** `app/components/RecommendationForm.tsx:271–277` — when `authState === 'steam'`, only "Steam 계정이 연동되어 있어요" is shown. The user cannot verify which account is connected without leaving the page.
 
-**Files:** `app/components/RecommendationForm.tsx`
+**Context:** In this code path, `steamId` (line 235) holds the numeric Steam ID extracted from `url`, which is populated from `contextSteamId` via the `useEffect` at line 55–57. `steamId` will always be non-null when `authState === 'steam'`.
+
+**Files:** `app/components/RecommendationForm.tsx`, `app/page.module.css`
 
 **Spec:**
-- In the steam-linked block (line 272), add a line below `.manualNotice` showing the Steam profile URL as a link:
-  - Text: `"연동 계정: steamcommunity.com/profiles/{steamId}"`
-  - Render as `<a href={url} target="_blank" rel="noopener noreferrer" className={styles.manualNotice}>` (truncate with CSS if too long)
-  - `url` is already set from contextSteamId in this state
+- In the steam-linked block (line 273), add a link after the `.manualNotice` `<p>`:
+  ```tsx
+  <a
+    href={url}
+    target="_blank"
+    rel="noopener noreferrer"
+    className={styles.steamAccountLink}
+  >
+    연동 계정 ID: {steamId}
+  </a>
+  ```
+  - Show the numeric `steamId` only (not the full URL) — short, no overflow risk
+- Add `.steamAccountLink` to `page.module.css`:
+  ```css
+  .steamAccountLink {
+    margin-top: 0.375rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .steamAccountLink:hover { color: var(--accent); }
+  ```
 
 **Out of scope:** Fetching Steam username or avatar, changing the layout.
 
@@ -449,13 +477,21 @@ No action needed.
 
 **Problem:** `app/components/RecommendationForm.tsx:323` — when the game search dropdown appears, screen reader users receive no announcement of how many results are available. The `aria-expanded` attribute updates correctly, but no count or summary is announced.
 
+**Context:** `fetchSearch` (line 96–103) is the single function that sets dropdown results. Setting the live text there is the cleanest approach — avoids a `useEffect` on all 5 dropdowns and makes it clear which row triggered the announcement.
+
 **Files:** `app/components/RecommendationForm.tsx`
 
 **Spec:**
-- Add a visually-hidden `aria-live="polite"` element inside the form (rendered once, outside the map)
-- When `dropdowns[idx]` changes to a non-null array, update its text content: `"{n}개의 게임이 검색되었어요"` (or `"검색 결과 없음"` for empty)
-- Use a `useEffect` on `dropdowns` to update a `useState<string>` used as the live region text
-- Render: `<span className={styles.srOnly} aria-live="polite" aria-atomic="true">{liveText}</span>`
+- Add `const [searchLiveText, setSearchLiveText] = useState('')`
+- In `fetchSearch`, after `setDropdowns(...)`:
+  ```ts
+  setSearchLiveText(data.length > 0 ? `게임 ${data.length}개 검색됨` : '검색 결과 없음')
+  ```
+- Clear on next search start: in `handleNameChange`, before `fetchSearch` is scheduled, add `setSearchLiveText('')`
+- Render once inside `<form>`, outside the `.map()`:
+  ```tsx
+  <span className={styles.srOnly} aria-live="polite" aria-atomic="true">{searchLiveText}</span>
+  ```
 - `.srOnly` is already defined in `page.module.css:7–17`
 
 **Out of scope:** Changing dropdown visual design or keyboard navigation.
