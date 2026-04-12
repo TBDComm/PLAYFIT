@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 104/200 lines — OK**
+📏 **File health: 105/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see `rules/handover-rules.md` §5)._
 
 ---
@@ -50,9 +50,9 @@ Next action: [exactly what to do next to resume]
 | FT1–FT7 | Preview strip, genre/blog UX, save system | ✅ 2026-03-21–23 |
 | S1–S5 + bugfixes | Home polish, settings, auth bugs, library picker | ✅ 2026-03-27–28 |
 | CE-1–CE-31 | Completeness & Experience: UX, a11y, forms | ✅ 2026-03-31–04-11 |
-| **PRE-SQ: AdSense Articles** | **Blog/articles section — AdSense approval prerequisite** | ✅ 2026-04-12 |
-| SQ-1~SQ-6 | Phase SQ P1 — Squad MVP (taste-based LFG) | ⏳ next |
-| SQ-7~SQ-10 | Phase SQ P2 — Game Boards | 🕑 future |
+| PRE-SQ: AdSense Articles | Blog/articles section — AdSense approval prerequisite | ✅ 2026-04-12 |
+| **SQ-1~SQ-6** | **Phase SQ P1 — Squad MVP (taste-based LFG)** | ✅ 2026-04-12 |
+| SQ-7~SQ-10 | Phase SQ P2 — Game Boards | ⏳ next |
 | SQ-11~SQ-15 | Phase SQ P3 — Public Profiles + viral OG + IGDB | 🕑 future |
 
 Env vars + Supabase tables state → `memory/project_stack.md` (read only when touching infra).
@@ -61,7 +61,7 @@ Env vars + Supabase tables state → `memory/project_stack.md` (read only when t
 
 ## ── ACTIVE STEP: SQ-1 ──
 
-PRE-SQ complete (2026-04-12). 19 posts live at /blog (14 articles merged into blog). Read SPEC.md §SQ-1 before starting.
+SQ-1~SQ-6 complete (2026-04-12). Squad MVP live — /squad input → /squad/[token] share page. DB migration needs manual apply in Supabase SQL Editor (supabase/migrations/20260412_squad.sql). Next: SQ-7~SQ-10 Game Boards.
 
 ---
 
@@ -81,6 +81,7 @@ _2026-04-11 CE entries (CE-12~CE-31) → `HANDOVER-archive.md §Minor Changes Lo
 | 2026-04-12 | refactor(content): AI detector pattern removal — typo fix (돌아다리는), 첫째/둘째 prose structure, "조화롭습니다", triple-adjective chains, duplicate sentences across files (Phasmophobia×2, Slay유사작×3, Disco Elysium×2, indie-closing), RTS intro rewrite | content/articles/open-world-games, strategy-games, coop-games, rpg-guide, indie-hidden-gems; content/blog/steam-genre-guide-action, indie-games-hidden-gems, best-rpg-games-steam-2026 |
 | 2026-04-12 | refactor: /articles → /blog merge — 14 articles absorbed into blog registry (date→publishedAt), 301 redirect from /articles/*, app/articles/ route deleted, Footer link consolidated, sitemap cleaned; lib/articles.ts kept as ArticleMeta type shim | lib/blog.ts, lib/articles.ts, next.config.js, app/blog/[slug]/page.tsx, app/blog/page.module.css, app/sitemap.ts, app/components/Footer.tsx |
 | 2026-04-12 | fix: scoreCandidates RPC error silently returned [] → candidates=[] → misleading 400 NO_GAMES_IN_BUDGET ("raise budget" message); changed to throw so route's catch returns 500 GENERAL_ERROR ("try again later"); added scored.length===0 guard | lib/supabase.ts, app/api/generate-recommendation/route.ts |
+| 2026-04-12 | feat(SQ-1~SQ-6): Squad MVP — DB migration, lib/squad.ts pure functions, Claude Squad helper, /api/squad route, /squad input page, /squad/[token] share page, home CTA; guideline pass (h1 추가, touch-action, name attr, import 중복 제거); tsc clean | supabase/migrations/20260412_squad.sql, lib/squad.ts, lib/claude.ts, lib/supabase.ts, types/index.ts, app/api/squad/route.ts, app/squad/**, app/squad/[token]/**, app/page.tsx, app/page.module.css, app/components/RecommendationForm.tsx |
 
 ---
 

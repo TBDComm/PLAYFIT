@@ -21,6 +21,8 @@ const ERROR_MESSAGES: Record<ErrorCode, string> = {
   GENERAL_ERROR: '잠시 후 다시 시도해주세요',
   DB_NOT_READY: 'DB가 아직 준비되지 않았어요',
   TAG_EXTRACTION_FAILED: '플레이 기록에서 태그를 추출할 수 없어요',
+  ALL_PRIVATE: '모든 멤버의 프로필이 비공개예요',
+  NOT_ENOUGH_MEMBERS: '유효한 멤버가 2명 이상 필요해요',
 }
 
 type ManualGame = { appid: number | null; name: string; playtime: string }

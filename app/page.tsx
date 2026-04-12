@@ -94,6 +94,14 @@ export default async function Home() {
       {/* Preview Section (Static Component) */}
       <Preview />
 
+      {/* Squad CTA */}
+      <section className={styles.squadCta}>
+        <p className={styles.squadCtaText}>여러 명이서 함께?</p>
+        <Link href="/squad" className={styles.squadCtaLink}>
+          스쿼드 취향 분석 →
+        </Link>
+      </section>
+
       {/* Saved Games (Client Component) */}
       <Suspense fallback={<div className={styles.savedGamesSkeleton} />}>
         <SavedGames />

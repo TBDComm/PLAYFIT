@@ -1257,3 +1257,50 @@
   background: var(--bg-elevated);
   border-top: 1px solid var(--border);
 }
+
+/* ── Squad CTA (홈 페이지) ── */
+.squadCta {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.squadCtaText {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.squadCtaLink {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-low);
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.squadCtaLink:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+}
+
+.squadCtaLink:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.squadCtaLink {
+  touch-action: manipulation;
+}

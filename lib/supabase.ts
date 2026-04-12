@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import type { ScoredCandidate } from '@/types'
+import type { ScoredCandidate, SquadSession, TagProfile, SquadRecommendationCard } from '@/types'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -93,6 +93,42 @@ export async function upsertGamePriceCache(
       price_updated_at: new Date().toISOString(),
     })
     .eq('appid', String(appid))
+}
+
+// ===== Squad session functions =====
+
+export async function saveSquadSession(row: {
+  share_token: string
+  host_user_id: string | null
+  member_steam_ids: string[]
+  member_count: number
+  merged_profile: TagProfile
+  result_cards: SquadRecommendationCard[]
+  match_scores: Record<string, number>
+  avg_match_score: number
+  top_shared_tags: string[]
+  conflict_tags: string[]
+  budget_krw: number | null
+  free_only: boolean
+}): Promise<string> {
+  const { data, error } = await serviceSupabase
+    .from('squad_sessions')
+    .insert(row)
+    .select('share_token')
+    .single()
+  if (error) throw new Error(`saveSquadSession error: ${error.message}`)
+  return data.share_token
+}
+
+export async function getSquadSession(token: string): Promise<SquadSession | null> {
+  const { data, error } = await serviceSupabase
+    .from('squad_sessions')
+    .select('*')
+    .eq('share_token', token)
+    .gt('expires_at', new Date().toISOString())
+    .single()
+  if (error || !data) return null
+  return data as SquadSession
 }
 
 export async function scoreCandidates(

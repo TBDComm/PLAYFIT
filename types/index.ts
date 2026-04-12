@@ -67,6 +67,62 @@ export type ErrorCode =
   | 'GENERAL_ERROR'
   | 'DB_NOT_READY'
   | 'TAG_EXTRACTION_FAILED'
+  | 'ALL_PRIVATE'
+  | 'NOT_ENOUGH_MEMBERS'
+
+// ===== Squad types =====
+
+/** 태그명 → 정규화 점수 (0~1) */
+export type TagProfile = Record<string, number>
+
+/** Squad 멤버 한 명의 분석 결과 */
+export interface SquadMember {
+  steamId: string
+  tagProfile: TagProfile
+  ownedAppIds: number[]
+}
+
+/** analyzeSquad() 반환 값 */
+export interface SquadAnalysis {
+  mergedProfile: TagProfile
+  matchScores: Record<string, number>  // steamId → 0~100
+  avgMatchScore: number
+  topSharedTags: string[]
+  conflictTags: string[]
+  allExcludedAppIds: number[]
+}
+
+/** Claude가 반환한 Squad 추천 카드 */
+export interface SquadRecommendationCard {
+  appid: number
+  name: string
+  reason: string
+  price_krw: number | null
+  is_free: boolean
+  metacritic_score?: number
+  store_url: string
+  tag_snapshot: string[]
+  match_score?: number
+}
+
+/** squad_sessions DB row */
+export interface SquadSession {
+  id: string
+  share_token: string
+  host_user_id: string | null
+  member_steam_ids: string[]
+  member_count: number
+  merged_profile: TagProfile
+  result_cards: SquadRecommendationCard[]
+  match_scores: Record<string, number>
+  avg_match_score: number
+  top_shared_tags: string[]
+  conflict_tags: string[]
+  budget_krw: number | null
+  free_only: boolean
+  created_at: string
+  expires_at: string
+}
 
 // ===== Saved games types =====
 

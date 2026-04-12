@@ -1,0 +1,12 @@
+/* Squad /[token] 로딩 스켈레톤 전용 — 공통 bone 클래스는 result/[id]/loading.module.css에서 import */
+
+.summaryLoading {
+  gap: 1.25rem;
+}
+
+/* 히어로 점수 영역 스켈레톤 */
+.scoreHeroBone {
+  width: 120px;
+  height: 4rem;
+  border-radius: var(--radius);
+}
