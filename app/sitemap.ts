@@ -1,7 +1,6 @@
 import { MetadataRoute } from 'next'
 import { createClient } from '@supabase/supabase-js'
 import { allPosts } from '@/lib/blog'
-import { allArticles } from '@/lib/articles'
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://guildeline.com'
 
@@ -58,16 +57,9 @@ async function getGenreSlugs(): Promise<string[]> {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
 
-  const blogPostRoutes: MetadataRoute.Sitemap = allPosts.map(post => ({
+  const blogRoutes: MetadataRoute.Sitemap = allPosts.map(post => ({
     url: `${baseUrl}/blog/${post.slug}`,
     lastModified: new Date(post.updatedAt ?? post.publishedAt),
-    changeFrequency: 'monthly' as const,
-    priority: 0.7,
-  }))
-
-  const articleRoutes: MetadataRoute.Sitemap = allArticles.map(article => ({
-    url: `${baseUrl}/articles/${article.slug}`,
-    lastModified: new Date(article.date),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }))
@@ -76,12 +68,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/`, lastModified: now, changeFrequency: 'weekly', priority: 1.0 },
     { url: `${baseUrl}/genre`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${baseUrl}/blog`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${baseUrl}/articles`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${baseUrl}/about`, lastModified: now, changeFrequency: 'yearly', priority: 0.4 },
     { url: `${baseUrl}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${baseUrl}/terms`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
-    ...blogPostRoutes,
-    ...articleRoutes,
+    ...blogRoutes,
   ]
 
   const [gameAppids, genreSlugs] = await Promise.all([

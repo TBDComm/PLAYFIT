@@ -93,6 +93,10 @@
   line-height: 1.6;
 }
 
+.adUnit {
+  margin-top: 40px;
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .postCard {

@@ -5,9 +5,7 @@ export default function Footer() {
   return (
     <footer className={styles.footer}>
       <nav className={styles.links} aria-label="Footer links">
-        <Link href="/articles">게임 추천</Link>
-        <span className={styles.sep} aria-hidden="true">·</span>
-        <Link href="/blog">블로그</Link>
+        <Link href="/blog">블로그 &amp; 게임 추천</Link>
         <span className={styles.sep} aria-hidden="true">·</span>
         <Link href="/about">서비스 소개</Link>
         <span className={styles.sep} aria-hidden="true">·</span>

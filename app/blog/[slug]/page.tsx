@@ -3,10 +3,14 @@ import Link from 'next/link'
 import Breadcrumb from '@/app/components/Breadcrumb'
 import AdUnit from '@/app/components/AdUnit'
 import JsonLd from '@/app/components/JsonLd'
-import { getPost } from '@/lib/blog'
+import { getPost, getAllSlugs } from '@/lib/blog'
 import styles from './page.module.css'
 
-export const runtime = 'edge'
+// ── Static params ─────────────────────────────────────────────────────────────
+
+export function generateStaticParams() {
+  return getAllSlugs().map(slug => ({ slug }))
+}
 
 // ── Metadata ──────────────────────────────────────────────────────────────────
 
