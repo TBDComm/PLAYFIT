@@ -154,6 +154,17 @@ export default function Header() {
           token: credential,
         })
         if (error) setAuthError('Google 로그인에 실패했어요. 다시 시도해주세요')
+        else {
+          // GIS 콜백은 useEffect 클로저 밖 — setters는 stable하므로 직접 호출
+          setShowLoginModal(false)
+          setLoginView('login')
+          setEmailInput('')
+          setPasswordInput('')
+          setPasswordConfirm('')
+          setOtpInput('')
+          setAuthError(null)
+          setAuthLoading(false)
+        }
       },
     })
     window.google.accounts.id.renderButton(googleBtnRef.current, {
@@ -260,7 +271,7 @@ export default function Header() {
     })
     setAuthLoading(false)
     if (error) setAuthError('이메일 또는 비밀번호가 올바르지 않아요')
-    // On success, SIGNED_IN fires via onAuthStateChange
+    else closeLoginModal()
   }
 
   const handleSignUp = async () => {
@@ -302,7 +313,7 @@ export default function Header() {
     })
     setAuthLoading(false)
     if (error) setAuthError('인증 코드가 올바르지 않아요')
-    // On success, SIGNED_IN fires via onAuthStateChange
+    else closeLoginModal()
   }
 
   const handleForgotPassword = async () => {
