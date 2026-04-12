@@ -104,6 +104,9 @@ export async function POST(request: NextRequest) {
     const excludeAppIds = (ownedAppIds.length > 0 ? ownedAppIds : playedAppIds).map(String)
     const scored = await scoreCandidates(tagProfile, userTagWeights, excludeAppIds, 300)
     console.log('[rec] scored candidates:', scored.length)
+    if (scored.length === 0) {
+      return NextResponse.json({ error: 'GENERAL_ERROR' satisfies ErrorCode }, { status: 500 })
+    }
 
     // Check games_cache for already-cached prices — avoids hitting Steam for known games
     const scoredAppids = scored.map(s => s.appid)

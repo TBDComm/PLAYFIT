@@ -107,6 +107,6 @@ export async function scoreCandidates(
     p_owned_appids: ownedAppIds,
     p_limit: limit,
   })
-  if (error) console.error('[supabase] scoreCandidates error:', error)
+  if (error) throw new Error(`scoreCandidates RPC error: ${error.message}`)
   return (data as ScoredCandidate[]) ?? []
 }

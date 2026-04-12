@@ -80,6 +80,7 @@ _2026-04-11 CE entries (CE-12~CE-31) → `HANDOVER-archive.md §Minor Changes Lo
 | 2026-04-12 | content: 아티클 14개 + 블로그 5개 전면 확장 — 분량 30~50% 증가, 사람 냄새 강화 (구체적 게임 경험·특정 장면 언급·솔직한 단점 서술), 게임 추가·섹션 보강, AdSense 승인 목적; [slug]/page.tsx runtime='edge' 제거(generateStaticParams와 충돌 수정) | content/articles/*.tsx (14), content/blog/*.tsx (5), app/articles/[slug]/page.tsx |
 | 2026-04-12 | refactor(content): AI detector pattern removal — typo fix (돌아다리는), 첫째/둘째 prose structure, "조화롭습니다", triple-adjective chains, duplicate sentences across files (Phasmophobia×2, Slay유사작×3, Disco Elysium×2, indie-closing), RTS intro rewrite | content/articles/open-world-games, strategy-games, coop-games, rpg-guide, indie-hidden-gems; content/blog/steam-genre-guide-action, indie-games-hidden-gems, best-rpg-games-steam-2026 |
 | 2026-04-12 | refactor: /articles → /blog 통합 — 14개 아티클을 blog registry에 병합, /articles→/blog 301 redirect, app/articles/ 라우트 삭제, Footer 링크 통합, sitemap 정리; lib/articles.ts는 ArticleMeta 타입 shim으로 유지 | lib/blog.ts, lib/articles.ts, next.config.js, app/blog/[slug]/page.tsx, app/blog/page.module.css, app/sitemap.ts, app/components/Footer.tsx |
+| 2026-04-12 | fix: scoreCandidates RPC 오류 시 [] 반환하다 NO_GAMES_IN_BUDGET 400 오인 — throw로 변경해 500 GENERAL_ERROR("잠시 후 다시 시도해주세요")로 올림; scored.length===0 가드 추가 | lib/supabase.ts, app/api/generate-recommendation/route.ts |
 
 ---
 
