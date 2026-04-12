@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 99/200 lines — OK**
+📏 **File health: 104/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see `rules/handover-rules.md` §5)._
 
 ---
@@ -61,7 +61,7 @@ Env vars + Supabase tables state → `memory/project_stack.md` (read only when t
 
 ## ── ACTIVE STEP: SQ-1 ──
 
-PRE-SQ complete (2026-04-12). 14 articles live at `/articles`. Read SPEC.md §SQ-1 before starting.
+PRE-SQ complete (2026-04-12). 14 articles + 5 blog posts live at `/blog` (articles merged into blog 2026-04-12). Read SPEC.md §SQ-1 before starting.
 
 ---
 
