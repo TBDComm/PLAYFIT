@@ -6,8 +6,6 @@ import JsonLd from '@/app/components/JsonLd'
 import { getArticle, getAllArticleSlugs } from '@/lib/articles'
 import styles from './page.module.css'
 
-export const runtime = 'edge'
-
 // ── Static params ─────────────────────────────────────────────────────────────
 
 export function generateStaticParams() {

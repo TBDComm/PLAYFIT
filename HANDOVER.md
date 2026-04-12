@@ -77,6 +77,8 @@ _2026-04-11 CE entries (CE-12~CE-31) → `HANDOVER-archive.md §Minor Changes Lo
 | 2026-04-12 | fix: login modal not closing after auth — added direct closeLoginModal() call on success in handleSignIn, handleVerifyOtp, Google GIS callback (was relying solely on indirect SIGNED_IN → fetchSteamId → authState chain) | app/components/Header.tsx |
 | 2026-04-12 | feat(PRE-SQ): /articles section — 14 Korean game recommendation articles (TSX registry, no MDX), list + detail pages, sitemap, Footer nav link | lib/articles.ts, content/articles/*.tsx (14), app/articles/**, app/sitemap.ts, app/components/Footer.tsx |
 | 2026-04-12 | refactor(articles): AI 냄새 제거 — 메타데이터 블록 제거, 14개 마무리 다양화, 부정→긍정 패턴 교정, 반복 표현("기준점"·"압도적"·"최적화") 교체, 게임 설명 분량 불균형화; blog/best-rpg "기준점" 1건 수정 | content/articles/*.tsx (14), content/blog/best-rpg-games-steam-2026.tsx |
+| 2026-04-12 | content: 아티클 14개 + 블로그 5개 전면 확장 — 분량 30~50% 증가, 사람 냄새 강화 (구체적 게임 경험·특정 장면 언급·솔직한 단점 서술), 게임 추가·섹션 보강, AdSense 승인 목적; [slug]/page.tsx runtime='edge' 제거(generateStaticParams와 충돌 수정) | content/articles/*.tsx (14), content/blog/*.tsx (5), app/articles/[slug]/page.tsx |
+| 2026-04-12 | refactor(content): AI detector pattern removal — typo fix (돌아다리는), 첫째/둘째 prose structure, "조화롭습니다", triple-adjective chains, duplicate sentences across files (Phasmophobia×2, Slay유사작×3, Disco Elysium×2, indie-closing), RTS intro rewrite | content/articles/open-world-games, strategy-games, coop-games, rpg-guide, indie-hidden-gems; content/blog/steam-genre-guide-action, indie-games-hidden-gems, best-rpg-games-steam-2026 |
 
 ---
 
