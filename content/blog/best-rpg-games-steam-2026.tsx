@@ -106,8 +106,8 @@ export default function Content() {
       </p>
       <ul>
         <li>
-          <Link href="/games/1245620"><strong>Elden Ring</strong></Link> — 2022 The Game Awards 올해의 게임. 오픈 월드와 소울라이크의 결합으로
-          여전히 장르의 기준점입니다.
+          <Link href="/games/1245620"><strong>Elden Ring</strong></Link> — 2022 The Game Awards 올해의 게임. 오픈 월드와 소울라이크를 결합해
+          소울라이크가 어떻게 발전할 수 있는지를 보여준 작품입니다.
         </li>
         <li>
           <strong>Lies of P</strong> — 피노키오 원작을 재해석한 국산 소울라이크. 패리

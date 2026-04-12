@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 130/200 lines — OK**
+📏 **File health: 99/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see `rules/handover-rules.md` §5)._
 
 ---
@@ -76,6 +76,7 @@ _2026-04-11 CE entries (CE-12~CE-31) → `HANDOVER-archive.md §Minor Changes Lo
 | 2026-04-11 | plan(PRE-SQ): AdSense articles step added before SQ; ACTIVE STEP updated; memory/project_adsense_plan.md created | HANDOVER.md, MEMORY.md, memory/project_adsense_plan.md |
 | 2026-04-12 | fix: login modal not closing after auth — added direct closeLoginModal() call on success in handleSignIn, handleVerifyOtp, Google GIS callback (was relying solely on indirect SIGNED_IN → fetchSteamId → authState chain) | app/components/Header.tsx |
 | 2026-04-12 | feat(PRE-SQ): /articles section — 14 Korean game recommendation articles (TSX registry, no MDX), list + detail pages, sitemap, Footer nav link | lib/articles.ts, content/articles/*.tsx (14), app/articles/**, app/sitemap.ts, app/components/Footer.tsx |
+| 2026-04-12 | refactor(articles): AI 냄새 제거 — 메타데이터 블록 제거, 14개 마무리 다양화, 부정→긍정 패턴 교정, 반복 표현("기준점"·"압도적"·"최적화") 교체, 게임 설명 분량 불균형화; blog/best-rpg "기준점" 1건 수정 | content/articles/*.tsx (14), content/blog/best-rpg-games-steam-2026.tsx |
 
 ---
 
