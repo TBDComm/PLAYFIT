@@ -34,8 +34,6 @@ interface SquadContext {
 const SYSTEM_PROMPT =
   'You are a Steam game recommendation engine. Match games to the user\'s taste based on tag overlap with their play history. Respond ONLY in valid JSON.'
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
-
 export async function getRecommendations(
   playHistory: PlayHistoryForClaude[],
   candidates: CandidateForClaude[]
@@ -57,6 +55,7 @@ Response format:
 {"recommendations": [{"appid": "", "reason": ""}]}`
 
   try {
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 500,
@@ -109,6 +108,7 @@ ${JSON.stringify(candidates)}
 {"recommendations": [{"appid": "", "reason": ""}]}`
 
   try {
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 500,
