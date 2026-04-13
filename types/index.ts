@@ -141,3 +141,14 @@ export interface SavedGame {
 
 export type FeedbackRating = 'positive' | 'negative'
 
+// ===== Game comments types =====
+
+export interface GameComment {
+  id: string
+  appid: string
+  user_id: string
+  body: string
+  parent_id: string | null
+  created_at: string
+}
+
