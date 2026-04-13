@@ -55,7 +55,10 @@ Response format:
 {"recommendations": [{"appid": "", "reason": ""}]}`
 
   try {
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+    const client = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY,
+      dangerouslyAllowBrowser: true,
+    })
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 500,
@@ -108,7 +111,10 @@ ${JSON.stringify(candidates)}
 {"recommendations": [{"appid": "", "reason": ""}]}`
 
   try {
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+    const client = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY,
+      dangerouslyAllowBrowser: true,
+    })
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 500,
