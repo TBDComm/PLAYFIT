@@ -1,3 +1,4 @@
+import Anthropic from '@anthropic-ai/sdk'
 import type { Recommendation, SquadRecommendationCard } from '@/types'
 
 interface PlayHistoryForClaude {
@@ -33,6 +34,8 @@ interface SquadContext {
 const SYSTEM_PROMPT =
   'You are a Steam game recommendation engine. Match games to the user\'s taste based on tag overlap with their play history. Respond ONLY in valid JSON.'
 
+const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+
 export async function getRecommendations(
   playHistory: PlayHistoryForClaude[],
   candidates: CandidateForClaude[]
@@ -54,29 +57,14 @@ Response format:
 {"recommendations": [{"appid": "", "reason": ""}]}`
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key': process.env.ANTHROPIC_API_KEY ?? '',
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 500,
-        system: SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: userPrompt }],
-      }),
+    const message = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 500,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: userPrompt }],
     })
 
-    if (!res.ok) {
-      const errBody = await res.text().catch(() => '')
-      console.error('[claude] API error:', res.status, errBody.slice(0, 300))
-      return 'AI_PARSE_FAILURE'
-    }
-
-    const data = await res.json() as { content: { type: string; text: string }[] }
-    const raw = data.content[0]?.type === 'text' ? data.content[0].text : ''
+    const raw = message.content[0]?.type === 'text' ? message.content[0].text : ''
     const jsonMatch = raw.match(/\{[\s\S]*\}/)
     if (!jsonMatch) return 'AI_PARSE_FAILURE'
     const parsed = JSON.parse(jsonMatch[0]) as { recommendations: Recommendation[] }
@@ -121,40 +109,22 @@ ${JSON.stringify(candidates)}
 {"recommendations": [{"appid": "", "reason": ""}]}`
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key': process.env.ANTHROPIC_API_KEY ?? '',
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 500,
-        system: SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: userPrompt }],
-      }),
+    const message = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 500,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: userPrompt }],
     })
 
-    if (!res.ok) {
-      const errBody = await res.text().catch(() => '')
-      console.error('[claude] Squad API error:', res.status, errBody.slice(0, 500))
-      return 'AI_PARSE_FAILURE'
-    }
-
-    const data = await res.json() as { content: { type: string; text: string }[] }
-    const raw = data.content[0]?.type === 'text' ? data.content[0].text : ''
+    const raw = message.content[0]?.type === 'text' ? message.content[0].text : ''
     const jsonMatch = raw.match(/\{[\s\S]*\}/)
     if (!jsonMatch) {
-      console.error('[claude] Squad JSON not found in response, raw:', raw.slice(0, 300))
+      console.error('[claude] Squad JSON not found, raw:', raw.slice(0, 300))
       return 'AI_PARSE_FAILURE'
     }
 
     const parsed = JSON.parse(jsonMatch[0]) as { recommendations: Recommendation[] }
-    if (!Array.isArray(parsed.recommendations)) {
-      console.error('[claude] Squad recommendations not array:', typeof parsed.recommendations)
-      return 'AI_PARSE_FAILURE'
-    }
+    if (!Array.isArray(parsed.recommendations)) return 'AI_PARSE_FAILURE'
 
     // Claude 응답에 가격/태그 등 메타데이터 병합
     const result: SquadRecommendationCard[] = []
