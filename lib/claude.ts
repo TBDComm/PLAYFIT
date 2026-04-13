@@ -69,7 +69,11 @@ Response format:
       }),
     })
 
-    if (!res.ok) return 'AI_PARSE_FAILURE'
+    if (!res.ok) {
+      const errBody = await res.text().catch(() => '')
+      console.error('[claude] API error:', res.status, errBody.slice(0, 300))
+      return 'AI_PARSE_FAILURE'
+    }
 
     const data = await res.json() as { content: { type: string; text: string }[] }
     const raw = data.content[0]?.type === 'text' ? data.content[0].text : ''
@@ -132,15 +136,25 @@ ${JSON.stringify(candidates)}
       }),
     })
 
-    if (!res.ok) return 'AI_PARSE_FAILURE'
+    if (!res.ok) {
+      const errBody = await res.text().catch(() => '')
+      console.error('[claude] Squad API error:', res.status, errBody.slice(0, 500))
+      return 'AI_PARSE_FAILURE'
+    }
 
     const data = await res.json() as { content: { type: string; text: string }[] }
     const raw = data.content[0]?.type === 'text' ? data.content[0].text : ''
     const jsonMatch = raw.match(/\{[\s\S]*\}/)
-    if (!jsonMatch) return 'AI_PARSE_FAILURE'
+    if (!jsonMatch) {
+      console.error('[claude] Squad JSON not found in response, raw:', raw.slice(0, 300))
+      return 'AI_PARSE_FAILURE'
+    }
 
     const parsed = JSON.parse(jsonMatch[0]) as { recommendations: Recommendation[] }
-    if (!Array.isArray(parsed.recommendations)) return 'AI_PARSE_FAILURE'
+    if (!Array.isArray(parsed.recommendations)) {
+      console.error('[claude] Squad recommendations not array:', typeof parsed.recommendations)
+      return 'AI_PARSE_FAILURE'
+    }
 
     // Claude 응답에 가격/태그 등 메타데이터 병합
     const result: SquadRecommendationCard[] = []
