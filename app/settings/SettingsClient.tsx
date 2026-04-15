@@ -360,12 +360,13 @@ export default function SettingsClient() {
                   name="display-name"
                   type="text"
                   className={styles.urlInput}
-                  placeholder="예: GamerPro123"
+                  placeholder="예: GamerPro123…"
                   maxLength={DISPLAY_NAME_MAX}
                   value={profileDisplayName}
                   onChange={(e) => { setProfileDisplayName(e.target.value); setProfileDirty(true); setProfileSaved(false) }}
                   disabled={profileSaving}
                   autoComplete="nickname"
+                  spellCheck={false}
                 />
               </div>
 
@@ -380,18 +381,20 @@ export default function SettingsClient() {
                   id="profile-bio"
                   name="bio"
                   className={styles.profileTextarea}
-                  placeholder="예: 공포 게임 전문가, RPG 수집가"
+                  placeholder="예: 공포 게임 전문가, RPG 수집가…"
                   maxLength={BIO_MAX}
                   rows={3}
                   value={profileBio}
                   onChange={(e) => { setProfileBio(e.target.value); setProfileDirty(true); setProfileSaved(false) }}
                   disabled={profileSaving}
+                  autoComplete="off"
                 />
               </div>
 
               <label className={styles.toggleRow}>
                 <input
                   type="checkbox"
+                  name="is-public"
                   className={styles.toggleCheck}
                   checked={profileIsPublic}
                   onChange={(e) => { setProfileIsPublic(e.target.checked); setProfileDirty(true); setProfileSaved(false) }}
