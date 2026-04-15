@@ -9,8 +9,10 @@ export type AuthState = 'loading' | 'steam' | 'linked' | 'unlinked_auth' | 'anon
 type AuthContextValue = {
   session: Session | null
   steamId: string | null
+  isPublic: boolean
   authState: AuthState
   setSteamId: (id: string | null) => void
+  setIsPublic: (v: boolean) => void
   supabase: ReturnType<typeof createBrowserClient>
 }
 
@@ -25,6 +27,7 @@ const supabase = createBrowserClient(
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
   const [steamId, setSteamId] = useState<string | null>(null)
+  const [isPublic, setIsPublic] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const initializedRef = useRef(false)
 
@@ -41,13 +44,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Reset flag so strict-mode double-invoke works correctly
     initializedRef.current = false
 
+    // is_public 도 같은 row에서 가져옴 — 추가 round-trip 없음
     async function fetchSteamId(userId: string): Promise<void> {
       const { data } = await supabase
         .from('user_profiles')
-        .select('steam_id')
+        .select('steam_id, is_public')
         .eq('id', userId)
         .maybeSingle()
       setSteamId(data?.steam_id ?? null)
+      setIsPublic(Boolean(data?.is_public))
       setIsLoading(false)
     }
 
@@ -82,6 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else if (event === 'SIGNED_OUT') {
         setSession(null)
         setSteamId(null)
+        setIsPublic(false)
         setIsLoading(false)
       }
     })
@@ -90,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ session, steamId, authState, setSteamId, supabase }}>
+    <AuthContext.Provider value={{ session, steamId, isPublic, authState, setSteamId, setIsPublic, supabase }}>
       {children}
     </AuthContext.Provider>
   )

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import PageLoading from '@/app/components/PageLoading'
+import { useAuth } from '@/app/context/AuthContext'
 import styles from './page.module.css'
 
 type TagWeight = { tag: string; weight: number }
@@ -115,10 +116,13 @@ function ProfileShareLink({ userId }: { userId: string }) {
       <div className={styles.shareLinkRow}>
         <input
           type="text"
+          name="profile-share-url"
           className={styles.shareLinkInput}
           value={url}
           readOnly
           onFocus={(e) => e.currentTarget.select()}
+          autoComplete="off"
+          spellCheck={false}
           aria-label="공개 프로필 URL"
         />
         <button
@@ -143,6 +147,7 @@ function ProfileShareLink({ userId }: { userId: string }) {
 }
 
 export default function SettingsClient() {
+  const { setIsPublic: setAuthIsPublic } = useAuth()
   const supabase = useMemo(() => createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -343,6 +348,7 @@ export default function SettingsClient() {
       if (res.ok) {
         setProfileDirty(false)
         setProfileSaved(true)
+        setAuthIsPublic(profileIsPublic)  // Header 드롭다운에 즉시 반영
         setTimeout(() => setProfileSaved(false), 2500)
       } else {
         setProfileSaveError(true)

@@ -57,6 +57,39 @@
   margin-top: 0.25rem;
 }
 
+/* ── Host 프로필 링크 (viral loop) ── */
+.hostLine {
+  margin: -0.5rem 0 1.25rem;
+  text-align: center;
+}
+
+.hostLink {
+  display: inline-block;
+  font-size: 0.85rem;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--accent-low);
+  border-radius: 999px;
+  background: var(--accent-dim);
+  transition: background 0.15s, border-color 0.15s;
+  touch-action: manipulation;
+}
+
+.hostLink:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+}
+
+.hostLink:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hostLink { transition: none; }
+}
+
 /* ── 멤버별 스코어 pill ── */
 .memberScores {
   display: flex;

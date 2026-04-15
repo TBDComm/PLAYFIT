@@ -144,7 +144,7 @@ export default async function UserProfilePage({ params }: Props) {
           </div>
           <div className={styles.statBlock}>
             <div className={styles.statNumber}>{squadCount}</div>
-            <div className={styles.statLabel}>스쿼드 기록</div>
+            <div className={styles.statLabel}>최근 스쿼드 (7일)</div>
           </div>
         </div>
       </section>

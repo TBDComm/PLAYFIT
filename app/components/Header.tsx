@@ -55,7 +55,7 @@ function Toast({ message }: { message: string }) {
 }
 
 export default function Header() {
-  const { session, steamId, setSteamId, supabase, authState } = useAuth()
+  const { session, steamId, isPublic, setSteamId, supabase, authState } = useAuth()
   const [showLoginModal, setShowLoginModal] = useState(false)
   const [loginView, setLoginView] = useState<LoginView>('login')
   const [emailInput, setEmailInput] = useState('')
@@ -418,6 +418,17 @@ export default function Header() {
                 </div>
 
                 <div className={styles.dropdownDivider} />
+
+                {isPublic && session?.user?.id && (
+                  <Link
+                    href={`/users/${session.user.id}`}
+                    className={styles.dropdownItem}
+                    role="menuitem"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    내 프로필 보기
+                  </Link>
+                )}
 
                 <Link
                   href="/settings"

@@ -131,6 +131,19 @@ export async function getSquadSession(token: string): Promise<SquadSession | nul
   return data as SquadSession
 }
 
+// 공개 프로필 표시용 lite 조회 — host_user_id로 닉네임 + is_public 만 가져옴
+export async function getPublicProfileLite(
+  userId: string
+): Promise<{ display_name: string | null } | null> {
+  const { data, error } = await serviceSupabase
+    .from('user_profiles')
+    .select('display_name, is_public')
+    .eq('id', userId)
+    .maybeSingle()
+  if (error || !data || !data.is_public) return null
+  return { display_name: data.display_name }
+}
+
 export async function scoreCandidates(
   tagProfile: Record<string, number>,
   userTagWeights: Record<string, number>,

@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 121/200 lines — OK**
+📏 **File health: 122/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see `rules/handover-rules.md` §5)._
 
 ---
@@ -99,6 +99,7 @@ _2026-04-11 CE entries (CE-12~CE-31) → `HANDOVER-archive.md §Minor Changes Lo
 | 2026-04-15 | feat(SQ-9~SQ-10): CommentsSection client component — fetch on mount, root+reply threading, post/delete/report(mailto), auth-gated form; CSS + reduced-motion + a11y; tsc clean | app/games/[appid]/CommentsSection.tsx (new), page.tsx, page.module.css |
 | 2026-04-15 | feat(SQ-11): user_profiles extension (display_name TEXT, bio TEXT, is_public BOOLEAN DEFAULT FALSE) + PUT/GET /api/profile edge route + settings profile section (display_name 50 / bio 160 char limits enforced at API+frontend); tsc clean | supabase/migrations/20260415_user_profiles_public.sql (new), types/index.ts, app/api/profile/route.ts (new), app/settings/SettingsClient.tsx, app/settings/page.module.css |
 | 2026-04-15 | feat(SQ-12+SQ-14): /users/[userId] public profile page (edge, force-dynamic) — is_public gate, display_name+bio, top 10 tags w/ bars, saved/squad counts, recent 5 squad history inline; React cache() dedupes generateMetadata+page; settings: share link box w/ copy button when is_public saved; tsc clean | app/users/[userId]/page.tsx (rewrite), app/users/[userId]/page.module.css (new), app/settings/SettingsClient.tsx, app/settings/page.module.css |
+| 2026-04-15 | ux(SQ-12 polish): (1) /squad/[token] host profile link (viral loop, conditional on host_user_id + is_public via new getPublicProfileLite); (2) "스쿼드 기록" → "최근 스쿼드 (7일)" 라벨; (3) Header dropdown "내 프로필 보기" item gated on isPublic — extended AuthContext to fetch is_public alongside steam_id, SettingsClient pushes setIsPublic on save success; (4) settings share input autocomplete=off + name + spellCheck; tsc clean | lib/supabase.ts, app/context/AuthContext.tsx, app/components/Header.tsx, app/squad/[token]/page.tsx + .module.css, app/users/[userId]/page.tsx, app/settings/SettingsClient.tsx |
 
 ---
 

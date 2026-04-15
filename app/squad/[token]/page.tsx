@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { getSquadSession } from '@/lib/supabase'
+import { getSquadSession, getPublicProfileLite } from '@/lib/supabase'
 import ThumbnailImage from '@/app/result/[id]/ThumbnailImage'
 import CopyUrlButton from './CopyUrlButton'
 import resultStyles from '@/app/result/[id]/page.module.css'
@@ -37,6 +37,11 @@ export default async function SquadTokenPage({ params }: Props) {
   const { token } = await params
   const session = await getSquadSession(token)
   if (!session) notFound()
+
+  // host의 공개 프로필 lite 조회 — viral loop 활성화 (없으면 null)
+  const hostProfile = session.host_user_id
+    ? await getPublicProfileLite(session.host_user_id)
+    : null
 
   const cards: SquadRecommendationCard[] = Array.isArray(session.result_cards)
     ? (session.result_cards as SquadRecommendationCard[])
@@ -75,6 +80,14 @@ export default async function SquadTokenPage({ params }: Props) {
           {session.budget_krw ? ` · ${new Intl.NumberFormat('ko-KR').format(session.budget_krw)}원 이하` : ''}
           {session.free_only ? ' · 무료 게임만' : ''}
         </p>
+
+        {hostProfile && session.host_user_id && (
+          <p className={styles.hostLine}>
+            <Link href={`/users/${session.host_user_id}`} className={styles.hostLink}>
+              {hostProfile.display_name?.trim() || '익명 게이머'}님의 취향 보기 →
+            </Link>
+          </p>
+        )}
 
         {/* 멤버별 매치 스코어 pill */}
         <div className={styles.memberScores} aria-label="멤버별 취향 일치율">
