@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 120/200 lines — OK**
+📏 **File health: 121/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see `rules/handover-rules.md` §5)._
 
 ---
@@ -55,25 +55,25 @@ Next action: [exactly what to do next to resume]
 | SQ-7~SQ-8 | Phase SQ P2 — Game Boards: DB migration + comments API | ✅ 2026-04-13 |
 | SQ-9~SQ-10 | Phase SQ P2 — Game Boards: UI | ✅ 2026-04-15 |
 | SQ-11 | Phase SQ P3 — user_profiles extension + settings edit UI | ✅ 2026-04-15 |
-| **SQ-12~SQ-15** | **Phase SQ P3 — Public Profile page + OG + Squad history + IGDB** | ⏳ next |
+| SQ-12 + SQ-14 | Phase SQ P3 — `/users/[userId]` public profile + squad history inline + settings share link | ✅ 2026-04-15 |
+| **SQ-13** | **Phase SQ P3 — `@vercel/og` OG cards (CF Pages compat 확인 선행)** | ⏳ next |
+| SQ-15 | Phase SQ P3 — IGDB 재평가 (AdSense 승인 게이트) | 🕑 blocked |
 
 Env vars + Supabase tables state → `memory/project_stack.md` (read only when touching infra).
 
 ---
 
-## ── ACTIVE STEP: SQ-12~SQ-15 ──
+## ── ACTIVE STEP: SQ-13 ──
 
-SQ-11 complete (2026-04-15). DB migration + `/api/profile` route + settings profile section done.
+SQ-12 + SQ-14 + Settings share link complete (2026-04-15). Public profile page live at `/users/[userId]`.
 
-**DB migration must be applied in Supabase SQL Editor before deploy:**
-```sql
-ALTER TABLE public.user_profiles
-  ADD COLUMN IF NOT EXISTS display_name TEXT,
-  ADD COLUMN IF NOT EXISTS bio         TEXT,
-  ADD COLUMN IF NOT EXISTS is_public   BOOLEAN NOT NULL DEFAULT FALSE;
-```
+**SQ-13 next**: `@vercel/og` OG cards for `/squad/[token]` and `/users/[userId]` (viral share unlock).
 
-Next: SQ-12 `/users/[userId]` public profile page (server component, edge, force-dynamic) + SQ-14 squad history inline. Read `SPEC.md §SQ-11–SQ-15` (lines 180–187) for outline.
+**Pre-flight check first** (before installing anything): verify CF Pages edge runtime + `next/og` compatibility — `next/og` uses `@vercel/og` which depends on `@resvg/resvg-wasm`. Need to confirm:
+1. Whether existing `app/opengraph-image.tsx` and `app/blog/[slug]/opengraph-image.tsx` already use it (if so, pattern is already proven)
+2. Wrangler/CF Pages bundle size limit (1 MiB per worker on free plan)
+
+Read `SPEC.md §SQ-13` (lines 184–185) for outline. If CF Pages incompatible → fallback to static `/og/squad-default.png` per session.
 
 ---
 
@@ -98,6 +98,7 @@ _2026-04-11 CE entries (CE-12~CE-31) → `HANDOVER-archive.md §Minor Changes Lo
 | 2026-04-13 | feat(SQ-8): /api/games/[appid]/comments GET/POST/DELETE edge route — rate limit 5/hr, RLS double-guard; GameComment type added; tsc clean | app/api/games/[appid]/comments/route.ts, types/index.ts |
 | 2026-04-15 | feat(SQ-9~SQ-10): CommentsSection client component — fetch on mount, root+reply threading, post/delete/report(mailto), auth-gated form; CSS + reduced-motion + a11y; tsc clean | app/games/[appid]/CommentsSection.tsx (new), page.tsx, page.module.css |
 | 2026-04-15 | feat(SQ-11): user_profiles extension (display_name TEXT, bio TEXT, is_public BOOLEAN DEFAULT FALSE) + PUT/GET /api/profile edge route + settings profile section (display_name 50 / bio 160 char limits enforced at API+frontend); tsc clean | supabase/migrations/20260415_user_profiles_public.sql (new), types/index.ts, app/api/profile/route.ts (new), app/settings/SettingsClient.tsx, app/settings/page.module.css |
+| 2026-04-15 | feat(SQ-12+SQ-14): /users/[userId] public profile page (edge, force-dynamic) — is_public gate, display_name+bio, top 10 tags w/ bars, saved/squad counts, recent 5 squad history inline; React cache() dedupes generateMetadata+page; settings: share link box w/ copy button when is_public saved; tsc clean | app/users/[userId]/page.tsx (rewrite), app/users/[userId]/page.module.css (new), app/settings/SettingsClient.tsx, app/settings/page.module.css |
 
 ---
 

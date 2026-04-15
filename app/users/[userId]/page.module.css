@@ -1,0 +1,210 @@
+/* GUILDELINE — Public Profile (/users/[userId]) */
+
+.profileName {
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1.15;
+}
+
+.profileBio {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin: 0 auto 1.5rem;
+  max-width: 540px;
+  text-wrap: pretty;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.statsRow {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  margin-top: 1rem;
+}
+
+.statBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.statNumber {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ── Sections ── */
+.section {
+  max-width: 720px;
+  margin: 0 auto 2rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.sectionTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin: 0 0 1rem;
+}
+
+.emptyMsg {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+/* ── Tag list ── */
+.tagList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.tagRow {
+  display: grid;
+  grid-template-columns: minmax(110px, 30%) 1fr 3rem;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tagName {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tagBarTrack {
+  height: 6px;
+  background: var(--bg-surface, var(--bg));
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.tagBarFill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+}
+
+.tagWeight {
+  text-align: right;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Squad history list ── */
+.historyList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.historyItem { margin: 0; }
+
+.historyLink {
+  display: block;
+  padding: 0.85rem 1rem;
+  background: var(--bg-surface, var(--bg));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.historyLink:hover {
+  border-color: var(--accent);
+  background: var(--bg-hover);
+}
+
+.historyLink:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.historyMain {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.historyScore {
+  font-size: 1.1rem;
+  font-weight: 800;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius);
+  border-width: 1px;
+  border-style: solid;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.historyMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.historyTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.historyDate {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.historyTags {
+  margin-top: 0.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .profileName { font-size: 1.75rem; }
+  .statsRow { gap: 1.5rem; }
+  .statNumber { font-size: 1.4rem; }
+  .section { margin-left: 1rem; margin-right: 1rem; padding: 1rem 1.1rem; }
+  .tagRow { grid-template-columns: minmax(90px, 35%) 1fr 2.5rem; gap: 0.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .historyLink { transition: none; }
+}

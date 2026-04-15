@@ -88,6 +88,60 @@ function WeightRow({
   )
 }
 
+// ── 공개 프로필 공유 링크 (외부 정의로 리렌더 시 input 포커스 유지) ──
+function ProfileShareLink({ userId }: { userId: string }) {
+  const [origin, setOrigin] = useState('')
+  const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    setOrigin(window.location.origin)
+  }, [])
+
+  const url = origin ? `${origin}/users/${userId}` : `/users/${userId}`
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // clipboard 실패 시 조용히 무시
+    }
+  }
+
+  return (
+    <div className={styles.shareLinkBox}>
+      <span className={styles.shareLinkLabel}>공개 프로필 링크</span>
+      <div className={styles.shareLinkRow}>
+        <input
+          type="text"
+          className={styles.shareLinkInput}
+          value={url}
+          readOnly
+          onFocus={(e) => e.currentTarget.select()}
+          aria-label="공개 프로필 URL"
+        />
+        <button
+          type="button"
+          className={styles.shareCopyBtn}
+          onClick={handleCopy}
+          aria-label="공개 프로필 URL 복사"
+        >
+          {copied ? '복사됨 ✓' : '복사'}
+        </button>
+      </div>
+      <a
+        href={`/users/${userId}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.shareLinkPreview}
+      >
+        새 탭에서 미리보기 →
+      </a>
+    </div>
+  )
+}
+
 export default function SettingsClient() {
   const supabase = useMemo(() => createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -419,6 +473,10 @@ export default function SettingsClient() {
                   {profileSaving ? '저장 중…' : '변경 사항 저장'}
                 </button>
               </div>
+
+              {profileIsPublic && !profileDirty && userId && (
+                <ProfileShareLink userId={userId} />
+              )}
             </>
           )}
         </section>
