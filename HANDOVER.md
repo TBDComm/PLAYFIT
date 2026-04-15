@@ -52,16 +52,19 @@ Next action: [exactly what to do next to resume]
 | CE-1–CE-31 | Completeness & Experience: UX, a11y, forms | ✅ 2026-03-31–04-11 |
 | PRE-SQ: AdSense Articles | Blog/articles section — AdSense approval prerequisite | ✅ 2026-04-12 |
 | **SQ-1~SQ-6** | **Phase SQ P1 — Squad MVP (taste-based LFG)** | ✅ 2026-04-12 |
-| SQ-7~SQ-10 | Phase SQ P2 — Game Boards | ⏳ next |
-| SQ-11~SQ-15 | Phase SQ P3 — Public Profiles + viral OG + IGDB | 🕑 future |
+| SQ-7~SQ-8 | Phase SQ P2 — Game Boards: DB migration + comments API | ✅ 2026-04-13 |
+| SQ-9~SQ-10 | Phase SQ P2 — Game Boards: UI | ✅ 2026-04-15 |
+| **SQ-11~SQ-15** | **Phase SQ P3 — Public Profiles + viral OG + IGDB** | ⏳ next |
 
 Env vars + Supabase tables state → `memory/project_stack.md` (read only when touching infra).
 
 ---
 
-## ── ACTIVE STEP: SQ-1 ──
+## ── ACTIVE STEP: SQ-11~SQ-15 ──
 
-SQ-1~SQ-6 complete (2026-04-12). Squad MVP live — /squad input → /squad/[token] share page. DB migration needs manual apply in Supabase SQL Editor (supabase/migrations/20260412_squad.sql). Next: SQ-7~SQ-10 Game Boards.
+SQ-9~SQ-10 complete (2026-04-15). All SQ P2 (Game Boards) done.
+
+Next: SQ-11~SQ-15 Public Profiles + viral OG + IGDB — read `SPEC.md §Phase SQ` (lines 180–187) before starting.
 
 ---
 
@@ -82,8 +85,9 @@ _2026-04-11 CE entries (CE-12~CE-31) → `HANDOVER-archive.md §Minor Changes Lo
 | 2026-04-12 | refactor: /articles → /blog merge — 14 articles absorbed into blog registry (date→publishedAt), 301 redirect from /articles/*, app/articles/ route deleted, Footer link consolidated, sitemap cleaned; lib/articles.ts kept as ArticleMeta type shim | lib/blog.ts, lib/articles.ts, next.config.js, app/blog/[slug]/page.tsx, app/blog/page.module.css, app/sitemap.ts, app/components/Footer.tsx |
 | 2026-04-12 | fix: scoreCandidates RPC error silently returned [] → candidates=[] → misleading 400 NO_GAMES_IN_BUDGET ("raise budget" message); changed to throw so route's catch returns 500 GENERAL_ERROR ("try again later"); added scored.length===0 guard | lib/supabase.ts, app/api/generate-recommendation/route.ts |
 | 2026-04-12 | feat(SQ-1~SQ-6): Squad MVP — DB migration, lib/squad.ts pure functions, Claude Squad helper, /api/squad route, /squad input page, /squad/[token] share page, home CTA; guideline pass (h1 추가, touch-action, name attr, import 중복 제거); tsc clean | supabase/migrations/20260412_squad.sql, lib/squad.ts, lib/claude.ts, lib/supabase.ts, types/index.ts, app/api/squad/route.ts, app/squad/**, app/squad/[token]/**, app/page.tsx, app/page.module.css, app/components/RecommendationForm.tsx |
-| 2026-04-13 | feat(SQ-7): game_comments DB migration — 500자 제한, parent_id 대댓글 1단계, RLS(공개 읽기/인증 쓰기/본인 삭제) | supabase/migrations/20260413_game_comments.sql |
-| 2026-04-13 | feat(SQ-8): /api/games/[appid]/comments GET/POST/DELETE edge 라우트 — rate limit 5개/시간, RLS 이중 보호; GameComment 타입 추가; tsc clean | app/api/games/[appid]/comments/route.ts, types/index.ts |
+| 2026-04-13 | feat(SQ-7): game_comments DB migration — 500 char limit, parent_id 1-level replies, RLS (public read / auth write / owner delete) | supabase/migrations/20260413_game_comments.sql |
+| 2026-04-13 | feat(SQ-8): /api/games/[appid]/comments GET/POST/DELETE edge route — rate limit 5/hr, RLS double-guard; GameComment type added; tsc clean | app/api/games/[appid]/comments/route.ts, types/index.ts |
+| 2026-04-15 | feat(SQ-9~SQ-10): CommentsSection client component — fetch on mount, root+reply threading, post/delete/report(mailto), auth-gated form; CSS + reduced-motion + a11y; tsc clean | app/games/[appid]/CommentsSection.tsx (new), page.tsx, page.module.css |
 
 ---
 

@@ -5,6 +5,7 @@ import type { Metadata } from 'next'
 import Breadcrumb from '@/app/components/Breadcrumb'
 import AdUnit from '@/app/components/AdUnit'
 import JsonLd from '@/app/components/JsonLd'
+import CommentsSection from './CommentsSection'
 import styles from './page.module.css'
 
 export const runtime = 'edge'
@@ -356,6 +357,9 @@ export default async function GamePage({
 
         {/* Ad — after similar games list */}
         <AdUnit slot="0000000000" format="auto" minHeight={250} className={styles.adUnit} />
+
+        {/* 커뮤니티 댓글 — SQ-9~SQ-10 */}
+        <CommentsSection appid={appid} />
 
         {/* CTA */}
         <div className={styles.ctaSection}>
