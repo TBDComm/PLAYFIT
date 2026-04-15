@@ -228,13 +228,13 @@ export default function SettingsClient() {
     }
   }
 
-  // Warn before unload when there are unsaved weight changes
+  // Warn before unload when there are unsaved changes (weights or profile)
   useEffect(() => {
-    if (!weightsDirty) return
+    if (!weightsDirty && !profileDirty) return
     const handler = (e: BeforeUnloadEvent) => { e.preventDefault() }
     window.addEventListener('beforeunload', handler)
     return () => window.removeEventListener('beforeunload', handler)
-  }, [weightsDirty])
+  }, [weightsDirty, profileDirty])
 
   const handleWeightChange = useCallback((tag: string, value: number) => {
     setWeights(prev => prev.map(w => w.tag === tag ? { ...w, weight: value } : w))
@@ -341,7 +341,7 @@ export default function SettingsClient() {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>프로필 설정</h2>
           <p className={styles.sectionDesc}>
-            공개 프로필을 활성화하면 /users/{userId} 링크로 누구나 내 취향을 볼 수 있어요.
+            공개 프로필을 활성화하면 취향 태그, 저장한 게임, 스쿼드 기록을 링크로 공유할 수 있어요.
           </p>
 
           {!profileReady && <div className={styles.skeletonLine} />}
