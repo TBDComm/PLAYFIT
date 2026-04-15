@@ -137,6 +137,14 @@ export interface SavedGame {
   saved_at: string
 }
 
+// ===== User profile types =====
+
+export interface UserProfile {
+  display_name: string | null
+  bio: string | null
+  is_public: boolean
+}
+
 // ===== Feedback types =====
 
 export type FeedbackRating = 'positive' | 'negative'

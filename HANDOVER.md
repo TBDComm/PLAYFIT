@@ -54,17 +54,26 @@ Next action: [exactly what to do next to resume]
 | **SQ-1~SQ-6** | **Phase SQ P1 — Squad MVP (taste-based LFG)** | ✅ 2026-04-12 |
 | SQ-7~SQ-8 | Phase SQ P2 — Game Boards: DB migration + comments API | ✅ 2026-04-13 |
 | SQ-9~SQ-10 | Phase SQ P2 — Game Boards: UI | ✅ 2026-04-15 |
-| **SQ-11~SQ-15** | **Phase SQ P3 — Public Profiles + viral OG + IGDB** | ⏳ next |
+| SQ-11 | Phase SQ P3 — user_profiles extension + settings edit UI | ✅ 2026-04-15 |
+| **SQ-12~SQ-15** | **Phase SQ P3 — Public Profile page + OG + Squad history + IGDB** | ⏳ next |
 
 Env vars + Supabase tables state → `memory/project_stack.md` (read only when touching infra).
 
 ---
 
-## ── ACTIVE STEP: SQ-11~SQ-15 ──
+## ── ACTIVE STEP: SQ-12~SQ-15 ──
 
-SQ-9~SQ-10 complete (2026-04-15). All SQ P2 (Game Boards) done.
+SQ-11 complete (2026-04-15). DB migration + `/api/profile` route + settings profile section done.
 
-Next: SQ-11~SQ-15 Public Profiles + viral OG + IGDB — read `SPEC.md §Phase SQ` (lines 180–187) before starting.
+**DB migration must be applied in Supabase SQL Editor before deploy:**
+```sql
+ALTER TABLE public.user_profiles
+  ADD COLUMN IF NOT EXISTS display_name TEXT,
+  ADD COLUMN IF NOT EXISTS bio         TEXT,
+  ADD COLUMN IF NOT EXISTS is_public   BOOLEAN NOT NULL DEFAULT FALSE;
+```
+
+Next: SQ-12 `/users/[userId]` public profile page (server component, edge, force-dynamic) + SQ-14 squad history inline. Read `SPEC.md §SQ-11–SQ-15` (lines 180–187) for outline.
 
 ---
 
@@ -88,6 +97,7 @@ _2026-04-11 CE entries (CE-12~CE-31) → `HANDOVER-archive.md §Minor Changes Lo
 | 2026-04-13 | feat(SQ-7): game_comments DB migration — 500 char limit, parent_id 1-level replies, RLS (public read / auth write / owner delete) | supabase/migrations/20260413_game_comments.sql |
 | 2026-04-13 | feat(SQ-8): /api/games/[appid]/comments GET/POST/DELETE edge route — rate limit 5/hr, RLS double-guard; GameComment type added; tsc clean | app/api/games/[appid]/comments/route.ts, types/index.ts |
 | 2026-04-15 | feat(SQ-9~SQ-10): CommentsSection client component — fetch on mount, root+reply threading, post/delete/report(mailto), auth-gated form; CSS + reduced-motion + a11y; tsc clean | app/games/[appid]/CommentsSection.tsx (new), page.tsx, page.module.css |
+| 2026-04-15 | feat(SQ-11): user_profiles extension (display_name TEXT, bio TEXT, is_public BOOLEAN DEFAULT FALSE) + PUT/GET /api/profile edge route + settings profile section (display_name 50 / bio 160 char limits enforced at API+frontend); tsc clean | supabase/migrations/20260415_user_profiles_public.sql (new), types/index.ts, app/api/profile/route.ts (new), app/settings/SettingsClient.tsx, app/settings/page.module.css |
 
 ---
 

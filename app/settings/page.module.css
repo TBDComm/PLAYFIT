@@ -55,6 +55,78 @@
   line-height: 1.5;
 }
 
+/* ── Profile section ── */
+
+.profileField {
+  margin-bottom: 16px;
+}
+
+.profileLabelRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.profileLabelRow .linkLabel {
+  margin-bottom: 0;
+}
+
+.charCount {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.profileTextarea {
+  width: 100%;
+  padding: 9px 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-family: inherit;
+  outline: none;
+  resize: vertical;
+  transition: border-color 150ms;
+  box-sizing: border-box;
+}
+
+.profileTextarea:focus-visible {
+  border-color: var(--accent);
+}
+
+.profileTextarea::placeholder {
+  color: var(--text-muted);
+}
+
+.profileTextarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.toggleCheck {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.toggleLabel {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
 /* ── Steam section ── */
 
 .steamLinked {

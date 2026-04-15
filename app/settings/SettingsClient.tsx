@@ -8,6 +8,9 @@ import styles from './page.module.css'
 type TagWeight = { tag: string; weight: number }
 type SteamState = 'loading' | 'linked' | 'unlinked'
 
+const DISPLAY_NAME_MAX = 50
+const BIO_MAX = 160
+
 const MAX_WEIGHT = 3.0
 const MIN_WEIGHT = 0.1
 
@@ -103,6 +106,16 @@ export default function SettingsClient() {
   const [linkError, setLinkError] = useState<string | null>(null)
   const [linkSuccess, setLinkSuccess] = useState(false)
 
+  // Profile state
+  const [profileDisplayName, setProfileDisplayName] = useState('')
+  const [profileBio, setProfileBio] = useState('')
+  const [profileIsPublic, setProfileIsPublic] = useState(false)
+  const [profileReady, setProfileReady] = useState(false)
+  const [profileDirty, setProfileDirty] = useState(false)
+  const [profileSaving, setProfileSaving] = useState(false)
+  const [profileSaved, setProfileSaved] = useState(false)
+  const [profileSaveError, setProfileSaveError] = useState(false)
+
   // Tag weights state
   const [weights, setWeights] = useState<TagWeight[]>([])
   const [weightsReady, setWeightsReady] = useState(false)
@@ -141,7 +154,7 @@ export default function SettingsClient() {
     return () => subscription.unsubscribe()
   }, [supabase])
 
-  // Load steam_id and tag weights in parallel once we have userId/token
+  // Load steam_id, tag weights, and profile in parallel once we have userId/token
   useEffect(() => {
     if (!userId || !sessionToken) return
 
@@ -155,7 +168,11 @@ export default function SettingsClient() {
       headers: { Authorization: `Bearer ${sessionToken}` },
     })
 
-    void Promise.all([steamPromise, weightsPromise]).then(async ([steamResult, weightsRes]) => {
+    const profilePromise = fetch('/api/profile', {
+      headers: { Authorization: `Bearer ${sessionToken}` },
+    })
+
+    void Promise.all([steamPromise, weightsPromise, profilePromise]).then(async ([steamResult, weightsRes, profileRes]) => {
       const sid = steamResult.data?.steam_id ?? null
       setSteamId(sid)
       setSteamState(sid ? 'linked' : 'unlinked')
@@ -165,9 +182,18 @@ export default function SettingsClient() {
         setWeights(json.weights)
       }
       setWeightsReady(true)
+
+      if (profileRes.ok) {
+        const pj = await profileRes.json() as { display_name: string | null; bio: string | null; is_public: boolean }
+        setProfileDisplayName(pj.display_name ?? '')
+        setProfileBio(pj.bio ?? '')
+        setProfileIsPublic(pj.is_public)
+      }
+      setProfileReady(true)
     }).catch(() => {
       setSteamState('unlinked')
       setWeightsReady(true)
+      setProfileReady(true)
     })
   }, [userId, sessionToken, supabase])
 
@@ -243,6 +269,37 @@ export default function SettingsClient() {
     }
   }
 
+  const handleSaveProfile = async () => {
+    if (!sessionToken || !profileDirty) return
+    setProfileSaving(true)
+    setProfileSaveError(false)
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${sessionToken}`,
+        },
+        body: JSON.stringify({
+          display_name: profileDisplayName.trim() || null,
+          bio: profileBio.trim() || null,
+          is_public: profileIsPublic,
+        }),
+      })
+      if (res.ok) {
+        setProfileDirty(false)
+        setProfileSaved(true)
+        setTimeout(() => setProfileSaved(false), 2500)
+      } else {
+        setProfileSaveError(true)
+      }
+    } catch {
+      setProfileSaveError(true)
+    } finally {
+      setProfileSaving(false)
+    }
+  }
+
   const handleReloadWeights = async () => {
     if (!sessionToken) return
     setWeightsLoading(true)
@@ -279,6 +336,89 @@ export default function SettingsClient() {
     <main className={styles.page}>
       <div className={styles.inner}>
         <h1 className={styles.pageTitle}>내 설정</h1>
+
+        {/* ── Profile section ── */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>프로필 설정</h2>
+          <p className={styles.sectionDesc}>
+            공개 프로필을 활성화하면 /users/{userId} 링크로 누구나 내 취향을 볼 수 있어요.
+          </p>
+
+          {!profileReady && <div className={styles.skeletonLine} />}
+
+          {profileReady && (
+            <>
+              <div className={styles.profileField}>
+                <div className={styles.profileLabelRow}>
+                  <label htmlFor="profile-display-name" className={styles.linkLabel}>닉네임</label>
+                  <span className={styles.charCount} aria-hidden="true">
+                    {profileDisplayName.length}/{DISPLAY_NAME_MAX}
+                  </span>
+                </div>
+                <input
+                  id="profile-display-name"
+                  name="display-name"
+                  type="text"
+                  className={styles.urlInput}
+                  placeholder="예: GamerPro123"
+                  maxLength={DISPLAY_NAME_MAX}
+                  value={profileDisplayName}
+                  onChange={(e) => { setProfileDisplayName(e.target.value); setProfileDirty(true); setProfileSaved(false) }}
+                  disabled={profileSaving}
+                  autoComplete="nickname"
+                />
+              </div>
+
+              <div className={styles.profileField}>
+                <div className={styles.profileLabelRow}>
+                  <label htmlFor="profile-bio" className={styles.linkLabel}>자기소개</label>
+                  <span className={styles.charCount} aria-hidden="true">
+                    {profileBio.length}/{BIO_MAX}
+                  </span>
+                </div>
+                <textarea
+                  id="profile-bio"
+                  name="bio"
+                  className={styles.profileTextarea}
+                  placeholder="예: 공포 게임 전문가, RPG 수집가"
+                  maxLength={BIO_MAX}
+                  rows={3}
+                  value={profileBio}
+                  onChange={(e) => { setProfileBio(e.target.value); setProfileDirty(true); setProfileSaved(false) }}
+                  disabled={profileSaving}
+                />
+              </div>
+
+              <label className={styles.toggleRow}>
+                <input
+                  type="checkbox"
+                  className={styles.toggleCheck}
+                  checked={profileIsPublic}
+                  onChange={(e) => { setProfileIsPublic(e.target.checked); setProfileDirty(true); setProfileSaved(false) }}
+                  disabled={profileSaving}
+                />
+                <span className={styles.toggleLabel}>프로필 공개</span>
+              </label>
+
+              <div aria-live="polite" aria-atomic="true">
+                {profileSaveError && <p className={styles.errorMsg}>저장에 실패했어요. 다시 시도해주세요.</p>}
+              </div>
+
+              <div className={styles.saveRow}>
+                <span aria-live="polite" aria-atomic="true" className={styles.savedNote}>
+                  {profileSaved ? '저장되었어요 ✓' : ''}
+                </span>
+                <button
+                  className={styles.saveBtn}
+                  onClick={handleSaveProfile}
+                  disabled={!profileDirty || profileSaving}
+                >
+                  {profileSaving ? '저장 중…' : '변경 사항 저장'}
+                </button>
+              </div>
+            </>
+          )}
+        </section>
 
         {/* ── Steam section ── */}
         <section className={styles.section}>
