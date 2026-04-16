@@ -4,14 +4,14 @@
 
 ---
 
-📏 **File health: 109/200 lines — OK**
+📏 **File health: 91/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see `rules/handover-rules.md` §5)._
 
 ---
 
 ## ── MAINTENANCE PROTOCOL ──────────────────────────────────
 
-Start work → fill In-Progress Lock. Finish step → clear lock + update Active Step. Non-step change → Minor Changes Log entry. Writing style + compression rules → `rules/handover-rules.md`.
+Start work → fill In-Progress Lock. Finish step → clear lock + update Active Step. Writing style + compression rules → `rules/handover-rules.md`.
 
 ---
 
@@ -68,24 +68,6 @@ Env vars + Supabase tables state → `memory/project_stack.md` (read only when t
 SQ-13 complete (2026-04-16). All Phase SQ P1–P3 steps done except SQ-15 (blocked on AdSense approval).
 
 **SQ-15**: IGDB integration re-evaluation — gated on AdSense approval. Read `SPEC.md §SQ-15` (line 186) when unblocked.
-
----
-
-## ── MINOR CHANGES LOG ────────────────────────────────────
-
-_2026-03-28 → 2026-04-08 entries → `HANDOVER-archive.md` (see Section Index)_
-_2026-04-11 CE entries → `HANDOVER-archive.md §Minor Changes Log 2026-04-11 (CE-12~CE-31)`_
-_2026-04-11~04-13 entries (SQ prep + articles + SQ-1~SQ-8) → `HANDOVER-archive.md §2026-04-11~04-13`_
-
-| Date | Change | Files |
-|------|--------|-------|
-| 2026-04-15 | feat(SQ-9~SQ-10): CommentsSection — threading, post/delete/report, auth-gated form, a11y | CommentsSection.tsx, page.tsx, page.module.css |
-| 2026-04-15 | feat(SQ-11): user_profiles extension + PUT/GET /api/profile + settings profile section | migration, types, api/profile/route.ts, SettingsClient.tsx |
-| 2026-04-15 | feat(SQ-12+SQ-14): /users/[userId] public profile + squad history + settings share link | users/[userId]/page.tsx, SettingsClient.tsx |
-| 2026-04-15 | ux(SQ-12 polish): host profile link, label clarity, Header profile entry, a11y | supabase.ts, AuthContext, Header, squad/[token], settings |
-| 2026-04-16 | feat(SQ-13): OG cards for /squad/[token] and /users/[userId] — `next/og` ImageResponse | opengraph-image.tsx (×2 new) |
-| 2026-04-16 | fix(audit): 11 fixes — `req.nextUrl` CF crash, cache() dedup, params await, LIKE escape, parallel, validation, a11y, Anthropic client hoist | 13 files across api/, lib/, app/ |
-| 2026-04-16 | fix(auth): Steam callback — duplicate account creation for Google+Steam linked users on Steam button login; fetchSteamId error logging added | steam/callback/route.ts, AuthContext.tsx |
 
 ---
 

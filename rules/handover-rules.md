@@ -45,7 +45,6 @@ If at or above 180 lines → compress before doing any other work (see Section 5
 | In-Progress Lock | 10 lines |
 | Current Status | 30 lines |
 | Active Step | 25 lines + SQL/code blocks exempt |
-| Minor Changes Log | 12 lines |
 | Completed Steps (all) | 5 lines × number of steps |
 | Project Reference | 5 lines (fixed, never grows) |
 
@@ -65,8 +64,7 @@ The file must always follow this exact order, top to bottom:
 5. 🔒 In-Progress Lock        ← always visible without scrolling
 6. Current Status              ← always visible without scrolling
 7. Active Step
-8. Minor Changes Log
-9. Completed Steps
+8. Completed Steps
 10. Project Reference          ← stable, never grows
 ```
 
@@ -94,11 +92,6 @@ Sections 5 and 6 (Lock + Current Status) must always be reachable within the fir
 - What this step does NOT include (scope boundary)
 - "After completing" instruction
 - **If this step is out of numbered order** (e.g. doing A9 before A6–A8): state the reason explicitly. Example: "A9 is done before A6–A8 because A9 tests already-implemented code and does not depend on A6–A8. A6–A8 add new features and follow after A9 passes."
-
-**Minor Changes Log — one line per entry:**
-```
-| YYYY-MM-DD | [change description] | [files affected] |
-```
 
 **General writing rules:**
 - Every sentence is either a fact, an instruction, or a decision + reason
@@ -150,8 +143,7 @@ Trigger: file reaches 180 lines, OR a completed step entry is more than 3 steps 
 1. Move the step row in Current Status to ✅ with the date
 2. **Remove the inlined spec from ACTIVE STEP** — replace with a one-line pointer: `Previous step [N] complete → see SPEC_archive.md §[Phase]`
 3. Fill in the next ACTIVE STEP (either the next step's inlined spec, or a short "(none — awaiting instructions)" block)
-4. Add a Minor Changes Log entry
-5. Clear the In-Progress Lock
+4. Clear the In-Progress Lock
 
 **Why this matters:** a 50-line inlined spec for a completed step costs ~500 tokens every single session until someone notices. This cleanup step must not be skipped.
 
