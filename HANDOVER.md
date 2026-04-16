@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 107/200 lines — OK**
+📏 **File health: 109/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see `rules/handover-rules.md` §5)._
 
 ---
@@ -56,8 +56,8 @@ Next action: [exactly what to do next to resume]
 | SQ-9~SQ-10 | Phase SQ P2 — Game Boards: UI | ✅ 2026-04-15 |
 | SQ-11 | Phase SQ P3 — user_profiles extension + settings edit UI | ✅ 2026-04-15 |
 | SQ-12 + SQ-14 | Phase SQ P3 — `/users/[userId]` public profile + squad history inline + settings share link | ✅ 2026-04-15 |
-| SQ-13 | Phase SQ P3 — `@vercel/og` OG cards (CF Pages compat 확인 선행) | ✅ 2026-04-16 |
-| SQ-15 | Phase SQ P3 — IGDB 재평가 (AdSense 승인 게이트) | 🕑 blocked |
+| SQ-13 | Phase SQ P3 — `@vercel/og` OG cards (CF Pages compat verified first) | ✅ 2026-04-16 |
+| SQ-15 | Phase SQ P3 — IGDB re-evaluation (AdSense approval gate) | 🕑 blocked |
 
 Env vars + Supabase tables state → `memory/project_stack.md` (read only when touching infra).
 
@@ -85,7 +85,7 @@ _2026-04-11~04-13 entries (SQ prep + articles + SQ-1~SQ-8) → `HANDOVER-archive
 | 2026-04-15 | ux(SQ-12 polish): host profile link, label clarity, Header profile entry, a11y | supabase.ts, AuthContext, Header, squad/[token], settings |
 | 2026-04-16 | feat(SQ-13): OG cards for /squad/[token] and /users/[userId] — `next/og` ImageResponse | opengraph-image.tsx (×2 new) |
 | 2026-04-16 | fix(audit): 11 fixes — `req.nextUrl` CF crash, cache() dedup, params await, LIKE escape, parallel, validation, a11y, Anthropic client hoist | 13 files across api/, lib/, app/ |
-| 2026-04-16 | fix(auth): Steam 콜백 — Google+Steam 연동 유저가 Steam 버튼 로그인 시 중복 계정 생성 버그 수정; fetchSteamId 에러 로깅 추가 | steam/callback/route.ts, AuthContext.tsx |
+| 2026-04-16 | fix(auth): Steam callback — duplicate account creation for Google+Steam linked users on Steam button login; fetchSteamId error logging added | steam/callback/route.ts, AuthContext.tsx |
 
 ---
 
