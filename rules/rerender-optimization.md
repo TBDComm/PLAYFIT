@@ -2,6 +2,7 @@
 
 **Impact: MEDIUM**
 Source: [vercel-labs/agent-skills — React Best Practices v1.0.0](https://github.com/vercel-labs/agent-skills)
+Deep-dive: `.claude/skills/vercel-react-best-practices/rules/rerender-*.md` (15 rules total)
 
 Reducing unnecessary re-renders minimizes wasted computation and improves UI responsiveness.
 
@@ -167,4 +168,74 @@ useEffect(() => {
     if (dotRef.current) dotRef.current.style.transform = `translateX(${e.clientX}px)`
   })
 }, [])
+```
+
+---
+
+## 5.14 Defer State Reads to Usage Point
+
+**Impact: MEDIUM (avoids unnecessary subscriptions)**
+
+Don't subscribe to dynamic state (searchParams, localStorage) if you only read it inside callbacks.
+
+**Incorrect: subscribes to all searchParams changes**
+```tsx
+const searchParams = useSearchParams()
+const handleShare = () => { const ref = searchParams.get('ref') }
+```
+
+**Correct: reads on demand, no subscription**
+```tsx
+const handleShare = () => {
+  const params = new URLSearchParams(window.location.search)
+  const ref = params.get('ref')
+}
+```
+
+---
+
+## 5.15 Extract to Memoized Components
+
+**Impact: MEDIUM (enables early returns before expensive computation)**
+
+**Incorrect: computes avatar even when loading**
+```tsx
+function Profile({ user, loading }) {
+  const avatar = useMemo(() => computeAvatar(user), [user])
+  if (loading) return <Skeleton />
+  return <div>{avatar}</div>
+}
+```
+
+**Correct: skips computation when loading**
+```tsx
+const UserAvatar = memo(function UserAvatar({ user }) {
+  const id = useMemo(() => computeAvatar(user), [user])
+  return <Avatar id={id} />
+})
+function Profile({ user, loading }) {
+  if (loading) return <Skeleton />
+  return <UserAvatar user={user} />
+}
+```
+
+Note: If React Compiler is enabled, manual `memo()`/`useMemo()` is unnecessary.
+
+---
+
+## 5.16 Use Transitions for Non-Urgent Updates
+
+**Impact: MEDIUM (maintains UI responsiveness)**
+
+Mark frequent, non-urgent state updates as transitions.
+
+**Incorrect: blocks UI on every scroll**
+```tsx
+const handler = () => setScrollY(window.scrollY)
+```
+
+**Correct: non-blocking update**
+```tsx
+import { startTransition } from 'react'
+const handler = () => startTransition(() => setScrollY(window.scrollY))
 ```

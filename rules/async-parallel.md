@@ -2,8 +2,31 @@
 
 **Impact: CRITICAL**
 Source: [vercel-labs/agent-skills — React Best Practices v1.0.0](https://github.com/vercel-labs/agent-skills)
+Deep-dive: `.claude/skills/vercel-react-best-practices/rules/async-*.md`
 
 Waterfalls are the #1 performance killer. Each sequential `await` adds full network latency. Eliminating them yields the largest gains.
+
+---
+
+## 1.0 Check Cheap Conditions Before Async
+
+**Impact: HIGH (skips unnecessary async work)**
+
+When a branch combines an `await` flag with a cheap sync condition, evaluate the sync condition first.
+
+**Incorrect: always pays for the async call**
+```typescript
+const flag = await getFeatureFlag('new-ui')
+if (flag && user.plan === 'pro') { /* ... */ }
+```
+
+**Correct: skips async call when sync condition fails**
+```typescript
+if (user.plan === 'pro') {
+  const flag = await getFeatureFlag('new-ui')
+  if (flag) { /* ... */ }
+}
+```
 
 ---
 

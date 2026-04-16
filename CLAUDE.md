@@ -40,13 +40,17 @@ Each rule has a one-line summary below. **Only read the full file when you suspe
 
 | File | Priority | One-line summary |
 |------|----------|------------------|
-| `rules/async-parallel.md` | CRITICAL | Parallelize independent I/O with `Promise.all`; never `await` sequentially unless there's a data dependency. |
-| `rules/bundle-barrel-imports.md` | CRITICAL | No barrel imports. Import directly from the source file. Use dynamic imports for large optional deps. |
-| `rules/rerender-optimization.md` | HIGH | No inline-defined components, prefer derived state over duplicated state, functional setState, `useRef` for non-reactive values. |
+| `rules/async-parallel.md` | CRITICAL | Parallelize independent I/O with `Promise.all`; check cheap sync conditions before async; never `await` sequentially without data dependency. |
+| `rules/bundle-barrel-imports.md` | CRITICAL | No barrel imports. Import directly from source. Use dynamic imports for large optional deps. Prefer statically analyzable paths. |
+| `rules/server-performance.md` | HIGH | RSC: `React.cache()` dedup, hoist static I/O to module level, parallel fetching via composition, minimize serialization at boundaries. |
+| `rules/rerender-optimization.md` | HIGH | No inline components, derived state over duplicated state, functional setState, `useRef` for non-reactive values, defer state reads, transitions. |
+| `rules/code-review.md` | HIGH | Five-axis review (correctness, readability, architecture, security, performance) + severity labels + change sizing. |
 | `rules/web-design-guidelines.md` | HIGH | Accessibility + focus + forms + animation — specific a11y rules (aria-label, focus-visible, label/for, etc.). |
 | `rules/frontend-design.md` | HIGH | Aesthetic direction — no AI-slop (no purple gradient hero, no "Roboto + blue + white card", etc.). Commit to a direction before coding. |
 | `rules/handover-rules.md` | CRITICAL | How to maintain `HANDOVER.md` — 200-line cap, section order, writing style, compression, ACTIVE STEP lifecycle. |
 | `rules/cf-gotchas.md` | HIGH | Hard-won CF Pages + React gotchas — `req.nextUrl` null, edge vs `generateStaticParams`, ref+early-return, favicon location. Read when debugging a build/edge/ref bug. |
+
+Skills (installed, deep-dive reference): `.claude/skills/vercel-react-best-practices/` (70 individual rules), `.claude/skills/code-review-and-quality/` (full review methodology)
 
 ---
 

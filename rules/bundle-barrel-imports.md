@@ -2,6 +2,7 @@
 
 **Impact: CRITICAL (200-800ms import cost, slow builds)**
 Source: [vercel-labs/agent-skills — React Best Practices v1.0.0](https://github.com/vercel-labs/agent-skills)
+Deep-dive: `.claude/skills/vercel-react-best-practices/rules/bundle-*.md`
 
 Import directly from source files instead of barrel files to avoid loading thousands of unused modules.
 
@@ -76,6 +77,30 @@ import { Check, X, Menu } from 'lucide-react'
 ---
 
 Reference: [How we optimized package imports in Next.js](https://vercel.com/blog/how-we-optimized-package-imports-in-next-js)
+
+---
+
+## 2.1.5 Prefer Statically Analyzable Paths
+
+**Impact: HIGH (avoids broad bundles and traces)**
+
+Dynamic `import()` with variable paths forces the bundler to include all possible files. Use explicit maps instead.
+
+**Incorrect: bundler can't analyze**
+```ts
+const Page = await import(PAGE_MODULES[pageName])
+```
+
+**Correct: explicit map of allowed modules**
+```ts
+const PAGE_MODULES = {
+  home: () => import('./pages/home'),
+  settings: () => import('./pages/settings'),
+} as const
+const Page = await PAGE_MODULES[pageName]()
+```
+
+Same applies to `fs.readFile(path.join(process.cwd(), someVar))` — make each path literal.
 
 ---
 
