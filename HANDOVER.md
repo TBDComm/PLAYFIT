@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 117/200 lines — OK**
+📏 **File health: 118/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see `rules/handover-rules.md` §5)._
 
 ---
@@ -95,6 +95,7 @@ _2026-04-11 CE entries (CE-12~CE-31) → `HANDOVER-archive.md §Minor Changes Lo
 | 2026-04-15 | feat(SQ-12+SQ-14): /users/[userId] public profile page (edge, force-dynamic) — is_public gate, display_name+bio, top 10 tags w/ bars, saved/squad counts, recent 5 squad history inline; React cache() dedupes generateMetadata+page; settings: share link box w/ copy button when is_public saved; tsc clean | app/users/[userId]/page.tsx (rewrite), app/users/[userId]/page.module.css (new), app/settings/SettingsClient.tsx, app/settings/page.module.css |
 | 2026-04-15 | ux(SQ-12 polish): (1) /squad/[token] host profile link (viral loop, conditional on host_user_id + is_public via new getPublicProfileLite); (2) "스쿼드 기록" → "최근 스쿼드 (7일)" 라벨; (3) Header dropdown "내 프로필 보기" item gated on isPublic — extended AuthContext to fetch is_public alongside steam_id, SettingsClient pushes setIsPublic on save success; (4) settings share input autocomplete=off + name + spellCheck; tsc clean | lib/supabase.ts, app/context/AuthContext.tsx, app/components/Header.tsx, app/squad/[token]/page.tsx + .module.css, app/users/[userId]/page.tsx, app/settings/SettingsClient.tsx |
 | 2026-04-16 | feat(SQ-13): OG cards for /squad/[token] and /users/[userId] — `next/og` ImageResponse (edge runtime, proven CF Pages pattern). Squad card: avg match score hero + member count + shared tags. User card: display_name + bio + top 5 tags + stats. Both include fallback for missing/private data; tsc clean | app/squad/[token]/opengraph-image.tsx (new), app/users/[userId]/opengraph-image.tsx (new) |
+| 2026-04-16 | fix(audit): full codebase review — (1) CRITICAL: `req.nextUrl` → `new URL(req.url)` in comments DELETE (CF Pages crash); (2) `getSquadSession` double-fetch → React.cache() dedup; (3) OG image params await (Next.js 15+); (4) LIKE wildcard injection escape in search; (5) link-steam sequential→parallel; (6) saved-games input validation; (7) fire-and-forget `.catch()` error logging; (8) appid format validation; (9) squad input `:focus`→`:focus-visible`; (10) Anthropic client hoisted to module + `dangerouslyAllowBrowser` removed | comments/route.ts, search/route.ts, link-steam/route.ts, saved-games/route.ts, generate-recommendation/route.ts, squad/route.ts, squad/page.module.css, lib/claude.ts, OG images×3, squad/[token]/page.tsx |
 
 ---
 

@@ -106,14 +106,16 @@ export async function POST(request: NextRequest) {
       return { user_id: session.user.id, tag, weight: merged, updated_at: new Date().toISOString() }
     })
 
-    await supabaseAdmin
-      .from('user_tag_weights')
-      .upsert(mergedRows, { onConflict: 'user_id,tag' })
-    await supabaseAdmin
-      .from('user_tag_weights')
-      .delete()
-      .eq('steam_id', steamId)
-      .is('user_id', null)
+    await Promise.all([
+      supabaseAdmin
+        .from('user_tag_weights')
+        .upsert(mergedRows, { onConflict: 'user_id,tag' }),
+      supabaseAdmin
+        .from('user_tag_weights')
+        .delete()
+        .eq('steam_id', steamId)
+        .is('user_id', null),
+    ])
   }
 
   return NextResponse.json({ ok: true, steam_id: steamId })

@@ -1,10 +1,14 @@
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
 
+import { cache } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getSquadSession, getPublicProfileLite } from '@/lib/supabase'
+
+// React cache() — generateMetadata + page 간 DB 중복 조회 방지
+const loadSquadSession = cache((token: string) => getSquadSession(token))
 import ThumbnailImage from '@/app/result/[id]/ThumbnailImage'
 import CopyUrlButton from './CopyUrlButton'
 import resultStyles from '@/app/result/[id]/page.module.css'
@@ -17,7 +21,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { token } = await params
-  const session = await getSquadSession(token)
+  const session = await loadSquadSession(token)
   if (!session) {
     return { title: 'Squad를 찾을 수 없어요 — Guildeline' }
   }
@@ -35,7 +39,7 @@ function getScoreClass(score: number): string {
 
 export default async function SquadTokenPage({ params }: Props) {
   const { token } = await params
-  const session = await getSquadSession(token)
+  const session = await loadSquadSession(token)
   if (!session) notFound()
 
   // host의 공개 프로필 lite 조회 — viral loop 활성화 (없으면 null)

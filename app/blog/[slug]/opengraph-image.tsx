@@ -9,12 +9,13 @@ export const contentType = 'image/png'
 export const runtime = 'edge'
 
 
-export default function BlogPostOgImage({
+export default async function BlogPostOgImage({
   params,
 }: {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }) {
-  const entry = getPost(params.slug)
+  const { slug } = await params
+  const entry = getPost(slug)
   const title = entry?.meta.title ?? 'Guildeline 블로그'
   const description = entry?.meta.description ?? 'Steam 게임 추천 블로그'
 

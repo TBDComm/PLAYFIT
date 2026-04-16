@@ -11,9 +11,10 @@ export const contentType = 'image/png'
 export default async function SquadOgImage({
   params,
 }: {
-  params: { token: string }
+  params: Promise<{ token: string }>
 }) {
-  const session = await getSquadSession(params.token)
+  const { token } = await params
+  const session = await getSquadSession(token)
 
   // 세션 없으면 기본 브랜드 이미지
   if (!session) {

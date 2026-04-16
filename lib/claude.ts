@@ -31,6 +31,11 @@ interface SquadContext {
   freeOnly: boolean
 }
 
+// 모듈 수준 싱글톤 — 매 호출마다 재생성 방지
+const client = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+})
+
 const SYSTEM_PROMPT =
   'You are a Steam game recommendation engine. Match games to the user\'s taste based on tag overlap with their play history. Respond ONLY in valid JSON.'
 
@@ -55,10 +60,6 @@ Response format:
 {"recommendations": [{"appid": "", "reason": ""}]}`
 
   try {
-    const client = new Anthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY,
-      dangerouslyAllowBrowser: true,
-    })
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 500,
@@ -111,10 +112,6 @@ ${JSON.stringify(candidates)}
 {"recommendations": [{"appid": "", "reason": ""}]}`
 
   try {
-    const client = new Anthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY,
-      dangerouslyAllowBrowser: true,
-    })
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 500,

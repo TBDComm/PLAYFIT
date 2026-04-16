@@ -45,6 +45,10 @@ export async function POST(req: Request) {
   ])
   if (!auth) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
+  if (typeof body.appid !== 'string' || !body.appid || typeof body.name !== 'string' || !body.name) {
+    return Response.json({ error: 'appid and name are required' }, { status: 400 })
+  }
+
   const { error } = await auth.supabase
     .from('saved_games')
     .upsert({

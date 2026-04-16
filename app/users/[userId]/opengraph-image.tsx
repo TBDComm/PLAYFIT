@@ -13,9 +13,9 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 export default async function UserOgImage({
   params,
 }: {
-  params: { userId: string }
+  params: Promise<{ userId: string }>
 }) {
-  const { userId } = params
+  const { userId } = await params
 
   if (!UUID_RE.test(userId)) {
     return fallbackImage()

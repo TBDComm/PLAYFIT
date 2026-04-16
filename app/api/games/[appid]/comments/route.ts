@@ -29,6 +29,9 @@ export async function GET(
   { params }: { params: Promise<{ appid: string }> }
 ) {
   const { appid } = await params
+  if (!/^\d+$/.test(appid)) {
+    return NextResponse.json({ error: 'INVALID_APPID' }, { status: 400 })
+  }
   const cookieStore = await cookies()
   const supabase = createSupabase(cookieStore)
 
@@ -54,6 +57,9 @@ export async function POST(
   { params }: { params: Promise<{ appid: string }> }
 ) {
   const { appid } = await params
+  if (!/^\d+$/.test(appid)) {
+    return NextResponse.json({ error: 'INVALID_APPID' }, { status: 400 })
+  }
   const [cookieStore, body] = await Promise.all([
     cookies(),
     req.json() as Promise<{ body?: unknown; parent_id?: unknown }>,
@@ -110,7 +116,7 @@ export async function DELETE(
   { params }: { params: Promise<{ appid: string }> }
 ) {
   await params // appid 불필요하지만 시그니처 일치
-  const commentId = req.nextUrl.searchParams.get('id')
+  const commentId = new URL(req.url).searchParams.get('id')
   if (!commentId) {
     return NextResponse.json({ error: '삭제할 댓글 id가 필요합니다.' }, { status: 400 })
   }

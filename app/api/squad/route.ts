@@ -164,7 +164,7 @@ export async function POST(request: NextRequest) {
         if (!d) return Promise.resolve()
         return upsertGamePriceCache(d.appid, d.price_krw ?? 0, d.is_free, d.metacritic_score)
       })
-    )
+    ).catch(e => console.error('[squad] price cache upsert error:', e))
 
     // 9. 가격 정보 통합 맵
     const detailMap = new Map<string, GameDetails>()

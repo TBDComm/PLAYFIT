@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
         if (!d) return Promise.resolve()
         return upsertGamePriceCache(d.appid, d.price_krw ?? 0, d.is_free, d.metacritic_score)
       })
-    )
+    ).catch(e => console.error('[rec] price cache upsert error:', e))
 
     // Build unified detail map: freshly fetched takes priority over cache
     const detailMap = new Map<string, GameDetails>()
