@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 122/200 lines — OK**
+📏 **File health: 117/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see `rules/handover-rules.md` §5)._
 
 ---
@@ -56,24 +56,18 @@ Next action: [exactly what to do next to resume]
 | SQ-9~SQ-10 | Phase SQ P2 — Game Boards: UI | ✅ 2026-04-15 |
 | SQ-11 | Phase SQ P3 — user_profiles extension + settings edit UI | ✅ 2026-04-15 |
 | SQ-12 + SQ-14 | Phase SQ P3 — `/users/[userId]` public profile + squad history inline + settings share link | ✅ 2026-04-15 |
-| **SQ-13** | **Phase SQ P3 — `@vercel/og` OG cards (CF Pages compat 확인 선행)** | ⏳ next |
+| SQ-13 | Phase SQ P3 — `@vercel/og` OG cards (CF Pages compat 확인 선행) | ✅ 2026-04-16 |
 | SQ-15 | Phase SQ P3 — IGDB 재평가 (AdSense 승인 게이트) | 🕑 blocked |
 
 Env vars + Supabase tables state → `memory/project_stack.md` (read only when touching infra).
 
 ---
 
-## ── ACTIVE STEP: SQ-13 ──
+## ── ACTIVE STEP: SQ-15 ──
 
-SQ-12 + SQ-14 + Settings share link complete (2026-04-15). Public profile page live at `/users/[userId]`.
+SQ-13 complete (2026-04-16). All Phase SQ P1–P3 steps done except SQ-15 (blocked on AdSense approval).
 
-**SQ-13 next**: `@vercel/og` OG cards for `/squad/[token]` and `/users/[userId]` (viral share unlock).
-
-**Pre-flight check first** (before installing anything): verify CF Pages edge runtime + `next/og` compatibility — `next/og` uses `@vercel/og` which depends on `@resvg/resvg-wasm`. Need to confirm:
-1. Whether existing `app/opengraph-image.tsx` and `app/blog/[slug]/opengraph-image.tsx` already use it (if so, pattern is already proven)
-2. Wrangler/CF Pages bundle size limit (1 MiB per worker on free plan)
-
-Read `SPEC.md §SQ-13` (lines 184–185) for outline. If CF Pages incompatible → fallback to static `/og/squad-default.png` per session.
+**SQ-15**: IGDB integration re-evaluation — gated on AdSense approval. Read `SPEC.md §SQ-15` (line 186) when unblocked.
 
 ---
 
@@ -100,6 +94,7 @@ _2026-04-11 CE entries (CE-12~CE-31) → `HANDOVER-archive.md §Minor Changes Lo
 | 2026-04-15 | feat(SQ-11): user_profiles extension (display_name TEXT, bio TEXT, is_public BOOLEAN DEFAULT FALSE) + PUT/GET /api/profile edge route + settings profile section (display_name 50 / bio 160 char limits enforced at API+frontend); tsc clean | supabase/migrations/20260415_user_profiles_public.sql (new), types/index.ts, app/api/profile/route.ts (new), app/settings/SettingsClient.tsx, app/settings/page.module.css |
 | 2026-04-15 | feat(SQ-12+SQ-14): /users/[userId] public profile page (edge, force-dynamic) — is_public gate, display_name+bio, top 10 tags w/ bars, saved/squad counts, recent 5 squad history inline; React cache() dedupes generateMetadata+page; settings: share link box w/ copy button when is_public saved; tsc clean | app/users/[userId]/page.tsx (rewrite), app/users/[userId]/page.module.css (new), app/settings/SettingsClient.tsx, app/settings/page.module.css |
 | 2026-04-15 | ux(SQ-12 polish): (1) /squad/[token] host profile link (viral loop, conditional on host_user_id + is_public via new getPublicProfileLite); (2) "스쿼드 기록" → "최근 스쿼드 (7일)" 라벨; (3) Header dropdown "내 프로필 보기" item gated on isPublic — extended AuthContext to fetch is_public alongside steam_id, SettingsClient pushes setIsPublic on save success; (4) settings share input autocomplete=off + name + spellCheck; tsc clean | lib/supabase.ts, app/context/AuthContext.tsx, app/components/Header.tsx, app/squad/[token]/page.tsx + .module.css, app/users/[userId]/page.tsx, app/settings/SettingsClient.tsx |
+| 2026-04-16 | feat(SQ-13): OG cards for /squad/[token] and /users/[userId] — `next/og` ImageResponse (edge runtime, proven CF Pages pattern). Squad card: avg match score hero + member count + shared tags. User card: display_name + bio + top 5 tags + stats. Both include fallback for missing/private data; tsc clean | app/squad/[token]/opengraph-image.tsx (new), app/users/[userId]/opengraph-image.tsx (new) |
 
 ---
 
