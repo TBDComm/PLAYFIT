@@ -85,6 +85,7 @@ _2026-04-11~04-13 entries (SQ prep + articles + SQ-1~SQ-8) → `HANDOVER-archive
 | 2026-04-15 | ux(SQ-12 polish): host profile link, label clarity, Header profile entry, a11y | supabase.ts, AuthContext, Header, squad/[token], settings |
 | 2026-04-16 | feat(SQ-13): OG cards for /squad/[token] and /users/[userId] — `next/og` ImageResponse | opengraph-image.tsx (×2 new) |
 | 2026-04-16 | fix(audit): 11 fixes — `req.nextUrl` CF crash, cache() dedup, params await, LIKE escape, parallel, validation, a11y, Anthropic client hoist | 13 files across api/, lib/, app/ |
+| 2026-04-16 | fix(auth): Steam 콜백 — Google+Steam 연동 유저가 Steam 버튼 로그인 시 중복 계정 생성 버그 수정; fetchSteamId 에러 로깅 추가 | steam/callback/route.ts, AuthContext.tsx |
 
 ---
 

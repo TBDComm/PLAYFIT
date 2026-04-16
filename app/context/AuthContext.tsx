@@ -46,11 +46,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // is_public 도 같은 row에서 가져옴 — 추가 round-trip 없음
     async function fetchSteamId(userId: string): Promise<void> {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('user_profiles')
         .select('steam_id, is_public')
         .eq('id', userId)
         .maybeSingle()
+      if (error) {
+        // RLS 문제나 네트워크 오류 시 Steam 연동이 없는 것처럼 보이는 버그 방지를 위해 로깅
+        console.error('[auth] user_profiles 조회 실패 (userId:', userId, '):', error)
+      } else if (!data) {
+        // RLS가 조용히 막거나 row 자체가 없는 경우 (에러 없이 null 반환)
+        console.warn('[auth] user_profiles row 없음 (userId:', userId, ') — Steam 미연동 또는 RLS 문제')
+      }
       setSteamId(data?.steam_id ?? null)
       setIsPublic(Boolean(data?.is_public))
       setIsLoading(false)
