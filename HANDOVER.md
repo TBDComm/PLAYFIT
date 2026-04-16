@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 118/200 lines — OK**
+📏 **File health: 107/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see `rules/handover-rules.md` §5)._
 
 ---
@@ -74,28 +74,17 @@ SQ-13 complete (2026-04-16). All Phase SQ P1–P3 steps done except SQ-15 (block
 ## ── MINOR CHANGES LOG ────────────────────────────────────
 
 _2026-03-28 → 2026-04-08 entries → `HANDOVER-archive.md` (see Section Index)_
-_2026-04-11 CE entries (CE-12~CE-31) → `HANDOVER-archive.md §Minor Changes Log 2026-04-11 (CE-12~CE-31)`_
+_2026-04-11 CE entries → `HANDOVER-archive.md §Minor Changes Log 2026-04-11 (CE-12~CE-31)`_
+_2026-04-11~04-13 entries (SQ prep + articles + SQ-1~SQ-8) → `HANDOVER-archive.md §2026-04-11~04-13`_
 
 | Date | Change | Files |
 |------|--------|-------|
-| 2026-04-11 | docs(SQ): Phase SQ spec added; SQUAD_FEATURE.md deleted; HANDOVER/SPEC restructured with section indexes; memory/project_stack.md carved out; CLAUDE.md token-efficient reading + rule summaries | SPEC.md, SPEC_archive.md, HANDOVER-archive.md, CLAUDE.md, MEMORY.md, memory/project_stack.md |
-| 2026-04-11 | plan(PRE-SQ): AdSense articles step added before SQ; ACTIVE STEP updated; memory/project_adsense_plan.md created | HANDOVER.md, MEMORY.md, memory/project_adsense_plan.md |
-| 2026-04-12 | fix: login modal not closing after auth — added direct closeLoginModal() call on success in handleSignIn, handleVerifyOtp, Google GIS callback (was relying solely on indirect SIGNED_IN → fetchSteamId → authState chain) | app/components/Header.tsx |
-| 2026-04-12 | feat(PRE-SQ): /articles section — 14 Korean game recommendation articles (TSX registry, no MDX), list + detail pages, sitemap, Footer nav link | lib/articles.ts, content/articles/*.tsx (14), app/articles/**, app/sitemap.ts, app/components/Footer.tsx |
-| 2026-04-12 | refactor(articles): remove AI smell — delete metadata blocks, diversify 14 article endings, fix negative→positive patterns, replace repetitive phrases ("기준점"·"압도적"·"최적화"), vary game description lengths; fix one "기준점" in blog/best-rpg | content/articles/*.tsx (14), content/blog/best-rpg-games-steam-2026.tsx |
-| 2026-04-12 | content: expand all 14 articles + 5 blog posts — +30~50% length, strengthen human feel (specific game experiences, scene references, honest downsides), add games and sections, AdSense approval goal; fix [slug]/page.tsx runtime='edge' conflict with generateStaticParams | content/articles/*.tsx (14), content/blog/*.tsx (5), app/articles/[slug]/page.tsx |
-| 2026-04-12 | refactor(content): AI detector pattern removal — typo fix (돌아다리는), 첫째/둘째 prose structure, "조화롭습니다", triple-adjective chains, duplicate sentences across files (Phasmophobia×2, Slay유사작×3, Disco Elysium×2, indie-closing), RTS intro rewrite | content/articles/open-world-games, strategy-games, coop-games, rpg-guide, indie-hidden-gems; content/blog/steam-genre-guide-action, indie-games-hidden-gems, best-rpg-games-steam-2026 |
-| 2026-04-12 | refactor: /articles → /blog merge — 14 articles absorbed into blog registry (date→publishedAt), 301 redirect from /articles/*, app/articles/ route deleted, Footer link consolidated, sitemap cleaned; lib/articles.ts kept as ArticleMeta type shim | lib/blog.ts, lib/articles.ts, next.config.js, app/blog/[slug]/page.tsx, app/blog/page.module.css, app/sitemap.ts, app/components/Footer.tsx |
-| 2026-04-12 | fix: scoreCandidates RPC error silently returned [] → candidates=[] → misleading 400 NO_GAMES_IN_BUDGET ("raise budget" message); changed to throw so route's catch returns 500 GENERAL_ERROR ("try again later"); added scored.length===0 guard | lib/supabase.ts, app/api/generate-recommendation/route.ts |
-| 2026-04-12 | feat(SQ-1~SQ-6): Squad MVP — DB migration, lib/squad.ts pure functions, Claude Squad helper, /api/squad route, /squad input page, /squad/[token] share page, home CTA; guideline pass (h1 추가, touch-action, name attr, import 중복 제거); tsc clean | supabase/migrations/20260412_squad.sql, lib/squad.ts, lib/claude.ts, lib/supabase.ts, types/index.ts, app/api/squad/route.ts, app/squad/**, app/squad/[token]/**, app/page.tsx, app/page.module.css, app/components/RecommendationForm.tsx |
-| 2026-04-13 | feat(SQ-7): game_comments DB migration — 500 char limit, parent_id 1-level replies, RLS (public read / auth write / owner delete) | supabase/migrations/20260413_game_comments.sql |
-| 2026-04-13 | feat(SQ-8): /api/games/[appid]/comments GET/POST/DELETE edge route — rate limit 5/hr, RLS double-guard; GameComment type added; tsc clean | app/api/games/[appid]/comments/route.ts, types/index.ts |
-| 2026-04-15 | feat(SQ-9~SQ-10): CommentsSection client component — fetch on mount, root+reply threading, post/delete/report(mailto), auth-gated form; CSS + reduced-motion + a11y; tsc clean | app/games/[appid]/CommentsSection.tsx (new), page.tsx, page.module.css |
-| 2026-04-15 | feat(SQ-11): user_profiles extension (display_name TEXT, bio TEXT, is_public BOOLEAN DEFAULT FALSE) + PUT/GET /api/profile edge route + settings profile section (display_name 50 / bio 160 char limits enforced at API+frontend); tsc clean | supabase/migrations/20260415_user_profiles_public.sql (new), types/index.ts, app/api/profile/route.ts (new), app/settings/SettingsClient.tsx, app/settings/page.module.css |
-| 2026-04-15 | feat(SQ-12+SQ-14): /users/[userId] public profile page (edge, force-dynamic) — is_public gate, display_name+bio, top 10 tags w/ bars, saved/squad counts, recent 5 squad history inline; React cache() dedupes generateMetadata+page; settings: share link box w/ copy button when is_public saved; tsc clean | app/users/[userId]/page.tsx (rewrite), app/users/[userId]/page.module.css (new), app/settings/SettingsClient.tsx, app/settings/page.module.css |
-| 2026-04-15 | ux(SQ-12 polish): (1) /squad/[token] host profile link (viral loop, conditional on host_user_id + is_public via new getPublicProfileLite); (2) "스쿼드 기록" → "최근 스쿼드 (7일)" 라벨; (3) Header dropdown "내 프로필 보기" item gated on isPublic — extended AuthContext to fetch is_public alongside steam_id, SettingsClient pushes setIsPublic on save success; (4) settings share input autocomplete=off + name + spellCheck; tsc clean | lib/supabase.ts, app/context/AuthContext.tsx, app/components/Header.tsx, app/squad/[token]/page.tsx + .module.css, app/users/[userId]/page.tsx, app/settings/SettingsClient.tsx |
-| 2026-04-16 | feat(SQ-13): OG cards for /squad/[token] and /users/[userId] — `next/og` ImageResponse (edge runtime, proven CF Pages pattern). Squad card: avg match score hero + member count + shared tags. User card: display_name + bio + top 5 tags + stats. Both include fallback for missing/private data; tsc clean | app/squad/[token]/opengraph-image.tsx (new), app/users/[userId]/opengraph-image.tsx (new) |
-| 2026-04-16 | fix(audit): full codebase review — (1) CRITICAL: `req.nextUrl` → `new URL(req.url)` in comments DELETE (CF Pages crash); (2) `getSquadSession` double-fetch → React.cache() dedup; (3) OG image params await (Next.js 15+); (4) LIKE wildcard injection escape in search; (5) link-steam sequential→parallel; (6) saved-games input validation; (7) fire-and-forget `.catch()` error logging; (8) appid format validation; (9) squad input `:focus`→`:focus-visible`; (10) Anthropic client hoisted to module + `dangerouslyAllowBrowser` removed | comments/route.ts, search/route.ts, link-steam/route.ts, saved-games/route.ts, generate-recommendation/route.ts, squad/route.ts, squad/page.module.css, lib/claude.ts, OG images×3, squad/[token]/page.tsx |
+| 2026-04-15 | feat(SQ-9~SQ-10): CommentsSection — threading, post/delete/report, auth-gated form, a11y | CommentsSection.tsx, page.tsx, page.module.css |
+| 2026-04-15 | feat(SQ-11): user_profiles extension + PUT/GET /api/profile + settings profile section | migration, types, api/profile/route.ts, SettingsClient.tsx |
+| 2026-04-15 | feat(SQ-12+SQ-14): /users/[userId] public profile + squad history + settings share link | users/[userId]/page.tsx, SettingsClient.tsx |
+| 2026-04-15 | ux(SQ-12 polish): host profile link, label clarity, Header profile entry, a11y | supabase.ts, AuthContext, Header, squad/[token], settings |
+| 2026-04-16 | feat(SQ-13): OG cards for /squad/[token] and /users/[userId] — `next/og` ImageResponse | opengraph-image.tsx (×2 new) |
+| 2026-04-16 | fix(audit): 11 fixes — `req.nextUrl` CF crash, cache() dedup, params await, LIKE escape, parallel, validation, a11y, Anthropic client hoist | 13 files across api/, lib/, app/ |
 
 ---
 

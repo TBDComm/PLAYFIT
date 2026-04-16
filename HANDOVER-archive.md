@@ -21,7 +21,8 @@ Session logs and minor-change rationale removed from HANDOVER.md. **Use `Read(of
 | 2026-03-29 → 2026-03-31 | 78–129 |
 | 2026-04-06 (CE-4, CE-5) | 131–140 |
 | 2026-04-08 (CE-6, CE-8~11) | 381–392 |
-| 2026-04-11 (CE-12~CE-31) | 394–end |
+| 2026-04-11 (CE-12~CE-31) | 394–412 |
+| 2026-04-11~04-13 (SQ prep + SQ-1~SQ-8 + articles) | 414–end |
 
 **Other reference:**
 
@@ -410,3 +411,20 @@ Apply for AdSense AFTER FT-series is fully complete. When approval email arrives
 | 2026-04-11 | ux(CE-28): manual mode shows hint when submit blocked | RecommendationForm.tsx |
 | 2026-04-11 | ux(CE-29): linked Steam account ID link shown; (CE-30): budget placeholder simplified | RecommendationForm.tsx, page.module.css |
 | 2026-04-11 | ux(CE-16): /result/[id] skeleton loading UI — shimmer cards matching real layout, prefers-reduced-motion | result/[id]/loading.tsx, loading.module.css |
+
+## Minor Changes Log — 2026-04-11~04-13 (SQ prep + SQ-1~SQ-8 + articles)
+
+| Date | Change | Files |
+|------|--------|-------|
+| 2026-04-11 | docs(SQ): Phase SQ spec added; SQUAD_FEATURE.md deleted; HANDOVER/SPEC restructured with section indexes; memory/project_stack.md carved out; CLAUDE.md token-efficient reading + rule summaries | SPEC.md, SPEC_archive.md, HANDOVER-archive.md, CLAUDE.md, MEMORY.md, memory/project_stack.md |
+| 2026-04-11 | plan(PRE-SQ): AdSense articles step added before SQ; ACTIVE STEP updated; memory/project_adsense_plan.md created | HANDOVER.md, MEMORY.md, memory/project_adsense_plan.md |
+| 2026-04-12 | fix: login modal not closing after auth — added direct closeLoginModal() call on success in handleSignIn, handleVerifyOtp, Google GIS callback (was relying solely on indirect SIGNED_IN → fetchSteamId → authState chain) | app/components/Header.tsx |
+| 2026-04-12 | feat(PRE-SQ): /articles section — 14 Korean game recommendation articles (TSX registry, no MDX), list + detail pages, sitemap, Footer nav link | lib/articles.ts, content/articles/*.tsx (14), app/articles/**, app/sitemap.ts, app/components/Footer.tsx |
+| 2026-04-12 | refactor(articles): remove AI smell — delete metadata blocks, diversify 14 article endings, fix negative→positive patterns, replace repetitive phrases, vary game description lengths | content/articles/*.tsx (14), content/blog/best-rpg-games-steam-2026.tsx |
+| 2026-04-12 | content: expand all 14 articles + 5 blog posts — +30~50% length, strengthen human feel, add games and sections; fix [slug]/page.tsx runtime='edge' conflict with generateStaticParams | content/articles/*.tsx (14), content/blog/*.tsx (5), app/articles/[slug]/page.tsx |
+| 2026-04-12 | refactor(content): AI detector pattern removal — typo fix, prose structure, duplicate sentences across files, RTS intro rewrite | content/articles/*, content/blog/* |
+| 2026-04-12 | refactor: /articles → /blog merge — 14 articles absorbed into blog registry, 301 redirect from /articles/*, app/articles/ route deleted, sitemap cleaned | lib/blog.ts, lib/articles.ts, next.config.js, app/blog/*, app/sitemap.ts, app/components/Footer.tsx |
+| 2026-04-12 | fix: scoreCandidates RPC error silently returned [] → changed to throw; added scored.length===0 guard | lib/supabase.ts, app/api/generate-recommendation/route.ts |
+| 2026-04-12 | feat(SQ-1~SQ-6): Squad MVP — DB migration, lib/squad.ts, Claude Squad helper, /api/squad route, /squad pages, home CTA; guideline pass; tsc clean | supabase/migrations/20260412_squad.sql, lib/squad.ts, lib/claude.ts, lib/supabase.ts, types/index.ts, app/api/squad/route.ts, app/squad/**, app/page.tsx |
+| 2026-04-13 | feat(SQ-7): game_comments DB migration — 500 char limit, parent_id 1-level replies, RLS | supabase/migrations/20260413_game_comments.sql |
+| 2026-04-13 | feat(SQ-8): /api/games/[appid]/comments GET/POST/DELETE edge route — rate limit 5/hr, RLS double-guard; GameComment type added | app/api/games/[appid]/comments/route.ts, types/index.ts |

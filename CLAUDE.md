@@ -50,7 +50,7 @@ Each rule has a one-line summary below. **Only read the full file when you suspe
 | `rules/handover-rules.md` | CRITICAL | How to maintain `HANDOVER.md` — 200-line cap, section order, writing style, compression, ACTIVE STEP lifecycle. |
 | `rules/cf-gotchas.md` | HIGH | Hard-won CF Pages + React gotchas — `req.nextUrl` null, edge vs `generateStaticParams`, ref+early-return, favicon location. Read when debugging a build/edge/ref bug. |
 
-Skills (installed, deep-dive reference): `.claude/skills/vercel-react-best-practices/` (70 individual rules), `.claude/skills/code-review-and-quality/` (full review methodology)
+Skills (installed, deep-dive reference): `.claude/skills/vercel-react-best-practices/` (59 individual rules), `.claude/skills/code-review-and-quality/` (full review methodology)
 
 ---
 
