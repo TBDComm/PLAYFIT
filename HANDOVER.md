@@ -59,6 +59,7 @@ Next action: [exactly what to do next to resume]
 | SQ-12 + SQ-14 | Phase SQ P3 — `/users/[userId]` public profile + squad history inline + settings share link | ✅ 2026-04-15 |
 | SQ-13 | Phase SQ P3 — `@vercel/og` OG cards (CF Pages compat verified first) | ✅ 2026-04-16 |
 | SQ-15 | Phase SQ P3 — IGDB re-evaluation (AdSense approval gate) | 🕑 blocked |
+| **SQ-ENH-1~4** | **Squad 분석 개선 (설계 완료, 미구현)** | 📋 planned |
 
 Env vars + Supabase tables state → `memory/project_stack.md` (read only when touching infra).
 
@@ -69,6 +70,43 @@ Env vars + Supabase tables state → `memory/project_stack.md` (read only when t
 SQ-13 complete (2026-04-16). All Phase SQ P1–P3 steps done except SQ-15 (blocked on AdSense approval).
 
 **SQ-15**: IGDB integration re-evaluation — gated on AdSense approval. Read `SPEC.md §SQ-15` (line 186) when unblocked.
+
+---
+
+## ── PLANNED: Squad Enhancement (SQ-ENH-1~4) ──────────────
+
+설계 확정, 미구현. 착수 시 순서대로 진행.
+
+**SQ-ENH-1 — Pairwise 일치율 스코어링** (`lib/squad.ts`)
+- 현재: 개인 ↔ 필터된 그룹 프로필 코사인 유사도 → 항상 80%+ 편향
+- 변경: 각 멤버 일치율 = 나머지 멤버들과의 코사인 유사도 평균
+- `mergeTagProfiles` / 추천 스코어링 로직은 그대로 유지
+- 영향 파일: `lib/squad.ts` (calcMatchScore → calcPairwiseMatchScore)
+
+**SQ-ENH-2 — 멤버별 취향픽** (`app/api/squad/route.ts`, `lib/claude.ts`, `types/`)
+- 각 멤버의 개인 tagProfile로 후보 재스코어링 (병합 프로필 아님)
+- 그룹 추천 5개와 겹치지 않는 상위 1~2개 선정
+- Claude에게 멤버별 픽 카드 생성 요청 (reason 포함)
+- 결과 타입에 `memberPicks: Record<steamId, SquadRecommendationCard[]>` 추가
+
+**SQ-ENH-3 — 분석 설명** (`lib/claude.ts`)
+- Claude가 공통 태그·갈림 태그 기반으로 1~2문장 자연어 설명 생성
+- 기존 추천 API 호출에 `analysisReason: string` 필드 추가 (별도 API 호출 없음)
+
+**SQ-ENH-4 — 인기 멀티 게임 섹션** (`app/api/squad/route.ts`, result page)
+- Steam 스토어 검색 API 사용 (API 키 불필요):
+  `store.steampowered.com/search/results/?tags=1191&sort_by=Reviews_DESC&json=1`
+  (tag 1191 = Multiplayer)
+- 그룹 추천·멤버픽과 겹치지 않는 인기 멀티 게임 3~5개
+- 가격은 기존 `getGameDetails` / price cache 재활용
+- 결과 타입에 `popularMultiplayer: SquadRecommendationCard[]` 추가
+
+**결과 페이지 신규 섹션 순서** (SQ-ENH-1~4 완료 후):
+1. 취향 일치율 히어로 + 멤버 pill (기존 — 스코어만 수정됨)
+2. **분석 설명** (ENH-3) — 태그 기반 한두 문장
+3. 그룹 추천 카드 5개 (기존 유지)
+4. **멤버별 취향픽** (ENH-2) — 멤버명 + 게임 1~2개씩
+5. **같이 하면 재밌는 멀티 게임** (ENH-4) — 인기 멀티 3~5개
 
 ---
 
