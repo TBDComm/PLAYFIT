@@ -90,7 +90,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session)
         if (session) void fetchSteamId(session.user.id)
       } else if (event === 'TOKEN_REFRESHED') {
-        setSession(session)                  // steamId is permanent — no re-fetch needed
+        setSession(session)
+        // INITIAL_SESSION이 null로 발화된 후 TOKEN_REFRESHED로 세션이 복구되거나,
+        // 만료 토큰으로 초기 fetchSteamId가 RLS에 차단된 경우 여기서 복구
+        if (session) void fetchSteamId(session.user.id)
       } else if (event === 'SIGNED_OUT') {
         setSession(null)
         setSteamId(null)

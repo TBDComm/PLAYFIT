@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 91/200 lines — OK**
+📏 **File health: 92/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see `rules/handover-rules.md` §5)._
 
 ---
@@ -28,6 +28,7 @@ Start work → fill In-Progress Lock. Finish step → clear lock + update Active
 ```
 STATUS: CLEAR
 ```
+
 
 _When starting work, replace above with:_
 ```
