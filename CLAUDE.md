@@ -94,6 +94,7 @@ Every archive and long spec file has a **Section Index at the top**. Read the in
 - Re-reading a file right after editing it (the harness tracks edits; trust your last write).
 - Grepping for a CE item when the per-step line index in `SPEC_archive.md` already points straight at it.
 - Loading `memory/project_stack.md` when you're not touching infra — it's behind an explicit pointer for a reason.
+- **Spawning Explore or Plan agents** when Glob/Grep/Read can do the job — use direct tools first; agents are reserved for genuinely open-ended multi-step searches that cannot be answered with 1–3 direct tool calls.
 
 ---
 
