@@ -24,9 +24,9 @@ type ValidationStatus = 'idle' | 'checking' | 'valid' | 'private' | 'insufficien
 
 const VALIDATION_MESSAGES: Partial<Record<ValidationStatus, string>> = {
   private: '비공개 프로필이에요. Steam 설정에서 공개로 변경해주세요',
-  insufficient: '플레이 기록이 너무 적어요 (최소 5개 게임 필요)',
+  insufficient: '플레이 기록이 너무 적어요 (최소 5개 게임이 필요합니다)',
   resolve_failed: 'Steam 프로필을 찾을 수 없어요',
-  invalid_url: '올바른 Steam 프로필 URL이 아니에요',
+  invalid_url: '올바른 Steam 프로필 URL을 입력해주세요',
 }
 
 const INVALID_STATUSES: ValidationStatus[] = ['private', 'insufficient', 'resolve_failed', 'invalid_url']
@@ -288,14 +288,14 @@ export default function SquadPage() {
                 onClick={() => setFreeOnly(true)}
                 aria-pressed={freeOnly}
               >
-                무료만
+                무료게임 추천
               </button>
             </div>
 
             {!freeOnly && (
               <div className={styles.budgetWrap}>
                 <label htmlFor="budget" className={styles.budgetLabel}>
-                  예산
+                  예산 설정하기
                 </label>
                 <div className={styles.budgetInputWrap}>
                   <input
