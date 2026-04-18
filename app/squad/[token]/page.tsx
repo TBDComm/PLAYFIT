@@ -113,7 +113,7 @@ export default async function SquadTokenPage({ params }: Props) {
 
         {/* 공통 태그 */}
         <div className={styles.tagSection}>
-          <p className={styles.tagSectionTitle}>모두가 좋아하는</p>
+          <p className={styles.tagSectionTitle}>모두가 좋아하는 태그</p>
           <div>
             {session.top_shared_tags.map(tag => (
               <span key={tag} className={resultStyles.tagPill}>{tag}</span>
@@ -124,7 +124,7 @@ export default async function SquadTokenPage({ params }: Props) {
         {/* 취향 갈림 태그 */}
         {session.conflict_tags.length > 0 && (
           <div className={styles.tagSection}>
-            <p className={styles.tagSectionTitle}>취향이 갈리는</p>
+            <p className={styles.tagSectionTitle}>취향이 갈리는 태그</p>
             <div>
               {session.conflict_tags.map(tag => (
                 <span key={tag} className={`${resultStyles.tagPill} ${styles.conflictPill}`}>{tag}</span>
