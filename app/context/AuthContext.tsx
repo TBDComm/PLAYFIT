@@ -90,9 +90,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session)
         if (session) void fetchSteamId(session.user.id)
       } else if (event === 'TOKEN_REFRESHED') {
-        // INITIAL_SESSION이 null로 발화된 후 TOKEN_REFRESHED로 세션이 복구되는 경우,
-        // setIsLoading(true) 없이 setSession만 하면 isLoading=false, steamId=null 상태에서
-        // authState='unlinked_auth'가 되어 Header가 이를 새 로그인으로 오감지 → Steam 팝업 표시 버그
+        // fetchSteamId 완료 전 authState='unlinked_auth' 플래시 방지 (SIGNED_IN과 동일 패턴)
         setIsLoading(true)
         setSession(session)
         if (session) void fetchSteamId(session.user.id)
