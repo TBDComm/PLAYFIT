@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/app/context/AuthContext'
 import LoadingOverlay from '@/app/components/LoadingOverlay'
@@ -20,48 +20,125 @@ const ERROR_MESSAGES: Partial<Record<ErrorCode, string>> = {
   TAG_EXTRACTION_FAILED: '취향 태그를 추출할 수 없어요',
 }
 
+type ValidationStatus = 'idle' | 'checking' | 'valid' | 'private' | 'insufficient' | 'resolve_failed' | 'invalid_url'
+
+const VALIDATION_MESSAGES: Partial<Record<ValidationStatus, string>> = {
+  private: '비공개 프로필이에요. Steam 설정에서 공개로 변경해주세요',
+  insufficient: '플레이 기록이 너무 적어요 (최소 5개 게임 필요)',
+  resolve_failed: 'Steam 프로필을 찾을 수 없어요',
+  invalid_url: '올바른 Steam 프로필 URL이 아니에요',
+}
+
+const INVALID_STATUSES: ValidationStatus[] = ['private', 'insufficient', 'resolve_failed', 'invalid_url']
+
 export default function SquadPage() {
   const router = useRouter()
   const { steamId: contextSteamId } = useAuth()
 
-  // Steam URL 입력 행 목록 — 최소 2개, 최대 4개
   const [urls, setUrls] = useState<string[]>(['', ''])
+  const [validations, setValidations] = useState<ValidationStatus[]>(['idle', 'idle'])
   const [budget, setBudget] = useState('')
   const [freeOnly, setFreeOnly] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const errorRef = useRef<HTMLParagraphElement>(null)
+  const debounceRefs = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map())
+  const versionRefs = useRef<Map<number, number>>(new Map())
+
+  // 언마운트 시 debounce 정리
+  useEffect(() => {
+    const refs = debounceRefs.current
+    return () => { refs.forEach(timer => clearTimeout(timer)) }
+  }, [])
+
+  const triggerValidation = useCallback((index: number, url: string) => {
+    const existing = debounceRefs.current.get(index)
+    if (existing) clearTimeout(existing)
+
+    setValidations(prev => {
+      const next = [...prev]
+      next[index] = 'idle'
+      return next
+    })
+
+    if (!STEAM_URL_REGEX.test(url)) return
+
+    // 버전 증가 — 구버전 응답 무시용
+    const version = (versionRefs.current.get(index) ?? 0) + 1
+    versionRefs.current.set(index, version)
+
+    const timer = setTimeout(async () => {
+      setValidations(prev => {
+        const next = [...prev]
+        next[index] = 'checking'
+        return next
+      })
+
+      try {
+        const res = await fetch(`/api/squad/validate?url=${encodeURIComponent(url)}`)
+        const data = await res.json() as { status: ValidationStatus }
+
+        if (versionRefs.current.get(index) !== version) return
+        setValidations(prev => {
+          const next = [...prev]
+          next[index] = data.status
+          return next
+        })
+      } catch {
+        if (versionRefs.current.get(index) !== version) return
+        setValidations(prev => {
+          const next = [...prev]
+          next[index] = 'idle'
+          return next
+        })
+      }
+    }, 700)
+
+    debounceRefs.current.set(index, timer)
+  }, [])
 
   // 호스트 Steam URL 자동 채우기
   useEffect(() => {
     if (contextSteamId) {
+      const url = `https://steamcommunity.com/profiles/${contextSteamId}`
       setUrls(prev => {
         const next = [...prev]
-        next[0] = `https://steamcommunity.com/profiles/${contextSteamId}`
+        next[0] = url
         return next
       })
+      triggerValidation(0, url)
     }
-  }, [contextSteamId])
+  }, [contextSteamId, triggerValidation])
 
   // 에러 발생 시 포커스 이동
   useEffect(() => {
     if (error) errorRef.current?.focus()
   }, [error])
 
-  function setUrl(index: number, value: string) {
+  function handleUrlChange(index: number, value: string) {
     setUrls(prev => {
       const next = [...prev]
       next[index] = value
       return next
     })
+    triggerValidation(index, value)
   }
 
   function addMember() {
-    if (urls.length < 4) setUrls(prev => [...prev, ''])
+    if (urls.length < 4) {
+      setUrls(prev => [...prev, ''])
+      setValidations(prev => [...prev, 'idle'])
+    }
   }
 
   function removeMember(index: number) {
+    // 버전 bump — 해당 슬롯의 진행 중인 요청 무효화
+    versionRefs.current.set(index, (versionRefs.current.get(index) ?? 0) + 1)
+    const existing = debounceRefs.current.get(index)
+    if (existing) clearTimeout(existing)
+    debounceRefs.current.delete(index)
     setUrls(prev => prev.filter((_, i) => i !== index))
+    setValidations(prev => prev.filter((_, i) => i !== index))
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -129,26 +206,47 @@ export default function SquadPage() {
             </legend>
 
             {urls.map((url, index) => {
-              const isValid = url.trim() && STEAM_URL_REGEX.test(url)
+              const validation = validations[index] ?? 'idle'
+              const errorMsg = VALIDATION_MESSAGES[validation] ?? null
+              const isInvalid = INVALID_STATUSES.includes(validation)
               return (
                 <div key={index} className={styles.urlRow}>
                   <label htmlFor={`url-${index}`} className={styles.urlLabel}>
                     {index === 0 ? '호스트 (나)' : `멤버 ${index + 1}`}
                   </label>
-                  <div className={styles.urlInputWrap}>
-                    <input
-                      id={`url-${index}`}
-                      name={`member-url-${index}`}
-                      type="url"
-                      value={url}
-                      onChange={e => setUrl(index, e.target.value)}
-                      placeholder="예: https://steamcommunity.com/id/username"
-                      className={styles.input}
-                      autoComplete="off"
-                      spellCheck={false}
-                    />
-                    {isValid && (
-                      <span className={styles.urlValid} aria-hidden="true">✓</span>
+                  <div className={styles.urlFieldCol}>
+                    <div className={styles.urlInputWrap}>
+                      <input
+                        id={`url-${index}`}
+                        name={`member-url-${index}`}
+                        type="url"
+                        value={url}
+                        onChange={e => handleUrlChange(index, e.target.value)}
+                        placeholder="예: https://steamcommunity.com/id/username"
+                        className={`${styles.input} ${isInvalid ? styles.inputError : ''}`}
+                        autoComplete="off"
+                        spellCheck={false}
+                        aria-describedby={errorMsg ? `url-error-${index}` : undefined}
+                        aria-invalid={isInvalid ? 'true' : undefined}
+                      />
+                      {validation === 'checking' && (
+                        <span className={styles.urlChecking} aria-hidden="true">…</span>
+                      )}
+                      {validation === 'valid' && (
+                        <span className={styles.urlValid} aria-hidden="true">✓</span>
+                      )}
+                      {isInvalid && (
+                        <span className={styles.urlInvalid} aria-hidden="true">✕</span>
+                      )}
+                    </div>
+                    {errorMsg && (
+                      <p
+                        id={`url-error-${index}`}
+                        className={styles.urlErrorMsg}
+                        aria-live="polite"
+                      >
+                        {errorMsg}
+                      </p>
                     )}
                   </div>
                   {/* 행 삭제 — 최소 2개 유지 */}
