@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getSquadSession, getPublicProfileLite } from '@/lib/supabase'
+import { getPlayerSummaries } from '@/lib/steam'
 
 // React cache() — generateMetadata + page 간 DB 중복 조회 방지
 const loadSquadSession = cache((token: string) => getSquadSession(token))
@@ -42,10 +43,11 @@ export default async function SquadTokenPage({ params }: Props) {
   const session = await loadSquadSession(token)
   if (!session) notFound()
 
-  // host의 공개 프로필 lite 조회 — viral loop 활성화 (없으면 null)
-  const hostProfile = session.host_user_id
-    ? await getPublicProfileLite(session.host_user_id)
-    : null
+  // 멤버 이름 + host 프로필 병렬 조회
+  const [nameMap, hostProfile] = await Promise.all([
+    getPlayerSummaries(session.member_steam_ids),
+    session.host_user_id ? getPublicProfileLite(session.host_user_id) : Promise.resolve(null),
+  ])
 
   const cards: SquadRecommendationCard[] = Array.isArray(session.result_cards)
     ? (session.result_cards as SquadRecommendationCard[])
@@ -95,14 +97,18 @@ export default async function SquadTokenPage({ params }: Props) {
 
         {/* 멤버별 매치 스코어 pill */}
         <div className={styles.memberScores} aria-label="멤버별 취향 일치율">
-          {Object.entries(session.match_scores).map(([steamId, score]) => (
-            <span
-              key={steamId}
-              className={`${styles.memberPill} ${getScoreClass(score as number)}`}
-            >
-              멤버 {(score as number)}%
-            </span>
-          ))}
+          {Object.entries(session.match_scores).map(([steamId, score]) => {
+            const name = nameMap.get(steamId) ?? `#${steamId.slice(-4)}`
+            return (
+              <span
+                key={steamId}
+                className={`${styles.memberPill} ${getScoreClass(score as number)}`}
+                title={steamId}
+              >
+                {name} · {score as number}%
+              </span>
+            )
+          })}
         </div>
 
         {/* 공통 태그 */}

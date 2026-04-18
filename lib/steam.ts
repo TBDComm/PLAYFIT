@@ -108,6 +108,24 @@ export const getAllLibraryGames = cache(
   }
 )
 
+export const getPlayerSummaries = cache(
+  async (steamIds: string[]): Promise<Map<string, string>> => {
+    if (steamIds.length === 0) return new Map()
+    const key = process.env.STEAM_API_KEY
+    const res = await fetch(
+      `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${key}&steamids=${steamIds.join(',')}`,
+      { next: { revalidate: 3600 } }
+    )
+    if (!res.ok) return new Map()
+    const data = (await res.json()) as { response: { players: { steamid: string; personaname: string }[] } }
+    const map = new Map<string, string>()
+    for (const p of data.response?.players ?? []) {
+      map.set(p.steamid, p.personaname)
+    }
+    return map
+  }
+)
+
 export const resolveVanityUrl = cache(async (vanity: string): Promise<string | null> => {
   const key = process.env.STEAM_API_KEY
   const res = await fetch(
