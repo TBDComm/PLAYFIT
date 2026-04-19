@@ -133,19 +133,23 @@ export interface PopularMultiplayerGame {
 
 // 스팀 멀티플레이어(tag=1685) 인기순 상위 게임 목록 — appid는 logo URL에서 추출
 export async function getPopularMultiplayerGames(): Promise<PopularMultiplayerGame[]> {
-  const res = await fetch(
-    'https://store.steampowered.com/search/results/?tags=1685&sort_by=Reviews_DESC&json=1&cc=us&start=0&count=20',
-    { next: { revalidate: 86400 } }
-  )
-  if (!res.ok) return []
-  const data = (await res.json()) as { items?: Array<{ name: string; logo: string }> }
-  return (data.items ?? [])
-    .map(item => {
-      const match = item.logo.match(/\/apps\/(\d+)\//)
-      if (!match) return null
-      return { appid: Number(match[1]), name: item.name }
-    })
-    .filter((g): g is PopularMultiplayerGame => g !== null)
+  try {
+    const res = await fetch(
+      'https://store.steampowered.com/search/results/?tags=1685&sort_by=Reviews_DESC&json=1&cc=us&start=0&count=20',
+      { next: { revalidate: 86400 } }
+    )
+    if (!res.ok) return []
+    const data = (await res.json()) as { items?: Array<{ name: string; logo: string }> }
+    return (data.items ?? [])
+      .map(item => {
+        const match = item.logo.match(/\/apps\/(\d+)\//)
+        if (!match) return null
+        return { appid: Number(match[1]), name: item.name }
+      })
+      .filter((g): g is PopularMultiplayerGame => g !== null)
+  } catch {
+    return []
+  }
 }
 
 export const resolveVanityUrl = cache(async (vanity: string): Promise<string | null> => {

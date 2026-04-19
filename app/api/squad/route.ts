@@ -12,6 +12,7 @@ import {
   getGamePriceCache,
   upsertGamePriceCache,
   saveSquadSession,
+  type GamePriceCacheRow,
 } from '@/lib/supabase'
 import { buildTagProfile, analyzeSquad, calcMatchScore } from '@/lib/squad'
 import type { ErrorCode, SquadMember, GameDetails, SquadRecommendationCard } from '@/types'
@@ -263,7 +264,9 @@ export async function POST(request: NextRequest) {
     const popularFiltered = popularRaw.filter(g => !excludeFromPopular.has(g.appid))
 
     const popularAppids = popularFiltered.map(g => String(g.appid))
-    const popularPriceCache = await getGamePriceCache(popularAppids)
+    const popularPriceCache = popularAppids.length > 0
+      ? await getGamePriceCache(popularAppids)
+      : new Map<string, GamePriceCacheRow>()
 
     const popularNeedsFetch = popularFiltered
       .filter(g => {
