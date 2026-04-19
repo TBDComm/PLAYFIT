@@ -120,6 +120,8 @@ export interface SquadSession {
   conflict_tags: string[]
   budget_krw: number | null
   free_only: boolean
+  member_picks: Record<string, SquadRecommendationCard[]> | null
+  analysis_reason: string | null
   created_at: string
   expires_at: string
 }

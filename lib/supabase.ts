@@ -110,6 +110,8 @@ export async function saveSquadSession(row: {
   conflict_tags: string[]
   budget_krw: number | null
   free_only: boolean
+  member_picks?: Record<string, SquadRecommendationCard[]>
+  analysis_reason?: string
 }): Promise<string> {
   const { data, error } = await serviceSupabase
     .from('squad_sessions')

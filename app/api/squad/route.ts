@@ -13,7 +13,7 @@ import {
   upsertGamePriceCache,
   saveSquadSession,
 } from '@/lib/supabase'
-import { buildTagProfile, analyzeSquad } from '@/lib/squad'
+import { buildTagProfile, analyzeSquad, calcMatchScore } from '@/lib/squad'
 import type { ErrorCode, SquadMember, GameDetails } from '@/types'
 
 export const runtime = 'edge'
@@ -210,7 +210,32 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 11. Claude Squad 추천
+    // 11. ENH-2: 멤버별 개인 후보 사전 계산 (개인 tagProfile × 후보 태그 코사인 유사도 상위 2개)
+    type MemberCandidateForClaude = {
+      appid: number; name: string; price_krw: number | null
+      is_free: boolean; metacritic_score?: number; top_tags: string[]
+    }
+    const memberCandidatesForClaude: Record<string, MemberCandidateForClaude[]> = {}
+    for (const member of squadMembers) {
+      const picks = candidates
+        .map(c => ({
+          c,
+          score: calcMatchScore(member.tagProfile, scored.find(s => s.appid === String(c.appid))?.tags ?? {}),
+        }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 2)
+        .map(({ c }) => ({
+          appid: c.appid,
+          name: c.name,
+          price_krw: c.price_krw,
+          is_free: c.is_free,
+          metacritic_score: c.metacritic_score ?? undefined,
+          top_tags: c.top_tags,
+        }))
+      memberCandidatesForClaude[member.steamId] = picks
+    }
+
+    // 12. Claude Squad 추천 (그룹 5개 + 멤버픽 reason 생성)
     const claudeResult = await getSquadRecommendations(candidates, {
       memberCount: validMembers.length,
       avgMatchScore: analysis.avgMatchScore,
@@ -218,13 +243,16 @@ export async function POST(request: NextRequest) {
       conflictTags: analysis.conflictTags,
       budget,
       freeOnly,
+      memberCandidates: memberCandidatesForClaude,
     })
 
     if (claudeResult === 'AI_PARSE_FAILURE') {
       return NextResponse.json({ error: 'AI_PARSE_FAILURE' satisfies ErrorCode }, { status: 500 })
     }
 
-    // 12. share_token 생성 + DB 저장
+    const { groupRecs, memberPicks } = claudeResult
+
+    // 13. share_token 생성 + DB 저장
     const shareToken = generateShareToken()
     await saveSquadSession({
       share_token: shareToken,
@@ -232,13 +260,14 @@ export async function POST(request: NextRequest) {
       member_steam_ids: validMembers.map(m => m.steamId),
       member_count: validMembers.length,
       merged_profile: analysis.mergedProfile,
-      result_cards: claudeResult,
+      result_cards: groupRecs,
       match_scores: analysis.matchScores,
       avg_match_score: analysis.avgMatchScore,
       top_shared_tags: analysis.topSharedTags,
       conflict_tags: analysis.conflictTags,
       budget_krw: budget,
       free_only: freeOnly,
+      member_picks: memberPicks,
     })
 
     return NextResponse.json({
@@ -248,7 +277,8 @@ export async function POST(request: NextRequest) {
       matchScores: analysis.matchScores,
       topSharedTags: analysis.topSharedTags,
       conflictTags: analysis.conflictTags,
-      recommendations: claudeResult,
+      recommendations: groupRecs,
+      memberPicks,
       skipped: skippedReasons,
     })
 

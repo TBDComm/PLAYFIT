@@ -60,25 +60,24 @@ Next action: [exactly what to do next to resume]
 | SQ-13 | Phase SQ P3 — `@vercel/og` OG cards (CF Pages compat verified first) | ✅ 2026-04-16 |
 | SQ-15 | Phase SQ P3 — IGDB re-evaluation (AdSense approval gate) | 🕑 blocked |
 | SQ-ENH-1 | Pairwise match score (lib/squad.ts) | ✅ 2026-04-19 |
-| **SQ-ENH-2~4** | **Squad 분석 개선 (설계 완료, 미구현)** | 📋 planned |
+| SQ-ENH-2 | Member picks — per-member re-score + Claude reason | ✅ 2026-04-19 |
+| **SQ-ENH-3~4** | **Squad 분석 개선 (설계 완료, 미구현)** | 📋 planned |
 
 Env vars + Supabase tables state → `memory/project_stack.md` (read only when touching infra).
 
 ---
 
-## ── ACTIVE STEP: SQ-ENH-2~4 ──
+## ── ACTIVE STEP: SQ-ENH-3~4 ──
 
-SQ-15 remains blocked (AdSense approval pending). ENH-1 complete. Next: ENH-2~4 in order — each step depends on the previous.
-
-**Ask user before starting ENH-2 or ENH-3:** Should `member_picks` and `analysis_reason` be stored in `squad_sessions` DB (requires migration) or returned in API response only (lost on page reload, not shown on shared result link)?
+SQ-15 remains blocked (AdSense approval pending). ENH-1~2 complete. Next: ENH-3, then ENH-4.
 
 **Ask user before starting ENH-4:** Test-fetch the Steam store search response format before writing any code: `store.steampowered.com/search/results/?tags=1191&sort_by=Reviews_DESC&json=1` — confirm field names and appid extraction path.
 
-**ENH-1** ✅ — Done. Pairwise cosine in `analyzeSquad`; single-member edge case returns 100.
+**ENH-1** ✅ — Pairwise cosine in `analyzeSquad`; single-member edge case returns 100.
 
-**ENH-2** — `app/api/squad/route.ts`, `lib/claude.ts`, `types/index.ts`. Re-score candidates per member using individual `tagProfile` (not merged). Top 2 non-overlapping with group recs → Claude generates pick cards with `reason`. Add `memberPicks: Record<string, SquadRecommendationCard[]>` to API response type. Does NOT include UI changes (those land in ENH-4).
+**ENH-2** ✅ — Migration `20260419_squad_enh.sql` adds `member_picks`/`analysis_reason` columns. route.ts re-scores candidates per member (calcMatchScore × individual tagProfile), top 2 → Claude generates reasons in same call as group recs. DB + API response both updated.
 
-**ENH-3** — `lib/claude.ts` only. Add `analysisReason: string` to `getSquadRecommendations` return — 1–2 sentences from `topSharedTags` / `conflictTags`. No extra Claude API call; extend existing prompt. Does NOT include UI changes (those land in ENH-4).
+**ENH-3** — `lib/claude.ts` only. Add `analysisReason: string` to `SquadResult` and `getSquadRecommendations` return — 1–2 sentences from `topSharedTags` / `conflictTags`. No extra Claude API call; extend existing prompt. Save to DB (`analysis_reason`). Does NOT include UI changes (those land in ENH-4).
 
 **ENH-4** — `app/api/squad/route.ts`, result page, `types/index.ts`. Fetch Steam store top multiplayer → price via existing cache → 3–5 picks not in group recs or member picks → `popularMultiplayer: SquadRecommendationCard[]`. UI: render all new sections below existing 5 cards in order: `analysisReason` → `memberPicks` → `popularMultiplayer`.
 

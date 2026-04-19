@@ -29,6 +29,13 @@ interface SquadContext {
   conflictTags: string[]
   budget: number | null
   freeOnly: boolean
+  // ENH-2: steamId → 코드에서 사전 선택된 멤버별 후보 2개
+  memberCandidates: Record<string, SquadCandidateForClaude[]>
+}
+
+export interface SquadResult {
+  groupRecs: SquadRecommendationCard[]
+  memberPicks: Record<string, SquadRecommendationCard[]>
 }
 
 // 모듈 수준 싱글톤 — 매 호출마다 재생성 방지
@@ -86,12 +93,21 @@ Response format:
 export async function getSquadRecommendations(
   candidates: SquadCandidateForClaude[],
   ctx: SquadContext
-): Promise<SquadRecommendationCard[] | 'AI_PARSE_FAILURE'> {
+): Promise<SquadResult | 'AI_PARSE_FAILURE'> {
   const budgetNote = ctx.freeOnly
     ? '무료 게임만 추천'
     : ctx.budget
     ? `예산 ${ctx.budget.toLocaleString()}원 이하`
     : '예산 제한 없음'
+
+  // 멤버픽 후보 문자열 (steamId 노출 없이 인덱스로 표기)
+  const memberEntries = Object.entries(ctx.memberCandidates)
+  const memberPickSection = memberEntries.length > 0
+    ? `\n각 멤버의 개인 추천 후보 (시스템이 사전 선택 — 이유만 생성):
+${memberEntries.map(([sid, picks], i) =>
+  `멤버${i + 1}(id:${sid}): ${JSON.stringify(picks.map(p => ({ appid: p.appid, name: p.name, top_tags: p.top_tags })))}`
+).join('\n')}`
+    : ''
 
   const userPrompt = `${ctx.memberCount}명이 함께 플레이할 게임을 추천해야 합니다.
 평균 취향 일치율: ${ctx.avgMatchScore}%
@@ -101,20 +117,21 @@ ${ctx.conflictTags.length > 0 ? `취향이 갈리는 태그: ${ctx.conflictTags.
 
 후보 게임 목록:
 ${JSON.stringify(candidates)}
+${memberPickSection}
 
 규칙:
-- 정확히 5개 선택, 태그 공통점이 가장 높은 게임 우선
+- recommendations: 후보에서 정확히 5개 선택, 태그 공통점 높은 게임 우선, 멤버픽과 중복 금지
 - 추천 이유는 짧은 한국어 한 문장, ${ctx.memberCount}명이 함께 즐길 수 있는 이유 포함
+- memberPicks: 각 멤버의 개인 후보에 짧은 한국어 이유 한 문장 추가 (해당 멤버 취향에 맞는 이유)
 - 인기나 트렌드 언급 금지
-- freeOnly가 true인 경우 is_free=true 게임만 선택
 
 응답 형식:
-{"recommendations": [{"appid": "", "reason": ""}]}`
+{"recommendations":[{"appid":"","reason":""}],"memberPicks":{"<id>":[{"appid":"","reason":""}]}}`
 
   try {
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 500,
+      max_tokens: 1024,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userPrompt }],
     })
@@ -126,15 +143,18 @@ ${JSON.stringify(candidates)}
       return 'AI_PARSE_FAILURE'
     }
 
-    const parsed = JSON.parse(jsonMatch[0]) as { recommendations: Recommendation[] }
+    const parsed = JSON.parse(jsonMatch[0]) as {
+      recommendations: Recommendation[]
+      memberPicks?: Record<string, Recommendation[]>
+    }
     if (!Array.isArray(parsed.recommendations)) return 'AI_PARSE_FAILURE'
 
-    // Claude 응답에 가격/태그 등 메타데이터 병합
-    const result: SquadRecommendationCard[] = []
+    // 그룹 추천 — 가격/태그 메타데이터 병합
+    const groupRecs: SquadRecommendationCard[] = []
     for (const rec of parsed.recommendations) {
       const candidate = candidates.find(c => String(c.appid) === String(rec.appid))
       if (!candidate) continue
-      result.push({
+      groupRecs.push({
         appid: candidate.appid,
         name: candidate.name,
         reason: rec.reason,
@@ -145,7 +165,27 @@ ${JSON.stringify(candidates)}
         tag_snapshot: candidate.top_tags.slice(0, 5),
       })
     }
-    return result
+
+    // 멤버픽 — 코드에서 사전 선택된 후보에 Claude reason 병합
+    const memberPicks: Record<string, SquadRecommendationCard[]> = {}
+    for (const [steamId, picks] of memberEntries) {
+      const claudePicks = parsed.memberPicks?.[steamId] ?? []
+      memberPicks[steamId] = picks.map(candidate => {
+        const claudeRec = claudePicks.find(r => String(r.appid) === String(candidate.appid))
+        return {
+          appid: candidate.appid,
+          name: candidate.name,
+          reason: claudeRec?.reason ?? '',
+          price_krw: candidate.price_krw,
+          is_free: candidate.is_free,
+          metacritic_score: candidate.metacritic_score,
+          store_url: `https://store.steampowered.com/app/${candidate.appid}`,
+          tag_snapshot: candidate.top_tags.slice(0, 5),
+        }
+      })
+    }
+
+    return { groupRecs, memberPicks }
   } catch (e) {
     console.error('[claude] Squad AI_PARSE_FAILURE:', e)
     return 'AI_PARSE_FAILURE'
