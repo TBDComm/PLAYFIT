@@ -17,12 +17,12 @@ export default function NameSessionForm({ token, initialName }: Props) {
     setLoading(true)
     setSaved(false)
     try {
-      await fetch(`/api/squad/${token}`, {
+      const res = await fetch(`/api/squad/${token}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name }),
       })
-      setSaved(true)
+      if (res.ok) setSaved(true)
     } finally {
       setLoading(false)
     }

@@ -249,7 +249,7 @@ export default async function SquadTokenPage({ params }: Props) {
               <div key={steamId} className={styles.memberPickGroup}>
                 <p className={styles.memberPickName}>{memberName}</p>
                 <div className={styles.memberPickCards}>
-                  {(picks as SquadRecommendationCard[]).map(card => (
+                  {picks.map(card => (
                     <div key={card.appid} className={styles.miniCard}>
                       <p className={styles.miniCardName}>{card.name}</p>
                       {card.reason && <p className={styles.miniCardReason}>{card.reason}</p>}

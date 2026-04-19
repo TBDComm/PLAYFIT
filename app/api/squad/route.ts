@@ -272,7 +272,7 @@ export async function POST(request: NextRequest) {
         if (cached.price_updated_at === null) return true
         return now - new Date(cached.price_updated_at).getTime() > PRICE_TTL_MS
       })
-      .slice(0, 5)
+      .slice(0, 3)  // 서브리퀘스트 예산 보수적 cap — main과 합산 시 한도 근접
 
     const popularFetched = popularNeedsFetch.length > 0
       ? await Promise.all(popularNeedsFetch.map(g => getGameDetails(g.appid)))
