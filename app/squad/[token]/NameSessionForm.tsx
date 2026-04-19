@@ -33,6 +33,8 @@ export default function NameSessionForm({ token, initialName }: Props) {
       <div className={styles.nameForm}>
         <input
           type="text"
+          name="session-name"
+          autoComplete="off"
           className={styles.nameInput}
           value={name}
           onChange={e => { setName(e.target.value); setSaved(false) }}

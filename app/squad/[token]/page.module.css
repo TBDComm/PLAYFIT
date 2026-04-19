@@ -296,6 +296,7 @@
   font-weight: 700;
   margin-bottom: 0.4rem;
   color: var(--text-primary);
+  overflow-wrap: break-word;
 }
 
 .miniCardReason {
@@ -303,6 +304,7 @@
   color: var(--text-secondary);
   line-height: 1.5;
   margin-bottom: 0.75rem;
+  overflow-wrap: break-word;
 }
 
 .miniCardMeta {
@@ -360,5 +362,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .copyButton, .ctaLink { transition: none; }
+  .copyButton, .ctaLink, .nameSaveBtn { transition: none; }
 }

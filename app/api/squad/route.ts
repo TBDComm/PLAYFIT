@@ -14,7 +14,7 @@ import {
   saveSquadSession,
 } from '@/lib/supabase'
 import { buildTagProfile, analyzeSquad, calcMatchScore } from '@/lib/squad'
-import type { ErrorCode, SquadMember, GameDetails } from '@/types'
+import type { ErrorCode, SquadMember, GameDetails, SquadRecommendationCard } from '@/types'
 
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
@@ -298,7 +298,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const popularMultiplayer: import('@/types').SquadRecommendationCard[] = popularFiltered
+    const popularMultiplayer: SquadRecommendationCard[] = popularFiltered
       .map(g => {
         const detail = popularDetailMap.get(g.appid)
         if (!detail) return null
