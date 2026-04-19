@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
-import { parseSteamUrl, resolveVanityUrl, getOwnedGames, getGameDetails, sleep } from '@/lib/steam'
+import { parseSteamUrl, resolveVanityUrl, getOwnedGames, getGameDetails, sleep, getPopularMultiplayerGames } from '@/lib/steam'
 import { getSquadRecommendations } from '@/lib/claude'
 import {
   isDbReady,
@@ -235,16 +235,19 @@ export async function POST(request: NextRequest) {
       memberCandidatesForClaude[member.steamId] = picks
     }
 
-    // 12. Claude Squad 추천 (그룹 5개 + 멤버픽 reason 생성)
-    const claudeResult = await getSquadRecommendations(candidates, {
-      memberCount: validMembers.length,
-      avgMatchScore: analysis.avgMatchScore,
-      topSharedTags: analysis.topSharedTags,
-      conflictTags: analysis.conflictTags,
-      budget,
-      freeOnly,
-      memberCandidates: memberCandidatesForClaude,
-    })
+    // 12. Claude 추천 + popular multiplayer fetch 병렬
+    const [claudeResult, popularRaw] = await Promise.all([
+      getSquadRecommendations(candidates, {
+        memberCount: validMembers.length,
+        avgMatchScore: analysis.avgMatchScore,
+        topSharedTags: analysis.topSharedTags,
+        conflictTags: analysis.conflictTags,
+        budget,
+        freeOnly,
+        memberCandidates: memberCandidatesForClaude,
+      }),
+      getPopularMultiplayerGames(),
+    ])
 
     if (claudeResult === 'AI_PARSE_FAILURE') {
       return NextResponse.json({ error: 'AI_PARSE_FAILURE' satisfies ErrorCode }, { status: 500 })
@@ -252,7 +255,68 @@ export async function POST(request: NextRequest) {
 
     const { groupRecs, memberPicks, analysisReason } = claudeResult
 
-    // 13. share_token 생성 + DB 저장
+    // 13. popular multiplayer: 그룹/멤버픽 appid 제외 후 가격 조회 → 최대 5개
+    const excludeFromPopular = new Set<number>([
+      ...groupRecs.map(r => r.appid),
+      ...Object.values(memberPicks).flat().map(r => r.appid),
+    ])
+    const popularFiltered = popularRaw.filter(g => !excludeFromPopular.has(g.appid))
+
+    const popularAppids = popularFiltered.map(g => String(g.appid))
+    const popularPriceCache = await getGamePriceCache(popularAppids)
+
+    const popularNeedsFetch = popularFiltered
+      .filter(g => {
+        const cached = popularPriceCache.get(String(g.appid))
+        if (!cached) return true
+        if (cached.price_updated_at === null) return true
+        return now - new Date(cached.price_updated_at).getTime() > PRICE_TTL_MS
+      })
+      .slice(0, 5)
+
+    const popularFetched = popularNeedsFetch.length > 0
+      ? await Promise.all(popularNeedsFetch.map(g => getGameDetails(g.appid)))
+      : []
+
+    void Promise.all(
+      popularNeedsFetch.map((g, i) => {
+        const d = popularFetched[i]
+        if (!d) return Promise.resolve()
+        return upsertGamePriceCache(d.appid, d.price_krw ?? 0, d.is_free, d.metacritic_score)
+      })
+    ).catch(e => console.error('[squad] popular price cache upsert error:', e))
+
+    const popularDetailMap = new Map<number, { price_krw: number | null; is_free: boolean; metacritic_score?: number }>()
+    for (let i = 0; i < popularNeedsFetch.length; i++) {
+      const d = popularFetched[i]
+      if (d) popularDetailMap.set(d.appid, { price_krw: d.price_krw, is_free: d.is_free, metacritic_score: d.metacritic_score })
+    }
+    for (const [id, cached] of popularPriceCache) {
+      const appid = Number(id)
+      if (!popularDetailMap.has(appid)) {
+        popularDetailMap.set(appid, { price_krw: cached.price_krw, is_free: cached.is_free, metacritic_score: cached.metacritic_score ?? undefined })
+      }
+    }
+
+    const popularMultiplayer: import('@/types').SquadRecommendationCard[] = popularFiltered
+      .map(g => {
+        const detail = popularDetailMap.get(g.appid)
+        if (!detail) return null
+        return {
+          appid: g.appid,
+          name: g.name,
+          reason: '',
+          price_krw: detail.price_krw,
+          is_free: detail.is_free,
+          metacritic_score: detail.metacritic_score,
+          store_url: `https://store.steampowered.com/app/${g.appid}`,
+          tag_snapshot: [],
+        }
+      })
+      .filter((c): c is NonNullable<typeof c> => c !== null)
+      .slice(0, 5)
+
+    // 14. share_token 생성 + DB 저장
     const shareToken = generateShareToken()
     await saveSquadSession({
       share_token: shareToken,
@@ -269,6 +333,7 @@ export async function POST(request: NextRequest) {
       free_only: freeOnly,
       member_picks: memberPicks,
       analysis_reason: analysisReason || undefined,
+      popular_multiplayer: popularMultiplayer.length > 0 ? popularMultiplayer : undefined,
     })
 
     return NextResponse.json({

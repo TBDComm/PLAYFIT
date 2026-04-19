@@ -2,16 +2,18 @@ export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
 
 import { cache } from 'react'
+import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { createServerClient } from '@supabase/ssr'
 import { getSquadSession, getPublicProfileLite } from '@/lib/supabase'
 import { getPlayerSummaries } from '@/lib/steam'
 
-// React cache() — generateMetadata + page 간 DB 중복 조회 방지
 const loadSquadSession = cache((token: string) => getSquadSession(token))
 import ThumbnailImage from '@/app/result/[id]/ThumbnailImage'
 import CopyUrlButton from './CopyUrlButton'
+import NameSessionForm from './NameSessionForm'
 import resultStyles from '@/app/result/[id]/page.module.css'
 import styles from './page.module.css'
 import type { SquadRecommendationCard } from '@/types'
@@ -26,8 +28,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!session) {
     return { title: 'Squad를 찾을 수 없어요 — Guildeline' }
   }
+  const title = session.session_name
+    ? `${session.session_name} — Guildeline`
+    : `스쿼드 평균 ${session.avg_match_score}% 일치 — Guildeline`
   return {
-    title: `스쿼드 평균 ${session.avg_match_score}% 일치 — Guildeline`,
+    title,
     description: `${session.member_count}명의 취향 분석 결과. 공통 태그: ${session.top_shared_tags.slice(0, 3).join(', ')}`,
   }
 }
@@ -38,12 +43,32 @@ function getScoreClass(score: number): string {
   return resultStyles.scoreLow
 }
 
+function PriceLabel({ card }: { card: SquadRecommendationCard }) {
+  if (card.is_free) return <span className={styles.miniCardFree}>무료</span>
+  if (card.price_krw != null) {
+    return <span className={styles.miniCardPrice}>₩{new Intl.NumberFormat('ko-KR').format(card.price_krw)}</span>
+  }
+  return null
+}
+
 export default async function SquadTokenPage({ params }: Props) {
   const { token } = await params
-  const session = await loadSquadSession(token)
+  const cookieStore = await cookies()
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { cookies: { getAll: () => cookieStore.getAll(), setAll: () => {} } }
+  )
+
+  const [session, { data: { session: authSession } }] = await Promise.all([
+    loadSquadSession(token),
+    supabase.auth.getSession(),
+  ])
   if (!session) notFound()
 
-  // 멤버 이름 + host 프로필 병렬 조회
+  const isHost = !!authSession && authSession.user.id === session.host_user_id
+
   const [nameMap, hostProfile] = await Promise.all([
     getPlayerSummaries(session.member_steam_ids),
     session.host_user_id ? getPublicProfileLite(session.host_user_id) : Promise.resolve(null),
@@ -51,6 +76,11 @@ export default async function SquadTokenPage({ params }: Props) {
 
   const cards: SquadRecommendationCard[] = Array.isArray(session.result_cards)
     ? (session.result_cards as SquadRecommendationCard[])
+    : []
+
+  const memberPicks = session.member_picks ?? {}
+  const popularMultiplayer: SquadRecommendationCard[] = Array.isArray(session.popular_multiplayer)
+    ? (session.popular_multiplayer as SquadRecommendationCard[])
     : []
 
   const dateFormatted = new Intl.DateTimeFormat('ko-KR', {
@@ -71,6 +101,16 @@ export default async function SquadTokenPage({ params }: Props) {
           <CopyUrlButton />
         </div>
       </header>
+
+      {/* Session name — display for all, edit only for host */}
+      {session.session_name && !isHost && (
+        <div className={styles.nameSection}>
+          <p className={styles.nameDisplay}>{session.session_name}</p>
+        </div>
+      )}
+      {isHost && (
+        <NameSessionForm token={token} initialName={session.session_name} />
+      )}
 
       {/* Summary */}
       <section className={resultStyles.summarySection}>
@@ -134,7 +174,7 @@ export default async function SquadTokenPage({ params }: Props) {
         )}
       </section>
 
-      {/* 추천 카드 목록 */}
+      {/* 그룹 추천 카드 목록 */}
       <ul className={resultStyles.resultsContainer}>
         {cards.map((card, index) => (
           <li
@@ -193,6 +233,75 @@ export default async function SquadTokenPage({ params }: Props) {
           </li>
         ))}
       </ul>
+
+      {/* analysisReason — Claude 그룹 취향 요약 */}
+      {session.analysis_reason && (
+        <p className={styles.analysisReason}>{session.analysis_reason}</p>
+      )}
+
+      {/* 멤버별 픽 */}
+      {Object.keys(memberPicks).length > 0 && (
+        <section className={styles.memberPicksSection} aria-label="멤버별 추천">
+          <h2 className={styles.memberPicksTitle}>멤버별 취향 픽</h2>
+          {Object.entries(memberPicks).map(([steamId, picks]) => {
+            const memberName = nameMap.get(steamId) ?? `#${steamId.slice(-4)}`
+            return (
+              <div key={steamId} className={styles.memberPickGroup}>
+                <p className={styles.memberPickName}>{memberName}</p>
+                <div className={styles.memberPickCards}>
+                  {(picks as SquadRecommendationCard[]).map(card => (
+                    <div key={card.appid} className={styles.miniCard}>
+                      <p className={styles.miniCardName}>{card.name}</p>
+                      {card.reason && <p className={styles.miniCardReason}>{card.reason}</p>}
+                      <div className={styles.miniCardMeta}>
+                        <PriceLabel card={card} />
+                        <a
+                          href={card.store_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.miniCardLink}
+                        >
+                          Steam →
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          })}
+        </section>
+      )}
+
+      {/* 스팀 인기 멀티플레이어 게임 */}
+      {popularMultiplayer.length > 0 && (
+        <section className={styles.popularSection} aria-label="스팀 인기 멀티플레이어">
+          <h2 className={styles.popularTitle}>스팀 인기 멀티플레이어 게임</h2>
+          <div className={styles.popularGrid}>
+            {popularMultiplayer.map(card => (
+              <div key={card.appid} className={styles.miniCard}>
+                <p className={styles.miniCardName}>{card.name}</p>
+                <div className={styles.miniCardMeta}>
+                  <PriceLabel card={card} />
+                  {card.metacritic_score != null && (
+                    <span className={`${styles.miniCardPrice} ${getScoreClass(card.metacritic_score)}`}>
+                      MC {card.metacritic_score}
+                    </span>
+                  )}
+                  <a
+                    href={card.store_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.miniCardLink}
+                  >
+                    Steam →
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Footer — 바이럴 CTA */}
       <footer className={styles.squadFooter}>

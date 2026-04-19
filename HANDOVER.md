@@ -62,25 +62,20 @@ Next action: [exactly what to do next to resume]
 | SQ-ENH-1 | Pairwise match score (lib/squad.ts) | ✅ 2026-04-19 |
 | SQ-ENH-2 | Member picks — per-member re-score + Claude reason | ✅ 2026-04-19 |
 | SQ-ENH-3 | analysisReason — group taste summary in Claude prompt | ✅ 2026-04-19 |
-| **SQ-ENH-4** | **Steam popular multiplayer section + full UI render** | 📋 planned |
+| SQ-ENH-4 | Steam popular multiplayer section + session naming | ✅ 2026-04-19 |
 
 Env vars + Supabase tables state → `memory/project_stack.md` (read only when touching infra).
 
 ---
 
-## ── ACTIVE STEP: SQ-ENH-4 ──
+## ── ACTIVE STEP: none ──
 
-SQ-15 remains blocked (AdSense approval pending). ENH-1~3 complete. Next: ENH-4 (Steam popular multiplayer + UI).
-
-**Ask user before starting ENH-4:** Test-fetch the Steam store search response format before writing any code: `store.steampowered.com/search/results/?tags=1191&sort_by=Reviews_DESC&json=1` — confirm field names and appid extraction path.
+SQ-15 remains blocked (AdSense approval pending). ENH-1~4 complete.
 
 **ENH-1** ✅ — Pairwise cosine in `analyzeSquad`; single-member edge case returns 100.
-
-**ENH-2** ✅ — Migration `20260419_squad_enh.sql` adds `member_picks`/`analysis_reason` columns. route.ts re-scores candidates per member (calcMatchScore × individual tagProfile), top 2 → Claude generates reasons in same call as group recs. DB + API response both updated.
-
-**ENH-3** ✅ — `analysisReason: string` added to `SquadResult`. Prompt extended (same Claude call). Saved to DB via `analysis_reason` column. UI deferred to ENH-4.
-
-**ENH-4** — `app/api/squad/route.ts`, result page, `types/index.ts`. Fetch Steam store top multiplayer → price via existing cache → 3–5 picks not in group recs or member picks → `popularMultiplayer: SquadRecommendationCard[]`. UI: render all new sections below existing 5 cards in order: `analysisReason` → `memberPicks` → `popularMultiplayer`.
+**ENH-2** ✅ — Migration `20260419_squad_enh.sql` adds `member_picks`/`analysis_reason` columns. route.ts re-scores per member, top 2 → Claude reasons in same call.
+**ENH-3** ✅ — `analysisReason` added to Claude prompt + DB + response.
+**ENH-4** ✅ — Migration `20260419_squad_enh4.sql` adds `popular_multiplayer JSONB` + `session_name TEXT`. `getPopularMultiplayerGames()` fetches `tags=1685` (Multi-player), appid extracted from logo URL. Claude + popular fetch run in parallel. Result page renders `analysisReason` → `memberPicks` → `popularMultiplayer` below group cards. Host can name session via `NameSessionForm` → `PATCH /api/squad/[token]`. Profile page shows `session_name` in squad history.
 
 **SQ-15** (still blocked): AdSense approval gate → read `SPEC.md §SQ-15` (line 186) when unblocked.
 

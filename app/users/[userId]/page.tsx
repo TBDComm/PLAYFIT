@@ -27,6 +27,7 @@ interface TagRow {
 
 interface SquadHistoryRow {
   share_token: string
+  session_name: string | null
   member_count: number
   avg_match_score: number
   top_shared_tags: string[]
@@ -61,7 +62,7 @@ const loadProfile = cache(async (userId: string) => {
 
   const squadHistoryPromise = serviceSupabase
     .from('squad_sessions')
-    .select('share_token, member_count, avg_match_score, top_shared_tags, created_at')
+    .select('share_token, session_name, member_count, avg_match_score, top_shared_tags, created_at')
     .eq('host_user_id', userId)
     .gt('expires_at', nowIso)
     .order('created_at', { ascending: false })
@@ -194,7 +195,7 @@ export default async function UserProfilePage({ params }: Props) {
                       </span>
                       <div className={styles.historyMeta}>
                         <div className={styles.historyTitle}>
-                          {s.member_count}명 스쿼드
+                          {s.session_name || `${s.member_count}명 스쿼드`}
                         </div>
                         <time className={styles.historyDate} dateTime={s.created_at}>{dateFormatted}</time>
                       </div>

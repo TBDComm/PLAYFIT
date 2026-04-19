@@ -122,6 +122,8 @@ export interface SquadSession {
   free_only: boolean
   member_picks: Record<string, SquadRecommendationCard[]> | null
   analysis_reason: string | null
+  popular_multiplayer: SquadRecommendationCard[] | null
+  session_name: string | null
   created_at: string
   expires_at: string
 }

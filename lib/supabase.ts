@@ -112,6 +112,7 @@ export async function saveSquadSession(row: {
   free_only: boolean
   member_picks?: Record<string, SquadRecommendationCard[]>
   analysis_reason?: string
+  popular_multiplayer?: SquadRecommendationCard[]
 }): Promise<string> {
   const { data, error } = await serviceSupabase
     .from('squad_sessions')
@@ -131,6 +132,33 @@ export async function getSquadSession(token: string): Promise<SquadSession | nul
     .single()
   if (error || !data) return null
   return data as SquadSession
+}
+
+export async function updateSquadSessionName(
+  token: string,
+  hostUserId: string,
+  name: string
+): Promise<void> {
+  const { error } = await serviceSupabase
+    .from('squad_sessions')
+    .update({ session_name: name.trim() || null })
+    .eq('share_token', token)
+    .eq('host_user_id', hostUserId)
+  if (error) throw new Error(`updateSquadSessionName error: ${error.message}`)
+}
+
+export async function getUserSquadSessions(
+  hostUserId: string
+): Promise<Array<{ share_token: string; session_name: string | null; member_count: number; avg_match_score: number; top_shared_tags: string[]; created_at: string }>> {
+  const { data, error } = await serviceSupabase
+    .from('squad_sessions')
+    .select('share_token, session_name, member_count, avg_match_score, top_shared_tags, created_at')
+    .eq('host_user_id', hostUserId)
+    .gt('expires_at', new Date().toISOString())
+    .order('created_at', { ascending: false })
+    .limit(20)
+  if (error) return []
+  return data ?? []
 }
 
 // 공개 프로필 표시용 lite 조회 — host_user_id로 닉네임 + is_public 만 가져옴
