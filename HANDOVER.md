@@ -61,15 +61,16 @@ Next action: [exactly what to do next to resume]
 | SQ-15 | Phase SQ P3 — IGDB re-evaluation (AdSense approval gate) | 🕑 blocked |
 | SQ-ENH-1 | Pairwise match score (lib/squad.ts) | ✅ 2026-04-19 |
 | SQ-ENH-2 | Member picks — per-member re-score + Claude reason | ✅ 2026-04-19 |
-| **SQ-ENH-3~4** | **Squad 분석 개선 (설계 완료, 미구현)** | 📋 planned |
+| SQ-ENH-3 | analysisReason — group taste summary in Claude prompt | ✅ 2026-04-19 |
+| **SQ-ENH-4** | **Steam popular multiplayer section + full UI render** | 📋 planned |
 
 Env vars + Supabase tables state → `memory/project_stack.md` (read only when touching infra).
 
 ---
 
-## ── ACTIVE STEP: SQ-ENH-3~4 ──
+## ── ACTIVE STEP: SQ-ENH-4 ──
 
-SQ-15 remains blocked (AdSense approval pending). ENH-1~2 complete. Next: ENH-3, then ENH-4.
+SQ-15 remains blocked (AdSense approval pending). ENH-1~3 complete. Next: ENH-4 (Steam popular multiplayer + UI).
 
 **Ask user before starting ENH-4:** Test-fetch the Steam store search response format before writing any code: `store.steampowered.com/search/results/?tags=1191&sort_by=Reviews_DESC&json=1` — confirm field names and appid extraction path.
 
@@ -77,7 +78,7 @@ SQ-15 remains blocked (AdSense approval pending). ENH-1~2 complete. Next: ENH-3,
 
 **ENH-2** ✅ — Migration `20260419_squad_enh.sql` adds `member_picks`/`analysis_reason` columns. route.ts re-scores candidates per member (calcMatchScore × individual tagProfile), top 2 → Claude generates reasons in same call as group recs. DB + API response both updated.
 
-**ENH-3** — `lib/claude.ts` only. Add `analysisReason: string` to `SquadResult` and `getSquadRecommendations` return — 1–2 sentences from `topSharedTags` / `conflictTags`. No extra Claude API call; extend existing prompt. Save to DB (`analysis_reason`). Does NOT include UI changes (those land in ENH-4).
+**ENH-3** ✅ — `analysisReason: string` added to `SquadResult`. Prompt extended (same Claude call). Saved to DB via `analysis_reason` column. UI deferred to ENH-4.
 
 **ENH-4** — `app/api/squad/route.ts`, result page, `types/index.ts`. Fetch Steam store top multiplayer → price via existing cache → 3–5 picks not in group recs or member picks → `popularMultiplayer: SquadRecommendationCard[]`. UI: render all new sections below existing 5 cards in order: `analysisReason` → `memberPicks` → `popularMultiplayer`.
 

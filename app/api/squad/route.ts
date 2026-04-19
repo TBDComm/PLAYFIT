@@ -250,7 +250,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'AI_PARSE_FAILURE' satisfies ErrorCode }, { status: 500 })
     }
 
-    const { groupRecs, memberPicks } = claudeResult
+    const { groupRecs, memberPicks, analysisReason } = claudeResult
 
     // 13. share_token 생성 + DB 저장
     const shareToken = generateShareToken()
@@ -268,6 +268,7 @@ export async function POST(request: NextRequest) {
       budget_krw: budget,
       free_only: freeOnly,
       member_picks: memberPicks,
+      analysis_reason: analysisReason || undefined,
     })
 
     return NextResponse.json({

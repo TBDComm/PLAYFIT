@@ -36,6 +36,7 @@ interface SquadContext {
 export interface SquadResult {
   groupRecs: SquadRecommendationCard[]
   memberPicks: Record<string, SquadRecommendationCard[]>
+  analysisReason: string
 }
 
 // 모듈 수준 싱글톤 — 매 호출마다 재생성 방지
@@ -123,10 +124,11 @@ ${memberPickSection}
 - recommendations: 후보에서 정확히 5개 선택, 태그 공통점 높은 게임 우선, 멤버픽과 중복 금지
 - 추천 이유는 짧은 한국어 한 문장, ${ctx.memberCount}명이 함께 즐길 수 있는 이유 포함
 - memberPicks: 각 멤버의 개인 후보에 짧은 한국어 이유 한 문장 추가 (해당 멤버 취향에 맞는 이유)
+- analysisReason: 그룹 전체 취향 분석 요약 1~2문장 (공통 태그와 갈등 태그 기반, 한국어)
 - 인기나 트렌드 언급 금지
 
 응답 형식:
-{"recommendations":[{"appid":"","reason":""}],"memberPicks":{"<id>":[{"appid":"","reason":""}]}}`
+{"recommendations":[{"appid":"","reason":""}],"memberPicks":{"<id>":[{"appid":"","reason":""}]},"analysisReason":""}`
 
   try {
     const message = await client.messages.create({
@@ -146,6 +148,7 @@ ${memberPickSection}
     const parsed = JSON.parse(jsonMatch[0]) as {
       recommendations: Recommendation[]
       memberPicks?: Record<string, Recommendation[]>
+      analysisReason?: string
     }
     if (!Array.isArray(parsed.recommendations)) return 'AI_PARSE_FAILURE'
 
@@ -185,7 +188,7 @@ ${memberPickSection}
       })
     }
 
-    return { groupRecs, memberPicks }
+    return { groupRecs, memberPicks, analysisReason: parsed.analysisReason ?? '' }
   } catch (e) {
     console.error('[claude] Squad AI_PARSE_FAILURE:', e)
     return 'AI_PARSE_FAILURE'
