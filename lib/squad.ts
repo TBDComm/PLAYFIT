@@ -95,9 +95,19 @@ export function analyzeSquad(members: SquadMember[]): SquadAnalysis {
   const profiles = members.map(m => m.tagProfile)
   const mergedProfile = mergeTagProfiles(profiles)
 
+  // 페어와이즈: 멤버 i의 점수 = 나머지 j들과의 코사인 유사도 평균
   const matchScores: Record<string, number> = {}
-  for (const m of members) {
-    matchScores[m.steamId] = calcMatchScore(m.tagProfile, mergedProfile)
+  for (let i = 0; i < members.length; i++) {
+    if (members.length === 1) {
+      matchScores[members[i].steamId] = 100
+      continue
+    }
+    let total = 0
+    for (let j = 0; j < members.length; j++) {
+      if (i === j) continue
+      total += calcMatchScore(members[i].tagProfile, members[j].tagProfile)
+    }
+    matchScores[members[i].steamId] = Math.round(total / (members.length - 1))
   }
 
   const avgMatchScore = Math.round(

@@ -59,21 +59,22 @@ Next action: [exactly what to do next to resume]
 | SQ-12 + SQ-14 | Phase SQ P3 — `/users/[userId]` public profile + squad history inline + settings share link | ✅ 2026-04-15 |
 | SQ-13 | Phase SQ P3 — `@vercel/og` OG cards (CF Pages compat verified first) | ✅ 2026-04-16 |
 | SQ-15 | Phase SQ P3 — IGDB re-evaluation (AdSense approval gate) | 🕑 blocked |
-| **SQ-ENH-1~4** | **Squad 분석 개선 (설계 완료, 미구현)** | 📋 planned |
+| SQ-ENH-1 | Pairwise match score (lib/squad.ts) | ✅ 2026-04-19 |
+| **SQ-ENH-2~4** | **Squad 분석 개선 (설계 완료, 미구현)** | 📋 planned |
 
 Env vars + Supabase tables state → `memory/project_stack.md` (read only when touching infra).
 
 ---
 
-## ── ACTIVE STEP: SQ-ENH-1~4 (planned, not started) ──
+## ── ACTIVE STEP: SQ-ENH-2~4 ──
 
-SQ-15 remains blocked (AdSense approval pending). Next work: SQ-ENH-1~4. Implement in order — each step depends on the previous.
+SQ-15 remains blocked (AdSense approval pending). ENH-1 complete. Next: ENH-2~4 in order — each step depends on the previous.
 
 **Ask user before starting ENH-2 or ENH-3:** Should `member_picks` and `analysis_reason` be stored in `squad_sessions` DB (requires migration) or returned in API response only (lost on page reload, not shown on shared result link)?
 
 **Ask user before starting ENH-4:** Test-fetch the Steam store search response format before writing any code: `store.steampowered.com/search/results/?tags=1191&sort_by=Reviews_DESC&json=1` — confirm field names and appid extraction path.
 
-**ENH-1** — `lib/squad.ts` only. Replace group-cosine with pairwise: member i score = avg cosine similarity vs all j≠i. Keep `mergeTagProfiles` and candidate scoring unchanged. No DB, API, or UI change. After completing: verify `avgMatchScore` still rounds correctly and update any tests.
+**ENH-1** ✅ — Done. Pairwise cosine in `analyzeSquad`; single-member edge case returns 100.
 
 **ENH-2** — `app/api/squad/route.ts`, `lib/claude.ts`, `types/index.ts`. Re-score candidates per member using individual `tagProfile` (not merged). Top 2 non-overlapping with group recs → Claude generates pick cards with `reason`. Add `memberPicks: Record<string, SquadRecommendationCard[]>` to API response type. Does NOT include UI changes (those land in ENH-4).
 
