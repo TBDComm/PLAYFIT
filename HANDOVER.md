@@ -26,7 +26,11 @@ Start work → fill In-Progress Lock. Finish step → clear lock + update Active
 **Check this first. If filled, a previous session was interrupted — resume from here.**
 
 ```
-STATUS: clear
+STATUS: IN PROGRESS
+Step: non-step: UX audit → UX_BACKLOG.md
+Files touched: [UX_BACKLOG.md]
+Stopped at: reading user-facing pages to catalog issues
+Next action: finish reads (layout, home, squad, result, users, settings, forms) → write UX_BACKLOG.md grouped by axis/priority → commit with HANDOVER update
 ```
 
 
