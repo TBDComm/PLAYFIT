@@ -26,11 +26,7 @@ Start work → fill In-Progress Lock. Finish step → clear lock + update Active
 **Check this first. If filled, a previous session was interrupted — resume from here.**
 
 ```
-STATUS: IN PROGRESS
-Step: non-step: UX audit → UX_BACKLOG.md
-Files touched: [UX_BACKLOG.md]
-Stopped at: reading user-facing pages to catalog issues
-Next action: finish reads (layout, home, squad, result, users, settings, forms) → write UX_BACKLOG.md grouped by axis/priority → commit with HANDOVER update
+STATUS: clear
 ```
 
 
@@ -76,6 +72,7 @@ Env vars + Supabase tables state → `memory/project_stack.md` (read only when t
 
 SQ-15 remains blocked (AdSense approval pending). ENH-1~4 complete.
 non-step ✅ — Squad CTA → full feature section. Eyebrow + title + feature pills + solid CTA button. `page.tsx` + `page.module.css` updated.
+non-step ✅ — Full UX audit complete (20 steps). `UX_NOTES.md` (raw findings) + `UX_BACKLOG.md` (2 HIGH, 7 MEDIUM, 13 LOW items). See `UX_BACKLOG.md` for priorities.
 
 **ENH-1** ✅ — Pairwise cosine in `analyzeSquad`; single-member edge case returns 100.
 **ENH-2** ✅ — Migration `20260419_squad_enh.sql` adds `member_picks`/`analysis_reason` columns. route.ts re-scores per member, top 2 → Claude reasons in same call.
