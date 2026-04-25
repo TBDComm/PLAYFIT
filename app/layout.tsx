@@ -62,6 +62,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://cdn.akamai.steamstatic.com" />
       </head>
       <body>
+        <a href="#main-content" className="skip-link">본문으로 바로가기</a>
         <Script src="https://accounts.google.com/gsi/client" strategy="lazyOnload" />
         {adClientId && (
           <Script

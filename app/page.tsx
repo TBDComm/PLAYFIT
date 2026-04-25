@@ -34,7 +34,7 @@ function HeroStats() {
 
 export default async function Home() {
   return (
-    <main className={styles.page}>
+    <main id="main-content" className={styles.page}>
       <JsonLd data={homeJsonLd} />
       <div className={styles.pageNav}>
         <Link href="/genre" className={styles.pageNavLink}>장르별 탐색</Link>

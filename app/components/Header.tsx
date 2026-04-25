@@ -76,6 +76,8 @@ export default function Header() {
   const loginModalRef = useRef<HTMLDivElement>(null)
   const linkPopupRef = useRef<HTMLDivElement>(null)
   const googleBtnRef = useRef<HTMLDivElement>(null)
+  const loginTriggerRef = useRef<HTMLElement | null>(null)
+  const linkTriggerRef = useRef<HTMLElement | null>(null)
 
   // Derived — no state needed
   const isSteamUser = session?.user?.email?.endsWith('@steam.playfit') ?? false
@@ -116,7 +118,10 @@ export default function Header() {
 
   // Open login modal from custom event (dispatched by home page anon CTA)
   useEffect(() => {
-    const handler = () => setShowLoginModal(true)
+    const handler = () => {
+      loginTriggerRef.current = document.activeElement as HTMLElement
+      setShowLoginModal(true)
+    }
     window.addEventListener('guildeline:open-login', handler)
     return () => window.removeEventListener('guildeline:open-login', handler)
   }, [])
@@ -187,6 +192,8 @@ export default function Header() {
         setOtpInput('')
         setAuthError(null)
         setAuthLoading(false)
+        loginTriggerRef.current?.focus()
+        loginTriggerRef.current = null
       }
       if (e.key === 'Tab') {
         const modal = loginModalRef.current
@@ -220,6 +227,8 @@ export default function Header() {
         setShowLinkPopup(false)
         setLinkUrl('')
         setLinkError(null)
+        linkTriggerRef.current?.focus()
+        linkTriggerRef.current = null
       }
     }
     document.addEventListener('keydown', handleKeyDown)
@@ -236,6 +245,8 @@ export default function Header() {
     setOtpInput('')
     setAuthError(null)
     setAuthLoading(false)
+    loginTriggerRef.current?.focus()
+    loginTriggerRef.current = null
   }
 
   function closeLinkPopup() {
@@ -243,6 +254,8 @@ export default function Header() {
     setShowLinkPopup(false)
     setLinkUrl('')
     setLinkError(null)
+    linkTriggerRef.current?.focus()
+    linkTriggerRef.current = null
   }
 
   function switchView(view: LoginView) {
@@ -368,7 +381,7 @@ export default function Header() {
             {authState === 'unlinked_auth' && (
               <button
                 className={styles.steamHeaderBtn}
-                onClick={() => setShowLinkPopup(true)}
+                onClick={(e) => { linkTriggerRef.current = e.currentTarget; setShowLinkPopup(true) }}
                 aria-label="Steam 계정 연동하기"
               >
                 <SteamIcon fill="currentColor" />
@@ -379,7 +392,7 @@ export default function Header() {
               ref={menuBtnRef}
               className={styles.menuBtn}
               onClick={() => setMenuOpen(o => !o)}
-              aria-label="메뉴 열기"
+              aria-label={menuOpen ? '메뉴 닫기' : '메뉴 열기'}
               aria-expanded={menuOpen}
               aria-haspopup="menu"
             >
@@ -408,7 +421,7 @@ export default function Header() {
                       <p className={styles.dropdownSteamHint}>연동하면 플레이 기록 자동 분석 + 라이브러리 직접 선택</p>
                       <button
                         className={styles.dropdownSteamLink}
-                        onClick={() => { setMenuOpen(false); setShowLinkPopup(true) }}
+                        onClick={(e) => { linkTriggerRef.current = e.currentTarget; setMenuOpen(false); setShowLinkPopup(true) }}
                         role="menuitem"
                       >
                         Steam 연동하기
@@ -453,7 +466,10 @@ export default function Header() {
             )}
           </div>
         ) : (
-          <button onClick={() => setShowLoginModal(true)} className={styles.loginBtn}>
+          <button
+            onClick={(e) => { loginTriggerRef.current = e.currentTarget; setShowLoginModal(true) }}
+            className={styles.loginBtn}
+          >
             로그인
           </button>
         )}

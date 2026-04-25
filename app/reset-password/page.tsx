@@ -53,7 +53,7 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <main className={styles.page}>
+    <main id="main-content" className={styles.page}>
       <div className={styles.container}>
         <GuildelineMark size={48} />
         <h1 className={styles.title}>새 비밀번호 설정</h1>

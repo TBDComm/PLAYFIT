@@ -88,7 +88,7 @@ export default async function SquadTokenPage({ params }: Props) {
   }).format(new Date(session.created_at))
 
   return (
-    <main className={resultStyles.main}>
+    <main id="main-content" className={resultStyles.main}>
       {/* Header */}
       <header className={resultStyles.header}>
         <Link href="/" className={resultStyles.backLink}>

@@ -127,7 +127,7 @@ export default async function UserProfilePage({ params }: Props) {
   const maxWeight = tags[0]?.weight ?? 1
 
   return (
-    <main className={resultStyles.main}>
+    <main id="main-content" className={resultStyles.main}>
       <header className={resultStyles.header}>
         <Link href="/" className={resultStyles.backLink}>
           ← 홈으로

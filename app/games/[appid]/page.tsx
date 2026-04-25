@@ -136,7 +136,7 @@ export default async function GamePage({
   // 404 fallback
   if (!game) {
     return (
-      <main className={styles.page}>
+      <main id="main-content" className={styles.page}>
         <div className={styles.inner}>
           <p className={styles.notFound}>게임을 찾을 수 없습니다.</p>
           <Link href="/" className={styles.ctaLink}>← 홈으로</Link>
@@ -150,7 +150,7 @@ export default async function GamePage({
   // Thin content guard — noindex rendered without data
   if (!hasTags) {
     return (
-      <main className={styles.page}>
+      <main id="main-content" className={styles.page}>
         <div className={styles.inner}>
           <Breadcrumb
             items={[{ label: '홈', href: '/' }, { label: '게임', href: '/genre' }, { label: game.name }]}

@@ -82,7 +82,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
   }).format(new Date(created_at))
 
   return (
-    <main className={styles.main}>
+    <main id="main-content" className={styles.main}>
       <header className={styles.header}>
         <Link href="/" className={styles.backLink}>
           ← 다시 추천받기

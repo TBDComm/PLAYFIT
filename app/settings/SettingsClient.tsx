@@ -393,7 +393,7 @@ export default function SettingsClient() {
   }
 
   return (
-    <main className={styles.page}>
+    <main id="main-content" className={styles.page}>
       <div className={styles.inner}>
         <h1 className={styles.pageTitle}>내 설정</h1>
 
