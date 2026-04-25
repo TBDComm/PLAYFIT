@@ -75,7 +75,7 @@ export default async function Home() {
             <div className={styles.sampleBody}>
               <p className={styles.sampleName}>Hades</p>
               <p className={styles.sampleReason}>
-                <span className={styles.sampleReasonLabel}>왜 나한테 맞냐면</span><br />
+                <span className={styles.sampleReasonLabel}>추천 설명</span><br />
                 로그라이크와 액션을 즐기는 취향에 딱 맞아요. 매 플레이마다 새로운 전략이 펼쳐지고, 깊이 있는 스토리까지 즐길 수 있어요.
               </p>
               <div className={styles.sampleMeta}>
@@ -99,13 +99,13 @@ export default async function Home() {
         <div className={styles.squadFeatureInner}>
           <p className={styles.squadFeatureEyebrow}>SQUAD ANALYZER</p>
           <h2 className={styles.squadFeatureTitle}>
-            친구들과 함께 즐길 게임,<br />
+            친구들과 함께 즐길 게임<br />
             <span className={styles.squadFeatureAccent}>취향 교집합</span>으로 찾아드립니다
           </h2>
           <ul className={styles.squadFeaturePills} aria-label="주요 기능">
-            <li>최대 6명</li>
-            <li>AI 취향 분석</li>
-            <li>Steam 연동</li>
+            <li>최대 4명</li>
+            <li>공통 취향 분석</li>
+            <li>Steam 연동 가능</li>
           </ul>
           <Link href="/squad" className={styles.squadFeatureBtn}>
             스쿼드 분석 시작하기 →
