@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 101/200 lines — OK**
+📏 **File health: 102/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see `rules/handover-rules.md` §5)._
 
 ---
