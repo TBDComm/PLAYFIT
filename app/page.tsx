@@ -94,12 +94,23 @@ export default async function Home() {
       {/* Preview Section (Static Component) */}
       <Preview />
 
-      {/* Squad CTA */}
-      <section className={styles.squadCta}>
-        <p className={styles.squadCtaText}>여러 명이서 함께?</p>
-        <Link href="/squad" className={styles.squadCtaLink}>
-          스쿼드 취향 분석 →
-        </Link>
+      {/* Squad Feature Section */}
+      <section className={styles.squadFeature}>
+        <div className={styles.squadFeatureInner}>
+          <p className={styles.squadFeatureEyebrow}>SQUAD ANALYZER</p>
+          <h2 className={styles.squadFeatureTitle}>
+            친구들과 함께 즐길 게임,<br />
+            <span className={styles.squadFeatureAccent}>취향 교집합</span>으로 찾아드립니다
+          </h2>
+          <ul className={styles.squadFeaturePills} aria-label="주요 기능">
+            <li>최대 6명</li>
+            <li>AI 취향 분석</li>
+            <li>Steam 연동</li>
+          </ul>
+          <Link href="/squad" className={styles.squadFeatureBtn}>
+            스쿼드 분석 시작하기 →
+          </Link>
+        </div>
       </section>
 
       {/* Saved Games (Client Component) */}

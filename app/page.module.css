@@ -1258,49 +1258,105 @@
   border-top: 1px solid var(--border);
 }
 
-/* ── Squad CTA (홈 페이지) ── */
-.squadCta {
+/* ── Squad Feature Section (홈 페이지) ── */
+.squadFeature {
   width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  border-top: 1px solid var(--border);
-  flex-wrap: wrap;
+  padding: 4rem 1.5rem;
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--accent-low);
+  border-bottom: 1px solid var(--accent-low);
+  position: relative;
+  overflow: hidden;
 }
 
-.squadCtaText {
-  font-size: 1rem;
-  color: var(--text-secondary);
+.squadFeature::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(200, 241, 53, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.squadFeatureInner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.25rem;
+  position: relative;
+  z-index: 1;
+}
+
+.squadFeatureEyebrow {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
   margin: 0;
 }
 
-.squadCtaLink {
-  font-size: 0.95rem;
+.squadFeatureTitle {
+  font-size: clamp(1.375rem, 4vw, 2rem);
   font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  line-height: 1.25;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.squadFeatureAccent {
+  color: var(--accent);
+}
+
+.squadFeaturePills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.squadFeaturePills li {
+  font-size: 0.8125rem;
+  font-weight: 600;
   color: var(--accent);
   background: var(--accent-dim);
   border: 1px solid var(--accent-low);
-  padding: 0.5rem 1.25rem;
   border-radius: var(--radius);
+  padding: 0.3125rem 0.75rem;
+}
+
+.squadFeatureBtn {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  background: var(--accent);
+  color: var(--bg);
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+  font-weight: 700;
   text-decoration: none;
-  transition: background 0.15s, border-color 0.15s;
-  white-space: nowrap;
+  touch-action: manipulation;
+  transition: opacity 0.15s ease;
 }
 
-.squadCtaLink:hover {
-  background: var(--bg-hover);
-  border-color: var(--accent);
+.squadFeatureBtn:hover {
+  opacity: 0.88;
 }
 
-.squadCtaLink:focus-visible {
+.squadFeatureBtn:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 
-.squadCtaLink {
-  touch-action: manipulation;
+@media (max-width: 639px) {
+  .squadFeature {
+    padding: 3rem 1.25rem;
+  }
 }

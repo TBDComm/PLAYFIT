@@ -26,7 +26,7 @@ Start work → fill In-Progress Lock. Finish step → clear lock + update Active
 **Check this first. If filled, a previous session was interrupted — resume from here.**
 
 ```
-STATUS: CLEAR
+STATUS: clear
 ```
 
 
@@ -71,6 +71,7 @@ Env vars + Supabase tables state → `memory/project_stack.md` (read only when t
 ## ── ACTIVE STEP: none ──
 
 SQ-15 remains blocked (AdSense approval pending). ENH-1~4 complete.
+non-step ✅ — Squad CTA → full feature section. Eyebrow + title + feature pills + solid CTA button. `page.tsx` + `page.module.css` updated.
 
 **ENH-1** ✅ — Pairwise cosine in `analyzeSquad`; single-member edge case returns 100.
 **ENH-2** ✅ — Migration `20260419_squad_enh.sql` adds `member_picks`/`analysis_reason` columns. route.ts re-scores per member, top 2 → Claude reasons in same call.
