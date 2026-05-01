@@ -55,24 +55,27 @@ export default function SquadPage() {
     const existing = debounceRefs.current.get(index)
     if (existing) clearTimeout(existing)
 
+    if (!STEAM_URL_REGEX.test(url)) {
+      setValidations(prev => {
+        const next = [...prev]
+        next[index] = 'idle'
+        return next
+      })
+      return
+    }
+
+    // 유효한 URL — 디바운스 전에 즉시 checking 표시
     setValidations(prev => {
       const next = [...prev]
-      next[index] = 'idle'
+      next[index] = 'checking'
       return next
     })
-
-    if (!STEAM_URL_REGEX.test(url)) return
 
     // 버전 증가 — 구버전 응답 무시용
     const version = (versionRefs.current.get(index) ?? 0) + 1
     versionRefs.current.set(index, version)
 
     const timer = setTimeout(async () => {
-      setValidations(prev => {
-        const next = [...prev]
-        next[index] = 'checking'
-        return next
-      })
 
       try {
         const res = await fetch(`/api/squad/validate?url=${encodeURIComponent(url)}`)
