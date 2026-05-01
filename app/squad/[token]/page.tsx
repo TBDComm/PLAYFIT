@@ -115,10 +115,10 @@ export default async function SquadTokenPage({ params }: Props) {
       {/* Summary */}
       <section className={resultStyles.summarySection}>
         <div className={styles.scoreHero}>
-          <p className={styles.scoreHeroNumber} aria-label={`평균 취향 일치율 ${session.avg_match_score}퍼센트`}>
+          <h1 className={styles.scoreHeroLabel}>평균 취향 일치율</h1>
+          <p className={styles.scoreHeroNumber} aria-label={`${session.avg_match_score}퍼센트`}>
             {session.avg_match_score}%
           </p>
-          <h1 className={styles.scoreHeroLabel}>평균 취향 일치율</h1>
         </div>
 
         <p className={resultStyles.heroSubtitle}>
@@ -229,7 +229,10 @@ export default async function SquadTokenPage({ params }: Props) {
 
       {/* analysisReason — Claude 그룹 취향 요약 */}
       {session.analysis_reason && (
-        <p className={styles.analysisReason}>{session.analysis_reason}</p>
+        <section className={styles.analysisReasonSection}>
+          <h2 className={styles.analysisReasonHeading}>그룹 취향 요약</h2>
+          <p className={styles.analysisReason}>{session.analysis_reason}</p>
+        </section>
       )}
 
       {/* 멤버별 픽 */}

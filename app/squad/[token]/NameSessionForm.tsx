@@ -55,6 +55,9 @@ export default function NameSessionForm({ token, initialName }: Props) {
         >
           {saved ? '저장됨 ✓' : '저장'}
         </button>
+        <span aria-live="polite" aria-atomic="true" className={styles.srOnly}>
+          {saved ? '저장됨' : ''}
+        </span>
       </div>
       {error && (
         <p className={styles.nameError} aria-live="polite">{error}</p>

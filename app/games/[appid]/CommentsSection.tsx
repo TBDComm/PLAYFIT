@@ -44,6 +44,7 @@ export default function CommentsSection({ appid }: Props) {
   const [submitting, setSubmitting] = useState(false)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const confirmBtnRef = useRef<HTMLButtonElement>(null)
+  const replyTextareaRef = useRef<HTMLTextAreaElement>(null)
 
   // Supabase 브라우저 클라이언트 — ref로 보관 (재렌더 불필요)
   const supabaseRef = useRef(
@@ -120,6 +121,11 @@ export default function CommentsSection({ appid }: Props) {
   useEffect(() => {
     if (confirmDeleteId) confirmBtnRef.current?.focus()
   }, [confirmDeleteId])
+
+  // 답글 폼 열릴 때 textarea로 포커스 이동
+  useEffect(() => {
+    if (replyTo) replyTextareaRef.current?.focus()
+  }, [replyTo])
 
   function openReply(commentId: string) {
     setReplyTo(commentId)
@@ -273,6 +279,7 @@ export default function CommentsSection({ appid }: Props) {
                   <div className={styles.replyForm}>
                     <label htmlFor={`reply-${comment.id}`} className={styles.srOnly}>답글 작성</label>
                     <textarea
+                      ref={replyTextareaRef}
                       id={`reply-${comment.id}`}
                       name="reply-body"
                       className={styles.commentTextarea}

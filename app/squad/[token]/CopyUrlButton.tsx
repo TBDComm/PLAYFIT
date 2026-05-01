@@ -17,13 +17,18 @@ export default function CopyUrlButton() {
   }
 
   return (
-    <button
-      type="button"
-      onClick={handleCopy}
-      className={styles.copyButton}
-      aria-label="스쿼드 URL 복사"
-    >
-      {copied ? '복사됨 ✓' : '이 스쿼드 공유하기'}
-    </button>
+    <>
+      <button
+        type="button"
+        onClick={handleCopy}
+        className={styles.copyButton}
+        aria-label="스쿼드 URL 복사"
+      >
+        {copied ? '복사됨 ✓' : '이 스쿼드 공유하기'}
+      </button>
+      <span aria-live="polite" aria-atomic="true" className={styles.srOnly}>
+        {copied ? '복사됨' : ''}
+      </span>
+    </>
   )
 }

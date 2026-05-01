@@ -214,6 +214,7 @@ export default function SavedGames() {
                   />
                 )}
                 <div className={styles.savedCardOverlay}>
+                  <span className={styles.savedCardTouchHint} aria-hidden="true">탭하여 정보 보기</span>
                   <span className={styles.savedCardOverlayName}>{game.name}</span>
                 </div>
                 <button

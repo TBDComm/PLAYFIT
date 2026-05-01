@@ -5,6 +5,7 @@ import styles from './page.module.css'
 export default function ScrollToTopButton() {
   return (
     <button
+      type="button"
       className={styles.scrollToTop}
       onClick={() => {
         const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches

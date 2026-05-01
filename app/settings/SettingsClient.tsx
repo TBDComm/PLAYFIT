@@ -415,6 +415,7 @@ export default function SettingsClient() {
                     {profileDisplayName.length}/{DISPLAY_NAME_MAX}
                   </span>
                 </div>
+                <span id="display-name-limit" className={styles.srOnly}>최대 {DISPLAY_NAME_MAX}자</span>
                 <input
                   id="profile-display-name"
                   name="display-name"
@@ -427,6 +428,7 @@ export default function SettingsClient() {
                   disabled={profileSaving}
                   autoComplete="nickname"
                   spellCheck={false}
+                  aria-describedby="display-name-limit"
                 />
               </div>
 
@@ -437,6 +439,7 @@ export default function SettingsClient() {
                     {profileBio.length}/{BIO_MAX}
                   </span>
                 </div>
+                <span id="bio-limit" className={styles.srOnly}>최대 {BIO_MAX}자</span>
                 <textarea
                   id="profile-bio"
                   name="bio"
@@ -448,6 +451,7 @@ export default function SettingsClient() {
                   onChange={(e) => { setProfileBio(e.target.value); setProfileDirty(true); setProfileSaved(false) }}
                   disabled={profileSaving}
                   autoComplete="off"
+                  aria-describedby="bio-limit"
                 />
               </div>
 
@@ -545,7 +549,7 @@ export default function SettingsClient() {
               className={styles.reloadBtn}
               onClick={handleReloadWeights}
               disabled={weightsLoading}
-              aria-label="가중치 새로고침"
+              aria-label={weightsLoading ? '새로고침 중' : '가중치 새로고침'}
             >
               {weightsLoading ? '…' : '↺'}
             </button>

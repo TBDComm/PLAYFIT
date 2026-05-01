@@ -58,6 +58,7 @@ export default function ResetPasswordPage() {
         <GuildelineMark size={48} />
         <h1 className={styles.title}>새 비밀번호 설정</h1>
         <div className={styles.card}>
+          <div aria-live="polite">
           {done ? (
             <p className={styles.desc}>비밀번호가 변경됐어요. 홈으로 이동합니다…</p>
           ) : !sessionReady ? (
@@ -96,6 +97,7 @@ export default function ResetPasswordPage() {
               </div>
               {error && <p className={styles.error} role="alert">{error}</p>}
               <button
+                type="button"
                 onClick={handleSubmit}
                 className={styles.primaryBtn}
                 disabled={loading || !password || !passwordConfirm}
@@ -104,6 +106,7 @@ export default function ResetPasswordPage() {
               </button>
             </>
           )}
+          </div>
         </div>
         <div className={styles.footer}>
           <Link href="/" className={styles.footerLink}>← 홈으로</Link>
