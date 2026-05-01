@@ -304,7 +304,7 @@ export default function RecommendationForm() {
                 <div className={styles.urlInputWrap}>
                   <input
                     id="steam-url" name="steam-url" type="url" className={styles.input}
-                    placeholder="스팀 프로필 URL을 입력하세요…" value={url} onChange={e => setUrl(e.target.value)}
+                    placeholder="예: steamcommunity.com/id/username" value={url} onChange={e => setUrl(e.target.value)}
                     autoComplete="off" spellCheck={false} disabled={loading}
                   />
                   {urlValid && <span className={styles.urlValidIcon} aria-hidden="true">✓</span>}

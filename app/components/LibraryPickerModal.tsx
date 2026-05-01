@@ -20,6 +20,7 @@ export default function LibraryPickerModal({ steamId, externalLoading, onClose, 
   const [selected, setSelected] = useState<Set<number>>(new Set())
   const [retryCount, setRetryCount] = useState(0)
   const searchRef = useRef<HTMLInputElement>(null)
+  const modalRef = useRef<HTMLDivElement>(null)
   const abortRef = useRef<AbortController | null>(null)
 
   useEffect(() => { setMounted(true) }, [])
@@ -65,7 +66,24 @@ export default function LibraryPickerModal({ steamId, externalLoading, onClose, 
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') { onClose(); return }
+      if (e.key === 'Tab') {
+        const modal = modalRef.current
+        if (!modal) return
+        const focusable = Array.from(
+          modal.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          )
+        ).filter(el => el.offsetParent !== null)
+        if (focusable.length === 0) return
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+        if (e.shiftKey) {
+          if (document.activeElement === first) { e.preventDefault(); last.focus() }
+        } else {
+          if (document.activeElement === last) { e.preventDefault(); first.focus() }
+        }
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -98,6 +116,7 @@ export default function LibraryPickerModal({ steamId, externalLoading, onClose, 
       onClick={onClose}
     >
       <div
+        ref={modalRef}
         className={styles.modal}
         onClick={e => e.stopPropagation()}
         role="dialog"
@@ -126,6 +145,13 @@ export default function LibraryPickerModal({ steamId, externalLoading, onClose, 
             spellCheck={false}
           />
         </div>
+
+        {/* 스크린 리더 상태 알림 — listbox 밖에 위치 */}
+        <p role="status" aria-live="polite" aria-atomic="true" className={styles.srOnly}>
+          {games === null && !fetchError ? '라이브러리 불러오는 중' :
+           fetchError ? fetchError :
+           games !== null && filtered.length === 0 ? '검색 결과가 없어요' : ''}
+        </p>
 
         <div className={styles.list} role="listbox" aria-multiselectable="true" aria-label="게임 목록">
           {games === null && !fetchError && (

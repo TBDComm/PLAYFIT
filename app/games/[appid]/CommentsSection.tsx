@@ -42,6 +42,8 @@ export default function CommentsSection({ appid }: Props) {
   const [replyError, setReplyError] = useState<string | null>(null)
 
   const [submitting, setSubmitting] = useState(false)
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
+  const confirmBtnRef = useRef<HTMLButtonElement>(null)
 
   // Supabase 브라우저 클라이언트 — ref로 보관 (재렌더 불필요)
   const supabaseRef = useRef(
@@ -104,14 +106,20 @@ export default function CommentsSection({ appid }: Props) {
   }
 
   async function handleDelete(commentId: string) {
-    if (!window.confirm('댓글을 삭제할까요?')) return
     try {
       await fetch(`/api/games/${appid}/comments?id=${commentId}`, { method: 'DELETE' })
       setComments(curr => curr.filter(c => c.id !== commentId))
     } catch {
       // silent — 댓글 목록은 그대로 유지
+    } finally {
+      setConfirmDeleteId(null)
     }
   }
+
+  // confirmDeleteId 변경 시 확인 버튼으로 포커스 이동
+  useEffect(() => {
+    if (confirmDeleteId) confirmBtnRef.current?.focus()
+  }, [confirmDeleteId])
 
   function openReply(commentId: string) {
     setReplyTo(commentId)
@@ -221,15 +229,35 @@ export default function CommentsSection({ appid }: Props) {
                       답글
                     </button>
                   )}
-                  {isOwn && (
+                  {isOwn && confirmDeleteId !== comment.id && (
                     <button
                       type="button"
                       className={`${styles.commentActionBtn} ${styles.commentDeleteBtn}`}
-                      onClick={() => handleDelete(comment.id)}
+                      onClick={() => setConfirmDeleteId(comment.id)}
                       aria-label="내 댓글 삭제"
                     >
                       삭제
                     </button>
+                  )}
+                  {isOwn && confirmDeleteId === comment.id && (
+                    <span className={styles.deleteConfirm}>
+                      <span className={styles.deleteConfirmLabel}>정말 삭제할까요?</span>
+                      <button
+                        ref={confirmBtnRef}
+                        type="button"
+                        className={`${styles.commentActionBtn} ${styles.commentDeleteBtn}`}
+                        onClick={() => handleDelete(comment.id)}
+                      >
+                        삭제
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.commentActionBtn}
+                        onClick={() => setConfirmDeleteId(null)}
+                      >
+                        취소
+                      </button>
+                    </span>
                   )}
                   <a
                     href={reportHref}
@@ -300,15 +328,35 @@ export default function CommentsSection({ appid }: Props) {
                           </div>
                           <p className={styles.commentBody}>{reply.body}</p>
                           <div className={styles.commentActions}>
-                            {isReplyOwn && (
+                            {isReplyOwn && confirmDeleteId !== reply.id && (
                               <button
                                 type="button"
                                 className={`${styles.commentActionBtn} ${styles.commentDeleteBtn}`}
-                                onClick={() => handleDelete(reply.id)}
+                                onClick={() => setConfirmDeleteId(reply.id)}
                                 aria-label="내 답글 삭제"
                               >
                                 삭제
                               </button>
+                            )}
+                            {isReplyOwn && confirmDeleteId === reply.id && (
+                              <span className={styles.deleteConfirm}>
+                                <span className={styles.deleteConfirmLabel}>정말 삭제할까요?</span>
+                                <button
+                                  ref={confirmBtnRef}
+                                  type="button"
+                                  className={`${styles.commentActionBtn} ${styles.commentDeleteBtn}`}
+                                  onClick={() => handleDelete(reply.id)}
+                                >
+                                  삭제
+                                </button>
+                                <button
+                                  type="button"
+                                  className={styles.commentActionBtn}
+                                  onClick={() => setConfirmDeleteId(null)}
+                                >
+                                  취소
+                                </button>
+                              </span>
                             )}
                             <a
                               href={replyReportHref}

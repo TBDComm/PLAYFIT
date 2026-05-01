@@ -12,10 +12,12 @@ export default function NameSessionForm({ token, initialName }: Props) {
   const [name, setName] = useState(initialName ?? '')
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   async function handleSave() {
     setLoading(true)
     setSaved(false)
+    setError(null)
     try {
       const res = await fetch(`/api/squad/${token}`, {
         method: 'PATCH',
@@ -23,6 +25,9 @@ export default function NameSessionForm({ token, initialName }: Props) {
         body: JSON.stringify({ name }),
       })
       if (res.ok) setSaved(true)
+      else setError('저장에 실패했습니다. 다시 시도해 주세요.')
+    } catch {
+      setError('네트워크 오류가 발생했습니다.')
     } finally {
       setLoading(false)
     }
@@ -37,12 +42,13 @@ export default function NameSessionForm({ token, initialName }: Props) {
           autoComplete="off"
           className={styles.nameInput}
           value={name}
-          onChange={e => { setName(e.target.value); setSaved(false) }}
+          onChange={e => { setName(e.target.value); setSaved(false); setError(null) }}
           maxLength={60}
           placeholder="이 스쿼드에 이름을 붙여보세요 (예: 주말 파티)"
           aria-label="스쿼드 세션 이름"
         />
         <button
+          type="button"
           className={styles.nameSaveBtn}
           onClick={handleSave}
           disabled={loading}
@@ -50,6 +56,9 @@ export default function NameSessionForm({ token, initialName }: Props) {
           {saved ? '저장됨 ✓' : '저장'}
         </button>
       </div>
+      {error && (
+        <p className={styles.nameError} aria-live="polite">{error}</p>
+      )}
     </div>
   )
 }

@@ -196,14 +196,7 @@ export default async function SquadTokenPage({ params }: Props) {
                     ₩{new Intl.NumberFormat('ko-KR').format(card.price_krw)}
                   </span>
                 ) : (
-                  <a
-                    href={card.store_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={resultStyles.priceUnknown}
-                  >
-                    가격 정보 없음
-                  </a>
+                  <span className={resultStyles.priceUnknown}>가격 정보 없음</span>
                 )}
                 {card.metacritic_score != null && (
                   <span className={`${resultStyles.score} ${getScoreClass(card.metacritic_score)}`}>

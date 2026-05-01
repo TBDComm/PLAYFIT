@@ -74,6 +74,7 @@ SQ-15 remains blocked (AdSense approval pending). ENH-1~4 complete.
 non-step ✅ — Squad CTA → full feature section. Eyebrow + title + feature pills + solid CTA button. `page.tsx` + `page.module.css` updated.
 non-step ✅ — Full UX audit complete (20 steps). `UX_NOTES.md` (raw findings) + `UX_BACKLOG.md` (2 HIGH, 7 MEDIUM, 13 LOW items). See `UX_BACKLOG.md` for priorities.
 non-step ✅ — UX Backlog H-1+L-1+H-2+M-1: skip link (layout.tsx+globals.css), id="main-content" on all pages (7 files), modal focus return on close+ESC, dynamic hamburger aria-label.
+non-step ✅ — UX Backlog M-2~M-7: LibraryPickerModal focus trap + aria-live status, NameSessionForm error state, "가격 정보 없음" plain span (result+squad), CommentsSection inline confirm, Steam URL placeholder.
 
 **ENH-1** ✅ — Pairwise cosine in `analyzeSquad`; single-member edge case returns 100.
 **ENH-2** ✅ — Migration `20260419_squad_enh.sql` adds `member_picks`/`analysis_reason` columns. route.ts re-scores per member, top 2 → Claude reasons in same call.

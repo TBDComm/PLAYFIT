@@ -143,14 +143,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
                     ₩{new Intl.NumberFormat('ko-KR').format(card.price_krw)}
                   </span>
                 ) : (
-                  <a
-                    href={card.store_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.priceUnknown}
-                  >
-                    가격 정보 없음
-                  </a>
+                  <span className={styles.priceUnknown}>가격 정보 없음</span>
                 )}
                 {card.metacritic_score != null && (
                   <span className={`${styles.score} ${getScoreClass(card.metacritic_score, styles)}`}>

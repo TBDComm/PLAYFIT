@@ -459,6 +459,17 @@
   color: var(--error, #f87171);
 }
 
+.deleteConfirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deleteConfirmLabel {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
 .commentReportLink {
   font-size: 0.8125rem;
   color: var(--text-muted);
