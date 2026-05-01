@@ -4,7 +4,7 @@
 
 ---
 
-📏 **File health: 104/200 lines — OK**
+📏 **File health: 96/200 lines — OK**
 _Update this count on every edit. If ≥180 lines, compress before any other work (see `rules/handover-rules.md` §5)._
 
 ---
@@ -27,16 +27,6 @@ Start work → fill In-Progress Lock. Finish step → clear lock + update Active
 
 ```
 STATUS: clear
-```
-
-
-_When starting work, replace above with:_
-```
-STATUS: IN PROGRESS
-Step: [N — name, or "non-step: description"]
-Files touched: []
-Stopped at: [update continuously]
-Next action: [exactly what to do next to resume]
 ```
 
 ---
