@@ -14,7 +14,7 @@ export default function NavLogo() {
     <div className={styles.bar}>
       <Link href="/" className={styles.wordmark} aria-label="Guildeline 홈">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/guildeline-logo.png" alt="" width={19} height={19} style={{ width: 'auto' }} className={styles.logoMark} />
+        <img src="/guildeline-logo.png" alt="" aria-hidden="true" width={19} height={19} style={{ width: 'auto' }} className={styles.logoMark} />
         <span><span className={styles.play}>GUILD</span>ELINE</span>
       </Link>
     </div>

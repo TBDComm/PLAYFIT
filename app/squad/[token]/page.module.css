@@ -260,7 +260,6 @@
 .analysisReasonSection {
   max-width: 900px;
   margin: 0 auto 2.5rem;
-  padding: 0 1rem;
 }
 
 .analysisReasonHeading {
@@ -273,8 +272,6 @@
 }
 
 .analysisReason {
-  max-width: 900px;
-  margin: 0 auto 2.5rem;
   padding: 1rem 1.5rem;
   background: var(--bg-elevated);
   border-left: 3px solid var(--accent);
