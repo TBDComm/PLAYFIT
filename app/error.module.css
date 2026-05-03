@@ -1,0 +1,45 @@
+.main {
+  text-align: center;
+  padding: 6rem 2rem;
+  color: var(--text-primary);
+}
+
+.label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.08em;
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.link {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.15s;
+}
+
+.link:hover { color: var(--text-primary); }
+.link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.button {
+  background: var(--bg-elevated);
+  border: 1px solid var(--accent-low);
+  color: var(--accent);
+  padding: 0.5rem 1.5rem;
+  border-radius: var(--radius);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  touch-action: manipulation;
+}
+
+.button:hover { background: var(--bg-hover); border-color: var(--accent); }
+.button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
