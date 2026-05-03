@@ -68,6 +68,7 @@ non-step ✅ — UX Backlog M-2~M-7: LibraryPickerModal focus trap + aria-live s
 non-step ✅ — UX Backlog L-2~L-11: CopyUrlButton+NameSessionForm aria-live, type="button" (ScrollToTop+reset-password), Settings char-count aria-describedby, weights button dynamic aria-label, reset-password aria-live, NavLogo width=19 (CLS), CommentsSection reply auto-focus, Squad score DOM order (column-reverse), analysis_reason h2 heading, SavedGames touch hint. L-12 was already done in CSS. L-13 LOCKED.
 non-step ✅ — Squad URL validation: checking 상태를 디바운스 전에 즉시 표시 (스팀 연동 자동 채우기 포함).
 non-step ✅ — Site-wide improvement audit complete. 18 items (ERR, SEO, SHARE, ANALYTICS, PERF, UX, TYPO) → `IMPROVEMENT_BACKLOG.md`. UX_BACKLOG.md 전 항목 완료 (L-13 LOCKED 제외).
+non-step ✅ — IMPROVEMENT_BACKLOG HIGH 완료: ERR-1 (not-found.tsx), ERR-2 (error.tsx + global-error.tsx), SEO-1 (generateMetadata + React.cache), SHARE-1 (CopyResultUrlButton), SHARE-2 (result OG image). IMPROVEMENT_BACKLOG.md HIGH 섹션 전부 완료.
 
 **ENH-1** ✅ — Pairwise cosine in `analyzeSquad`; single-member edge case returns 100.
 **ENH-2** ✅ — Migration `20260419_squad_enh.sql` adds `member_picks`/`analysis_reason` columns. route.ts re-scores per member, top 2 → Claude reasons in same call.

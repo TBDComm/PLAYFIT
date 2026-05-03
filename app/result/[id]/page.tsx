@@ -1,5 +1,6 @@
 export const runtime = 'edge'
 
+import { cache } from 'react'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
@@ -9,6 +10,7 @@ import ScrollToTopButton from './ScrollToTopButton'
 import FeedbackButtons from './FeedbackButtons'
 import ThumbnailImage from './ThumbnailImage'
 import SaveToggle from './SaveToggle'
+import CopyResultUrlButton from './CopyResultUrlButton'
 import styles from './page.module.css'
 import type { RecommendationCard } from '@/types'
 
@@ -22,14 +24,8 @@ interface ResultPageProps {
   params: Promise<{ id: string }>
 }
 
-export const metadata: Metadata = {
-  title: '내 취향 게임 추천 결과 — Guildeline',
-  description: '스팀 플레이 기록을 기반으로 찾아낸 맞춤 게임 추천 목록입니다.',
-}
-
-async function getPageData(id: string) {
-  const cookieStore = await cookies()
-  const supabase = createServerClient(
+function makeSupabaseClient(cookieStore: Awaited<ReturnType<typeof cookies>>) {
+  return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
@@ -39,28 +35,51 @@ async function getPageData(id: string) {
       },
     }
   )
+}
 
-  // rec 쿼리 즉시 시작
-  const recPromise = supabase
+// React.cache()로 동일 요청 내 중복 DB 쿼리 방지 (generateMetadata + 페이지 컴포넌트)
+const getRecommendation = cache(async (id: string) => {
+  const cookieStore = await cookies()
+  const supabase = makeSupabaseClient(cookieStore)
+  const { data, error } = await supabase
     .from('recommendation_sets')
     .select('*')
     .eq('id', id)
     .single()
+  if (error || !data) return null
+  return data
+})
+
+export async function generateMetadata({ params }: ResultPageProps): Promise<Metadata> {
+  const { id } = await params
+  const rec = await getRecommendation(id)
+  if (!rec) return { title: '추천 결과 없음 — Guildeline' }
+
+  const tags: string[] = Array.isArray(rec.tags) ? (rec.tags as string[]) : []
+  const cards: RecommendationCard[] = Array.isArray(rec.cards) ? (rec.cards as RecommendationCard[]) : []
+  const tagStr = tags.slice(0, 2).join('·')
+  const descTags = tags.slice(0, 3).join(', ')
+
+  return {
+    title: `${tagStr} 취향 게임 추천 ${cards.length}선 — Guildeline`,
+    description: `${descTags} 태그 기반으로 추천된 게임 목록입니다.`,
+  }
+}
+
+async function getPageData(id: string) {
+  // getRecommendation은 cache()로 감싸져 있어 중복 호출 방지
+  const rec = await getRecommendation(id)
+  if (!rec) return null
+
+  const cookieStore = await cookies()
+  const supabase = makeSupabaseClient(cookieStore)
 
   // getSession(): 쿠키에서 JWT 파싱 — 네트워크 호출 없음, 즉시 resolve
   const { data: { session } } = await supabase.auth.getSession()
 
-  // saved_games 쿼리 시작 — recPromise와 병렬 실행 (async-parallel §1.2)
-  const savedPromise = session
-    ? supabase.from('saved_games').select('appid').eq('user_id', session.user.id)
+  const savedResult = session
+    ? await supabase.from('saved_games').select('appid').eq('user_id', session.user.id)
     : null
-
-  const [{ data: rec, error }, savedResult] = await Promise.all([
-    recPromise,
-    savedPromise ?? Promise.resolve(null),
-  ])
-
-  if (error || !rec) return null
 
   const savedAppids = new Set<string>(
     (savedResult?.data ?? []).map((s: { appid: string }) => s.appid)
@@ -187,7 +206,10 @@ export default async function ResultPage({ params }: ResultPageProps) {
             계정 가중치에 반영되어 다음 추천을 더 정확하게 만들어요.
           </p>
         </div>
-        <ScrollToTopButton />
+        <div className={styles.footerActions}>
+          <CopyResultUrlButton />
+          <ScrollToTopButton />
+        </div>
       </footer>
     </main>
   )
