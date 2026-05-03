@@ -7,7 +7,7 @@ export default function GlobalError({
   reset: () => void
 }) {
   return (
-    <html lang="ko">
+    <html lang="ko" style={{ colorScheme: 'dark' }}>
       <head>
         <style>{`
           .ge-main { text-align: center; padding: 6rem 2rem; color: #F5F5F0; }
